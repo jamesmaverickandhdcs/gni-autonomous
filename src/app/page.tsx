@@ -113,7 +113,7 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
           </div>
         </div>
         <div className="mt-3 text-xs text-gray-600 text-center">
-          Powered by GPVS v1.0 â€” GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
+          Powered by GPVS v1.1 â€” GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
         </div>
         <div className="mt-2 text-xs text-yellow-600 text-center">
           âš ï¸ Past accuracy does not guarantee future performance. Not financial advice.
