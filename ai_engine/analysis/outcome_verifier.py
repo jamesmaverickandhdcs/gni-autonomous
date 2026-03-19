@@ -10,6 +10,7 @@ load_dotenv(dotenv_path)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from analysis.supabase_saver import get_client
+from collectors.alpha_vantage import fetch_price_change_with_fallback
 
 # ============================================================
 # GNI Outcome Verifier
@@ -211,17 +212,17 @@ def verify_pending_outcomes():
         print(f"  Prediction: {report['sentiment']} | Risk: {report['risk_level']}")
 
         # Fetch price changes across all timeframes
-        spy_3d  = fetch_price_change('SPY', 3)
-        gld_3d  = fetch_price_change('GLD', 3)
-        uso_3d  = fetch_price_change('USO', 3)
+        spy_3d  = fetch_price_change_with_fallback('SPY', 3)
+        gld_3d  = fetch_price_change_with_fallback('GLD', 3)
+        uso_3d  = fetch_price_change_with_fallback('USO', 3)
 
-        spy_7d  = fetch_price_change('SPY', 7)
-        gld_7d  = fetch_price_change('GLD', 7)
-        uso_7d  = fetch_price_change('USO', 7)
+        spy_7d  = fetch_price_change_with_fallback('SPY', 7)
+        gld_7d  = fetch_price_change_with_fallback('GLD', 7)
+        uso_7d  = fetch_price_change_with_fallback('USO', 7)
 
-        spy_30d = fetch_price_change('SPY', 30)
-        gld_30d = fetch_price_change('GLD', 30)
-        uso_30d = fetch_price_change('USO', 30)
+        spy_30d = fetch_price_change_with_fallback('SPY', 30)
+        gld_30d = fetch_price_change_with_fallback('GLD', 30)
+        uso_30d = fetch_price_change_with_fallback('USO', 30)
 
         print(f"  SPY: 3d={spy_3d}% / 7d={spy_7d}% / 30d={spy_30d}%")
         print(f"  GLD: 3d={gld_3d}% / 7d={gld_7d}% / 30d={gld_30d}%")
