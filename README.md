@@ -1,4 +1,11 @@
-# 🌐 Global Nexus Insights (GNI)
+# 🤖 GNI Autonomous — Level 4 to Level 7 Sprint
+
+**Technology + Geopolitics + Financial Impact — Autonomous Self-Healing Agentic AI**
+
+> *10-day sprint evolving GNI from automated pipeline to fully autonomous self-healing agentic intelligence system*
+
+[![Live Dashboard](https://img.shields.io/badge/Live-gni--autonomous.vercel.app-blue)](https://gni-autonomous.vercel.app)
+[![Diploma](https://img.shields.io/badge/Diploma-gni--dusky.vercel.app-green)](https://gni-dusky.vercel.app)
 
 **Technology + Geopolitics + Financial Impact Intelligence System**
 
