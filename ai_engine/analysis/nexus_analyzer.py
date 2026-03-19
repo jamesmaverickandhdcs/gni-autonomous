@@ -48,7 +48,7 @@ Respond ONLY with a valid JSON object in this exact format:
   "source_consensus_score": 0.0,
   "location_name": "Single country name only — pick the MOST affected country (e.g. Iran, Ukraine, China). Never use regions like 'Middle East' or multiple countries.",
   "tickers_affected": ["SPY", "GLD"],
-  "market_impact": "2-3 sentence analysis of potential market impact",
+  "market_impact": "3-4 sentences explaining WHY this affects markets. Use causal language: because, therefore, as a result, driven by, consequently, leading to, due to. Explain the chain of causation from event to market outcome in detail.",
   "risk_level": "Low or Medium or High or Critical"
 }}
 
