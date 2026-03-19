@@ -1,4 +1,4 @@
-import os
+﻿import os
 import time
 import sys
 from datetime import datetime, timezone
@@ -11,6 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from collectors.rss_collector import collect_articles
 from funnel.intelligence_funnel import run_funnel
 from analysis.nexus_analyzer import analyze
+from analysis.quality_scorer import score_report
 from analysis.supabase_saver import (
     save_report,
     save_pipeline_run,
@@ -21,7 +22,7 @@ from analysis.supabase_saver import (
 from notifications.telegram_notifier import notify_report
 
 # ============================================================
-# GNI Main Pipeline — Day 6
+# GNI Main Pipeline â€” Day 6
 # Full orchestration with Explainable AI article trace
 # ============================================================
 
@@ -46,13 +47,13 @@ def run_pipeline():
     top_articles = []
 
     print("=" * 60)
-    print("🌐 GNI — Global Nexus Insights")
+    print("ðŸŒ GNI â€” Global Nexus Insights")
     print(f"   Pipeline Start: {run_at}")
     print("=" * 60)
 
     try:
-        # ── Step 1: Collect Articles ────────────────────────
-        print("\n📡 Step 1: Collecting RSS Articles...")
+        # â”€â”€ Step 1: Collect Articles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        print("\nðŸ“¡ Step 1: Collecting RSS Articles...")
         t0 = time.time()
         articles = collect_articles(max_per_source=20)
         step_timings["collection"] = round(time.time() - t0, 2)
@@ -61,8 +62,8 @@ def run_pipeline():
         if articles_collected < 10:
             raise Exception(f"Too few articles: {articles_collected}")
 
-        # ── Step 2: Intelligence Funnel ─────────────────────
-        print("\n🔽 Step 2: Running Intelligence Funnel...")
+        # â”€â”€ Step 2: Intelligence Funnel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        print("\nðŸ”½ Step 2: Running Intelligence Funnel...")
         t0 = time.time()
         top_n = 5 if GITHUB_ACTIONS else 10
         top_articles, trace = run_funnel(
@@ -79,8 +80,8 @@ def run_pipeline():
         if articles_after_funnel < 3:
             raise Exception(f"Too few after funnel: {articles_after_funnel}")
 
-        # ── Step 3: AI Analysis ─────────────────────────────
-        print("\n🧠 Step 3: AI Analysis (Llama 3)...")
+        # â”€â”€ Step 3: AI Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        print("\nðŸ§  Step 3: AI Analysis (Llama 3)...")
         t0 = time.time()
         report = analyze(top_articles)
         step_timings["analysis"] = round(time.time() - t0, 2)
@@ -88,17 +89,26 @@ def run_pipeline():
         if not report:
             raise Exception("AI analysis returned no report")
 
-        # ── Step 4: Save Report ─────────────────────────────
-        print("\n💾 Step 4: Saving Report to Supabase...")
+        # -- Step 3b: Quality Scoring ---------------------
+        print("\n📊 Step 3b: Scoring Report Quality...")
+        quality = score_report(report)
+        report['quality_score']     = quality['quality_score']
+        report['quality_breakdown'] = quality['quality_breakdown']
+        report['quality_badge']     = quality['quality_badge']
+
+        # â”€â”€ Step 4: Save Report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        print("\nðŸ’¾ Step 4: Saving Report to Supabase...")
         t0 = time.time()
-        report_id = save_report(report, top_articles)
+        report_id = save_report(report, top_articles,
+            quality_score=report.get('quality_score', 0),
+            quality_breakdown=report.get('quality_breakdown', {}))
         step_timings["save"] = round(time.time() - t0, 2)
 
         if report_id:
             reports_saved = 1
 
-        # ── Step 5: Save Pipeline Run & Article Trace ───────
-        print("\n📊 Step 5: Saving Pipeline Run & Article Trace...")
+        # â”€â”€ Step 5: Save Pipeline Run & Article Trace â”€â”€â”€â”€â”€â”€â”€
+        print("\nðŸ“Š Step 5: Saving Pipeline Run & Article Trace...")
         total_seconds_so_far = round(
             (datetime.now(timezone.utc) - run_start).total_seconds(), 2
         )
@@ -118,21 +128,21 @@ def run_pipeline():
             save_pipeline_articles(run_id, trace)
             save_article_events(run_id, report_id, trace)
 
-        # ── Step 6: Telegram Notification ──────────────────
+        # â”€â”€ Step 6: Telegram Notification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if report and report_id:
             notify_report(report, top_articles)
 
     except Exception as e:
         status = "failed"
         error_message = str(e)
-        print(f"\n❌ Pipeline error: {e}")
+        print(f"\nâŒ Pipeline error: {e}")
 
     finally:
-        # ── Step 7: Save Runtime Log ────────────────────────
+        # â”€â”€ Step 7: Save Runtime Log â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         total_seconds = round(
             (datetime.now(timezone.utc) - run_start).total_seconds(), 2
         )
-        print(f"\n📋 Step 7: Saving Runtime Log...")
+        print(f"\nðŸ“‹ Step 7: Saving Runtime Log...")
         save_runtime_log(
             run_at=run_at,
             total_seconds=total_seconds,
@@ -161,3 +171,6 @@ def run_pipeline():
 if __name__ == "__main__":
     success = run_pipeline()
     sys.exit(0 if success else 1)
+
+
+

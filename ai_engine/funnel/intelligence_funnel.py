@@ -1,9 +1,13 @@
-import re
+﻿import re
 import hashlib
+import sys
+import os
 from datetime import datetime
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from analysis.source_weights import get_source_weights
 
 # ============================================================
-# GNI Intelligence Funnel v3 — Day 6
+# GNI Intelligence Funnel v3 â€” Day 6
 # Now returns full article trace for Explainable AI
 # Each article carries pass/fail + reason at every stage
 # ============================================================
@@ -76,7 +80,7 @@ def _check_injection(article: dict) -> tuple[bool, str]:
     for pattern in INJECTION_PATTERNS:
         if re.search(pattern, text, re.IGNORECASE):
             return False, f"Injection pattern detected: {pattern[:40]}"
-    return True, "Clean — no injection patterns"
+    return True, "Clean â€” no injection patterns"
 
 
 def _get_dedup_key(article: dict) -> str:
@@ -126,11 +130,14 @@ def _score_article(article: dict) -> tuple[float, str]:
         score += 5
         reasons.append(f"Major region (+5pts): {region_matches[0]}")
 
-    # Source credibility bonus (+2)
-    credible = ['bbc', 'al jazeera', 'dw news']
-    if article.get('source', '').lower() in credible:
-        score += 2
-        reasons.append(f"Credible source (+2pts): {article.get('source')}")
+    # Dynamic source weight bonus (replaces hardcoded credibility)
+    weights = get_source_weights()
+    source_key = article.get('source', '').lower()
+    weight = weights.get(source_key, 1.0)
+    weight_bonus = round((weight - 1.0) * 10, 2)  # 1.3 weight = +3pts, 0.9 = -1pt
+    if weight_bonus != 0:
+        score += weight_bonus
+        reasons.append(f"Source weight ({weight:.2f} = {weight_bonus:+.1f}pts): {article.get('source')}")
 
     reason_str = " | ".join(reasons) if reasons else "Base score only"
     return round(score, 2), reason_str
@@ -150,11 +157,11 @@ def run_funnel(
         top_articles: final selected articles for AI analysis
         article_trace: ALL articles with full stage-by-stage trace
     """
-    print("🔽 Intelligence Funnel Running...")
+    print("ðŸ”½ Intelligence Funnel Running...")
     trace = []
     seen_keys = set()
 
-    # ── Stage 1: Relevance ──────────────────────────────────
+    # â”€â”€ Stage 1: Relevance â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage1_pass = []
     for art in articles:
         passed, reason = _check_relevance(art)
@@ -175,9 +182,9 @@ def run_funnel(
         else:
             trace.append(art)
 
-    print(f"  Stage 1 (Relevance):       {len(articles)} → {len(stage1_pass)} articles")
+    print(f"  Stage 1 (Relevance):       {len(articles)} â†’ {len(stage1_pass)} articles")
 
-    # ── Stage 1b: Injection Detection ───────────────────────
+    # â”€â”€ Stage 1b: Injection Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage1b_pass = []
     for art in stage1_pass:
         passed, reason = _check_injection(art)
@@ -194,9 +201,9 @@ def run_funnel(
             trace.append(art)
 
     flagged = len(stage1_pass) - len(stage1b_pass)
-    print(f"  Stage 1b (Inj. Filter):    {len(stage1_pass)} → {len(stage1b_pass)} articles ({flagged} flagged)")
+    print(f"  Stage 1b (Inj. Filter):    {len(stage1_pass)} â†’ {len(stage1b_pass)} articles ({flagged} flagged)")
 
-    # ── Stage 2: Deduplication ──────────────────────────────
+    # â”€â”€ Stage 2: Deduplication â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage2_pass = []
     for art in stage1b_pass:
         key = _get_dedup_key(art)
@@ -209,13 +216,13 @@ def run_funnel(
         else:
             seen_keys.add(key)
             art['stage2_passed'] = True
-            art['stage2_reason'] = "Unique article — no duplicate found"
+            art['stage2_reason'] = "Unique article â€” no duplicate found"
             stage2_pass.append(art)
 
     dupes = len(stage1b_pass) - len(stage2_pass)
-    print(f"  Stage 2 (Deduplication):   {len(stage1b_pass)} → {len(stage2_pass)} articles ({dupes} dupes)")
+    print(f"  Stage 2 (Deduplication):   {len(stage1b_pass)} â†’ {len(stage2_pass)} articles ({dupes} dupes)")
 
-    # ── Stage 3: Significance Scoring ───────────────────────
+    # â”€â”€ Stage 3: Significance Scoring â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     for art in stage2_pass:
         score, reason = _score_article(art)
         art['stage3_score'] = score
@@ -223,7 +230,7 @@ def run_funnel(
 
     print(f"  Stage 3 (Significance):    Scored {len(stage2_pass)} articles")
 
-    # ── Stage 4: Diversity Ranking ──────────────────────────
+    # â”€â”€ Stage 4: Diversity Ranking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     sorted_arts = sorted(stage2_pass, key=lambda x: x['stage3_score'], reverse=True)
 
     source_counts = {}
@@ -235,7 +242,7 @@ def run_funnel(
             source_counts[source] = count + 1
             art['stage4_selected'] = True
             art['stage4_rank'] = len(selected) + 1
-            art['stage4_reason'] = f"Rank {len(selected)+1} — score {art['stage3_score']} — {source} ({count+1}/{max_per_source})"
+            art['stage4_reason'] = f"Rank {len(selected)+1} â€” score {art['stage3_score']} â€” {source} ({count+1}/{max_per_source})"
             selected.append(art)
         else:
             if count >= max_per_source:
@@ -254,7 +261,7 @@ def run_funnel(
 
     print(f"  Stage 4 (Ranking+Diversity): Top {len(selected)} selected")
     print(f"  Source distribution: {dist}")
-    print(f"  ✅ Funnel complete — {len(selected)} articles ready for AI analysis")
-    print(f"  📊 Total trace: {len(trace)} articles documented")
+    print(f"  âœ… Funnel complete â€” {len(selected)} articles ready for AI analysis")
+    print(f"  ðŸ“Š Total trace: {len(trace)} articles documented")
 
     return selected, trace

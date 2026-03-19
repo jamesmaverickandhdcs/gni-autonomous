@@ -1,4 +1,4 @@
-import os
+﻿import os
 import json
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -7,7 +7,7 @@ from supabase import create_client, Client
 load_dotenv(override=False)
 
 # ============================================================
-# GNI Supabase Saver — Day 6
+# GNI Supabase Saver â€” Day 6
 # Now saves pipeline runs + full article trace
 # ============================================================
 
@@ -22,17 +22,17 @@ def get_client() -> Client | None:
     if _client:
         return _client
     if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
-        print("  ⚠️  Supabase credentials not found in .env")
+        print("  âš ï¸  Supabase credentials not found in .env")
         return None
     try:
         _client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
         return _client
     except Exception as e:
-        print(f"  ❌ Supabase connection failed: {e}")
+        print(f"  âŒ Supabase connection failed: {e}")
         return None
 
 
-def save_report(report: dict, articles: list[dict]) -> str | None:
+def save_report(report: dict, articles: list[dict], quality_score: float = 0, quality_breakdown: dict = None) -> str | None:
     """Save a GNI report to Supabase reports table."""
     client = get_client()
     if not client:
@@ -66,20 +66,22 @@ def save_report(report: dict, articles: list[dict]) -> str | None:
             "market_impact": report.get("market_impact", ""),
             "risk_level": report.get("risk_level", "Medium"),
             "llm_source": report.get("llm_source", ""),
+            "quality_score": quality_score,
+            "quality_breakdown": json.dumps(quality_breakdown or {}),
         }
 
         result = client.table("reports").insert(record).execute()
 
         if result.data:
             report_id = result.data[0]["id"]
-            print(f"  ✅ Report saved to Supabase: {report_id[:8]}...")
+            print(f"  âœ… Report saved to Supabase: {report_id[:8]}...")
             return report_id
         else:
-            print(f"  ❌ Supabase insert returned no data")
+            print(f"  âŒ Supabase insert returned no data")
             return None
 
     except Exception as e:
-        print(f"  ❌ Failed to save report: {e}")
+        print(f"  âŒ Failed to save report: {e}")
         return None
 
 
@@ -114,11 +116,11 @@ def save_pipeline_run(
         result = client.table("pipeline_runs").insert(record).execute()
         if result.data:
             run_id = result.data[0]["id"]
-            print(f"  ✅ Pipeline run saved: {run_id[:8]}...")
+            print(f"  âœ… Pipeline run saved: {run_id[:8]}...")
             return run_id
         return None
     except Exception as e:
-        print(f"  ❌ Failed to save pipeline run: {e}")
+        print(f"  âŒ Failed to save pipeline run: {e}")
         return None
 
 
@@ -156,11 +158,11 @@ def save_pipeline_articles(run_id: str, trace: list[dict]) -> bool:
             batch = records[i:i + batch_size]
             client.table("pipeline_articles").insert(batch).execute()
 
-        print(f"  ✅ Article trace saved: {len(records)} articles")
+        print(f"  âœ… Article trace saved: {len(records)} articles")
         return True
 
     except Exception as e:
-        print(f"  ❌ Failed to save article trace: {e}")
+        print(f"  âŒ Failed to save article trace: {e}")
         return False
     
 def save_article_events(
@@ -210,12 +212,12 @@ def save_article_events(
 
         if records:
             client.table("article_events").insert(records).execute()
-            print(f"  ✅ Article events saved: {len(records)} pins")
+            print(f"  âœ… Article events saved: {len(records)} pins")
 
         return True
 
     except Exception as e:
-        print(f"  ❌ Failed to save article events: {e}")
+        print(f"  âŒ Failed to save article events: {e}")
         return False
 
 
@@ -266,9 +268,9 @@ def save_runtime_log(
             "error_message": error_message,
         }
         client.table("runtime_logs").insert(record).execute()
-        print(f"  ✅ Runtime log saved ({status})")
+        print(f"  âœ… Runtime log saved ({status})")
         return True
 
     except Exception as e:
-        print(f"  ❌ Failed to save runtime log: {e}")
+        print(f"  âŒ Failed to save runtime log: {e}")
         return False

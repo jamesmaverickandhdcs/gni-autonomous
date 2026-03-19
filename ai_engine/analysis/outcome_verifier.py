@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 import json
 from datetime import datetime, timezone, timedelta
@@ -14,17 +14,20 @@ from analysis.supabase_saver import get_client
 # ============================================================
 # GNI Outcome Verifier
 # Compares GNI predictions against actual market movements
-# Implements GPVS — GNI Prediction Validation Standard v1.0
+# Implements GPVS — GNI Prediction Validation Standard v1.1
+# Day 1: Added 30-day window + black swan auto-detection
 # ============================================================
 
 TICKERS_TO_CHECK = ['SPY', 'GLD', 'USO']
+BLACK_SWAN_THRESHOLD = 5.0   # SPY move % in 48h that triggers black swan
+BLACK_SWAN_HOURS = 48
 
 
 def fetch_price_change(ticker: str, days_ago: int) -> float | None:
     """Fetch actual price change % for a ticker over N days."""
     try:
         import urllib.request
-        range_map = {3: '5d', 7: '7d', 14: '1mo'}
+        range_map = {3: '5d', 7: '7d', 14: '1mo', 30: '1mo'}
         period = range_map.get(days_ago, '7d')
         url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?interval=1d&range={period}"
         req = urllib.request.Request(url, headers={
@@ -43,6 +46,10 @@ def fetch_price_change(ticker: str, days_ago: int) -> float | None:
         if len(closes) < 2:
             return None
 
+        # For 30-day: use last 30 closes if available
+        if days_ago == 30 and len(closes) >= 20:
+            closes = closes[-30:] if len(closes) >= 30 else closes
+
         change_pct = ((closes[-1] - closes[0]) / closes[0]) * 100
         return round(change_pct, 2)
 
@@ -51,18 +58,64 @@ def fetch_price_change(ticker: str, days_ago: int) -> float | None:
         return None
 
 
+def detect_black_swan() -> dict:
+    """
+    Auto-detect black swan event: SPY moves >5% within 48 hours.
+    Returns dict with flag and details.
+    """
+    try:
+        import urllib.request
+        url = "https://query1.finance.yahoo.com/v8/finance/chart/SPY?interval=1h&range=5d"
+        req = urllib.request.Request(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        })
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read())
+
+        result = data.get('chart', {}).get('result', [])
+        if not result:
+            return {'detected': False, 'spy_48h_change': None}
+
+        closes = result[0].get('indicators', {}).get('quote', [{}])[0].get('close', [])
+        closes = [c for c in closes if c is not None]
+
+        # Take last 48 hourly candles
+        last_48 = closes[-BLACK_SWAN_HOURS:] if len(closes) >= BLACK_SWAN_HOURS else closes
+
+        if len(last_48) < 2:
+            return {'detected': False, 'spy_48h_change': None}
+
+        change_48h = ((last_48[-1] - last_48[0]) / last_48[0]) * 100
+        change_48h = round(change_48h, 2)
+        detected = abs(change_48h) >= BLACK_SWAN_THRESHOLD
+
+        if detected:
+            direction = "DOWN" if change_48h < 0 else "UP"
+            print(f"  🚨 BLACK SWAN DETECTED: SPY {direction} {abs(change_48h):.1f}% in 48h")
+
+        return {
+            'detected': detected,
+            'spy_48h_change': change_48h,
+            'threshold_used': BLACK_SWAN_THRESHOLD,
+        }
+
+    except Exception as e:
+        print(f"  ⚠️  Black swan check failed: {e}")
+        return {'detected': False, 'spy_48h_change': None}
+
+
 def calculate_accuracy_score(
     predicted_sentiment: str,
     spy_change_3d: float | None,
     spy_change_7d: float | None,
+    spy_change_30d: float | None = None,
     black_swan: bool = False,
     context_credit: bool = False
 ) -> float:
     """
-    Calculate GPVS accuracy score.
-    Based on GNI Prediction Validation Standard v1.0:
+    Calculate GPVS accuracy score — v1.1 with 30-day window.
     - Full credit (1.0): direction correct in 2+ timeframes
-    - Partial credit (0.5): direction correct but delayed
+    - Partial credit (0.5): direction correct in 1 timeframe
     - Context credit (0.25): black swan overrode prediction
     - No credit (0.0): direction wrong, no mitigating factors
     """
@@ -75,26 +128,27 @@ def calculate_accuracy_score(
     is_bearish = predicted_sentiment.lower() == 'bearish'
     is_bullish = predicted_sentiment.lower() == 'bullish'
 
-    correct_3d = False
-    correct_7d = False
+    results = []
 
-    if spy_change_3d is not None:
-        if is_bearish and spy_change_3d < 0:
-            correct_3d = True
-        elif is_bullish and spy_change_3d > 0:
-            correct_3d = True
+    for change in [spy_change_3d, spy_change_7d, spy_change_30d]:
+        if change is None:
+            continue
+        if is_bearish and change < 0:
+            results.append(True)
+        elif is_bullish and change > 0:
+            results.append(True)
+        else:
+            results.append(False)
 
-    if spy_change_7d is not None:
-        if is_bearish and spy_change_7d < 0:
-            correct_7d = True
-        elif is_bullish and spy_change_7d > 0:
-            correct_7d = True
+    if not results:
+        return 0.0
 
-    if correct_3d and correct_7d:
+    correct = sum(results)
+    total = len(results)
+
+    if correct >= 2:
         return 1.0
-    elif correct_7d:
-        return 0.5  # Delayed effect — partial credit
-    elif correct_3d:
+    elif correct == 1:
         return 0.5
     else:
         return 0.0
@@ -107,10 +161,8 @@ def check_human_review_needed(
 ) -> bool:
     """Check if human review is needed per GPVS rules."""
     if spy_change_3d is not None and abs(spy_change_3d) > 3.0:
-        # Large move — verify if prediction was correct
         return True
     if accuracy_score == 0.0:
-        # Prediction was wrong — review why
         return True
     return False
 
@@ -119,16 +171,21 @@ def verify_pending_outcomes():
     """
     Fetch reports that need outcome verification and measure them.
     Runs reports that are 3+ days old and haven't been verified yet.
+    Now includes 30-day window and black swan auto-detection.
     """
     client = get_client()
     if not client:
         print("❌ Cannot connect to Supabase")
         return
 
-    print("\n📊 GNI Outcome Verifier — GPVS v1.0")
+    print("\n📊 GNI Outcome Verifier — GPVS v1.1")
     print("=" * 50)
 
-    # Get reports that are 3+ days old and not yet verified
+    # Auto-detect black swan before processing reports
+    print("  Checking for black swan events...")
+    black_swan_result = detect_black_swan()
+    black_swan_active = black_swan_result['detected']
+
     cutoff = (datetime.now(timezone.utc) - timedelta(days=3)).isoformat()
     already_verified = client.table('prediction_outcomes').select('report_id').execute()
     verified_ids = {r['report_id'] for r in (already_verified.data or [])}
@@ -153,46 +210,46 @@ def verify_pending_outcomes():
         print(f"\n  Verifying: {report['title'][:60]}...")
         print(f"  Prediction: {report['sentiment']} | Risk: {report['risk_level']}")
 
-        # Fetch 3-day price changes
-        spy_3d = fetch_price_change('SPY', 3)
-        gld_3d = fetch_price_change('GLD', 3)
-        uso_3d = fetch_price_change('USO', 3)
+        # Fetch price changes across all timeframes
+        spy_3d  = fetch_price_change('SPY', 3)
+        gld_3d  = fetch_price_change('GLD', 3)
+        uso_3d  = fetch_price_change('USO', 3)
 
-        # Fetch 7-day price changes
-        spy_7d = fetch_price_change('SPY', 7)
-        gld_7d = fetch_price_change('GLD', 7)
-        uso_7d = fetch_price_change('USO', 7)
+        spy_7d  = fetch_price_change('SPY', 7)
+        gld_7d  = fetch_price_change('GLD', 7)
+        uso_7d  = fetch_price_change('USO', 7)
 
-        print(f"  SPY: 3d={spy_3d}% / 7d={spy_7d}%")
-        print(f"  GLD: 3d={gld_3d}% / 7d={gld_7d}%")
-        print(f"  USO: 3d={uso_3d}% / 7d={uso_7d}%")
+        spy_30d = fetch_price_change('SPY', 30)
+        gld_30d = fetch_price_change('GLD', 30)
+        uso_30d = fetch_price_change('USO', 30)
 
-        # Calculate direction correctness
+        print(f"  SPY: 3d={spy_3d}% / 7d={spy_7d}% / 30d={spy_30d}%")
+        print(f"  GLD: 3d={gld_3d}% / 7d={gld_7d}% / 30d={gld_30d}%")
+        print(f"  USO: 3d={uso_3d}% / 7d={uso_7d}% / 30d={uso_30d}%")
+
         sentiment = report.get('sentiment', 'Neutral')
-        direction_3d = None
-        direction_7d = None
 
-        if spy_3d is not None:
-            if sentiment.lower() == 'bearish':
-                direction_3d = spy_3d < 0
-            elif sentiment.lower() == 'bullish':
-                direction_3d = spy_3d > 0
+        def direction(change, sent):
+            if change is None:
+                return None
+            if sent.lower() == 'bearish':
+                return change < 0
+            elif sent.lower() == 'bullish':
+                return change > 0
+            return None
 
-        if spy_7d is not None:
-            if sentiment.lower() == 'bearish':
-                direction_7d = spy_7d < 0
-            elif sentiment.lower() == 'bullish':
-                direction_7d = spy_7d > 0
+        direction_3d  = direction(spy_3d, sentiment)
+        direction_7d  = direction(spy_7d, sentiment)
+        direction_30d = direction(spy_30d, sentiment)
 
-        # Calculate accuracy score
-        accuracy = calculate_accuracy_score(sentiment, spy_3d, spy_7d)
-
-        # Check if human review needed
+        accuracy = calculate_accuracy_score(
+            sentiment, spy_3d, spy_7d, spy_30d,
+            black_swan=black_swan_active
+        )
         review_needed = check_human_review_needed(sentiment, spy_3d, accuracy)
 
-        print(f"  Accuracy Score: {accuracy} | Review needed: {review_needed}")
+        print(f"  Accuracy Score: {accuracy} | Black Swan: {black_swan_active} | Review: {review_needed}")
 
-        # Save to prediction_outcomes
         record = {
             'report_id': report['id'],
             'run_at': report['created_at'],
@@ -207,9 +264,14 @@ def verify_pending_outcomes():
             'gld_change_7d': gld_7d,
             'uso_change_7d': uso_7d,
             'direction_correct_7d': direction_7d,
+            'spy_change_30d': spy_30d,
+            'gld_change_30d': gld_30d,
+            'uso_change_30d': uso_30d,
+            'direction_correct_30d': direction_30d,
             'accuracy_score': accuracy,
             'human_review_needed': review_needed,
-            'black_swan_flag': False,
+            'black_swan_flag': black_swan_active,
+            'black_swan_48h_change': black_swan_result.get('spy_48h_change'),
             'context_credit': False,
             'status': 'measured',
             'measured_at': datetime.now(timezone.utc).isoformat(),
@@ -231,30 +293,62 @@ def get_accuracy_summary() -> dict:
         return {}
 
     result = client.table('prediction_outcomes') \
-        .select('accuracy_score, direction_correct_3d, direction_correct_7d, predicted_sentiment, measured_at') \
+        .select('accuracy_score, direction_correct_3d, direction_correct_7d, direction_correct_30d, predicted_sentiment, measured_at') \
         .eq('status', 'measured') \
         .execute()
 
     outcomes = result.data or []
     if not outcomes:
-        return {'total': 0, 'avg_score': 0, 'directional_3d': 0, 'directional_7d': 0}
+        return {'total': 0, 'avg_score': 0, 'directional_3d': 0, 'directional_7d': 0, 'directional_30d': 0}
 
     total = len(outcomes)
     avg_score = sum(o['accuracy_score'] or 0 for o in outcomes) / total
 
-    correct_3d = sum(1 for o in outcomes if o.get('direction_correct_3d') is True)
-    correct_7d = sum(1 for o in outcomes if o.get('direction_correct_7d') is True)
-
-    has_3d = sum(1 for o in outcomes if o.get('direction_correct_3d') is not None)
-    has_7d = sum(1 for o in outcomes if o.get('direction_correct_7d') is not None)
+    def pct(key):
+        valid = [o for o in outcomes if o.get(key) is not None]
+        if not valid:
+            return 0.0
+        return round(sum(1 for o in valid if o[key] is True) / len(valid) * 100, 1)
 
     return {
         'total': total,
         'avg_score': round(avg_score * 100, 1),
-        'directional_3d': round((correct_3d / has_3d * 100) if has_3d > 0 else 0, 1),
-        'directional_7d': round((correct_7d / has_7d * 100) if has_7d > 0 else 0, 1),
+        'directional_3d': pct('direction_correct_3d'),
+        'directional_7d': pct('direction_correct_7d'),
+        'directional_30d': pct('direction_correct_30d'),
         'pending_review': sum(1 for o in outcomes if o.get('human_review_needed')),
     }
+
+
+def get_gpvs_timeline() -> list:
+    """
+    Return GPVS accuracy scores over time for the /history chart.
+    Returns list of {date, accuracy_score, sentiment, black_swan_flag}
+    sorted oldest to newest.
+    """
+    client = get_client()
+    if not client:
+        return []
+
+    result = client.table('prediction_outcomes') \
+        .select('measured_at, accuracy_score, predicted_sentiment, black_swan_flag, spy_change_3d, spy_change_7d, spy_change_30d') \
+        .eq('status', 'measured') \
+        .order('measured_at', desc=False) \
+        .execute()
+
+    timeline = []
+    for o in (result.data or []):
+        timeline.append({
+            'date': o['measured_at'][:10],
+            'accuracy_score': round((o['accuracy_score'] or 0) * 100, 0),
+            'sentiment': o.get('predicted_sentiment', 'Neutral'),
+            'black_swan': o.get('black_swan_flag', False),
+            'spy_3d': o.get('spy_change_3d'),
+            'spy_7d': o.get('spy_change_7d'),
+            'spy_30d': o.get('spy_change_30d'),
+        })
+
+    return timeline
 
 
 if __name__ == "__main__":
@@ -262,8 +356,15 @@ if __name__ == "__main__":
 
     print("\n📈 Accuracy Summary:")
     summary = get_accuracy_summary()
-    print(f"  Total verified: {summary.get('total', 0)}")
-    print(f"  Average GPVS score: {summary.get('avg_score', 0)}%")
-    print(f"  3-day directional accuracy: {summary.get('directional_3d', 0)}%")
-    print(f"  7-day directional accuracy: {summary.get('directional_7d', 0)}%")
-    print(f"  Pending human review: {summary.get('pending_review', 0)}")
+    print(f"  Total verified:          {summary.get('total', 0)}")
+    print(f"  Average GPVS score:      {summary.get('avg_score', 0)}%")
+    print(f"  3-day directional:       {summary.get('directional_3d', 0)}%")
+    print(f"  7-day directional:       {summary.get('directional_7d', 0)}%")
+    print(f"  30-day directional:      {summary.get('directional_30d', 0)}%")
+    print(f"  Pending human review:    {summary.get('pending_review', 0)}")
+
+    print("\n📅 GPVS Timeline (last 5):")
+    timeline = get_gpvs_timeline()
+    for entry in timeline[-5:]:
+        swan = " 🚨 BLACK SWAN" if entry['black_swan'] else ""
+        print(f"  {entry['date']} | {entry['sentiment']:8} | Score: {entry['accuracy_score']}%{swan}")
