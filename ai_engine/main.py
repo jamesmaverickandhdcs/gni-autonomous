@@ -12,6 +12,7 @@ from collectors.rss_collector import collect_articles
 from funnel.intelligence_funnel import run_funnel
 from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
+from analysis.mad_protocol import run_mad_protocol
 from analysis.supabase_saver import (
     save_report,
     save_pipeline_run,
@@ -96,7 +97,18 @@ def run_pipeline():
         report['quality_breakdown'] = quality['quality_breakdown']
         report['quality_badge']     = quality['quality_badge']
 
-        # â”€â”€ Step 4: Save Report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # -- Step 3c: MAD Protocol ------------------------
+        print("\n🐂🐻 Step 3c: Running MAD Protocol (Multi-Agent Debate)...")
+        t0 = time.time()
+        mad_result = run_mad_protocol(report)
+        report['mad_bull_case']  = mad_result['mad_bull_case']
+        report['mad_bear_case']  = mad_result['mad_bear_case']
+        report['mad_verdict']    = mad_result['mad_verdict']
+        report['mad_confidence'] = mad_result['mad_confidence']
+        step_timings["mad"] = round(time.time() - t0, 2)
+        print(f"   ✅ MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
+
+        # ── Step 4: Save Report
         print("\nðŸ’¾ Step 4: Saving Report to Supabase...")
         t0 = time.time()
         report_id = save_report(report, top_articles,
