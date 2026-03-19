@@ -1,7 +1,14 @@
+import os
 import time
 import json
+import urllib.request
+import urllib.parse
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
+from dotenv import load_dotenv
+
+load_dotenv(override=False)
+OPENCАGE_KEY = os.getenv("OPENCAGE_API_KEY", "")
 
 # ============================================================
 # GNI Geocoding Engine — 3-Layer Cache System
@@ -74,6 +81,34 @@ def _normalize(location: str) -> str:
     return location.lower().strip()
 
 
+def _opencage_lookup(location: str) -> dict | None:
+    """OpenCage Geocoding API lookup."""
+    try:
+        encoded = urllib.parse.quote(location)
+        url = (
+            "https://api.opencagedata.com/geocode/v1/json"
+            + "?q=" + encoded
+            + "&key=" + OPENCAGE_KEY
+            + "&limit=1&no_annotations=1"
+        )
+        req = urllib.request.Request(url, headers={"User-Agent": "GNI/1.0"})
+        with urllib.request.urlopen(req, timeout=8) as response:
+            data = json.loads(response.read())
+        results = data.get("results", [])
+        if not results:
+            return None
+        geometry = results[0].get("geometry", {})
+        lat = geometry.get("lat")
+        lng = geometry.get("lng")
+        name = results[0].get("formatted", location)
+        if lat is not None and lng is not None:
+            return {"lat": float(lat), "lng": float(lng), "name": name}
+        return None
+    except Exception as e:
+        print("  WARNING: OpenCage lookup failed for " + location + ": " + str(e))
+        return None
+
+
 def geocode(location: str, retries: int = 2) -> dict | None:
     """
     Geocode a location string using 3-layer cache.
@@ -100,6 +135,13 @@ def geocode(location: str, retries: int = 2) -> dict | None:
             result = {"lat": coords[0], "lng": coords[1], "name": location}
             _memory_cache[key] = result
             return result
+
+    # Layer 3: OpenCage API
+    if OPENCAGE_KEY and len(key.split()) <= 3:
+        oc_result = _opencage_lookup(location)
+        if oc_result:
+            _memory_cache[key] = oc_result
+            return oc_result
 
     # Skip Nominatim for multi-word region names — too unreliable
     if len(key.split()) > 2:
