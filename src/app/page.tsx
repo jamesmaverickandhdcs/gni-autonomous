@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useEffect, useState } from 'react'
 
 
@@ -24,6 +24,13 @@ interface PredictionSummary {
   accuracy_3d: number
   accuracy_7d: number
   pending_review: number
+}
+
+interface SourceWeight {
+  source: string
+  weight: number
+  gpvs_contribution: number | null
+  last_updated: string
 }
 
 interface PipelineArticle {
@@ -57,9 +64,9 @@ const sentimentColor = (sentiment: string) => {
 
 const sentimentIcon = (sentiment: string) => {
   switch (sentiment?.toLowerCase()) {
-    case 'bearish': return '▼'
-    case 'bullish': return '▲'
-    default:        return '◆'
+    case 'bearish': return 'â–¼'
+    case 'bullish': return 'â–²'
+    default:        return 'â—†'
   }
 }
 
@@ -69,10 +76,10 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
     <section className="mb-8">
       <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-lg">🎯</span>
+          <span className="text-lg">ðŸŽ¯</span>
           <div>
             <div className="text-sm font-bold text-white">GPVS Prediction Scorecard</div>
-            <div className="text-xs text-gray-400">GNI Prediction Validation Standard — {summary.total} reports verified</div>
+            <div className="text-xs text-gray-400">GNI Prediction Validation Standard â€” {summary.total} reports verified</div>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -102,10 +109,48 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
           </div>
         </div>
         <div className="mt-3 text-xs text-gray-600 text-center">
-          Powered by GPVS v1.0 — GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
+          Powered by GPVS v1.0 â€” GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
         </div>
         <div className="mt-2 text-xs text-yellow-600 text-center">
-          ⚠️ Past accuracy does not guarantee future performance. Not financial advice.
+          âš ï¸ Past accuracy does not guarantee future performance. Not financial advice.
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
+  if (!weights || weights.length === 0) return null
+  return (
+    <section className="mb-8">
+      <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-lg">⚖️</span>
+          <div>
+            <div className="text-sm font-bold text-white">Dynamic Source Weights</div>
+            <div className="text-xs text-gray-400">Updated automatically based on GPVS prediction accuracy</div>
+          </div>
+        </div>
+        <div className="space-y-2">
+          {weights.map(w => {
+            const pct = Math.min(100, Math.round((w.weight / 2.0) * 100))
+            const barColor = w.weight >= 1.3 ? "bg-green-500" : w.weight >= 1.0 ? "bg-blue-500" : "bg-red-500"
+            return (
+              <div key={w.source} className="flex items-center gap-3">
+                <div className="w-24 text-xs text-gray-300 font-mono capitalize shrink-0">{w.source}</div>
+                <div className="flex-1 bg-gray-800 rounded-full h-2">
+                  <div className={`h-2 rounded-full ${barColor}`} style={{ width: pct + "%" }} />
+                </div>
+                <div className="w-10 text-xs text-right font-bold text-white shrink-0">{w.weight.toFixed(2)}</div>
+                <div className="w-16 text-xs text-right text-gray-500 shrink-0">
+                  {w.gpvs_contribution != null ? `GPVS: ${Math.round(w.gpvs_contribution * 100)}%` : "baseline"}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div className="mt-3 text-xs text-gray-600">
+          Weight: 0.5 (penalised) → 1.0 (neutral) → 2.0 (highly trusted) | Updates via EMA after each verified prediction
         </div>
       </div>
     </section>
@@ -119,8 +164,9 @@ export default function Home() {
   const [latestArticles, setLatestArticles] = useState<PipelineArticle[]>([])
   const [showAIThinking, setShowAIThinking] = useState(false)
   const [predictionSummary, setPredictionSummary] = useState<PredictionSummary | null>(null)
+  const [sourceWeights, setSourceWeights] = useState<SourceWeight[]>([])
 
-  // Supabase Realtime — auto-refresh when new report arrives
+  // Supabase Realtime â€” auto-refresh when new report arrives
   useEffect(() => {
     // Poll every 5 minutes for new reports instead of websocket
     const interval = setInterval(() => {
@@ -157,6 +203,11 @@ export default function Home() {
       .then(data => setPredictionSummary(data.summary || null))
       .catch(() => {})
 
+    fetch('/api/source-weights')
+      .then(r => r.json())
+      .then(data => setSourceWeights(data.weights || []))
+      .catch(() => {})
+
     fetch('/api/pipeline-runs')
       .then(r => r.json())
       .then(data => {
@@ -183,11 +234,11 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-white">🌐 Global Nexus Insights</h1>
+              <h1 className="text-2xl font-bold text-white">ðŸŒ Global Nexus Insights</h1>
               <p className="text-sm text-gray-400">Technology + Geopolitics + Financial Impact</p>
             </div>
             <div className="text-right text-sm text-gray-400">
-              <div>Pipeline: <span className="text-green-400">● Active</span></div>
+              <div>Pipeline: <span className="text-green-400">â— Active</span></div>
               <div>Reports: <span className="text-white font-bold">{reports.length}</span></div>
             </div>
           </div>
@@ -196,7 +247,7 @@ export default function Home() {
           {latest && (
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">🔬</span>
+                <span className="text-sm">ðŸ”¬</span>
                 <div>
                   <div className="text-xs text-gray-500">Technology</div>
                   <div className={`text-xs font-bold ${latest.risk_level?.toLowerCase() === 'critical' ? 'text-red-400' : latest.risk_level?.toLowerCase() === 'high' ? 'text-orange-400' : 'text-yellow-400'}`}>
@@ -205,7 +256,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">🌍</span>
+                <span className="text-sm">ðŸŒ</span>
                 <div>
                   <div className="text-xs text-gray-500">Geopolitics</div>
                   <div className={`text-xs font-bold ${latest.risk_level?.toLowerCase() === 'critical' ? 'text-red-400' : latest.risk_level?.toLowerCase() === 'high' ? 'text-orange-400' : 'text-yellow-400'}`}>
@@ -214,7 +265,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">📈</span>
+                <span className="text-sm">ðŸ“ˆ</span>
                 <div>
                   <div className="text-xs text-gray-500">Financial</div>
                   <div className={`text-xs font-bold ${latest.sentiment?.toLowerCase() === 'bearish' ? 'text-red-400' : latest.sentiment?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'}`}>
@@ -228,19 +279,19 @@ export default function Home() {
           {/* 4 Navigation Buttons */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <a href="/map" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-700 border border-gray-700 hover:border-blue-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>🌍</span>
+              <span>ðŸŒ</span>
               <span>World Map</span>
             </a>
             <a href="/stocks" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-green-700 border border-gray-700 hover:border-green-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>📈</span>
+              <span>ðŸ“ˆ</span>
               <span>Stock Chart</span>
             </a>
             <a href="/transparency" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-700 border border-gray-700 hover:border-purple-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>🔍</span>
+              <span>ðŸ”</span>
               <span>Transparency</span>
             </a>
             <a href="/history" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-orange-700 border border-gray-700 hover:border-orange-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>📅</span>
+              <span>ðŸ“…</span>
               <span>History</span>
             </a>
           </div>
@@ -251,21 +302,21 @@ export default function Home() {
 
         {loading && (
           <div className="text-center py-20 text-gray-400">
-            <div className="text-4xl mb-4">⏳</div>
+            <div className="text-4xl mb-4">â³</div>
             <p>Loading intelligence reports...</p>
           </div>
         )}
 
         {error && (
           <div className="text-center py-20 text-red-400">
-            <div className="text-4xl mb-4">⚠️</div>
+            <div className="text-4xl mb-4">âš ï¸</div>
             <p>{error}</p>
           </div>
         )}
 
         {!loading && !error && reports.length === 0 && (
           <div className="text-center py-20 text-gray-400">
-            <div className="text-4xl mb-4">📡</div>
+            <div className="text-4xl mb-4">ðŸ“¡</div>
             <p>No reports yet. Pipeline runs at 09:00 and 17:00 Myanmar time.</p>
           </div>
         )}
@@ -300,12 +351,12 @@ export default function Home() {
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">Location</div>
-                    <div className="font-bold text-white text-sm">📍 {latest.location_name || 'Global'}</div>
+                    <div className="font-bold text-white text-sm">ðŸ“ {latest.location_name || 'Global'}</div>
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">LLM Engine</div>
                     <div className="font-bold text-blue-400 text-sm">
-                      {latest.llm_source === 'ollama' ? '🧠 Llama 3 Local' : '☁️ Groq API'}
+                      {latest.llm_source === 'ollama' ? 'ðŸ§  Llama 3 Local' : 'â˜ï¸ Groq API'}
                     </div>
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
@@ -340,7 +391,7 @@ export default function Home() {
                 {/* Disclaimer */}
                 <div className="bg-yellow-900 border border-yellow-700 rounded-lg p-3">
                   <p className="text-yellow-200 text-xs">
-                    ⚠️ <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
+                    âš ï¸ <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
                   </p>
                 </div>
               </div>
@@ -355,7 +406,7 @@ export default function Home() {
                     className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-800 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg">🧠</span>
+                      <span className="text-lg">ðŸ§ </span>
                       <div className="text-left">
                         <div className="text-sm font-bold text-white">AI Thinking Transparency</div>
                         <div className="text-xs text-gray-400">
@@ -363,7 +414,7 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <span className="text-gray-400 text-sm">{showAIThinking ? '▲ Hide' : '▼ Show'}</span>
+                    <span className="text-gray-400 text-sm">{showAIThinking ? 'â–² Hide' : 'â–¼ Show'}</span>
                   </button>
 
                   {showAIThinking && (
@@ -425,6 +476,9 @@ export default function Home() {
             {/* Prediction Scorecard */}
             <PredictionScorecard summary={predictionSummary} />
 
+            {/* Source Weights */}
+            <SourceWeightsTable weights={sourceWeights} />
+
             {/* Previous Reports */}
             {reports.length > 1 && (
               <section className="mb-8">
@@ -447,7 +501,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4 mt-2">
-                        <span className="text-xs text-gray-500">📍 {report.location_name || 'Global'}</span>
+                        <span className="text-xs text-gray-500">ðŸ“ {report.location_name || 'Global'}</span>
                         <span className="text-xs text-gray-500">
                           {new Date(report.created_at).toLocaleDateString('en-US', {
                             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -469,9 +523,14 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI — Global Nexus Insights | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipeline runs 2x daily via GitHub Actions
+          GNI â€” Global Nexus Insights | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipeline runs 2x daily via GitHub Actions
         </div>
       </footer>
     </div>
   )
 }
+
+
+
+
+

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useState } from 'react'
 
@@ -26,6 +26,8 @@ interface Report {
   market_impact: string
   llm_source: string
   created_at: string
+  quality_score: number
+  quality_breakdown: QualityBreakdown
 }
 
 interface Article {
@@ -43,10 +45,28 @@ interface PredictionOutcome {
   accuracy_score: number
   spy_change_3d: number
   spy_change_7d: number
+  spy_change_30d: number
   direction_correct_3d: boolean
   direction_correct_7d: boolean
+  direction_correct_30d: boolean
+  black_swan_flag: boolean
   human_review_needed: boolean
   measured_at: string
+}
+
+interface QualityBreakdown {
+  specificity: number
+  market_linkage: number
+  source_consensus: number
+  analytical_novelty: number
+  prediction_specificity: number
+}
+
+interface GpvsTimelineEntry {
+  date: string
+  accuracy_score: number
+  sentiment: string
+  black_swan: boolean
 }
 
 function riskColor(risk: string) {
@@ -65,6 +85,49 @@ function sentimentColor(sentiment: string) {
     case 'bullish': return 'text-green-400'
     default:        return 'text-gray-400'
   }
+}
+
+function qualityBadge(score: number) {
+  if (score >= 8) return { label: 'Excellent', color: 'bg-green-700 text-green-100' }
+  if (score >= 6) return { label: 'Good', color: 'bg-blue-700 text-blue-100' }
+  if (score >= 4) return { label: 'Fair', color: 'bg-yellow-700 text-yellow-100' }
+  return { label: 'Poor', color: 'bg-red-900 text-red-200' }
+}
+
+function GpvsTimelineChart({ entries }: { entries: GpvsTimelineEntry[] }) {
+  if (!entries || entries.length === 0) return null
+  const max = 100
+  return (
+    <div className='bg-gray-900 border border-gray-700 rounded-xl p-5 mb-6'>
+      <div className='text-xs text-gray-500 uppercase tracking-wider mb-3'>
+        📈 GPVS Accuracy Timeline — {entries.length} verified predictions
+      </div>
+      <div className='flex items-end gap-1 h-24'>
+        {entries.map((e, i) => {
+          const h = Math.max(4, (e.accuracy_score / max) * 96)
+          const col = e.black_swan
+            ? 'bg-purple-500'
+            : e.accuracy_score >= 75 ? 'bg-green-500'
+            : e.accuracy_score >= 50 ? 'bg-yellow-500'
+            : 'bg-red-500'
+          return (
+            <div key={i} className='flex-1 flex flex-col items-center gap-1 group relative'>
+              <div className='absolute bottom-full mb-1 hidden group-hover:block bg-gray-800 text-xs text-white px-2 py-1 rounded whitespace-nowrap z-10'>
+                {e.date}: {e.accuracy_score}% {e.sentiment} {e.black_swan ? '🚨' : ''}
+              </div>
+              <div className={`w-full rounded-t ${col}`} style={{ height: h + 'px' }} />
+            </div>
+          )
+        })}
+      </div>
+      <div className='flex items-center gap-4 mt-3 text-xs text-gray-600'>
+        <span className='flex items-center gap-1'><span className='w-2 h-2 bg-green-500 rounded inline-block'/> Correct</span>
+        <span className='flex items-center gap-1'><span className='w-2 h-2 bg-yellow-500 rounded inline-block'/> Partial</span>
+        <span className='flex items-center gap-1'><span className='w-2 h-2 bg-red-500 rounded inline-block'/> Wrong</span>
+        <span className='flex items-center gap-1'><span className='w-2 h-2 bg-purple-500 rounded inline-block'/> Black Swan</span>
+      </div>
+    </div>
+  )
 }
 
 function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
@@ -134,6 +197,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 <span className={`text-xs font-bold ${sentimentColor(report.sentiment)}`}>
                   {report.sentiment}
                 </span>
+                {(report.quality_score > 0) && (() => { const b = qualityBadge(report.quality_score); return <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${b.color}`}>Q:{report.quality_score}/10 {b.label}</span> })()}
               </div>
             ) : (
               <div className="text-xs text-gray-600">No report linked to this run</div>
@@ -151,9 +215,9 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
           {outcome && (
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
-                🎯 GPVS Outcome — Prediction vs Reality
+                ðŸŽ¯ GPVS Outcome â€” Prediction vs Reality
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-4 gap-3">
                 <div className="text-center">
                   <div className={`text-xl font-bold ${outcome.accuracy_score >= 0.75 ? 'text-green-400' : outcome.accuracy_score >= 0.5 ? 'text-yellow-400' : 'text-red-400'}`}>
                     {Math.round(outcome.accuracy_score * 100)}%
@@ -174,7 +238,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 </div>
               </div>
               {outcome.human_review_needed && (
-                <div className="mt-2 text-xs text-yellow-400">⚠️ Human review recommended</div>
+                <div className="mt-2 text-xs text-yellow-400">âš ï¸ Human review recommended</div>
               )}
             </div>
           )}
@@ -250,14 +314,17 @@ export default function HistoryPage() {
   const [runs, setRuns] = useState<PipelineRun[]>([])
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
+  const [timeline, setTimeline] = useState<GpvsTimelineEntry[]>([])
 
   useEffect(() => {
     Promise.all([
       fetch('/api/pipeline-runs').then(r => r.json()),
       fetch('/api/reports').then(r => r.json()),
-    ]).then(([runsData, reportsData]) => {
+      fetch('/api/prediction-outcomes').then(r => r.json()),
+    ]).then(([runsData, reportsData, outcomesData]) => {
       setRuns(runsData.runs || [])
       setReports(reportsData.reports || [])
+      setTimeline(outcomesData.timeline || [])
     }).finally(() => setLoading(false))
   }, [])
 
@@ -301,6 +368,8 @@ export default function HistoryPage() {
           </div>
         )}
 
+        {timeline.length > 0 && <GpvsTimelineChart entries={timeline} />}
+
         {loading === false && Object.entries(grouped).map(([date, dateRuns]) => (
           <div key={date} className="mb-8">
             <div className="text-xs text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-3">
@@ -324,3 +393,14 @@ export default function HistoryPage() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
