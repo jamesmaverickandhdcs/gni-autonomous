@@ -114,9 +114,13 @@ def run_pipeline():
         # -- Step 2c: Prompt A/B Selection ---------------
         seed_initial_credibility()
         seed_prompt_variants()
-        total_runs = len(step_timings)  # use as run counter proxy
-        import hashlib
-        run_count_hash = int(hashlib.md5(run_at.encode()).hexdigest()[:4], 16)
+        # Use actual pipeline run count for true A/B alternation
+        try:
+            run_count_res = supabase.table('pipeline_runs').select('id', count='exact').execute()
+            run_count_hash = run_count_res.count or 0
+        except Exception:
+            import hashlib
+            run_count_hash = int(hashlib.md5(run_at.encode()).hexdigest()[:4], 16)
         prompt_template, prompt_version = get_active_prompt(run_count_hash)
 
         # â”€â”€ Step 3: AI Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
