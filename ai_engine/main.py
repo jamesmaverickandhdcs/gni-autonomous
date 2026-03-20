@@ -19,6 +19,8 @@ from analysis.credibility_model import seed_initial_credibility, update_credibil
 from analysis.historical_correlations import update_correlations, get_historical_context
 from analysis.deception_detector import enrich_report_with_deception
 from analysis.frequency_controller import get_recommended_interval, log_frequency_decision
+from analysis.audit_trail import log_audit_event
+from analysis.health_agent import run_health_checks
 from analysis.weekly_digest import should_generate_digest, generate_weekly_digest
 from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
@@ -138,6 +140,9 @@ def run_pipeline():
             print("\n\U0001f4ca Updating source credibility scores...")
             update_credibility_scores()
             update_correlations()
+            print("\n\U0001f916 Running Health Agent checks...")
+            health = run_health_checks()
+            print(f"   Health: {health['status']} ({health['checks_passed']}/{health['checks_total']} checks, {health['alert_count']} alerts)")
         if should_generate_digest():
             print("\n\U0001f4c5 Sunday detected — generating weekly digest...")
             generate_weekly_digest(weeks_ago=1)
@@ -193,6 +198,7 @@ def run_pipeline():
 
         if report_id:
             reports_saved = 1
+            log_audit_event('REPORT_SAVED', {'quality_score': report.get('quality_score', 0), 'sentiment': report.get('sentiment', ''), 'escalation_level': report.get('escalation_level', ''), 'mad_verdict': report.get('mad_verdict', ''), 'deception_level': report.get('deception_level', '')}, report_id=report_id)
 
         # â”€â”€ Step 5: Save Pipeline Run & Article Trace â”€â”€â”€â”€â”€â”€â”€
         print("\nðŸ“Š Step 5: Saving Pipeline Run & Article Trace...")
