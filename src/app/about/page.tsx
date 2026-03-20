@@ -132,16 +132,6 @@ export default function AboutPage() {
         </div>
 
         {/* Built by */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
-          <div className="text-xs text-gray-500 mb-2">Built by</div>
-          <div className="text-lg font-bold text-white">James Maverick</div>
-          <div className="text-sm text-gray-400">Higher Diploma in Computer Science</div>
-          <div className="text-sm text-gray-500">Spring University Myanmar (SUM) · 2026</div>
-          <div className="mt-3 text-xs text-gray-600">
-            Pipeline runs 2x daily via GitHub Actions · gni-autonomous.vercel.app
-          </div>
-        </div>
-
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
