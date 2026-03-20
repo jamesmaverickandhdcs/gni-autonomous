@@ -73,6 +73,7 @@ def save_report(report: dict, articles: list[dict], quality_score: float = 0, qu
             "mad_verdict": report.get("mad_verdict", ""),
             "mad_confidence": float(report.get("mad_confidence", 0.0)),
             "mad_reasoning": report.get("mad_reasoning", ""),
+            "escalation_score": float(report.get("escalation_score", 0.0)),
         }
 
         result = client.table("reports").insert(record).execute()

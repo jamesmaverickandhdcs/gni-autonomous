@@ -13,6 +13,7 @@ from funnel.intelligence_funnel import run_funnel
 from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
 from analysis.mad_protocol import run_mad_protocol
+from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
     save_report,
     save_pipeline_run,
@@ -106,6 +107,13 @@ def run_pipeline():
         report['mad_verdict']    = mad_result['mad_verdict']
         report['mad_confidence'] = mad_result['mad_confidence']
         report['mad_reasoning']  = mad_result['mad_reasoning']
+
+        # -- Step 3d: Escalation Scoring ------------------
+        print("\n🚨 Step 3d: Scoring Escalation Risk...")
+        escalation = score_escalation(top_articles)
+        report['escalation_score'] = escalation['escalation_score']
+        report['escalation_level'] = escalation['escalation_level']
+        print(f"   ✅ Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) — {escalation['active_pillars']}/3 pillars active")
         step_timings["mad"] = round(time.time() - t0, 2)
         print(f"   ✅ MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
 
