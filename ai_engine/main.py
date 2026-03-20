@@ -105,6 +105,7 @@ def run_pipeline():
         report['mad_bear_case']  = mad_result['mad_bear_case']
         report['mad_verdict']    = mad_result['mad_verdict']
         report['mad_confidence'] = mad_result['mad_confidence']
+        report['mad_reasoning']  = mad_result['mad_reasoning']
         step_timings["mad"] = round(time.time() - t0, 2)
         print(f"   ✅ MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
 
