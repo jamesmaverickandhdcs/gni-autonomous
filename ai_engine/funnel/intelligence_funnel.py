@@ -278,6 +278,14 @@ def run_funnel(
     flagged = len(stage1_pass) - len(stage1b_pass)
     print(f"  Stage 1b (Inj. Filter):    {len(stage1_pass)} â†’ {len(stage1b_pass)} articles ({flagged} flagged)")
 
+    # -- Token Limit: max 500 chars per article summary --
+    for art in stage1b_pass:
+        if len(art.get('title', '')) + len(art.get('summary', '')) > 500:
+            art['summary'] = art['summary'][:400]
+            art['token_truncated'] = True
+        else:
+            art['token_truncated'] = False
+
     # â”€â”€ Stage 2: Deduplication â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage2_pass = []
     for art in stage1b_pass:

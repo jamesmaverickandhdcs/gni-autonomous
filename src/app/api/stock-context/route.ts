@@ -1,27 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { z } from 'zod'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-// Cache: ticker -> { context, date }
 const contextCache: Record<string, { context: string, date: string }> = {}
+
+const QuerySchema = z.object({
+  ticker: z.string().regex(/^[A-Z0-9]{1,10}$/, { message: 'ticker must be 1-10 uppercase alphanumeric chars' }).default('SPY'),
+  change: z.string().regex(/^-?[0-9]+(\.[0-9]+)?$/, { message: 'change must be a numeric value' }).default('0'),
+})
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const ticker = searchParams.get('ticker') || 'SPY'
-  const changePercent = searchParams.get('change') || '0'
+
+  const parsed = QuerySchema.safeParse({
+    ticker: searchParams.get('ticker') ?? undefined,
+    change: searchParams.get('change') ?? undefined,
+  })
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Invalid parameters', details: parsed.error.flatten() },
+      { status: 400 }
+    )
+  }
+
+  const { ticker, change: changePercent } = parsed.data
   const today = new Date().toISOString().split('T')[0]
 
-  // Return cached context if same day
   if (contextCache[ticker] && contextCache[ticker].date === today) {
     return NextResponse.json({ context: contextCache[ticker].context })
   }
 
   try {
-    // Get latest GNI report
     const { data: reports } = await supabase
       .from('reports')
       .select('title, summary, sentiment, risk_level, location_name, market_impact')
@@ -33,11 +47,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ context: 'No recent GNI report available for context.' })
     }
 
-    // Call Groq
     const GROQ_API_KEY = process.env.GROQ_API_KEY
-    
     if (!GROQ_API_KEY) {
-      return NextResponse.json({ context: 'AI context unavailable.', debug: 'GROQ_API_KEY missing in process.env' })
+      return NextResponse.json({ context: 'AI context unavailable.', debug: 'GROQ_API_KEY missing' })
     }
 
     const prompt = `You are a financial analyst assistant for GNI (Global Nexus Insights).
@@ -70,10 +82,7 @@ In exactly 2 sentences, explain: (1) why ${ticker} moved in this direction based
 
     const data = await response.json()
     const context = data.choices?.[0]?.message?.content?.trim() || 'AI context unavailable.'
-
-    // Cache it
     contextCache[ticker] = { context, date: today }
-
     return NextResponse.json({ context })
 
   } catch (err) {

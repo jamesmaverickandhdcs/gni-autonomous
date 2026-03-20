@@ -28,8 +28,9 @@ def _build_prompt(articles: list[dict]) -> str:
         articles_text += f"""
 Article {i}:
 Source: {a['source']} ({a['bias']})
-Title: {a['title']}
-Summary: {a['summary'][:150]}
+Title: {a['title'][:100]}
+Summary: {a['summary'][:500]}
+Tokens: {min(len(a['title'][:100]) + len(a['summary'][:500]), 600)} chars
 ---"""
 
     return f"""You are GNI — Global Nexus Insights, an expert geopolitical and macroeconomic analyst.

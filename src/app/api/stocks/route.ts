@@ -1,33 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+
+const VALID_RANGES = ['3d', '7d', '1m', '1y', '10y'] as const
+
+const QuerySchema = z.object({
+  ticker: z.string().regex(/^[A-Z0-9]{1,10}$/, { message: 'ticker must be 1-10 uppercase alphanumeric chars' }).default('SPY'),
+  range: z.enum(VALID_RANGES).default('10y'),
+})
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const ticker = searchParams.get('ticker') || 'SPY'
-  const range = searchParams.get('range') || '10y'
 
-  // Updated ranges: 3d 7d 1m 1y 10y
+  const parsed = QuerySchema.safeParse({
+    ticker: searchParams.get('ticker') ?? undefined,
+    range: searchParams.get('range') ?? undefined,
+  })
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'Invalid parameters', details: parsed.error.flatten() },
+      { status: 400 }
+    )
+  }
+
+  const { ticker, range } = parsed.data
+
   const intervalMap: Record<string, string> = {
-    '3d':  '5m',
-    '7d':  '1h',
-    '1m':  '1d',
-    '1y':  '1wk',
-    '10y': '1mo',
+    '3d': '5m', '7d': '1h', '1m': '1d', '1y': '1wk', '10y': '1mo',
   }
-
   const rangeMap: Record<string, string> = {
-    '3d':  '5d',
-    '7d':  '7d',
-    '1m':  '1mo',
-    '1y':  '1y',
-    '10y': '10y',
+    '3d': '5d', '7d': '7d', '1m': '1mo', '1y': '1y', '10y': '10y',
   }
 
-  const interval = intervalMap[range] || '1mo'
-  const period = rangeMap[range] || '10y'
+  const interval = intervalMap[range]
+  const period = rangeMap[range]
 
   try {
     const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=${interval}&range=${period}`
-
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -36,13 +44,10 @@ export async function GET(request: NextRequest) {
       next: { revalidate: range === '3d' || range === '7d' ? 300 : 3600 }
     })
 
-    if (!response.ok) {
-      throw new Error(`Yahoo Finance returned ${response.status}`)
-    }
+    if (!response.ok) throw new Error(`Yahoo Finance returned ${response.status}`)
 
     const data = await response.json()
     const result = data?.chart?.result?.[0]
-
     if (!result) throw new Error('No data returned')
 
     const meta = result.meta
@@ -63,7 +68,6 @@ export async function GET(request: NextRequest) {
       currency: meta.currency || 'USD',
       chartData,
     })
-
   } catch (err) {
     console.error('Stock API error:', err)
     return NextResponse.json({ error: 'Failed to fetch stock data' }, { status: 500 })
