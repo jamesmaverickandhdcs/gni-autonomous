@@ -15,6 +15,7 @@ from analysis.quality_scorer import score_report
 from analysis.mad_protocol import run_mad_protocol
 from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
+    check_recent_duplicate,
     save_report,
     save_pipeline_run,
     save_pipeline_articles,
@@ -81,6 +82,25 @@ def run_pipeline():
 
         if articles_after_funnel < 3:
             raise Exception(f"Too few after funnel: {articles_after_funnel}")
+
+        # -- Step 2b: Report Deduplication ----------------
+        print("\n🔄 Step 2b: Checking for Duplicate Topics...")
+        duplicate = check_recent_duplicate(top_articles, hours=6, overlap_threshold=0.7)
+        if duplicate:
+            print(f"   ⚠️  SKIPPED — same topic covered {duplicate['created_at'][:16]}")
+            print(f"   Recent: {duplicate['title'][:60]}")
+            save_runtime_log(
+                run_at=run_at,
+                total_seconds=round((datetime.now(timezone.utc) - run_start).total_seconds(), 2),
+                articles_collected=articles_collected,
+                articles_after_funnel=articles_after_funnel,
+                reports_saved=0,
+                step_timings=step_timings,
+                status="success",
+                error_message=f"Duplicate topic: {duplicate['title'][:80]}",
+            )
+            return True
+        print("   ✅ No duplicate — proceeding with analysis")
 
         # â”€â”€ Step 3: AI Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         print("\nðŸ§  Step 3: AI Analysis (Llama 3)...")

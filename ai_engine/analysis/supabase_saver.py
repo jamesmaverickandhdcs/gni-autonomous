@@ -32,6 +32,51 @@ def get_client() -> Client | None:
         return None
 
 
+def check_recent_duplicate(top_articles: list[dict], hours: int = 6, overlap_threshold: float = 0.7) -> dict | None:
+    """
+    Check if a recent report covers the same topic.
+    Returns the recent report if duplicate found, None otherwise.
+    """
+    client = get_client()
+    if not client:
+        return None
+
+    try:
+        from datetime import datetime, timezone, timedelta
+        cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+
+        result = client.table("reports")             .select("id, title, created_at")             .gte("created_at", cutoff)             .order("created_at", desc=True)             .limit(3)             .execute()
+
+        if not result.data:
+            return None
+
+        # Extract keywords from current top articles
+        current_text = " ".join([
+            f"{a.get('title', '')} {a.get('summary', '')}".lower()
+            for a in top_articles
+        ])
+        current_words = set(w for w in current_text.split() if len(w) > 4)
+
+        for recent in result.data:
+            recent_title = recent.get("title", "").lower()
+            recent_words = set(w for w in recent_title.split() if len(w) > 4)
+
+            if not current_words or not recent_words:
+                continue
+
+            overlap = len(current_words & recent_words) / max(len(recent_words), 1)
+
+            if overlap >= overlap_threshold:
+                print(f"  ⚠️  Duplicate detected — {overlap:.0%} keyword overlap with report from {recent['created_at'][:16]}")
+                return recent
+
+        return None
+
+    except Exception as e:
+        print(f"  ⚠️  Dedup check failed: {e}")
+        return None
+
+
 def save_report(report: dict, articles: list[dict], quality_score: float = 0, quality_breakdown: dict = None) -> str | None:
     """Save a GNI report to Supabase reports table."""
     client = get_client()
