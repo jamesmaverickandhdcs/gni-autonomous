@@ -13,6 +13,7 @@ from funnel.intelligence_funnel import run_funnel
 from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
 from analysis.mad_protocol import run_mad_protocol
+from analysis.semantic_validator import validate_report
 from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
     check_recent_duplicate,
@@ -117,6 +118,17 @@ def run_pipeline():
         report['quality_score']     = quality['quality_score']
         report['quality_breakdown'] = quality['quality_breakdown']
         report['quality_badge']     = quality['quality_badge']
+
+        # -- Step 3e: Semantic Validation ---------------
+        print("\n🧪 Step 3e: Semantic Validation...")
+        validation = validate_report(report)
+        report = validation['fixed_report']
+        if validation['warnings']:
+            for w in validation['warnings']:
+                print(f"   ⚠️  {w}")
+        if not validation['is_valid']:
+            raise Exception(f"Report failed semantic validation: {validation['errors']}")
+        print(f"   ✅ Semantic validation passed ({validation['checks_passed']}/{validation['total_checks']} checks)")
 
         # -- Step 3c: MAD Protocol ------------------------
         print("\n🐂🐻 Step 3c: Running MAD Protocol (Multi-Agent Debate)...")
