@@ -34,6 +34,41 @@ SOURCES = [
         "url": "https://rss.dw.com/xml/rss-en-world",
         "bias": "Western Liberal"
     },
+    {
+        "name": "Middle East Eye",
+        "url": "https://www.middleeasteye.net/rss",
+        "bias": "Non-Western"
+    },
+    {
+        "name": "USNI News",
+        "url": "https://news.usni.org/feed",
+        "bias": "Western Liberal"
+    },
+    {
+        "name": "Straits Times",
+        "url": "https://www.straitstimes.com/news/world/rss.xml",
+        "bias": "Asian Perspective"
+    },
+    {
+        "name": "Eye on the Arctic",
+        "url": "https://www.rcinet.ca/eye-on-the-arctic/feed/",
+        "bias": "Western Liberal"
+    },
+    {
+        "name": "Wired",
+        "url": "https://www.wired.com/feed/rss",
+        "bias": "Technology"
+    },
+    {
+        "name": "MIT Technology Review",
+        "url": "https://www.technologyreview.com/feed/",
+        "bias": "Technology"
+    },
+    {
+        "name": "France 24",
+        "url": "https://www.france24.com/en/rss",
+        "bias": "Western Liberal"
+    },
 ]
 
 def make_id(title: str, source: str) -> str:

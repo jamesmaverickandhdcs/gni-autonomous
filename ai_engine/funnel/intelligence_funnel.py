@@ -14,19 +14,32 @@ from analysis.source_weights import get_source_weights
 
 # Stage 1: Relevance keywords
 GEOPOLITICAL_KEYWORDS = [
-    'war', 'conflict', 'military', 'attack', 'sanction', 'missile',
-    'nuclear', 'troops', 'invasion', 'ceasefire', 'nato', 'alliance',
-    'crisis', 'tension', 'threat', 'weapon', 'bomb', 'strike',
-    'economy', 'gdp', 'inflation', 'recession', 'trade', 'tariff',
-    'oil', 'energy', 'gas', 'commodity', 'supply chain', 'export',
-    'import', 'currency', 'dollar', 'federal reserve', 'interest rate',
-    'geopolit', 'diplomacy', 'ambassador', 'sanction', 'embargo',
-    'president', 'prime minister', 'government', 'election', 'coup',
-    'protest', 'revolution', 'riot', 'terrorism', 'extremis',
-    'china', 'russia', 'ukraine', 'iran', 'israel', 'taiwan',
-    'north korea', 'middle east', 'pacific', 'nato', 'eu', 'opec',
+    # Tier 4 — Strategic chokepoints and maritime (GNI unique angle)
+    'red sea', 'south china sea', 'strait', 'hormuz', 'malacca',
+    'suez', 'persian gulf', 'bosphorus', 'panama canal', 'arctic',
+    'chokepoint', 'blockade',
+    # Tier 5 — New economy conflicts (fastest growing)
+    'ai chips', 'semiconductor', 'critical minerals', 'rare earth',
+    'lithium', 'cobalt', 'export control', 'debt trap', 'belt and road',
+    # Tier 1 — Major powers and flashpoints
+    'china', 'russia', 'iran', 'israel', 'ukraine', 'taiwan',
+    'north korea', 'middle east', 'europe', 'usa',
+    # Tier 2 — Conflict and military
+    'war', 'conflict', 'military', 'attack', 'invasion', 'strike',
+    'missile', 'nuclear', 'troops', 'weapon', 'bomb', 'ceasefire',
+    'sanction', 'embargo', 'terrorism', 'extremis', 'coup', 'crisis', 'threat',
+    # Tier 3 — Economics and markets
+    'economy', 'trade', 'oil', 'energy', 'inflation', 'tariff',
+    'gdp', 'recession', 'gas', 'commodity', 'dollar', 'currency',
+    'interest rate', 'federal reserve', 'export', 'import', 'opec',
+    # Tier 6 — Diplomacy and governance
+    'election', 'government', 'president', 'prime minister',
+    'diplomacy', 'ambassador', 'alliance', 'nato', 'eu',
+    'united nations', 'security council', 'geopolit',
+    'protest', 'revolution', 'riot', 'supply chain',
+    # Tier 7 — Humanitarian and global issues
     'refugee', 'humanitarian', 'famine', 'drought', 'climate',
-    'pandemic', 'vaccine', 'who', 'united nations', 'security council',
+    'pandemic', 'vaccine', 'who', 'tension', 'pacific',
 ]
 
 IRRELEVANT_KEYWORDS = [
@@ -98,10 +111,12 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     text = f"{article.get('title', '')} {article.get('summary', '')}".lower()
 
-    # High-impact keywords (+3 each, max 15)
+    # High-impact keywords (+3 each, max 15) — Tier 4 + Tier 5 (GNI unique angle)
     high_impact = [
-        'war', 'nuclear', 'invasion', 'attack', 'crisis',
-        'sanction', 'ceasefire', 'coup', 'collapse', 'embargo'
+        'red sea', 'hormuz', 'malacca', 'suez', 'chokepoint',
+        'blockade', 'persian gulf', 'south china sea', 'arctic',
+        'ai chips', 'critical minerals', 'semiconductor', 'rare earth',
+        'lithium', 'cobalt', 'debt trap', 'belt and road', 'export control',
     ]
     hi_matches = [kw for kw in high_impact if kw in text]
     hi_score = min(len(hi_matches) * 3, 15)
@@ -109,10 +124,12 @@ def _score_article(article: dict) -> tuple[float, str]:
     if hi_matches:
         reasons.append(f"High-impact terms ({hi_score}pts): {', '.join(hi_matches[:3])}")
 
-    # Medium-impact keywords (+1 each, max 10)
+    # Medium-impact keywords (+1 each, max 10) — Tier 1 + Tier 2
     med_impact = [
-        'military', 'troops', 'missile', 'economy', 'inflation',
-        'oil', 'trade', 'tariff', 'election', 'protest', 'tension'
+        'war', 'nuclear', 'invasion', 'attack', 'crisis',
+        'sanction', 'ceasefire', 'coup', 'collapse', 'embargo',
+        'china', 'russia', 'iran', 'israel', 'ukraine', 'taiwan', 'north korea',
+        'military', 'troops', 'missile', 'tension',
     ]
     med_matches = [kw for kw in med_impact if kw in text]
     med_score = min(len(med_matches), 10)
@@ -122,8 +139,8 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     # Major country/region bonus (+5)
     major_regions = [
-        'china', 'russia', 'ukraine', 'iran', 'israel',
-        'taiwan', 'north korea', 'middle east', 'usa', 'europe'
+        'middle east', 'europe', 'usa', 'pacific',
+        'economy', 'oil', 'trade', 'inflation', 'election',
     ]
     region_matches = [r for r in major_regions if r in text]
     if region_matches:
