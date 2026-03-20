@@ -43,3 +43,7 @@ __pycache__/
 __pycache__/
 *.pyc
 *.pyd
+
+fix_*.py
+write_*.py
+check.py
