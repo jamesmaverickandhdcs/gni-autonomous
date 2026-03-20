@@ -91,9 +91,9 @@ const sentimentColor = (sentiment: string) => {
 
 const sentimentIcon = (sentiment: string) => {
   switch (sentiment?.toLowerCase()) {
-    case 'bearish': return '\u25bc'
-    case 'bullish': return '\u25b2'
-    default:        return '\u25c6'
+    case 'bearish': return '▼'
+    case 'bullish': return '▲'
+    default:        return '◆'
   }
 }
 
@@ -103,10 +103,10 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
     <section className="mb-8">
       <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-lg">\U0001f3af</span>
+          <span className="text-lg">🎯</span>
           <div>
             <div className="text-sm font-bold text-white">GPVS Prediction Scorecard</div>
-            <div className="text-xs text-gray-400">GNI Prediction Validation Standard \u2014 {summary.total} reports verified</div>
+            <div className="text-xs text-gray-400">GNI Prediction Validation Standard — {summary.total} reports verified</div>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -136,10 +136,10 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
           </div>
         </div>
         <div className="mt-3 text-xs text-gray-600 text-center">
-          Powered by GPVS v1.1 \u2014 GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
+          Powered by GPVS v1.1 — GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
         </div>
         <div className="mt-2 text-xs text-yellow-600 text-center">
-          \u26a0\ufe0f Past accuracy does not guarantee future performance. Not financial advice.
+          ⚠️ Past accuracy does not guarantee future performance. Not financial advice.
         </div>
       </div>
     </section>
@@ -152,7 +152,7 @@ function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
     <section className="mb-8">
       <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-lg">\u2696\ufe0f</span>
+          <span className="text-lg">⚖️</span>
           <div>
             <div className="text-sm font-bold text-white">Dynamic Source Weights</div>
             <div className="text-xs text-gray-400">Updated automatically based on GPVS prediction accuracy</div>
@@ -177,7 +177,7 @@ function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
           })}
         </div>
         <div className="mt-3 text-xs text-gray-600">
-          Weight: 0.5 (penalised) \u2192 1.0 (neutral) \u2192 2.0 (highly trusted) | Updates via EMA after each verified prediction
+          Weight: 0.5 (penalised) → 1.0 (neutral) → 2.0 (highly trusted) | Updates via EMA after each verified prediction
         </div>
       </div>
     </section>
@@ -201,9 +201,7 @@ export default function Home() {
         .then(data => {
           if (data.reports && data.reports.length > 0) {
             setReports(prev => {
-              if (prev[0]?.id !== data.reports[0]?.id) {
-                return data.reports
-              }
+              if (prev[0]?.id !== data.reports[0]?.id) return data.reports
               return prev
             })
           }
@@ -260,7 +258,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-white">\U0001f310 Global Nexus Insights</h1>
+              <h1 className="text-2xl font-bold text-white">🌐 Global Nexus Insights</h1>
               <p className="text-sm text-gray-400">Technology + Geopolitics + Financial Impact</p>
             </div>
             <div className="text-right text-sm text-gray-400">
@@ -269,11 +267,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Three Pillar Risk Indicators */}
           {latest && (
             <div className="grid grid-cols-3 gap-3 mb-4">
               <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">\U0001f9ec</span>
+                <span className="text-sm">🧬</span>
                 <div>
                   <div className="text-xs text-gray-500">Technology</div>
                   <div className={`text-xs font-bold ${latest.risk_level?.toLowerCase() === 'critical' ? 'text-red-400' : latest.risk_level?.toLowerCase() === 'high' ? 'text-orange-400' : 'text-yellow-400'}`}>
@@ -282,7 +279,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">\U0001f30d</span>
+                <span className="text-sm">🌍</span>
                 <div>
                   <div className="text-xs text-gray-500">Geopolitics</div>
                   <div className={`text-xs font-bold ${latest.risk_level?.toLowerCase() === 'critical' ? 'text-red-400' : latest.risk_level?.toLowerCase() === 'high' ? 'text-orange-400' : 'text-yellow-400'}`}>
@@ -291,7 +288,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">\U0001f4b9</span>
+                <span className="text-sm">💹</span>
                 <div>
                   <div className="text-xs text-gray-500">Financial</div>
                   <div className={`text-xs font-bold ${latest.sentiment?.toLowerCase() === 'bearish' ? 'text-red-400' : latest.sentiment?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'}`}>
@@ -302,27 +299,21 @@ export default function Home() {
             </div>
           )}
 
-          {/* Navigation Buttons — 5 buttons including Health */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <a href="/map" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-700 border border-gray-700 hover:border-blue-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>\U0001f5fa\ufe0f</span>
-              <span>World Map</span>
+              <span>🗺️</span><span>World Map</span>
             </a>
             <a href="/stocks" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-green-700 border border-gray-700 hover:border-green-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>\U0001f4c8</span>
-              <span>Stock Chart</span>
+              <span>📈</span><span>Stock Chart</span>
             </a>
             <a href="/transparency" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-700 border border-gray-700 hover:border-purple-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>\U0001f50d</span>
-              <span>Transparency</span>
+              <span>🔍</span><span>Transparency</span>
             </a>
             <a href="/history" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-orange-700 border border-gray-700 hover:border-orange-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>\U0001f4cb</span>
-              <span>History</span>
+              <span>📋</span><span>History</span>
             </a>
             <a href="/health" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>\U0001f3e5</span>
-              <span>Health</span>
+              <span>🏥</span><span>Health</span>
             </a>
           </div>
         </div>
@@ -332,35 +323,31 @@ export default function Home() {
 
         {loading && (
           <div className="text-center py-20 text-gray-400">
-            <div className="text-4xl mb-4">\u231b</div>
+            <div className="text-4xl mb-4">⌛</div>
             <p>Loading intelligence reports...</p>
           </div>
         )}
 
         {error && (
           <div className="text-center py-20 text-red-400">
-            <div className="text-4xl mb-4">\u26a0\ufe0f</div>
+            <div className="text-4xl mb-4">⚠️</div>
             <p>{error}</p>
           </div>
         )}
 
         {!loading && !error && reports.length === 0 && (
           <div className="text-center py-20 text-gray-400">
-            <div className="text-4xl mb-4">\U0001f4e1</div>
+            <div className="text-4xl mb-4">📡</div>
             <p>No reports yet. Pipeline runs at 09:00 and 17:00 Myanmar time.</p>
           </div>
         )}
 
         {!loading && reports.length > 0 && (
           <>
-            {/* Latest Intelligence Report */}
             <section className="mb-8">
-              <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-                Latest Intelligence Report
-              </div>
+              <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Latest Intelligence Report</div>
               <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
 
-                {/* Title + Risk + Escalation */}
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <h2 className="text-xl font-bold text-white leading-tight">{latest.title}</h2>
                   <div className="flex flex-col items-end gap-2 shrink-0">
@@ -369,7 +356,7 @@ export default function Home() {
                     </span>
                     {latest.escalation_level && (
                       <span className={`text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap ${escalationColor(latest.escalation_level)}`}>
-                        \u26a1 {latest.escalation_level?.toUpperCase()} {latest.escalation_score ? `${latest.escalation_score.toFixed(1)}/10` : ''}
+                        ⚡ {latest.escalation_level?.toUpperCase()} {latest.escalation_score ? `${latest.escalation_score.toFixed(1)}/10` : ''}
                       </span>
                     )}
                   </div>
@@ -377,7 +364,6 @@ export default function Home() {
 
                 <p className="text-gray-300 text-sm leading-relaxed mb-4">{latest.summary}</p>
 
-                {/* Stats grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">Sentiment</div>
@@ -388,12 +374,12 @@ export default function Home() {
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">Location</div>
-                    <div className="font-bold text-white text-sm">\U0001f4cd {latest.location_name || 'Global'}</div>
+                    <div className="font-bold text-white text-sm">📍 {latest.location_name || 'Global'}</div>
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">LLM Engine</div>
                     <div className="font-bold text-blue-400 text-sm">
-                      {latest.llm_source === 'ollama' ? '\U0001f9e0 Llama 3 Local' : '\u2601\ufe0f Groq API'}
+                      {latest.llm_source === 'ollama' ? '🧠 Llama 3 Local' : '☁️ Groq API'}
                     </div>
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
@@ -406,7 +392,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Tickers */}
                 {latest.tickers_affected?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-4">
                     {latest.tickers_affected.map(ticker => (
@@ -417,7 +402,6 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Market Impact */}
                 <div className="bg-gray-800 rounded-lg p-4 mb-4">
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Market Impact Analysis</div>
                   <p className="text-gray-300 text-sm leading-relaxed">
@@ -425,56 +409,52 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Myanmar Summary */}
                 {latest.myanmar_summary && (
                   <div className="bg-gray-800 border border-yellow-800 rounded-lg p-4 mb-4">
-                    <div className="text-xs text-yellow-500 uppercase tracking-wider mb-2">\U0001f1f2\U0001f1f2 Myanmar Summary</div>
+                    <div className="text-xs text-yellow-500 uppercase tracking-wider mb-2">🇲🇲 Myanmar Summary</div>
                     <p className="text-gray-300 text-sm leading-relaxed">{latest.myanmar_summary}</p>
                   </div>
                 )}
 
-                {/* MAD Protocol Widget */}
-                {(latest.mad_verdict) && (
+                {latest.mad_verdict && (
                   <div className="bg-gray-800 rounded-lg p-4 mb-4">
                     <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-                      \U0001f402\U0001f43b MAD Protocol \u2014 Multi-Agent Debate
+                      🐂🐻 MAD Protocol — Multi-Agent Debate
                     </div>
                     <div className="flex items-center gap-3 mb-3">
                       <span className={`text-sm font-bold px-3 py-1 rounded-full ${latest.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300' : latest.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-gray-700 text-gray-300'}`}>
-                        {latest.mad_verdict === 'bullish' ? '\U0001f402' : latest.mad_verdict === 'bearish' ? '\U0001f43b' : '\u25c6'} {latest.mad_verdict?.toUpperCase()}
+                        {latest.mad_verdict === 'bullish' ? '🐂' : latest.mad_verdict === 'bearish' ? '🐻' : '◆'} {latest.mad_verdict?.toUpperCase()}
                       </span>
                       <span className="text-xs text-gray-400">
                         Confidence: {latest.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}
                       </span>
                       {latest.deception_level && latest.deception_level !== 'NONE' && (
                         <span className="text-xs bg-orange-900 text-orange-300 px-2 py-1 rounded-full">
-                          \U0001f575\ufe0f {latest.deception_level} coordination
+                          🕵️ {latest.deception_level} coordination
                         </span>
                       )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div className="bg-green-950 border border-green-800 rounded-lg p-3">
-                        <div className="text-xs text-green-400 font-bold mb-1">\U0001f402 Bull Case</div>
+                        <div className="text-xs text-green-400 font-bold mb-1">🐂 Bull Case</div>
                         <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_bull_case}</p>
                       </div>
                       <div className="bg-red-950 border border-red-800 rounded-lg p-3">
-                        <div className="text-xs text-red-400 font-bold mb-1">\U0001f43b Bear Case</div>
+                        <div className="text-xs text-red-400 font-bold mb-1">🐻 Bear Case</div>
                         <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_bear_case}</p>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Disclaimer */}
                 <div className="bg-yellow-900 border border-yellow-700 rounded-lg p-3">
                   <p className="text-yellow-200 text-xs">
-                    \u26a0\ufe0f <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
+                    ⚠️ <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
                   </p>
                 </div>
               </div>
             </section>
 
-            {/* AI Thinking Transparency */}
             {latestArticles.length > 0 && (
               <section className="mb-8">
                 <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
@@ -483,7 +463,7 @@ export default function Home() {
                     className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-800 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-lg">\U0001f9e0</span>
+                      <span className="text-lg">🧠</span>
                       <div className="text-left">
                         <div className="text-sm font-bold text-white">AI Thinking Transparency</div>
                         <div className="text-xs text-gray-400">
@@ -491,12 +471,11 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                    <span className="text-gray-400 text-sm">{showAIThinking ? '\u25b2 Hide' : '\u25bc Show'}</span>
+                    <span className="text-gray-400 text-sm">{showAIThinking ? '▲ Hide' : '▼ Show'}</span>
                   </button>
 
                   {showAIThinking && (
                     <div className="px-6 pb-6 border-t border-gray-700">
-                      {/* Dynamic funnel steps from actual pipeline run */}
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 my-4">
                         {[
                           { label: 'Collected', value: latestRun?.total_collected ?? latestArticles.length * 24, color: 'bg-gray-700' },
@@ -511,7 +490,6 @@ export default function Home() {
                           </div>
                         ))}
                       </div>
-
                       <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
                         Top {latestArticles.length} Articles Fed to AI
                       </div>
@@ -544,13 +522,9 @@ export default function Home() {
               </section>
             )}
 
-            {/* Prediction Scorecard */}
             <PredictionScorecard summary={predictionSummary} />
-
-            {/* Source Weights */}
             <SourceWeightsTable weights={sourceWeights} />
 
-            {/* Previous Reports */}
             {reports.length > 1 && (
               <section className="mb-8">
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Previous Reports</div>
@@ -572,7 +546,7 @@ export default function Home() {
                         </div>
                       </div>
                       <div className="flex items-center gap-4 mt-2">
-                        <span className="text-xs text-gray-500">\U0001f4cd {report.location_name || 'Global'}</span>
+                        <span className="text-xs text-gray-500">📍 {report.location_name || 'Global'}</span>
                         <span className="text-xs text-gray-500">
                           {new Date(report.created_at).toLocaleDateString('en-US', {
                             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -591,10 +565,9 @@ export default function Home() {
         )}
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI \u2014 Global Nexus Insights | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipeline runs 2x daily via GitHub Actions
+          GNI — Global Nexus Insights | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipeline runs 2x daily via GitHub Actions
         </div>
       </footer>
     </div>
