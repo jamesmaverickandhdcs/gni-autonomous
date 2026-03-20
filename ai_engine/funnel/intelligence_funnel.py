@@ -60,6 +60,8 @@ INJECTION_PATTERNS = [
     r'updated\s+instructions?\s*:',
     r'system\s*:\s*you\s+are',
     r'you\s+are\s+now\s+(a\s+)?(?:different|new|another)',
+    r'you\s+are\s+now\s+a\s+\w+\s+\w+',
+    r'disregard\s+\w+\s+(previous|all|above)\s+instructions?',
     r'act\s+as\s+(a|an)\s+\w+',
     r'pretend\s+(you\s+are|to\s+be)',
     r'roleplay\s+as',
