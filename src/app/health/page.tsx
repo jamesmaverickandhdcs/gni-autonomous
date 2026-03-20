@@ -38,6 +38,25 @@ interface HealthData {
     score: number
     llm: string
   }>
+  health_alerts: Array<{
+    id: string
+    alert_type: string
+    severity: string
+    message: string
+    metric_name: string
+    metric_value: number
+    threshold: number
+    resolved: boolean
+    created_at: string
+  }>
+  frequency_log: Array<{
+    id: string
+    run_at: string
+    escalation_score: number
+    escalation_level: string
+    recommended_interval_hours: number
+    reason: string
+  }>
 }
 
 function statusColor(status: string) {
@@ -117,6 +136,91 @@ export default function HealthPage() {
                 ) : <div className="text-gray-600 text-sm">No runs yet</div>}
               </div>
             </div>
+
+            {health.frequency_log && health.frequency_log.length > 0 && (
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">⚡ Frequency Controller — Autonomous Run Scheduling</div>
+                {(() => {
+                  const latest = health.frequency_log[0]
+                  const intervalMap: Record<string, string> = {
+                    'CRITICAL': '30 min', 'HIGH': '2h', 'ELEVATED': '4h', 'MODERATE': '6h', 'LOW': '12h'
+                  }
+                  const levelColor: Record<string, string> = {
+                    'CRITICAL': 'text-red-400', 'HIGH': 'text-orange-400',
+                    'ELEVATED': 'text-yellow-400', 'MODERATE': 'text-blue-400', 'LOW': 'text-green-400'
+                  }
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <div className="bg-gray-800 rounded-lg p-3 text-center">
+                        <div className={`text-2xl font-bold ${levelColor[latest.escalation_level] || 'text-gray-400'}`}>
+                          {latest.escalation_level}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">Current Level</div>
+                      </div>
+                      <div className="bg-gray-800 rounded-lg p-3 text-center">
+                        <div className="text-2xl font-bold text-white">
+                          {latest.escalation_score.toFixed(1)}/10
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">Escalation Score</div>
+                      </div>
+                      <div className="bg-gray-800 rounded-lg p-3 text-center">
+                        <div className="text-2xl font-bold text-blue-400">
+                          {intervalMap[latest.escalation_level] || `${latest.recommended_interval_hours}h`}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">Run Interval</div>
+                      </div>
+                      <div className="bg-gray-800 rounded-lg p-3 text-center">
+                        <div className="text-xs text-gray-300 leading-relaxed">{latest.reason}</div>
+                        <div className="text-xs text-gray-500 mt-1">Reason</div>
+                      </div>
+                    </div>
+                  )
+                })()}
+                <div className="text-xs text-gray-600 mt-3">
+                  CRITICAL=30min · HIGH=2h · ELEVATED=4h · MODERATE=6h · LOW=12h — AI decides run frequency autonomously
+                </div>
+              </div>
+            )}
+
+            {health.health_alerts && (
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">🚨 Health Agent Alerts</div>
+                {health.health_alerts.length === 0 ? (
+                  <div className="flex items-center gap-3 text-green-400">
+                    <span className="text-lg">✅</span>
+                    <span className="text-sm">All health checks passing — no alerts fired</span>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {health.health_alerts.map(alert => (
+                      <div key={alert.id} className={`rounded-lg p-3 border ${
+                        alert.severity === 'CRITICAL' ? 'bg-red-950 border-red-800' :
+                        alert.severity === 'WARNING' ? 'bg-yellow-950 border-yellow-800' :
+                        'bg-gray-800 border-gray-700'
+                      }`}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className={`text-xs font-bold ${
+                            alert.severity === 'CRITICAL' ? 'text-red-400' :
+                            alert.severity === 'WARNING' ? 'text-yellow-400' : 'text-gray-400'
+                          }`}>
+                            {alert.severity} — {alert.alert_type}
+                          </span>
+                          <span className="text-xs text-gray-600">
+                            {new Date(alert.created_at).toLocaleString()}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-300">{alert.message}</p>
+                        {alert.metric_name && (
+                          <div className="text-xs text-gray-500 mt-1">
+                            {alert.metric_name}: {alert.metric_value?.toFixed(2)} (threshold: {alert.threshold?.toFixed(2)})
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {health.prompt_variants && health.prompt_variants.length > 0 && (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
