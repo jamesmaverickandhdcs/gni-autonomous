@@ -35,9 +35,14 @@ SOURCES = [
         "bias": "Western Liberal"
     },
     {
-        "name": "Middle East Eye",
-        "url": "https://www.middleeasteye.net/rss",
-        "bias": "Non-Western"
+        "name": "Bloomberg Markets",
+        "url": "https://feeds.bloomberg.com/markets/news.rss",
+        "bias": "Financial"
+    },
+    {
+        "name": "Nikkei Asia",
+        "url": "https://asia.nikkei.com/rss/feed/nar",
+        "bias": "Financial"
     },
     {
         "name": "USNI News",
