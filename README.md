@@ -1,249 +1,261 @@
-# 🤖 GNI Autonomous — Level 4 to Level 7 Sprint
+# GNI_Autonomous — Global Nexus Insights
 
-**Technology + Geopolitics + Financial Impact — Autonomous Self-Healing Agentic AI**
-
-> *10-day sprint evolving GNI from automated pipeline to fully autonomous self-healing agentic intelligence system*
-
-[![Live Dashboard](https://img.shields.io/badge/Live-gni--autonomous.vercel.app-blue)](https://gni-autonomous.vercel.app)
-[![Diploma](https://img.shields.io/badge/Diploma-gni--dusky.vercel.app-green)](https://gni-dusky.vercel.app)
-
-**Technology + Geopolitics + Financial Impact Intelligence System**
-
-> *The forces reshaping the world — technological disruption, geopolitical power shifts, and their translation into financial market movements — do not respect borders. But the intelligence to understand them, historically, has. GNI removes that border.*
-
-[![Live Dashboard](https://img.shields.io/badge/Live-gni--dusky.vercel.app-blue)](https://gni-dusky.vercel.app)
-[![Telegram](https://img.shields.io/badge/Telegram-@GNI__Alerts-blue)](https://t.me/GNI_Alerts)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+**L7 Autonomous Geopolitical Intelligence Pipeline**
+Higher Diploma in Computer Science | Spring University Myanmar (SUM)
+Sprint: March 20–29, 2026 | Days 7–17
 
 ---
 
-## What is GNI?
+## Live Deployment
 
-GNI is an open-source, zero-cost AI pipeline that delivers **institutional-grade geopolitical intelligence** — analysing the same forces that move Wall Street and shape foreign policy — freely and transparently to anyone with an internet connection.
+- **Dashboard:** https://gni-autonomous.vercel.app
+- **Health Monitor:** https://gni-autonomous.vercel.app/health
+- **Intelligence History:** https://gni-autonomous.vercel.app/history
+- **Market Analysis:** https://gni-autonomous.vercel.app/stocks
+- **Transparency Engine:** https://gni-autonomous.vercel.app/transparency
 
-GNI analyses the convergence of three pillars:
-
-| Pillar | What GNI Tracks |
-|--------|----------------|
-| 🔬 **Technology** | Semiconductors, AI competition, cyber warfare, critical minerals, digital currencies |
-| 🌍 **Geopolitics** | Great power competition, conflict dynamics, sanctions, alliance shifts, resource competition |
-| 📈 **Financial Impact** | Capital flows, sector rotation, currency dynamics, commodity pricing, safe-haven flows |
+> **Note:** The diploma project (frozen) is at https://gni-dusky.vercel.app — do not modify.
 
 ---
 
-## Live System
+## What is GNI_Autonomous?
 
-| Component | URL |
-|-----------|-----|
-| Dashboard | [gni-dusky.vercel.app](https://gni-dusky.vercel.app) |
-| World Map | [gni-dusky.vercel.app/map](https://gni-dusky.vercel.app/map) |
-| Stock Chart | [gni-dusky.vercel.app/stocks](https://gni-dusky.vercel.app/stocks) |
-| Transparency Engine | [gni-dusky.vercel.app/transparency](https://gni-dusky.vercel.app/transparency) |
-| Intelligence History | [gni-dusky.vercel.app/history](https://gni-dusky.vercel.app/history) |
-| Telegram Channel | [@GNI_Alerts](https://t.me/GNI_Alerts) |
+GNI_Autonomous is a fully autonomous geopolitical intelligence pipeline that:
+
+1. Collects 242 articles/run from 13 carefully selected RSS sources
+2. Runs them through a 4-stage intelligence funnel with 66 injection patterns
+3. Scores, validates, and analyses them with Llama 3 via Ollama (local) or Groq (cloud)
+4. Runs a Multi-Agent Debate (Bull vs Bear vs Arbitrator) for market direction
+5. Scores escalation risk across 3 pillars: Technology, Geopolitical, Financial
+6. Detects coordinated narratives across sources
+7. Sends CRITICAL ALERTS to Telegram when escalation ≥ 8/10
+8. Saves everything to Supabase with full transparency and immutable audit trail
+
+**Quality score achieved: 9.25/10 [Excellent]**
 
 ---
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  GitHub Actions (2x daily)           │
-│                                                      │
-│  RSS Collection → Intelligence Funnel → LLM Analysis │
-│       ↓                  ↓                  ↓        │
-│  5 sources          4-stage filter     Llama 3 / Groq│
-│  93 articles        Injection detect   11-field JSON  │
-│                     Dedup + Rank                     │
-│                          ↓                           │
-│              Supabase (reports + trace)              │
-│                    ↓           ↓                     │
-│            Telegram         Vercel Dashboard         │
-│           @GNI_Alerts      Next.js + Leaflet         │
-└─────────────────────────────────────────────────────┘
-```
+### Pipeline Steps
 
-### Intelligence Funnel (4 Stages)
-1. **Stage 1 — Relevance Filter**: 30+ geopolitical keyword matching
-2. **Stage 1b — Injection Detection**: 16-pattern adversarial prompt detector
-3. **Stage 2 — Deduplication**: Title similarity threshold removes duplicate stories
-4. **Stage 3 — Significance Scoring + Diversity**: Ranked by geopolitical significance, max 3 per source
+| Step | Name | Description |
+|------|------|-------------|
+| 1 | RSS Collection | 242 articles from 13 sources |
+| 2 | Intelligence Funnel | 4-stage: relevance → injection → dedup → scoring |
+| 2b | Dedup Check | Skip LLM if same topic < 6h ago (>70% overlap) |
+| 2c | Prompt A/B Selection | Alternate v1/v2 prompts, track quality per variant |
+| 3 | AI Analysis | Llama 3 via Ollama (local) or Groq (cloud) |
+| 3b | Quality Scoring | 5-dimension 10-point rubric |
+| 3e | Semantic Validation | 10 checks: sentiment/score/tickers/risk/location |
+| 3c | MAD Protocol | Bull vs Bear vs Arbitrator debate |
+| 3f | Deception Detection | Centroid clustering — coordinated narrative detection |
+| 3d | Escalation Scoring | 3-pillar risk: Tech + Geo + Financial |
+| 4 | Save to Supabase | Full report with all fields |
+| 5 | Article Trace | 242 articles documented per run |
+| 5 | Telegram | CRITICAL ALERT + consolidated report + AI thinking |
+| 7 | Runtime Log | Complete audit log |
 
-### Technology Stack
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, Recharts, Leaflet
-- **Backend**: Python 3.11, GitHub Actions
-- **Database**: Supabase (PostgreSQL)
-- **LLM**: Meta Llama 3 8B (Ollama local) + Groq API (cloud fallback)
-- **Hosting**: Vercel (zero cost)
-- **Notifications**: Telegram Bot API
+### Source Coverage
 
----
+| Source | Coverage | Pillar |
+|--------|----------|--------|
+| Al Jazeera | Middle East / Non-Western | Geopolitical |
+| CNN / BBC / Fox / DW / France 24 | Global Western | Geopolitical |
+| USNI News | Naval / Maritime / All oceans | Geopolitical |
+| Straits Times | South China Sea / ASEAN | Geopolitical |
+| Eye on the Arctic | Arctic competition | Geopolitical |
+| Bloomberg Markets | Markets / Commodities | Financial |
+| Nikkei Asia | Asia-Pacific finance | Financial |
+| Wired | AI chips / Cyber | Technology |
+| MIT Technology Review | Semiconductors / AI policy | Technology |
 
-## Key Features
+### Keyword Priority (Tiered)
 
-### ✅ Explainable AI (XAI)
-Every article's passage through the Intelligence Funnel is documented and publicly queryable. The `/transparency` page shows every PASS/FAIL decision for every article in every pipeline run.
-
-### ✅ GPVS — Prediction Validation Standard
-GNI measures its own accuracy using the GNI Prediction Validation Standard — a multi-timeframe, human-validated, deception-aware framework comparing predictions against actual market outcomes.
-
-**Current GPVS Score: 100% (20 reports verified)**
-
-### ✅ Real-Time Market Intelligence
-12 geopolitically-relevant instruments tracked with AI-generated context explaining why prices moved based on the latest GNI intelligence report.
-
-### ✅ Zero Cost Infrastructure
-| Service | Cost |
-|---------|------|
-| Vercel (hosting) | $0/month |
-| Supabase (database) | $0/month |
-| GitHub Actions (CI/CD) | $0/month |
-| Groq API (LLM inference) | $0/month |
-| **Total** | **$0/month** |
+- **Tier 4 (first):** Red Sea, Hormuz, Malacca, South China Sea, chokepoints
+- **Tier 5:** AI chips, semiconductors, critical minerals, debt trap, belt and road
+- **Tier 1:** China, Russia, Iran, Israel, Ukraine, Taiwan, North Korea
+- **Tier 2:** War, nuclear, invasion, attack, sanctions, coup
+- **Tier 3:** Economy, oil, trade, inflation, tariff
+- **Tier 6:** Elections, diplomacy, NATO, UN
+- **Tier 7:** Humanitarian, climate, pandemic
 
 ---
 
-## Tracked Instruments
+## Security
 
-| Ticker | Name | Geopolitical Relevance |
-|--------|------|----------------------|
-| SPY | S&P 500 ETF | Global fear/confidence indicator |
-| GLD | Gold ETF | Safe haven — rises in crises |
-| USO | Oil ETF | Middle East conflict proxy |
-| XOM | ExxonMobil | Energy sector health |
-| LMT | Lockheed Martin | Military escalation proxy |
-| TLT | US Treasury Bonds | Risk-off safe haven |
-| DX-Y.NYB | USD Index | Dollar strength vs major currencies |
-| FXI | China Large-Cap ETF | China economic health proxy |
-| AAPL | Apple Inc. | Tech sector and supply chain |
-| JPM | JP Morgan Chase | Global banking stability |
-| EWJ | Japan ETF | Asia-Pacific risk indicator |
-| EWT | Taiwan ETF | Semiconductor and US-China tensions |
+### Injection Detection
+- 66 patterns across 10 categories
+- Direct overrides, score manipulation, bias manipulation
+- Prompt boundary attacks, encoded attacks, multilingual injections
+- Role confusion/jailbreak, context overflow, nested injections
+- Financial manipulation, data exfiltration
+- **Pentest result: 9/9 attacks blocked, 0 false positives — Grade A+**
+
+### Semantic Validation
+10 checks on every LLM output:
+- Sentiment/score direction match
+- Extreme confidence detection
+- Ticker whitelist enforcement
+- Risk/sentiment consistency
+- Market impact depth check
+- Location validity (country not region)
+- Source consensus range validation
+- Title and summary presence
+
+### MAD Security
+- Verdict whitelist validation
+- Confidence clamping to [0.0, 1.0]
+- Injection signal detection in all 3 agent outputs
 
 ---
 
-## Getting Started
+## Self-Improvement (L6)
+
+### Prompt A/B Testing
+- v1: Baseline production prompt
+- v2: Improved specificity + source consensus instructions
+- Alternates even/odd runs
+- Auto-promotes winner after 10 runs if quality difference ≥ 0.3
+
+### Source Credibility Model
+- 13 sources seeded at neutral 0.750
+- GPVS-based scoring: sources in accurate reports gain credibility
+- Credibility maps to source_weights (0.5–2.0 range)
+- Recalculates every 10 pipeline runs
+
+---
+
+## Autonomy (L7)
+
+### Escalation Scorer
+3-pillar risk scoring: Technology + Geopolitical + Financial
+- CRITICAL (≥9): 🚨 fires Telegram CRITICAL ALERT
+- HIGH (≥7): 🟥
+- ELEVATED (≥5): 🟧
+- MODERATE (≥3): 🟨
+- LOW: 🟢
+
+### Autonomous Frequency Control
+- CRITICAL ≥9.5: run every 30 minutes
+- CRITICAL: every 1 hour
+- HIGH: every 2 hours
+- ELEVATED: every 4 hours
+- MODERATE: every 6 hours
+- LOW: every 12 hours
+
+### Deception Detection
+- Centroid clustering across all top articles
+- Flags when 3+ different sources share 60%+ keyword core
+- Discounts source_consensus_score by 25% when coordination detected
+
+### Health Agent
+5 automated health checks:
+1. Run gap (>26h since last success)
+2. Quality drift (avg <6.0 or drift >1.5 points)
+3. Article collection volume (<100 articles)
+4. MAD confidence trend (<0.4 average)
+5. Escalation spike (≥9.0 in last 24h)
+
+### Immutable Audit Trail
+- SHA-256 hash chain: hash(event_type + event_data + previous_hash)
+- Tamper-evident: any modification breaks the chain
+- verify_chain_integrity() validates entire chain
+- Event types: REPORT_SAVED, PIPELINE_RUN, ESCALATION, SECURITY_FLAG, SYSTEM_START
+
+### Self-Healing Runner
+- Tier 1 (RSS collection failure): retry 3x with 30s delay
+- Tier 2 (Funnel failure): retry 2x
+- Tier 3+ (Analysis failure): no retry — too expensive
+- All events logged to audit trail
+
+---
+
+## Setup
 
 ### Prerequisites
-- Python 3.11
+- Python 3.11+
 - Node.js 18+
-- Supabase account (free)
-- Groq API key (free)
-
-### Local Development
-
-```bash
-# Clone the repository
-git clone https://github.com/jamesmaverickandhdcs/gni.git
-cd gni
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Install Node.js dependencies
-npm install
-
-# Copy environment variables
-cp .env.example .env.local
-# Edit .env.local with your credentials
-
-# Run the intelligence pipeline
-python ai_engine/main.py
-
-# Run the dashboard
-npm run dev
-```
+- Ollama with llama3:8b (local development)
+- Groq API key (GitHub Actions / cloud)
+- Supabase account
+- Telegram bot token
 
 ### Environment Variables
-
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_KEY=your_service_key
-
-# Groq API
-GROQ_API_KEY=your_groq_api_key
+```
+SUPABASE_URL=
+SUPABASE_SERVICE_KEY=
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+GROQ_API_KEY=
 GROQ_MODEL=llama-3.3-70b-versatile
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHAT_ID=
+```
 
-# Telegram
-TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_CHAT_ID=your_channel_id
+### Installation
+```bash
+pip install -r requirements.txt
+npm install
+```
 
-# Analytics
-NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+### Run Pipeline
+```bash
+python ai_engine/main.py
+```
+
+### Run with Self-Healing
+```bash
+python ai_engine/self_healing_runner.py
+```
+
+### Build Frontend
+```bash
+npm run build
 ```
 
 ---
 
-## Project Structure
+## Engineering Rules (L1–L39)
 
-```
-gni/
-├── ai_engine/                 # Python intelligence pipeline
-│   ├── collectors/            # RSS collection from 5 sources
-│   ├── funnel/                # 4-stage Intelligence Funnel
-│   ├── analysis/              # LLM analysis, Supabase saver
-│   │   └── outcome_verifier.py  # GPVS prediction validation
-│   ├── geo/                   # Geocoding engine
-│   └── notifications/         # Telegram notifier
-├── src/
-│   └── app/
-│       ├── page.tsx           # Dashboard
-│       ├── map/               # Geopolitical world map
-│       ├── stocks/            # Market intelligence
-│       ├── transparency/      # Explainable AI engine
-│       ├── history/           # Intelligence archive
-│       └── api/               # Next.js API routes
-├── .github/workflows/         # GitHub Actions automation
-└── requirements.txt           # Python dependencies
-```
+Key rules observed throughout this sprint:
+
+- **L20:** Read before edit — always read files before modifying
+- **L23:** GROQ_MODEL env var — never hardcode model names
+- **L26:** npm run build before git push
+- **L29/L31/L32:** PowerShell safety — use Python writers for file creation
+- **L33:** Always use llama-3.3-70b-versatile (L33)
+- **L34:** Analytical novelty — causal language in market_impact
+- **L35:** Three-minute plan check before every session
+- **L36:** Battle Log updated every session
+- **L37:** Declare deviations immediately
+- **L38:** Day 7–17 numbering
+- **L39:** Briefing from Sprint Plan
 
 ---
 
-## Testing Results
+## Sprint Achievement
 
-| Test | Category | Result |
-|------|----------|--------|
-| FT-01 to FT-07 | Functional Testing | ✅ 7/7 PASS |
-| NF-001 to NF-010 | Non-Functional Testing | ✅ 10/10 PASS |
-| GPVS Accuracy | Prediction Validation | ✅ 100% (20 reports) |
-| Lighthouse Accessibility | Accessibility | ✅ 95/100 |
-| Dashboard Load Time | Performance | ✅ ~2.5s |
-
----
-
-## Academic Context
-
-**Project**: Global Nexus Insights (GNI)
-**Programme**: Higher Diploma in Computer Science
-**Institution**: Spring University Myanmar (SUM)
-**Date**: March 2026
-
-### Original Contributions
-1. First open-source zero-cost system integrating Technology + Geopolitics + Financial Impact analysis
-2. 27 empirically-derived engineering rules (L1-L27) from real development failures
-3. GPVS — GNI Prediction Validation Standard (multi-timeframe, human-in-loop, deception-aware)
-4. Cross-day error prediction analysis (93% internal / 0% external predictability)
-5. Explainable AI pipeline — every decision publicly queryable
-6. GNI Intelligence Framework v1.0 (formal academic document)
+| Metric | Value |
+|--------|-------|
+| Sprint Duration | Days 7–17 (March 19–29, 2026) |
+| Autonomy Level | L4 → L7 |
+| Quality Score | 9.25/10 [Excellent] |
+| Sources | 13 RSS sources |
+| Articles/Run | 242 |
+| Pipeline Steps | 20 |
+| Analysis Files | 17 |
+| Security Patterns | 66 injection patterns |
+| Security Grade | A+ (9/9 pentest) |
+| Commits | 30+ |
+| Supabase Tables | 15+ |
 
 ---
 
-## Engineering Rules (L1-L27)
+## Diploma Note
 
-27 engineering rules derived from real development failures — from Python version management to LLM model deprecation to JSX syntax constraints. See `GNI_Day1-7_SWOT_Analysis.docx` for complete documentation.
+This project is the sprint evolution of GNI v1.0 (frozen at gni-dusky.vercel.app).
+The diploma codebase was frozen on Day 7 (March 19, 2026) before this sprint began.
+GNI_Autonomous represents the autonomous intelligence system built on top of the diploma foundation.
 
----
-
-## Disclaimer
-
-GNI intelligence reports are for informational and educational purposes only. They do not constitute financial advice, investment recommendations, or trading signals. Past analytical accuracy does not guarantee future predictive performance.
-
----
-
-## License
-
-MIT License — free to use, modify, and distribute.
-
-*GNI — Global Nexus Insights | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | March 2026*
+**Higher Diploma in Computer Science | Spring University Myanmar (SUM) | 2026**
