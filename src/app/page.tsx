@@ -258,12 +258,12 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-white">🌐 Global Nexus Insights</h1>
+              <h1 className="text-2xl font-bold text-white">🌐 Global Nexus Insights (Autonomous)</h1>
               <p className="text-sm text-gray-400">Technology + Geopolitics + Financial Impact</p>
             </div>
             <div className="text-right text-sm text-gray-400">
               <div>Pipeline: <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-green-400"></span><span className="text-green-400">Active</span></span></div>
-              <div>Reports: <span className="text-white font-bold">{reports.length}</span></div>
+              <div>Intelligence Reports: <span className="text-white font-bold">{reports.length}</span></div>
             </div>
           </div>
 
@@ -408,13 +408,6 @@ export default function Home() {
                     {latest.market_impact || 'Analysis will appear in next pipeline run.'}
                   </p>
                 </div>
-
-                {latest.myanmar_summary && (
-                  <div className="bg-gray-800 border border-yellow-800 rounded-lg p-4 mb-4">
-                    <div className="text-xs text-yellow-500 uppercase tracking-wider mb-2">🇲🇲 Myanmar Summary</div>
-                    <p className="text-gray-300 text-sm leading-relaxed">{latest.myanmar_summary}</p>
-                  </div>
-                )}
 
                 {latest.mad_verdict && (
                   <div className="bg-gray-800 rounded-lg p-4 mb-4">
