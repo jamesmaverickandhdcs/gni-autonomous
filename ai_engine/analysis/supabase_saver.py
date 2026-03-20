@@ -32,7 +32,7 @@ def get_client() -> Client | None:
         return None
 
 
-def check_recent_duplicate(top_articles: list[dict], hours: int = 6, overlap_threshold: float = 0.7) -> dict | None:
+def check_recent_duplicate(top_articles: list[dict], hours: int = 1, overlap_threshold: float = 0.7) -> dict | None:
     """
     Check if a recent report covers the same topic.
     Returns the recent report if duplicate found, None otherwise.

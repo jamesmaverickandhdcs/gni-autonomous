@@ -21,7 +21,7 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS", "false").lower() == "true"
 
 
-def _build_prompt(articles: list[dict]) -> str:
+def _build_prompt(articles: list[dict], prompt_override: str = None) -> str:
     """Build analysis prompt from top articles."""
     articles_text = ""
     for i, a in enumerate(articles, 1):
@@ -228,7 +228,7 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
         print("  ⚠️  No articles to analyze")
         return None
 
-    prompt = _build_prompt(articles)
+    prompt = _build_prompt(articles, prompt_override=prompt_override)
     raw = None
     source_used = None
 
