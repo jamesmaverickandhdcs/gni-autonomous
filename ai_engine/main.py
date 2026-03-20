@@ -17,6 +17,8 @@ from analysis.semantic_validator import validate_report
 from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score
 from analysis.credibility_model import seed_initial_credibility, update_credibility_scores
 from analysis.historical_correlations import update_correlations, get_historical_context
+from analysis.deception_detector import enrich_report_with_deception
+from analysis.frequency_controller import get_recommended_interval, log_frequency_decision
 from analysis.weekly_digest import should_generate_digest, generate_weekly_digest
 from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
@@ -159,6 +161,10 @@ def run_pipeline():
         report['mad_bear_case']  = mad_result['mad_bear_case']
         report['mad_verdict']    = mad_result['mad_verdict']
         report['mad_confidence'] = mad_result['mad_confidence']
+        # -- Step 3f: Deception Detection -----------------
+        print("\n\U0001f575  Step 3f: Deception Detection...")
+        report = enrich_report_with_deception(report, top_articles)
+
         report['mad_reasoning']  = mad_result['mad_reasoning']
 
         # -- Step 3d: Escalation Scoring ------------------
@@ -166,6 +172,9 @@ def run_pipeline():
         escalation = score_escalation(top_articles)
         report['escalation_score'] = escalation['escalation_score']
         report['escalation_level'] = escalation['escalation_level']
+        recommended_interval = get_recommended_interval(escalation['escalation_level'], escalation['escalation_score'])
+        log_frequency_decision(escalation['escalation_score'], escalation['escalation_level'], recommended_interval, f"Escalation {escalation['escalation_level']} {escalation['escalation_score']}/10")
+        print(f"   ⏱  Next run recommended in {recommended_interval:.1f}h ({escalation['escalation_level']})")
         hist_context = get_historical_context(escalation['escalation_score'])
         if hist_context:
             report['historical_context'] = hist_context
