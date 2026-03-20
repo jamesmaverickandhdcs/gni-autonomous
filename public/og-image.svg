@@ -1,0 +1,19 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#030712"/>
+  <rect x="0" y="0" width="1200" height="4" fill="#22c55e"/>
+  <text x="600" y="220" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle">
+    GNI
+  </text>
+  <text x="600" y="300" font-family="Arial, sans-serif" font-size="32" fill="#9ca3af" text-anchor="middle">
+    Global Nexus Insights (Autonomous)
+  </text>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="24" fill="#6b7280" text-anchor="middle">
+    Free AI Geopolitical Intelligence
+  </text>
+  <text x="600" y="460" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#22c55e" text-anchor="middle">
+    $0.00 / month
+  </text>
+  <text x="600" y="520" font-family="Arial, sans-serif" font-size="20" fill="#6b7280" text-anchor="middle">
+    gni-autonomous.vercel.app
+  </text>
+</svg>
