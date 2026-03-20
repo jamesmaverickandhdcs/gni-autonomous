@@ -50,10 +50,22 @@ def format_consolidated_message(report: dict) -> str:
     llm = "🧠 Llama 3 Local" if report.get("llm_source") == "ollama" else "☁️ Groq API"
     timestamp = datetime.now().strftime("%b %d, %H:%M")
     sentiment_score = report.get("sentiment_score", 0)
+    escalation_score = report.get("escalation_score", 0.0)
+    escalation_level = report.get("escalation_level", "")
+    if escalation_score >= 9:
+        escalation_icon = "🚨"
+    elif escalation_score >= 7:
+        escalation_icon = "🟥"
+    elif escalation_score >= 5:
+        escalation_icon = "🟧"
+    else:
+        escalation_icon = "🟢"
+    escalation_str = f"{escalation_icon} <b>Escalation:</b> {escalation_level} ({escalation_score}/10)" if escalation_level else ""
 
     message = f"""🌐 <b>GNI — Global Nexus Insights</b>
 ━━━━━━━━━━━━━━━━━━━━
 {risk_icon} <b>Risk Level:</b> {risk}
+{escalation_str}
 {sentiment_icon} <b>Sentiment:</b> {sentiment} ({sentiment_score:.2f})
 📍 <b>Location:</b> {location}
 {llm}
@@ -68,7 +80,7 @@ def format_consolidated_message(report: dict) -> str:
 📈 <b>Tickers:</b> {ticker_str}
 🕐 {timestamp}
 ━━━━━━━━━━━━━━━━━━━━
-🔍 <a href="https://gni-dusky.vercel.app">Dashboard</a> | <a href="https://gni-dusky.vercel.app/stocks">Stock Chart</a> | <a href="https://gni-dusky.vercel.app/transparency">Transparency</a>
+🔍 <a href="https://gni-autonomous.vercel.app">Dashboard</a> | <a href="https://gni-autonomous.vercel.app/stocks">Stock Chart</a> | <a href="https://gni-autonomous.vercel.app/transparency">Transparency</a>
 ━━━━━━━━━━━━━━━━━━━━
 <i>⚠️ DISCLAIMER: GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.</i>"""
 
@@ -143,10 +155,35 @@ affected markets, primary location
 
 🕐 {timestamp}
 ━━━━━━━━━━━━━━━━━━━━
-🔍 <a href="https://gni-dusky.vercel.app/transparency">Transparency Engine</a> | <a href="https://gni-dusky.vercel.app/stocks">Stock Chart</a>
+🔍 <a href="https://gni-autonomous.vercel.app/transparency">Transparency Engine</a> | <a href="https://gni-autonomous.vercel.app/stocks">Stock Chart</a>
 <i>⚠️ For informational purposes only. Not financial advice.</i>"""
 
     return message
+
+
+def send_critical_alert(report: dict) -> bool:
+    """Send CRITICAL ALERT when escalation_score > 8."""
+    escalation_score = report.get("escalation_score", 0.0)
+    escalation_level = report.get("escalation_level", "")
+    signals = report.get("escalation_signals", {})
+
+    alert_msg = f"""🚨🚨🚨 <b>CRITICAL ALERT — GNI_Autonomous</b> 🚨🚨🚨
+━━━━━━━━━━━━━━━━━━━━
+Escalation Score: <b>{escalation_score}/10 [{escalation_level}]</b>
+
+<b>Report:</b> {report.get('title', '')}
+<b>Sentiment:</b> {report.get('sentiment', '')}
+<b>Risk Level:</b> {report.get('risk_level', '')}
+<b>Location:</b> {report.get('location_name', '')}
+
+⚠️ All three GNI intelligence pillars are active.
+Immediate human review recommended.
+
+📊 <a href="https://gni-autonomous.vercel.app">View Dashboard</a> | <a href="https://gni-autonomous.vercel.app/transparency">Transparency</a>
+━━━━━━━━━━━━━━━━━━━━
+<i>⚠️ For informational purposes only. Not financial advice.</i>"""
+
+    return send_telegram_message(alert_msg)
 
 
 def notify_report(report: dict, articles: list = None) -> bool:
@@ -156,6 +193,12 @@ def notify_report(report: dict, articles: list = None) -> bool:
     Message 2: AI thinking + 10 articles
     """
     print("\n📱 Step 5: Sending Telegram Notification...")
+
+    # Critical alert if escalation >= 8
+    escalation_score = report.get("escalation_score", 0.0)
+    if escalation_score >= 8:
+        print(f"  🚨 CRITICAL ALERT triggered — escalation {escalation_score}/10")
+        send_critical_alert(report)
 
     # Message 1: Consolidated report
     msg1 = format_consolidated_message(report)
