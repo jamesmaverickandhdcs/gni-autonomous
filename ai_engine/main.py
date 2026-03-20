@@ -14,6 +14,7 @@ from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
 from analysis.mad_protocol import run_mad_protocol
 from analysis.semantic_validator import validate_report
+from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score
 from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
     check_recent_duplicate,
@@ -103,10 +104,17 @@ def run_pipeline():
             return True
         print("   ✅ No duplicate — proceeding with analysis")
 
+        # -- Step 2c: Prompt A/B Selection ---------------
+        seed_prompt_variants()
+        total_runs = len(step_timings)  # use as run counter proxy
+        import hashlib
+        run_count_hash = int(hashlib.md5(run_at.encode()).hexdigest()[:4], 16)
+        prompt_template, prompt_version = get_active_prompt(run_count_hash)
+
         # â”€â”€ Step 3: AI Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         print("\nðŸ§  Step 3: AI Analysis (Llama 3)...")
         t0 = time.time()
-        report = analyze(top_articles)
+        report = analyze(top_articles, prompt_override=prompt_template)
         step_timings["analysis"] = round(time.time() - t0, 2)
 
         if not report:
@@ -118,6 +126,7 @@ def run_pipeline():
         report['quality_score']     = quality['quality_score']
         report['quality_breakdown'] = quality['quality_breakdown']
         report['quality_badge']     = quality['quality_badge']
+        update_prompt_score(prompt_version, quality['quality_score'])
 
         # -- Step 3e: Semantic Validation ---------------
         print("\n🧪 Step 3e: Semantic Validation...")

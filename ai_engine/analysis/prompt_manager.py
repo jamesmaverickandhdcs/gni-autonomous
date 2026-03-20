@@ -1,0 +1,215 @@
+# ============================================================
+# GNI Prompt Manager — Day 12
+# A/B testing framework for LLM prompt variants
+# Alternates between v1 and v2 prompts per run
+# Auto-promotes winner after 10 runs per variant
+# ============================================================
+
+import os
+import json
+from dotenv import load_dotenv
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
+
+# ── Prompt v1 — current baseline prompt ──────────────────────
+PROMPT_V1 = """You are GNI — Global Nexus Insights, an expert geopolitical and macroeconomic analyst.
+Analyze the following {n} news articles and produce a structured JSON report.
+ARTICLES:
+{articles}
+Respond ONLY with a valid JSON object in this exact format:
+{{
+  "title": "Brief title summarizing the main geopolitical theme (max 15 words)",
+  "summary": "2-3 sentence English summary of the key event and its significance",
+  "sentiment": "Bullish or Bearish or Neutral",
+  "sentiment_score": 0.0,
+  "source_consensus_score": 0.0,
+  "location_name": "Single country name only — pick the MOST affected country (e.g. Iran, Ukraine, China). Never use regions like Middle East or multiple countries.",
+  "tickers_affected": ["SPY", "GLD"],
+  "market_impact": "3-4 sentences explaining WHY this affects markets. Use causal language: because, therefore, as a result, driven by, consequently, leading to, due to. Explain the chain of causation from event to market outcome in detail.",
+  "risk_level": "Low or Medium or High or Critical"
+}}
+Rules:
+- sentiment_score: -1.0 (very bearish) to +1.0 (very bullish) for markets
+- source_consensus_score: 0.0 to 1.0 (how much sources agree)
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY]
+- Do NOT include myanmar_summary field
+- Respond with JSON only — no extra text, no markdown, no explanation"""
+
+# ── Prompt v2 — improved for source_consensus + specificity ──
+PROMPT_V2 = """You are GNI — Global Nexus Insights, an expert geopolitical and macroeconomic analyst.
+Analyze the following {n} news articles and produce a structured JSON report.
+
+CRITICAL INSTRUCTIONS:
+1. source_consensus_score: Compare ALL sources carefully. Score 0.9+ only if ALL sources agree on direction. Score 0.3-0.6 if sources conflict. Score 0.7-0.8 if most agree with minor differences.
+2. specificity: Name SPECIFIC events, dates, countries, amounts. Never say "tensions" — say "Iran fired missiles at Israel on [date]". Never say "markets may be affected" — say "SPY likely to fall 2-3% because...".
+3. market_impact: Must name SPECIFIC instruments and SPECIFIC percentage ranges. Use: "USO likely +8-12% because Iran controls 20% of global oil transit through Hormuz."
+
+ARTICLES:
+{articles}
+Respond ONLY with a valid JSON object in this exact format:
+{{
+  "title": "Specific title with country, event type, and market consequence (max 15 words)",
+  "summary": "2-3 sentences with SPECIFIC facts: who, what, where, when. No vague language.",
+  "sentiment": "Bullish or Bearish or Neutral",
+  "sentiment_score": 0.0,
+  "source_consensus_score": 0.0,
+  "location_name": "Single country name only — the MOST directly affected country.",
+  "tickers_affected": ["SPY", "GLD"],
+  "market_impact": "3-4 sentences with SPECIFIC instruments and percentage ranges. Name the causal chain: event causes X because Y, therefore Z instrument moves W%.",
+  "risk_level": "Low or Medium or High or Critical"
+}}
+Rules:
+- sentiment_score: -1.0 (very bearish) to +1.0 (very bullish) for markets
+- source_consensus_score: 0.0 to 1.0 — reflect ACTUAL agreement level across sources
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY]
+- Do NOT include myanmar_summary field
+- Respond with JSON only — no extra text, no markdown, no explanation"""
+
+
+def _get_client():
+    try:
+        from supabase import create_client
+        if not SUPABASE_URL or not SUPABASE_SERVICE_KEY:
+            return None
+        return create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+    except Exception:
+        return None
+
+
+def seed_prompt_variants() -> bool:
+    """Seed initial prompt variants into Supabase if not already seeded."""
+    client = _get_client()
+    if not client:
+        return False
+    try:
+        existing = client.table("prompt_variants").select("id").execute()
+        if existing.data:
+            return True  # Already seeded
+
+        client.table("prompt_variants").insert([
+            {"version": 1, "prompt_text": PROMPT_V1, "active": True, "run_count": 0, "avg_quality_score": 0.0},
+            {"version": 2, "prompt_text": PROMPT_V2, "active": True, "run_count": 0, "avg_quality_score": 0.0},
+        ]).execute()
+        print("  ✅ Prompt variants seeded (v1 + v2)")
+        return True
+    except Exception as e:
+        print(f"  ⚠️  Seed failed: {e}")
+        return False
+
+
+def get_active_prompt(run_count: int) -> tuple[str, int]:
+    """
+    Select prompt variant for this run.
+    Even runs = v1, odd runs = v2.
+    Returns (prompt_template, version_number)
+    """
+    client = _get_client()
+    if not client:
+        return PROMPT_V1, 1
+
+    try:
+        result = client.table("prompt_variants")             .select("version, prompt_text, run_count, avg_quality_score")             .eq("active", True)             .order("version")             .execute()
+
+        variants = result.data
+        if not variants or len(variants) < 2:
+            return PROMPT_V1, 1
+
+        # Alternate: even run_count = v1, odd = v2
+        version_idx = run_count % 2
+        selected = variants[version_idx]
+        version = selected["version"]
+        prompt = selected["prompt_text"]
+
+        print(f"  📝 Prompt v{version} selected (run #{run_count}, avg quality: {selected['avg_quality_score']:.2f}/10)")
+        return prompt, version
+
+    except Exception as e:
+        print(f"  ⚠️  Prompt selection failed: {e} — using v1")
+        return PROMPT_V1, 1
+
+
+def update_prompt_score(version: int, quality_score: float) -> None:
+    """Update running average quality score for a prompt variant."""
+    client = _get_client()
+    if not client:
+        return
+
+    try:
+        result = client.table("prompt_variants")             .select("run_count, avg_quality_score")             .eq("version", version)             .execute()
+
+        if not result.data:
+            return
+
+        row = result.data[0]
+        old_count = row["run_count"]
+        old_avg = row["avg_quality_score"] or 0.0
+
+        new_count = old_count + 1
+        new_avg = ((old_avg * old_count) + quality_score) / new_count
+
+        client.table("prompt_variants")             .update({"run_count": new_count, "avg_quality_score": round(new_avg, 3)})             .eq("version", version)             .execute()
+
+        print(f"  📊 v{version} score updated: {old_avg:.2f} → {new_avg:.2f} (n={new_count})")
+
+        # Auto-promote after 10 runs per variant
+        if new_count >= 10 and new_count % 10 == 0:
+            _check_promotion(client)
+
+    except Exception as e:
+        print(f"  ⚠️  Score update failed: {e}")
+
+
+def _check_promotion(client) -> None:
+    """Check if one variant should be promoted as primary."""
+    try:
+        result = client.table("prompt_variants")             .select("version, avg_quality_score, run_count")             .eq("active", True)             .execute()
+
+        variants = result.data
+        if not variants or len(variants) < 2:
+            return
+
+        v1 = next((v for v in variants if v["version"] == 1), None)
+        v2 = next((v for v in variants if v["version"] == 2), None)
+
+        if not v1 or not v2:
+            return
+        if v1["run_count"] < 10 or v2["run_count"] < 10:
+            return
+
+        winner = v1 if v1["avg_quality_score"] >= v2["avg_quality_score"] else v2
+        loser  = v2 if winner["version"] == 1 else v1
+
+        diff = abs(v1["avg_quality_score"] - v2["avg_quality_score"])
+
+        if diff >= 0.3:
+            print(f"  🏆 AUTO-PROMOTE: v{winner['version']} wins ({winner['avg_quality_score']:.2f} vs {loser['avg_quality_score']:.2f})")
+            print(f"     v{winner['version']} will be used for all future runs")
+            # Log to runtime (promotion decision)
+            client.table("prompt_variants")                 .update({"active": False})                 .eq("version", loser["version"])                 .execute()
+        else:
+            print(f"  🤝 No promotion: difference {diff:.2f} < 0.3 threshold — continuing A/B test")
+
+    except Exception as e:
+        print(f"  ⚠️  Promotion check failed: {e}")
+
+
+def get_ab_status() -> dict:
+    """Return current A/B test status for /health page."""
+    client = _get_client()
+    if not client:
+        return {}
+    try:
+        result = client.table("prompt_variants")             .select("version, avg_quality_score, run_count, active")             .order("version")             .execute()
+        return {"variants": result.data or []}
+    except Exception:
+        return {}
+
+
+if __name__ == "__main__":
+    print("\U0001f9ea GNI Prompt Manager — Status\n")
+    seed_prompt_variants()
+    status = get_ab_status()
+    for v in status.get("variants", []):
+        print(f"  v{v['version']}: avg={v['avg_quality_score']:.2f}/10  runs={v['run_count']}  active={v['active']}")

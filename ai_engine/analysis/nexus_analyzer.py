@@ -33,6 +33,9 @@ Summary: {a['summary'][:500]}
 Tokens: {min(len(a['title'][:100]) + len(a['summary'][:500]), 600)} chars
 ---"""
 
+    if prompt_override:
+        n = len(articles)
+        return prompt_override.format(n=n, articles=articles_text)
     return f"""You are GNI — Global Nexus Insights, an expert geopolitical and macroeconomic analyst.
 
 Analyze the following {len(articles)} news articles and produce a structured JSON report.
@@ -215,7 +218,7 @@ Text to translate:
         return ""
 
 
-def analyze(articles: list[dict]) -> dict | None:
+def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     """
     Analyze top articles using appropriate LLM.
     GitHub Actions → Groq API directly (no Ollama timeout waste)
