@@ -15,6 +15,7 @@ from analysis.quality_scorer import score_report
 from analysis.mad_protocol import run_mad_protocol
 from analysis.semantic_validator import validate_report
 from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score
+from analysis.credibility_model import seed_initial_credibility, update_credibility_scores
 from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
     check_recent_duplicate,
@@ -105,6 +106,7 @@ def run_pipeline():
         print("   ✅ No duplicate — proceeding with analysis")
 
         # -- Step 2c: Prompt A/B Selection ---------------
+        seed_initial_credibility()
         seed_prompt_variants()
         total_runs = len(step_timings)  # use as run counter proxy
         import hashlib
@@ -127,6 +129,10 @@ def run_pipeline():
         report['quality_breakdown'] = quality['quality_breakdown']
         report['quality_badge']     = quality['quality_badge']
         update_prompt_score(prompt_version, quality['quality_score'])
+        run_count_hash_mod = run_count_hash % 10
+        if run_count_hash_mod == 0:
+            print("\n\U0001f4ca Updating source credibility scores...")
+            update_credibility_scores()
 
         # -- Step 3e: Semantic Validation ---------------
         print("\n🧪 Step 3e: Semantic Validation...")
