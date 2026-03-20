@@ -299,22 +299,50 @@ export default function Home() {
             </div>
           )}
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <a href="/map" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-700 border border-gray-700 hover:border-blue-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>🗺️</span><span>World Map</span>
-            </a>
-            <a href="/stocks" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-green-700 border border-gray-700 hover:border-green-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>📈</span><span>Stock Chart</span>
-            </a>
-            <a href="/transparency" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-700 border border-gray-700 hover:border-purple-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>🔍</span><span>Transparency</span>
-            </a>
-            <a href="/history" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-orange-700 border border-gray-700 hover:border-orange-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>📋</span><span>History</span>
-            </a>
-            <a href="/health" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
-              <span>🏥</span><span>Health</span>
-            </a>
+          {/* Intelligence group */}
+          <div className="mb-2">
+            <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">Intelligence</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <a href="/history" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-orange-700 border border-gray-700 hover:border-orange-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>📋</span><span>History</span>
+              </a>
+              <a href="/debate" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-red-800 border border-gray-700 hover:border-red-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🐂🐻</span><span>Debate</span>
+              </a>
+              <a href="/stocks" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-green-700 border border-gray-700 hover:border-green-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>📈</span><span>Stocks</span>
+              </a>
+              <a href="/map" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-700 border border-gray-700 hover:border-blue-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🗺️</span><span>Map</span>
+              </a>
+            </div>
+          </div>
+          {/* System group */}
+          <div className="mb-2">
+            <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">System</div>
+            <div className="grid grid-cols-3 gap-2">
+              <a href="/health" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🏥</span><span>Health</span>
+              </a>
+              <a href="/security" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-800 border border-gray-700 hover:border-purple-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🛡️</span><span>Security</span>
+              </a>
+              <a href="/autonomy" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-indigo-800 border border-gray-700 hover:border-indigo-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🧠</span><span>Autonomy</span>
+              </a>
+            </div>
+          </div>
+          {/* Info group */}
+          <div>
+            <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">Info</div>
+            <div className="grid grid-cols-2 gap-2">
+              <a href="/transparency" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-700 border border-gray-700 hover:border-purple-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🔍</span><span>Transparency</span>
+              </a>
+              <a href="/about" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-yellow-700 border border-gray-700 hover:border-yellow-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🌟</span><span>About</span>
+              </a>
+            </div>
           </div>
         </div>
       </header>
