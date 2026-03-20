@@ -1,5 +1,0 @@
-f = open("analysis/nexus_analyzer.py", "r", encoding="utf-8")
-c = f.read()
-f.close()
-idx = c.find("market_impact")
-print(repr(c[idx:idx+100]))
