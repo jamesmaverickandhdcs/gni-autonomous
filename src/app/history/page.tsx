@@ -28,6 +28,10 @@ interface Report {
   created_at: string
   quality_score: number
   quality_breakdown: QualityBreakdown
+  mad_verdict: string
+  mad_confidence: number
+  escalation_score: number
+  escalation_level: string
 }
 
 interface Article {
@@ -198,6 +202,16 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                   {report.sentiment}
                 </span>
                 {(report.quality_score > 0) && (() => { const b = qualityBadge(report.quality_score); return <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${b.color}`}>Q:{report.quality_score}/10 {b.label}</span> })()}
+                {report.mad_verdict && (
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${report.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300' : report.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-gray-700 text-gray-300'}`}>
+                    {report.mad_verdict === 'bullish' ? '🐂' : '🐻'} {report.mad_verdict?.toUpperCase()} {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : ''}
+                  </span>
+                )}
+                {report.escalation_level && (
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${report.escalation_level?.toLowerCase() === 'critical' ? 'bg-red-700 text-red-100' : report.escalation_level?.toLowerCase() === 'high' ? 'bg-orange-700 text-orange-100' : 'bg-gray-700 text-gray-300'}`}>
+                    ⚡ {report.escalation_level?.toUpperCase()} {report.escalation_score ? report.escalation_score.toFixed(1) + '/10' : ''}
+                  </span>
+                )}
               </div>
             ) : (
               <div className="text-xs text-gray-600">No report linked to this run</div>
@@ -215,7 +229,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
           {outcome && (
             <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
-                ðŸŽ¯ GPVS Outcome â€” Prediction vs Reality
+                🎯 GPVS Outcome — Prediction vs Reality
               </div>
               <div className="grid grid-cols-4 gap-3">
                 <div className="text-center">
@@ -238,7 +252,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 </div>
               </div>
               {outcome.human_review_needed && (
-                <div className="mt-2 text-xs text-yellow-400">âš ï¸ Human review recommended</div>
+                <div className="mt-2 text-xs text-yellow-400">⚠️ Human review recommended</div>
               )}
             </div>
           )}
@@ -387,7 +401,7 @@ export default function HistoryPage() {
 
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-5xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI History - Pipeline runs 2x daily | Each run: 92 articles to AI analysis to 1 report
+          GNI — Global Nexus Insights (Autonomous) | Intelligence History | Pipeline runs 2x daily via GitHub Actions
         </div>
       </footer>
     </div>
