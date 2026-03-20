@@ -16,6 +16,8 @@ from analysis.mad_protocol import run_mad_protocol
 from analysis.semantic_validator import validate_report
 from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score
 from analysis.credibility_model import seed_initial_credibility, update_credibility_scores
+from analysis.historical_correlations import update_correlations, get_historical_context
+from analysis.weekly_digest import should_generate_digest, generate_weekly_digest
 from analysis.escalation_scorer import score_escalation
 from analysis.supabase_saver import (
     check_recent_duplicate,
@@ -133,6 +135,10 @@ def run_pipeline():
         if run_count_hash_mod == 0:
             print("\n\U0001f4ca Updating source credibility scores...")
             update_credibility_scores()
+            update_correlations()
+        if should_generate_digest():
+            print("\n\U0001f4c5 Sunday detected — generating weekly digest...")
+            generate_weekly_digest(weeks_ago=1)
 
         # -- Step 3e: Semantic Validation ---------------
         print("\n🧪 Step 3e: Semantic Validation...")
@@ -160,6 +166,10 @@ def run_pipeline():
         escalation = score_escalation(top_articles)
         report['escalation_score'] = escalation['escalation_score']
         report['escalation_level'] = escalation['escalation_level']
+        hist_context = get_historical_context(escalation['escalation_score'])
+        if hist_context:
+            report['historical_context'] = hist_context
+            print(f"   📊 {hist_context}")
         print(f"   ✅ Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) — {escalation['active_pillars']}/3 pillars active")
         step_timings["mad"] = round(time.time() - t0, 2)
         print(f"   ✅ MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
