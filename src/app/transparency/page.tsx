@@ -85,11 +85,13 @@ export default function TransparencyPage() {
     if (stageFilter === 2) return a.stage1_passed === true && a.stage2_passed === false
     if (stageFilter === 3) return a.stage2_passed === true && a.stage4_selected === false
     if (stageFilter === 4) return a.stage4_selected === true
+    if (stageFilter === 5) return a.stage1_passed === true && a.stage1b_passed === false
     return true
   })
 
   const countSelected = articles.filter(a => a.stage4_selected === true).length
   const countStage1Rejected = articles.filter(a => a.stage1_passed === false).length
+  const countInjectionBlocked = articles.filter(a => a.stage1_passed === true && a.stage1b_passed === false).length
   const countDupes = articles.filter(a => a.stage1_passed === true && a.stage2_passed === false).length
   const countScored = articles.filter(a => a.stage2_passed === true && a.stage4_selected === false).length
 
@@ -191,7 +193,7 @@ export default function TransparencyPage() {
                       <div className="text-xs text-gray-400">Selected</div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-3 text-xs">
+                  <div className="grid grid-cols-4 gap-3 text-xs">
                     <div className="bg-gray-800 rounded-lg p-2">
                       <div className="text-gray-500">LLM Engine</div>
                       <div className="text-white font-bold">{selectedRun.llm_source}</div>
@@ -205,6 +207,10 @@ export default function TransparencyPage() {
                       <div className={`font-bold ${selectedRun.status === 'success' ? 'text-green-400' : 'text-red-400'}`}>
                         {selectedRun.status.toUpperCase()}
                       </div>
+                    </div>
+                    <div className="bg-purple-900 border border-purple-700 rounded-lg p-2">
+                      <div className="text-purple-400">🛡️ Injection Blocked</div>
+                      <div className="text-white font-bold">{countInjectionBlocked} articles</div>
                     </div>
                   </div>
                 </div>
@@ -229,6 +235,12 @@ export default function TransparencyPage() {
                   className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${stageFilter === 1 ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
                 >
                   Stage 1 Rejected ({countStage1Rejected})
+                </button>
+                <button
+                  onClick={() => setStageFilter(5)}
+                  className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${stageFilter === 5 ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}
+                >
+                  🛡️ Injection Blocked ({countInjectionBlocked})
                 </button>
                 <button
                   onClick={() => setStageFilter(2)}
