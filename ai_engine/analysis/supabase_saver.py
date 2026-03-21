@@ -329,7 +329,7 @@ def save_runtime_log(
 
 def get_pipeline_run_count() -> int:
     """Return total number of pipeline runs — used for A/B prompt alternation."""
-    client = _get_client()
+    client = get_client()
     if not client:
         return 0
     try:
