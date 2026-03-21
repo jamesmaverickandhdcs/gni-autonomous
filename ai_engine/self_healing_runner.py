@@ -34,6 +34,35 @@ def run_with_self_healing():
         "tier2_retries": TIER2_MAX_RETRIES,
     })
 
+    # ── LLM Health Probe — Tier 3 pre-check ──────────────────
+    # Check Groq is responding BEFORE the expensive pipeline runs.
+    # Catches Tier 3 failures (model down, API outage) early.
+    from analysis.llm_health_probe import run_llm_health_probe
+    print("\n🔬 Pre-flight: LLM health probe...")
+    probe = run_llm_health_probe()
+
+    if not probe["healthy"]:
+        error = probe.get("error", "LLM probe failed")
+        print(f"  ❌ LLM probe FAILED — aborting pipeline: {error}")
+        log_audit_event("TIER3_PROBE_FAILED", {"error": error})
+        # Fire health alert via health_agent if available
+        try:
+            from analysis.health_agent import fire_health_alert
+            fire_health_alert(
+                check_name="LLM_PROBE_FAILED",
+                details={"error": error, "primary_ok": probe["primary_ok"], "fallback_ok": probe["fallback_ok"]},
+                severity="HIGH",
+            )
+        except Exception as alert_err:
+            print(f"  ⚠️  Could not fire health alert: {alert_err}")
+        return False
+
+    # If fallback model is being used, set env so all modules use it
+    if probe["fallback_ok"] and probe["model_used"]:
+        os.environ["GROQ_MODEL"] = probe["model_used"]
+        print(f"  ⚠️  GROQ_MODEL overridden to fallback: {probe['model_used']}")
+        log_audit_event("GROQ_MODEL_FALLBACK_ACTIVE", {"model": probe["model_used"]})
+
     attempt = 0
     max_attempts = TIER1_MAX_RETRIES + 1
 

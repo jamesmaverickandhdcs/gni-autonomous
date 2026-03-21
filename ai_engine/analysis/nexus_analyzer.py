@@ -17,7 +17,8 @@ load_dotenv()
 OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "llama3:8b"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = "llama-3.3-70b-versatile"   # FIX: was llama-3.1-8b-instant — too small, truncates JSON
+GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")  # L23: never hardcode model names
+GROQ_MODEL_FALLBACK = os.getenv("GROQ_MODEL_FALLBACK", "llama-3.1-8b-instant")  # automatic failover
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS", "false").lower() == "true"
 
@@ -86,32 +87,42 @@ def _call_ollama(prompt: str) -> str | None:
     return None
 
 
-def _call_groq(prompt: str) -> str | None:
-    """Call Groq API."""
+def _call_groq(prompt: str, model: str = None) -> str | None:
+    """Call Groq API. Retries once with fallback model on failure (L33)."""
     if not GROQ_API_KEY:
         print("  ⚠️  No Groq API key found in .env")
         return None
-    try:
-        response = requests.post(
-            GROQ_URL,
-            headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": GROQ_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.3,
-                "max_tokens": 2000
-            },
-            timeout=30
-        )
-        if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"]
-        else:
-            print(f"  ⚠️  Groq error: {response.status_code} {response.text[:100]}")
-    except Exception as e:
-        print(f"  ⚠️  Groq error: {e}")
+
+    models_to_try = [model or GROQ_MODEL, GROQ_MODEL_FALLBACK]
+
+    for attempt, model_name in enumerate(models_to_try, 1):
+        try:
+            response = requests.post(
+                GROQ_URL,
+                headers={
+                    "Authorization": f"Bearer {GROQ_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": model_name,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "temperature": 0.3,
+                    "max_tokens": 2000
+                },
+                timeout=30
+            )
+            if response.status_code == 200:
+                if attempt == 2:
+                    print(f"  ⚠️  Primary model failed — used fallback: {model_name}")
+                return response.json()["choices"][0]["message"]["content"]
+            else:
+                print(f"  ⚠️  Groq error (attempt {attempt}, model={model_name}): {response.status_code} {response.text[:100]}")
+        except Exception as e:
+            print(f"  ⚠️  Groq error (attempt {attempt}, model={model_name}): {e}")
+
+        if attempt == 1:
+            print(f"  🔄 Retrying with fallback model: {GROQ_MODEL_FALLBACK}")
+
     return None
 
 

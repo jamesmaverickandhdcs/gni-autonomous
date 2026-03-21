@@ -30,6 +30,7 @@ from analysis.supabase_saver import (
     save_pipeline_articles,
     save_article_events,
     save_runtime_log,
+    get_pipeline_run_count,
 )
 from notifications.telegram_notifier import notify_report
 
@@ -114,13 +115,8 @@ def run_pipeline():
         # -- Step 2c: Prompt A/B Selection ---------------
         seed_initial_credibility()
         seed_prompt_variants()
-        # Use actual pipeline run count for true A/B alternation
-        try:
-            run_count_res = supabase.table('pipeline_runs').select('id', count='exact').execute()
-            run_count_hash = run_count_res.count or 0
-        except Exception:
-            import hashlib
-            run_count_hash = int(hashlib.md5(run_at.encode()).hexdigest()[:4], 16)
+        # Use actual pipeline run count for true A/B alternation (L23: no hardcoded names)
+        run_count_hash = get_pipeline_run_count()
         prompt_template, prompt_version = get_active_prompt(run_count_hash)
 
         # â”€â”€ Step 3: AI Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

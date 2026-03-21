@@ -325,3 +325,16 @@ def save_runtime_log(
     except Exception as e:
         print(f"  âŒ Failed to save runtime log: {e}")
         return False
+
+
+def get_pipeline_run_count() -> int:
+    """Return total number of pipeline runs — used for A/B prompt alternation."""
+    client = _get_client()
+    if not client:
+        return 0
+    try:
+        result = client.table("pipeline_runs").select("id", count="exact").execute()
+        return result.count or 0
+    except Exception as e:
+        print(f"  ⚠️  get_pipeline_run_count failed: {e}")
+        return 0
