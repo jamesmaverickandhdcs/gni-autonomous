@@ -64,6 +64,32 @@ def run_pipeline():
     print(f"   Pipeline Start: {run_at}")
     print("=" * 60)
 
+    # -- Pre-flight: LLM Health Probe -----------------------
+    # Catches Tier 3 failures before the pipeline starts.
+    # If Groq is down, abort immediately — no wasted compute.
+    print("\n\U0001f52c Pre-flight: LLM health probe...")
+    from analysis.llm_health_probe import run_llm_health_probe
+    probe = run_llm_health_probe()
+    if not probe["healthy"]:
+        _probe_error = probe.get("error", "LLM probe failed")
+        print(f"  \u274c LLM probe FAILED \u2014 aborting pipeline: {_probe_error}")
+        log_audit_event("TIER3_PROBE_FAILED", {"error": _probe_error})
+        save_runtime_log(
+            run_at=run_at,
+            total_seconds=0,
+            articles_collected=0,
+            articles_after_funnel=0,
+            reports_saved=0,
+            step_timings={},
+            status="failed",
+            error_message=f"LLM probe failed: {_probe_error}",
+        )
+        return False
+    if probe["fallback_ok"] and probe["model_used"]:
+        os.environ["GROQ_MODEL"] = probe["model_used"]
+        print(f"  \u26a0\ufe0f  GROQ_MODEL set to fallback: {probe['model_used']}")
+        log_audit_event("GROQ_MODEL_FALLBACK_ACTIVE", {"model": probe["model_used"]})
+
     try:
         # â”€â”€ Step 1: Collect Articles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         print("\nðŸ“¡ Step 1: Collecting RSS Articles...")
