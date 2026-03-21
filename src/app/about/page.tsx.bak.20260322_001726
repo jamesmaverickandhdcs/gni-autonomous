@@ -1,35 +1,27 @@
 export default function AboutPage() {
   const infra = [
-    { name: 'Ollama (Llama 3)', role: 'Local AI — runs on laptop, no API cost', cost: '$0.00' },
-    { name: 'Groq API', role: 'Cloud AI fallback — free tier (public repo)', cost: '$0.00' },
-    { name: 'Supabase', role: 'Database — free tier (500MB)', cost: '$0.00' },
-    { name: 'Vercel', role: 'Web hosting — free tier (100GB bandwidth)', cost: '$0.00' },
-    { name: 'GitHub Actions', role: 'CI/CD pipeline — unlimited free (public repo)', cost: '$0.00' },
+    { name: 'Ollama (Llama 3)', role: 'Local AI — runs on James laptop', cost: '$0.00' },
+    { name: 'Groq API', role: 'Cloud AI fallback — free tier', cost: '$0.00' },
+    { name: 'Supabase', role: 'Database — free tier', cost: '$0.00' },
+    { name: 'Vercel', role: 'Web hosting — free tier', cost: '$0.00' },
+    { name: 'GitHub Actions', role: 'CI/CD pipeline — free tier', cost: '$0.00' },
     { name: 'Telegram Bot API', role: 'CRITICAL alerts — free', cost: '$0.00' },
   ]
 
   const timeline = [
-    { level: 'L4', day: 'Day 7',  label: 'Diploma baseline',  desc: '5 RSS sources · 92 articles · basic AI report · map · stocks · transparency' },
-    { level: 'L5', day: 'Day 10', label: 'GPVS + Quality',    desc: 'Prediction validation · quality scoring · source weights · escalation · 13 RSS sources · 242 articles' },
-    { level: 'L6', day: 'Day 13', label: 'Self-improving',    desc: 'Prompt A/B testing · source credibility learning · historical correlation · weekly digest' },
-    { level: 'L7', day: 'Day 17', label: 'Fully autonomous',  desc: 'MAD Protocol · deception detection · frequency controller · health agent · audit trail · self-healing' },
+    { level: 'L4', day: 'Day 7', label: 'Diploma baseline', desc: '5 RSS sources · 92 articles · basic AI report · map · stocks · transparency' },
+    { level: 'L5', day: 'Day 10', label: 'GPVS + Quality', desc: 'Prediction validation · quality scoring · source weights · escalation · 13 RSS sources · 242 articles' },
+    { level: 'L6', day: 'Day 13', label: 'Self-improving', desc: 'Prompt A/B testing · source credibility learning · historical correlation · weekly digest' },
+    { level: 'L7', day: 'Day 17', label: 'Fully autonomous', desc: 'MAD Protocol · deception detection · frequency controller · health agent · audit trail · self-healing' },
   ]
 
   const stats = [
-    { label: 'Pipeline runs',     value: '30+' },
+    { label: 'Pipeline runs', value: '30+' },
     { label: 'Articles analysed', value: '7,000+' },
     { label: 'Reports generated', value: '30+' },
-    { label: 'GPVS accuracy',     value: '100%' },
-    { label: 'Injection patterns',value: '66' },
-    { label: 'Sprint days',       value: '17' },
-  ]
-
-  const comparisons = [
-    { name: 'Bloomberg Terminal',    cost: '$31,980/yr', note: 'Single seat — 2026 verified price' },
-    { name: 'Stratfor Worldview',    cost: '$199/yr',    note: 'Individual subscription' },
-    { name: 'Oxford Analytica',      cost: 'On Request', note: 'Enterprise custom quote — no public price' },
-    { name: 'Human Analyst',         cost: '$82,429–$104,177/yr', note: 'Geopolitical intelligence analyst — US average 2026' },
-    { name: 'GNI_Autonomous',        cost: '$0.00/yr',  note: 'Open. Free. Always.' },
+    { label: 'GPVS accuracy', value: '100%' },
+    { label: 'Injection patterns', value: '66' },
+    { label: 'Sprint days', value: '17' },
   ]
 
   return (
@@ -53,27 +45,6 @@ export default function AboutPage() {
           <div className="text-sm text-gray-500">Production-grade autonomous AI intelligence. Forever free.</div>
         </div>
 
-        {/* Intelligence cost comparison */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Intelligence Cost Comparison</div>
-          <div className="space-y-2">
-            {comparisons.map(item => (
-              <div key={item.name} className={`flex items-center justify-between rounded-lg px-4 py-3 ${item.name === 'GNI_Autonomous' ? 'bg-green-950 border border-green-800' : 'bg-gray-800'}`}>
-                <div>
-                  <div className="text-sm font-bold text-white">{item.name}</div>
-                  <div className="text-xs text-gray-500">{item.note}</div>
-                </div>
-                <div className={`text-lg font-bold ${item.name === 'GNI_Autonomous' ? 'text-green-400' : 'text-red-400'}`}>
-                  {item.cost}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 text-xs text-gray-600 text-center">
-            Bloomberg Terminal has grown 60% since 2010 ($20,000 → $31,980). The cost barrier widens every year.
-          </div>
-        </div>
-
         {/* Infrastructure cost table */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Infrastructure Cost Breakdown</div>
@@ -91,9 +62,6 @@ export default function AboutPage() {
               <div className="text-sm font-bold text-green-300">Total monthly cost</div>
               <div className="text-2xl font-bold text-green-400">$0.00</div>
             </div>
-          </div>
-          <div className="mt-3 text-xs text-gray-600 text-center">
-            GitHub Actions: unlimited free minutes for public repositories. Myanmar internet penetration: 61.1% (DataReportal 2025).
           </div>
         </div>
 
@@ -139,9 +107,8 @@ export default function AboutPage() {
           </p>
           <p className="text-gray-400 text-sm leading-relaxed mb-3">
             GNI_Autonomous was built to prove that industrial-grade AI intelligence can run for $0.00 per month,
-            accessible to anyone in the world — including people in Myanmar
-            where 61.1% of the population now has internet access (DataReportal 2025) but where even a
-            $199/year subscription would represent 18% of average annual income.
+            accessible to anyone in the world — including people in remote regions like Myanmar
+            where access to quality global news analysis is limited.
           </p>
           <p className="text-gray-400 text-sm leading-relaxed mb-4">
             Built as a Higher Diploma final project at Spring University Myanmar (SUM).
@@ -164,17 +131,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* Built by — anonymous per project policy */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
-          <div className="text-xs text-gray-500 mb-2">Built by</div>
-          <div className="text-lg font-bold text-white">Team Geeks</div>
-          <div className="text-sm text-gray-400">Higher Diploma in Computer Science</div>
-          <div className="text-sm text-gray-500">Spring University Myanmar (SUM) · 2026</div>
-          <div className="mt-3 text-xs text-gray-600">
-            Pipeline runs autonomously via GitHub Actions (public repo — unlimited free minutes) · gni-autonomous.vercel.app
-          </div>
-        </div>
-
+        {/* Built by */}
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
