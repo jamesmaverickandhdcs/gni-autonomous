@@ -4,15 +4,19 @@ on:
     - cron: '0 2 * * *'
     - cron: '0 10 * * *'
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5.4.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -43,9 +47,9 @@ jobs:
     if: github.event.schedule == '0 10 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5.4.0
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
