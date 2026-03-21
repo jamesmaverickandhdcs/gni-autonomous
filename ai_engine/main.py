@@ -14,7 +14,7 @@ from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
 from analysis.mad_protocol import run_mad_protocol
 from analysis.semantic_validator import validate_report
-from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score
+from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score, update_mad_confidence
 from analysis.credibility_model import seed_initial_credibility, update_credibility_scores
 from analysis.historical_correlations import update_correlations, get_historical_context
 from analysis.deception_detector import enrich_report_with_deception
@@ -213,6 +213,7 @@ def run_pipeline():
         print(f"   ✅ Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) — {escalation['active_pillars']}/3 pillars active")
         step_timings["mad"] = round(time.time() - t0, 2)
         print(f"   ✅ MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
+        update_mad_confidence(prompt_version, report['mad_confidence'])
 
         # ── Step 4: Save Report
         print("\nðŸ’¾ Step 4: Saving Report to Supabase...")

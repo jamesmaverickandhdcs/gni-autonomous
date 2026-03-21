@@ -340,6 +340,84 @@ Text to translate:
         return ""
 
 
+
+
+# Required fields: name -> (expected_type, validator_fn or None)
+_REQUIRED_FIELDS = {
+    "title":                 (str,   lambda v: len(v.strip()) > 0),
+    "summary":               (str,   lambda v: len(v.strip()) > 0),
+    "sentiment":             (str,   lambda v: v.strip() in ["Bullish", "Bearish", "Neutral"]),
+    "sentiment_score":       (float, lambda v: -1.0 <= float(v) <= 1.0),
+    "source_consensus_score":(float, lambda v: 0.0 <= float(v) <= 1.0),
+    "location_name":         (str,   lambda v: len(v.strip()) > 0),
+    "tickers_affected":      (list,  lambda v: len(v) > 0),
+    "market_impact":         (str,   lambda v: len(v.strip()) > 0),
+    "risk_level":            (str,   lambda v: v.strip() in ["Low", "Medium", "High", "Critical"]),
+}
+
+
+def _validate_report_schema(report: dict) -> dict | None:
+    """
+    Validate all required fields exist, have correct type, and pass range checks.
+    Coerces numeric strings to float where possible.
+    Returns corrected report, or None if critical fields cannot be fixed.
+    """
+    if not report:
+        return None
+
+    errors = []
+    warnings = []
+
+    for field, (expected_type, validator) in _REQUIRED_FIELDS.items():
+        value = report.get(field)
+
+        # Missing field
+        if value is None:
+            errors.append(f"Missing required field: {field}")
+            continue
+
+        # Coerce numeric strings to float
+        if expected_type == float and isinstance(value, str):
+            try:
+                report[field] = float(value)
+                value = report[field]
+                warnings.append(f"Coerced {field} from str to float")
+            except ValueError:
+                errors.append(f"Cannot coerce {field} to float: {value!r}")
+                continue
+
+        # Type check
+        if not isinstance(value, expected_type):
+            errors.append(f"Wrong type for {field}: expected {expected_type.__name__}, got {type(value).__name__}")
+            continue
+
+        # Range/value check
+        if validator:
+            try:
+                if not validator(value):
+                    warnings.append(f"Invalid value for {field}: {value!r} — applying default")
+                    # Apply safe defaults for fixable fields
+                    if field == "sentiment":
+                        report[field] = "Neutral"
+                    elif field == "risk_level":
+                        report[field] = "Medium"
+                    elif field == "sentiment_score":
+                        report[field] = max(-1.0, min(1.0, float(value)))
+                    elif field == "source_consensus_score":
+                        report[field] = max(0.0, min(1.0, float(value)))
+            except Exception:
+                warnings.append(f"Validator error for {field}: {value!r}")
+
+    if warnings:
+        for w in warnings:
+            print(f"  ⚠️  Schema: {w}")
+
+    if errors:
+        print(f"  ❌ Schema validation failed: {errors}")
+        return None
+
+    return report
+
 def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     """
     Analyze top articles using appropriate LLM.
@@ -378,6 +456,12 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     if not report:
         print("  ❌ Failed to parse LLM response as JSON")
         print(f"  Raw response: {raw[:200]}")
+        return None
+
+    # Schema validation — enforce required fields and types
+    report = _validate_report_schema(report)
+    if not report:
+        print("  ❌ Report failed schema validation — discarding")
         return None
 
     report["llm_source"] = source_used

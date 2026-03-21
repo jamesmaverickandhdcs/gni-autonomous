@@ -207,6 +207,76 @@ def get_ab_status() -> dict:
         return {}
 
 
+
+def update_mad_confidence(version: int, mad_confidence: float) -> None:
+    """
+    Record MAD confidence for the current run.
+    If confidence < 0.4 for 3 consecutive runs, trigger rollback.
+    """
+    client = _get_client()
+    if not client:
+        return
+
+    try:
+        # Log this run's MAD confidence against the prompt version
+        client.table("prompt_variants").update(
+            {"last_mad_confidence": round(mad_confidence, 3)}
+        ).eq("version", version).execute()
+
+        print(f"  🧠 v{version} MAD confidence logged: {mad_confidence:.2f}")
+
+        # Check if rollback is needed
+        if mad_confidence < 0.4:
+            _check_mad_rollback(client, version)
+
+    except Exception as e:
+        print(f"  ⚠️  MAD confidence update failed: {e}")
+
+
+def _check_mad_rollback(client, current_version: int) -> None:
+    """
+    Check last 3 reports for MAD confidence.
+    If all 3 < 0.4, roll back to the other prompt version.
+    Uses the reports table mad_confidence column.
+    """
+    try:
+        # Get last 3 reports
+        result = client.table("reports") \
+            .select("mad_confidence") \
+            .order("created_at", desc=True) \
+            .limit(3) \
+            .execute()
+
+        if not result.data or len(result.data) < 3:
+            return  # Not enough data yet
+
+        confidences = [r.get("mad_confidence", 1.0) for r in result.data]
+        low_count = sum(1 for c in confidences if c < 0.4)
+
+        print(f"  🧠 MAD confidence last 3 runs: {[round(c,2) for c in confidences]}")
+
+        if low_count < 3:
+            return  # Not consistently low — no rollback
+
+        # All 3 runs have low MAD confidence — roll back
+        other_version = 2 if current_version == 1 else 1
+        print(f"  ⚠️  MAD confidence < 0.4 for 3 consecutive runs")
+        print(f"  🔄 Rolling back from v{current_version} to v{other_version}")
+
+        # Deactivate current, ensure other is active
+        client.table("prompt_variants").update(
+            {"active": False}
+        ).eq("version", current_version).execute()
+
+        client.table("prompt_variants").update(
+            {"active": True}
+        ).eq("version", other_version).execute()
+
+        print(f"  ✅ Rollback complete — v{other_version} is now primary")
+
+    except Exception as e:
+        print(f"  ⚠️  MAD rollback check failed: {e}")
+
 if __name__ == "__main__":
     print("\U0001f9ea GNI Prompt Manager — Status\n")
     seed_prompt_variants()
