@@ -1,5 +1,11 @@
 import { MetadataRoute } from 'next'
 
+// Force dynamic rendering — prevents Next.js caching this route
+// Without this, Next.js caches the sitemap at build time and Google
+// receives a stale response that never updates (causes Search Console error)
+export const dynamic = 'force-dynamic'
+export const revalidate = 3600 // re-generate every 1 hour
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://gni-autonomous.vercel.app'
   const now = new Date()
