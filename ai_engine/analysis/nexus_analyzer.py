@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import requests
 from dotenv import load_dotenv
 
@@ -16,7 +17,7 @@ load_dotenv()
 OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "llama3:8b"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = "llama-3.1-8b-instant"
+GROQ_MODEL = "llama-3.3-70b-versatile"   # FIX: was llama-3.1-8b-instant — too small, truncates JSON
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS", "false").lower() == "true"
 
@@ -115,63 +116,176 @@ def _call_groq(prompt: str) -> str | None:
 
 
 def _parse_json_response(raw: str) -> dict | None:
-    """Safely parse JSON from LLM response — handles truncated responses."""
+    """
+    Safely parse JSON from LLM response.
+
+    Handles in order:
+      1. Direct parse (clean response — the happy path)
+      2. Markdown code fence stripping  (```json ... ```)
+      3. Preamble/postamble trimming    (text before { or after })
+      4. Truncation repair              (response cut off mid-string by token limit)
+      5. Field-by-field regex extraction (last resort — returns partial report)
+
+    FIX vs old version:
+      OLD: counted total '"' characters to detect open string — WRONG.
+           '"title": "foo"' has 4 quotes — even — falsely detected as closed.
+      NEW: scans character by character to track actual string state.
+    """
     if not raw:
         return None
 
-    raw = raw.strip()
+    text = raw.strip()
 
-    # Strip markdown code fences
-    if raw.startswith("```"):
-        lines = raw.split("\n")
-        raw = "\n".join(lines[1:-1]).strip()
-
-    # Try direct parse first
+    # ── Strategy 1: Direct parse ──────────────────────────────────────────
     try:
-        return json.loads(raw)
+        return json.loads(text)
     except json.JSONDecodeError:
         pass
 
-    # Try extracting JSON object
-    start = raw.find("{")
-    end = raw.rfind("}") + 1
-    if start >= 0 and end > start:
-        try:
-            return json.loads(raw[start:end])
-        except Exception:
-            pass
-
-    # Try fixing truncated JSON by closing open strings and braces
+    # ── Strategy 2: Strip markdown code fences ────────────────────────────
+    if text.startswith("```"):
+        lines = text.split("\n")
+        text = "\n".join(lines[1:])
+        if text.endswith("```"):
+            text = text[:-3]
+        text = text.strip()
     try:
-        partial = raw[start:] if start >= 0 else raw
-        open_braces = partial.count("{") - partial.count("}")
-        open_quotes = partial.count('"') % 2
-
-        if open_quotes:
-            partial += '"'
-        if open_braces > 0:
-            partial += "}" * open_braces
-
-        result = json.loads(partial)
-        defaults = {
-            "title": "GNI Report",
-            "summary": "",
-            "sentiment": "Neutral",
-            "sentiment_score": 0.0,
-            "source_consensus_score": 0.5,
-            "location_name": "Global",
-            "tickers_affected": ["SPY"],
-            "market_impact": "",
-            "risk_level": "Medium"
-        }
-        for k, v in defaults.items():
-            if k not in result:
-                result[k] = v
-        return result
-    except Exception:
+        return json.loads(text)
+    except json.JSONDecodeError:
         pass
 
+    # ── Strategy 3: Extract the JSON object (trim preamble/postamble) ─────
+    start = text.find("{")
+    end = text.rfind("}") + 1
+    if start >= 0 and end > start:
+        try:
+            return json.loads(text[start:end])
+        except json.JSONDecodeError:
+            pass
+
+    # ── Strategy 4: Repair truncated JSON ────────────────────────────────
+    # The old version counted total '"' characters which is WRONG —
+    # string values contain their own quote pairs that must not be counted.
+    # We track actual parser state instead.
+    if start >= 0:
+        partial = text[start:]
+        repaired = _repair_truncated_json(partial)
+        if repaired:
+            try:
+                result = json.loads(repaired)
+                # Fill in any missing required fields with safe defaults
+                defaults = {
+                    "title": "GNI Report",
+                    "summary": "",
+                    "sentiment": "Neutral",
+                    "sentiment_score": 0.0,
+                    "source_consensus_score": 0.5,
+                    "location_name": "Global",
+                    "tickers_affected": ["SPY"],
+                    "market_impact": "",
+                    "risk_level": "Medium",
+                }
+                for k, v in defaults.items():
+                    if k not in result:
+                        result[k] = v
+                print("  ⚠️  JSON was truncated — repaired successfully")
+                return result
+            except json.JSONDecodeError:
+                pass
+
+    # ── Strategy 5: Field-by-field regex extraction ───────────────────────
+    result = _extract_fields_regex(text)
+    if result:
+        print("  ⚠️  JSON could not be parsed — used regex field extraction")
+        return result
+
     return None
+
+
+def _repair_truncated_json(s: str) -> str | None:
+    """
+    Repair a JSON string that was cut off mid-way through a string value.
+
+    Works by scanning character-by-character to track:
+      - Whether we are currently inside a string value
+      - Nesting depth of {} and []
+
+    This is correct. The old approach of counting total '"' characters
+    is broken because string values contain their own quote pairs.
+    """
+    s = s.rstrip()
+    if not s:
+        return None
+
+    in_string = False
+    escape_next = False
+    brace_depth = 0
+    bracket_depth = 0
+
+    for ch in s:
+        if escape_next:
+            escape_next = False
+            continue
+        if ch == "\\" and in_string:
+            escape_next = True
+            continue
+        if ch == '"':
+            in_string = not in_string
+            continue
+        if in_string:
+            continue
+        if ch == "{":
+            brace_depth += 1
+        elif ch == "}":
+            brace_depth -= 1
+        elif ch == "[":
+            bracket_depth += 1
+        elif ch == "]":
+            bracket_depth -= 1
+
+    # If we ended inside a string, close it
+    if in_string:
+        s += '"'
+
+    # Close any open arrays and objects
+    s += "]" * max(0, bracket_depth)
+    s += "}" * max(0, brace_depth)
+
+    # Remove any trailing comma before a closing brace/bracket
+    s = re.sub(r",\s*([}\]])", r"\1", s)
+
+    return s
+
+
+def _extract_fields_regex(raw: str) -> dict | None:
+    """
+    Last resort: extract known fields from malformed JSON using regex.
+    Returns a minimal valid report if at least 'title' can be found.
+    """
+    def get_str(field: str) -> str:
+        # Match "field": "value..." — stops at first unescaped closing quote
+        m = re.search(rf'"{field}"\s*:\s*"((?:[^"\\]|\\.)*)"?', raw, re.DOTALL)
+        return m.group(1).strip() if m else ""
+
+    def get_num(field: str) -> float:
+        m = re.search(rf'"{field}"\s*:\s*(-?[\d.]+)', raw)
+        return float(m.group(1)) if m else 0.0
+
+    title = get_str("title")
+    if not title:
+        return None
+
+    return {
+        "title":                 title,
+        "summary":               get_str("summary") or "Analysis pending.",
+        "sentiment":             get_str("sentiment") or "Neutral",
+        "sentiment_score":       get_num("sentiment_score"),
+        "source_consensus_score": get_num("source_consensus_score") or 0.5,
+        "location_name":         get_str("location_name") or "Global",
+        "tickers_affected":      ["SPY"],
+        "market_impact":         get_str("market_impact") or "",
+        "risk_level":            get_str("risk_level") or "Medium",
+    }
 
 
 def _generate_myanmar_summary(report: dict) -> str:
@@ -179,10 +293,7 @@ def _generate_myanmar_summary(report: dict) -> str:
     if not GROQ_API_KEY:
         return ""
 
-    title = report.get("title", "")
     summary = report.get("summary", "")
-    sentiment = report.get("sentiment", "Neutral")
-    risk = report.get("risk_level", "Medium")
 
     prompt = f"""Translate this EXACT text into Myanmar (Burmese) language. 
 Translate word-for-word accurately. Do not summarize or change the meaning.
