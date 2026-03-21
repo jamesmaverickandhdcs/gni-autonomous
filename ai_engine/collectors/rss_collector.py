@@ -104,6 +104,26 @@ SOURCES = [
         "url": "https://www.digitaltrends.com/feed/",
         "bias": "Technology"
     },
+    {
+        "name": "MarketWatch",
+        "url": "https://feeds.marketwatch.com/marketwatch/topstories/",
+        "bias": "Financial"
+    },
+    {
+        "name": "CNBC World",
+        "url": "https://www.cnbc.com/id/100727362/device/rss/rss.html",
+        "bias": "Financial"
+    },
+    {
+        "name": "Financial Times",
+        "url": "https://www.ft.com/?format=rss",
+        "bias": "Financial"
+    },
+    {
+        "name": "Bloomberg Economics",
+        "url": "https://feeds.bloomberg.com/economics/news.rss",
+        "bias": "Financial"
+    },
 ]
 
 def make_id(title: str, source: str) -> str:
