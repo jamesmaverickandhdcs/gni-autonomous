@@ -74,6 +74,36 @@ SOURCES = [
         "url": "https://www.france24.com/en/rss",
         "bias": "Western Liberal"
     },
+    {
+        "name": "Asia Times",
+        "url": "https://asiatimes.com/feed/",
+        "bias": "Asian Perspective"
+    },
+    {
+        "name": "Channel News Asia",
+        "url": "https://www.channelnewsasia.com/api/v1/rss-outbound-feed?_format=xml&category=6511",
+        "bias": "Asian Perspective"
+    },
+    {
+        "name": "The Conversation",
+        "url": "https://theconversation.com/global/articles.atom",
+        "bias": "Academic"
+    },
+    {
+        "name": "The Diplomat",
+        "url": "https://thediplomat.com/feed/",
+        "bias": "Asian Perspective"
+    },
+    {
+        "name": "The Verge",
+        "url": "https://www.theverge.com/rss/index.xml",
+        "bias": "Technology"
+    },
+    {
+        "name": "Digital Trends",
+        "url": "https://www.digitaltrends.com/feed/",
+        "bias": "Technology"
+    },
 ]
 
 def make_id(title: str, source: str) -> str:
