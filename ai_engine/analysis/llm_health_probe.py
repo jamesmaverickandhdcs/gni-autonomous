@@ -1,8 +1,7 @@
 # ============================================================
-# GNI LLM Health Probe — Step 1 addition
+# GNI LLM Health Probe
 # Pre-run check: verify Groq responds with valid JSON
 # before the full pipeline attempts expensive analysis.
-# Tier 3 failures are now caught before they happen.
 # L23: Model name from env var — never hardcoded
 # L33: llama-3.3-70b-versatile as Groq default
 # ============================================================
@@ -18,16 +17,12 @@ GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 GROQ_MODEL_FALLBACK = os.getenv("GROQ_MODEL_FALLBACK", "llama-3.1-8b-instant")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
-# Minimal test prompt — cheap, fast, deterministic
-_PROBE_PROMPT = (
-    'You are a JSON API. Respond ONLY with this exact JSON, nothing else: '
-    '{"status": "ok", "model": "ready"}\'
-)
+_PROBE_PROMPT = 'You are a JSON API. Respond ONLY with this exact JSON, nothing else: {"status": "ok", "model": "ready"}'
 
 _REQUIRED_KEYS = {"status", "model"}
 
 
-def _call_probe(model: str, timeout: int = 10) -> dict | None:
+def _call_probe(model, timeout=10):
     """Send probe to a single model. Returns parsed JSON or None."""
     try:
         response = requests.post(
@@ -70,18 +65,10 @@ def _call_probe(model: str, timeout: int = 10) -> dict | None:
         return None
 
 
-def run_llm_health_probe() -> dict:
+def run_llm_health_probe():
     """
     Run LLM health probe before pipeline starts.
-
-    Returns:
-        {
-            "healthy": bool,
-            "model_used": str or None,
-            "primary_ok": bool,
-            "fallback_ok": bool,
-            "error": str or None,
-        }
+    Returns dict with healthy, model_used, primary_ok, fallback_ok, error.
     """
     if not GROQ_API_KEY:
         return {
@@ -92,9 +79,8 @@ def run_llm_health_probe() -> dict:
             "error": "No GROQ_API_KEY in environment",
         }
 
-    print("  🔬 LLM health probe — checking Groq...")
+    print("  🧪 Checking Groq primary model...")
 
-    # Try primary model first
     result = _call_probe(GROQ_MODEL)
     if result:
         print(f"  ✅ Groq probe passed — primary model ready ({GROQ_MODEL})")
@@ -108,7 +94,6 @@ def run_llm_health_probe() -> dict:
 
     print(f"  ⚠️  Primary model failed — trying fallback ({GROQ_MODEL_FALLBACK})")
 
-    # Try fallback model
     result = _call_probe(GROQ_MODEL_FALLBACK)
     if result:
         print(f"  ✅ Groq probe passed — fallback model ready ({GROQ_MODEL_FALLBACK})")
@@ -120,7 +105,6 @@ def run_llm_health_probe() -> dict:
             "error": f"Primary model {GROQ_MODEL} unavailable — using fallback",
         }
 
-    # Both failed
     error_msg = f"Both models failed probe: {GROQ_MODEL} and {GROQ_MODEL_FALLBACK}"
     print(f"  ❌ {error_msg}")
     return {
