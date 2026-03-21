@@ -218,19 +218,14 @@ def update_mad_confidence(version: int, mad_confidence: float) -> None:
         return
 
     try:
-        # Log this run's MAD confidence against the prompt version
-        client.table("prompt_variants").update(
-            {"last_mad_confidence": round(mad_confidence, 3)}
-        ).eq("version", version).execute()
+        # Log MAD confidence — check rollback if confidence is low
+        print(f"  🧠 v{version} MAD confidence: {mad_confidence:.2f}")
 
-        print(f"  🧠 v{version} MAD confidence logged: {mad_confidence:.2f}")
-
-        # Check if rollback is needed
         if mad_confidence < 0.4:
             _check_mad_rollback(client, version)
 
     except Exception as e:
-        print(f"  ⚠️  MAD confidence update failed: {e}")
+        print(f"  ⚠️  MAD confidence check failed: {e}")
 
 
 def _check_mad_rollback(client, current_version: int) -> None:

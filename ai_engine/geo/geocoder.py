@@ -8,7 +8,7 @@ from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 from dotenv import load_dotenv
 
 load_dotenv(override=False)
-OPENCАGE_KEY = os.getenv("OPENCAGE_API_KEY", "")
+OPENCAGE_KEY = os.getenv("OPENCAGE_API_KEY", "")
 
 # ============================================================
 # GNI Geocoding Engine — 3-Layer Cache System
