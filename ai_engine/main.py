@@ -20,6 +20,7 @@ from analysis.historical_correlations import update_correlations, get_historical
 from analysis.deception_detector import enrich_report_with_deception
 from analysis.frequency_controller import get_recommended_interval, log_frequency_decision
 from analysis.audit_trail import log_audit_event
+from analysis.staging_checker import run_staging_checks
 from analysis.health_agent import run_health_checks
 from analysis.weekly_digest import should_generate_digest, generate_weekly_digest
 from analysis.escalation_scorer import score_escalation
@@ -284,6 +285,15 @@ def run_pipeline():
         print(f"  Article Trace:      {len(trace)} articles documented")
         print(f"  Step Timings:       {step_timings}")
         print("=" * 60)
+
+        # -- Staging regression check ------------------
+        if status == "success" and GITHUB_ACTIONS:
+            print("\n📸 Post-pipeline: staging regression check...")
+            staging = run_staging_checks()
+            if staging['failed'] > 0:
+                print(f"  ⚠️  Staging check: {staging['failed']} page(s) failed")
+            else:
+                print(f"  ✅ Staging check: all {staging['total']} pages OK")
 
         return status == "success"
 
