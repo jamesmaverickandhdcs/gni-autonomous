@@ -216,6 +216,91 @@ def _score_article(article: dict) -> tuple[float, str]:
         score += weight_bonus
         reasons.append(f"Source weight ({weight:.2f} = {weight_bonus:+.1f}pts): {article.get('source')}")
 
+    # ── THREAT keywords (+4 each, max 20) ─────────────────────────────
+    # Direct aggression, attacks, hostile actions -- global perspective
+    WT_THREAT_KEYWORDS = [
+        # Geo threats
+        'war crime', 'genocide', 'ethnic cleansing', 'civilian massacre',
+        'chemical weapon', 'biological weapon', 'nuclear threat',
+        'proxy war', 'false flag', 'covert operation',
+        'assassination', 'targeted killing', 'extrajudicial killing',
+        'ethnic persecution', 'political prisoner', 'forced labour',
+        'child soldier', 'mass detention', 'enforced disappearance',
+        'torture', 'sexual violence', 'mass atrocity',
+        # Financial threats
+        'financial contagion', 'bank run', 'currency attack',
+        'economic coercion', 'financial warfare', 'swift exclusion',
+        'sovereign default', 'speculative attack', 'asset freeze',
+        'economic blockade', 'financial isolation', 'economic weapon',
+        # Tech threats
+        'infrastructure cyberattack', 'power grid attack', 'hospital ransomware',
+        'election interference', 'state sponsored hacking', 'zero day exploit',
+        'autonomous weapon', 'deepfake propaganda', 'satellite attack',
+        'information warfare', 'influence operation', 'disinformation campaign',
+    ]
+    threat_matches = [kw for kw in WT_THREAT_KEYWORDS if kw in text]
+    threat_score = min(len(threat_matches) * 4, 20)
+    score += threat_score
+    if threat_matches:
+        reasons.append("THREAT signal (" + str(threat_score) + "pts): " + ", ".join(threat_matches[:3]))
+
+    # ── WEAKNESS keywords (+3 each, max 15) ───────────────────────────
+    # Vulnerabilities, failures, fragilities -- global perspective
+    WT_WEAKNESS_KEYWORDS = [
+        # Geo weakness
+        'state collapse', 'failed state', 'governance failure',
+        'democratic backsliding', 'authoritarian crackdown',
+        'institutional breakdown', 'alliance fracture', 'diplomatic breakdown',
+        'peace deal collapse', 'ceasefire violation', 'power vacuum',
+        'press suppression', 'judicial independence', 'corruption crisis',
+        # Financial weakness
+        'food insecurity', 'supply chain collapse', 'hyperinflation',
+        'foreign reserve depletion', 'fiscal crisis', 'currency devaluation',
+        'commodity shock', 'harvest failure', 'poverty trap',
+        'inequality crisis', 'wage suppression', 'remittance cut',
+        'energy poverty', 'import dependency',
+        # Tech weakness
+        'critical infrastructure vulnerability', 'chip dependency',
+        'internet fragmentation', 'digital divide', 'single point of failure',
+        'data sovereignty', 'legacy system', 'cyber vulnerability',
+        'platform dependency', 'tech monopoly', 'algorithmic discrimination',
+    ]
+    weakness_matches = [kw for kw in WT_WEAKNESS_KEYWORDS if kw in text]
+    weakness_score = min(len(weakness_matches) * 3, 15)
+    score += weakness_score
+    if weakness_matches:
+        reasons.append("WEAKNESS signal (" + str(weakness_score) + "pts): " + ", ".join(weakness_matches[:3]))
+
+    # ── DARK SIDE keywords (+4 each, max 20) ──────────────────────────
+    # Good systems created for benefit, weaponised for harm
+    # Responsible civic intelligence -- surface dual-use harm
+    WT_DARK_SIDE_KEYWORDS = [
+        # Geo dark side -- humanitarian and diplomatic systems weaponised
+        'debt trap diplomacy', 'energy blackmail', 'food as weapon',
+        'water as weapon', 'refugee weaponisation', 'migration weapon',
+        'sanctions evasion', 'money laundering', 'human trafficking',
+        'golden passport', 'citizenship scheme', 'shell company',
+        'aid conditionality', 'cultural suppression',
+        # Financial dark side -- finance created for growth, used for harm
+        'crypto terrorism', 'ransomware payment', 'dark money',
+        'illicit finance', 'predatory lending', 'development aid corruption',
+        'infrastructure debt trap', 'offshore tax evasion',
+        'financial crime', 'kleptocracy', 'oligarch wealth',
+        # Tech dark side -- technology created for good, weaponised
+        'mass surveillance', 'facial recognition abuse', 'social credit',
+        'internet shutdown', 'digital authoritarianism', 'spyware abuse',
+        'pegasus', 'stalker software', 'surveillance state',
+        'social media manipulation', 'algorithmic suppression',
+        'biometric persecution', 'drone surveillance abuse',
+        'predictive policing abuse', 'vpn ban', 'encrypted communication ban',
+        'deepfake abuse', 'ai generated propaganda',
+    ]
+    dark_matches = [kw for kw in WT_DARK_SIDE_KEYWORDS if kw in text]
+    dark_score = min(len(dark_matches) * 4, 20)
+    score += dark_score
+    if dark_matches:
+        reasons.append("DARK SIDE signal (" + str(dark_score) + "pts): " + ", ".join(dark_matches[:3]))
+
     reason_str = " | ".join(reasons) if reasons else "Base score only"
     return round(score, 2), reason_str
 
