@@ -19,18 +19,31 @@ interface StockData {
 const RANGES = ['3d', '7d', '1m', '1y', '10y']
 
 const WATCHLIST_TICKERS = [
-  { ticker: 'SPY',      label: 'S&P 500',    category: 'US Equity' },
-  { ticker: 'GLD',      label: 'Gold',        category: 'Commodity' },
-  { ticker: 'USO',      label: 'Oil',         category: 'Energy' },
-  { ticker: 'XOM',      label: 'ExxonMobil',  category: 'Energy' },
-  { ticker: 'LMT',      label: 'Lockheed',    category: 'Defence' },
-  { ticker: 'TLT',      label: 'US Bonds',    category: 'Fixed Income' },
-  { ticker: 'DX-Y.NYB', label: 'USD Index',   category: 'Currency' },
-  { ticker: 'FXI',      label: 'China ETF',   category: 'Emerging' },
-  { ticker: 'AAPL',     label: 'Apple',       category: 'Tech' },
-  { ticker: 'JPM',      label: 'JP Morgan',   category: 'Finance' },
-  { ticker: 'EWJ',      label: 'Japan ETF',   category: 'Asia' },
-  { ticker: 'EWT',      label: 'Taiwan ETF',  category: 'Asia' },
+  { ticker: 'SPY',      label: 'S&P 500',       category: 'US Equity' },
+  { ticker: 'GLD',      label: 'Gold',           category: 'Commodity' },
+  { ticker: 'USO',      label: 'Oil',            category: 'Energy' },
+  { ticker: 'XOM',      label: 'ExxonMobil',     category: 'Energy' },
+  { ticker: 'LMT',      label: 'Lockheed',       category: 'Defence' },
+  { ticker: 'TLT',      label: 'US Bonds',       category: 'Fixed Income' },
+  { ticker: 'DX-Y.NYB', label: 'USD Index',      category: 'Currency' },
+  { ticker: 'FXI',      label: 'China ETF',      category: 'Emerging' },
+  { ticker: 'AAPL',     label: 'Apple',          category: 'Tech' },
+  { ticker: 'JPM',      label: 'JP Morgan',      category: 'Finance' },
+  { ticker: 'EWJ',      label: 'Japan ETF',      category: 'Asia' },
+  { ticker: 'EWT',      label: 'Taiwan ETF',     category: 'Asia' },
+  { ticker: 'SOXX',     label: 'Semiconductors', category: 'Tech' },
+  { ticker: 'HACK',     label: 'Cybersecurity',  category: 'Tech' },
+  { ticker: '^VIX',     label: 'Fear Index',     category: 'Volatility' },
+  { ticker: 'EWG',      label: 'Germany ETF',    category: 'Europe' },
+  { ticker: 'EWY',      label: 'Korea ETF',      category: 'Asia' },
+  { ticker: 'HYG',      label: 'High Yield',     category: 'Credit' },
+  { ticker: 'EMB',      label: 'EM Bonds',       category: 'Emerging' },
+  { ticker: 'UNG',      label: 'Natural Gas',    category: 'Energy' },
+  { ticker: 'WEAT',     label: 'Wheat',          category: 'Food' },
+  { ticker: 'GDX',      label: 'Gold Miners',    category: 'Commodity' },
+  { ticker: 'BTC-USD',  label: 'Bitcoin',        category: 'Crypto' },
+  { ticker: 'ETH-USD',  label: 'Ethereum',       category: 'Crypto' },
+  { ticker: 'COIN',     label: 'Coinbase',       category: 'Crypto' },
 ]
 
 // Static descriptions for each instrument
@@ -82,6 +95,58 @@ const INSTRUMENT_INFO: Record<string, { what: string, why: string }> = {
   'EWT': {
     what: 'Tracks the Taiwan stock market. Taiwan produces over 60% of the world\'s semiconductors through companies like TSMC.',
     why: 'Any US-China-Taiwan tension directly hits EWT. Since modern electronics depend on Taiwanese chips, EWT is a critical indicator of tech supply chain risk.',
+  },
+  'SOXX': {
+    what: 'iShares Semiconductor ETF -- tracks the 30 largest semiconductor companies including NVIDIA, TSMC, and Intel.',
+    why: 'Semiconductors are the foundation of the tech war between the US and China. Export controls, Taiwan tensions, and AI demand all move SOXX directly.',
+  },
+  'HACK': {
+    what: 'ETF tracking cybersecurity companies -- Palo Alto Networks, CrowdStrike, Fortinet and others that defend against cyberattacks.',
+    why: 'Cyber warfare is now a primary geopolitical weapon. State-sponsored attacks on infrastructure drive demand for cybersecurity -- HACK rises when conflicts go digital.',
+  },
+  '^VIX': {
+    what: 'CBOE Volatility Index -- measures how much the market expects the S&P 500 to move. Called the Fear Index. Above 30 signals panic.',
+    why: 'VIX is the single most important stress signal for executives. When geopolitical crises hit, VIX spikes instantly -- it is the global market fear gauge in real time.',
+  },
+  'EWG': {
+    what: 'iShares Germany ETF -- tracks the largest German companies including Siemens, BASF, and Volkswagen. Germany is Europe largest economy.',
+    why: 'Germany is the geopolitical anchor of Europe. Energy crises, Russia sanctions, and NATO spending directly hit EWG -- it is the pulse of European economic health.',
+  },
+  'EWY': {
+    what: 'iShares South Korea ETF -- tracks Samsung, SK Hynix, Hyundai and other Korean giants. Korea is a key semiconductor and tech hub.',
+    why: 'South Korea is the most exposed listed market to North Korea risk. Any Korean Peninsula escalation hits EWY immediately -- a critical geopolitical risk proxy.',
+  },
+  'HYG': {
+    what: 'iShares High Yield Corporate Bond ETF -- tracks bonds issued by companies with lower credit ratings. These bonds offer higher yield but higher default risk.',
+    why: 'HYG falls before equities in financial crises -- it is an early warning signal of credit stress. Executives watch HYG to detect financial contagion before it hits stocks.',
+  },
+  'EMB': {
+    what: 'iShares Emerging Market Bond ETF -- tracks government bonds from developing countries including Brazil, Mexico, Indonesia, and others.',
+    why: 'EMB measures sovereign debt stress in developing economies. When EMB falls, emerging market governments face funding pressure -- directly relevant to Myanmar and ASEAN.',
+  },
+  'UNG': {
+    what: 'United States Natural Gas Fund -- tracks natural gas futures prices. Natural gas is the primary heating and electricity fuel in Europe.',
+    why: 'Russia weaponised natural gas against Europe in 2022. UNG is the direct measure of that geopolitical weapon -- energy prices affect global inflation and economic stability.',
+  },
+  'WEAT': {
+    what: 'Teucrium Wheat Fund -- tracks wheat futures prices. Wheat is the world most important food staple, grown primarily in Ukraine, Russia, and the US.',
+    why: 'The Ukraine war proved food is a geopolitical weapon. Rising wheat prices hit food-importing nations hardest -- executives in Asia need to track WEAT for food security risk.',
+  },
+  'GDX': {
+    what: 'VanEck Gold Miners ETF -- tracks companies that mine gold including Barrick, Newmont, and Agnico Eagle. Miners amplify gold price moves by 2-3 times.',
+    why: 'GDX is a more sensitive geopolitical signal than GLD -- miners react faster and more dramatically to crisis events. When GDX surges, the crisis signal is stronger than gold alone.',
+  },
+  'BTC-USD': {
+    what: 'Bitcoin -- the world largest cryptocurrency by market cap. A decentralised digital asset with no central bank or government control.',
+    why: 'Bitcoin is a sanctions evasion signal and dollar confidence barometer. When major sanctions hit, crypto flows spike. BTC rising during a geopolitical crisis signals capital flight.',
+  },
+  'ETH-USD': {
+    what: 'Ethereum -- the second largest cryptocurrency. Powers decentralised finance (DeFi), smart contracts, and digital applications.',
+    why: 'Ethereum reflects technology sector confidence and regulatory risk for decentralised systems. Government crackdowns on DeFi or crypto regulation moves ETH directly.',
+  },
+  'COIN': {
+    what: 'Coinbase Global -- the largest publicly listed cryptocurrency exchange in the US. Its stock reflects the health of the entire crypto market.',
+    why: 'COIN is the most accessible crypto market proxy for executives. When regulators move against crypto or markets stress, COIN falls first -- a reliable leading indicator.',
   },
 }
 
@@ -196,7 +261,7 @@ export default function StocksPage() {
         {/* Left — Watchlist Cards */}
         <div className="w-64 shrink-0 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 100px)' }}>
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-            12 Instruments
+            25 Instruments
           </div>
           <div className="space-y-2">
             {WATCHLIST_TICKERS.map(({ ticker, label, category }) => {
