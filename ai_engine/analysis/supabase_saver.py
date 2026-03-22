@@ -115,6 +115,8 @@ def save_report(report: dict, articles: list[dict], quality_score: float = 0, qu
             "quality_breakdown": json.dumps(quality_breakdown or {}),
             "mad_bull_case": report.get("mad_bull_case", ""),
             "mad_bear_case": report.get("mad_bear_case", ""),
+            "mad_historian_case": report.get("mad_historian_case", ""),
+            "mad_risk_case": report.get("mad_risk_case", ""),
             "mad_verdict": report.get("mad_verdict", ""),
             "mad_confidence": float(report.get("mad_confidence", 0.0)),
             "mad_reasoning": report.get("mad_reasoning", ""),

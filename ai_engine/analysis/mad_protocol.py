@@ -1,6 +1,6 @@
 # ============================================================
 # GNI MAD Protocol v1 — Day 14
-# Multi-Agent Debate: Bull vs Bear -> Arbitrator verdict
+# Multi-Agent Debate: Bull -> Bear -> Historian -> Risk Manager -> Arbitrator
 # Adapted from pilot — fixes: headline->title, model name,
 # improved prompts with geopolitical specificity (L34),
 # richer context including market_impact + escalation_level
@@ -86,7 +86,7 @@ def _validate_mad_output(result: dict) -> dict:
 
     # Check for injection patterns in agent outputs
     injection_signals = ['ignore previous', 'override', 'jailbreak', 'system:', 'act as']
-    for field in ['mad_bull_case', 'mad_bear_case', 'mad_reasoning']:
+    for field in ['mad_bull_case', 'mad_bear_case', 'mad_historian_case', 'mad_risk_case', 'mad_reasoning']:
         text = result.get(field, '').lower()
         for signal in injection_signals:
             if signal in text:
@@ -101,14 +101,17 @@ def _validate_mad_output(result: dict) -> dict:
 
 def run_mad_protocol(report: dict) -> dict:
     """
-    Run three-agent MAD debate on a GNI intelligence report.
-    Bull vs Bear -> Arbitrator -> Validated verdict.
+    Run five-agent MAD debate on a GNI intelligence report.
+    Bull -> Bear -> Historian -> Risk Manager -> Arbitrator.
+    Arbitrator weighs all 4 cases before delivering final verdict.
     """
     context = _build_context(report)
     escalation_level = report.get('escalation_level', '')
     risk_level = report.get('risk_level', 'Medium')
+    weakness = report.get('weakness_identified', '')
+    dark_side = report.get('dark_side_detected', '')
 
-    # ── Bull Agent ───────────────────────────────────────────
+    # -- Bull Agent ----------------------------------------
     bull_system = (
         'You are a bullish macro analyst specialising in geopolitical risk. '
         'Argue the STRONGEST BULLISH case for global markets based on this intelligence report. '
@@ -120,7 +123,7 @@ def run_mad_protocol(report: dict) -> dict:
         'Keep your argument to 3-4 sentences. No hedging. Make the strongest possible bull case.'
     )
 
-    # ── Bear Agent ───────────────────────────────────────────
+    # -- Bear Agent ----------------------------------------
     bear_system = (
         'You are a bearish macro analyst specialising in geopolitical risk. '
         'Argue the STRONGEST BEARISH case for global markets based on this intelligence report. '
@@ -132,27 +135,63 @@ def run_mad_protocol(report: dict) -> dict:
         'Keep your argument to 3-4 sentences. No hedging. Make the strongest possible bear case.'
     )
 
-    # ── Arbitrator ───────────────────────────────────────────
+    # -- Historian Agent -----------------------------------
+    historian_system = (
+        'You are a geopolitical historian specialising in market crises and conflict patterns. '
+        'Your role: identify historical precedents for this situation and explain the outcome. '
+        'Requirements: '
+        '(1) Name the most relevant historical parallel (specific event, year, actors). '
+        '(2) Explain how that precedent resolved and what the market outcome was. '
+        '(3) Identify what is DIFFERENT this time that could change the outcome. '
+        '(4) Give a probability-weighted historical base rate for escalation vs resolution. '
+        'Keep your analysis to 3-4 sentences. Be specific about dates and outcomes.'
+    )
+
+    # -- Risk Manager Agent --------------------------------
+    risk_manager_system = (
+        'You are a senior risk manager at a global macro fund. '
+        'Your role: identify the WORST CREDIBLE SCENARIO and tail risks in this situation. '
+        'Requirements: '
+        '(1) Describe the worst credible scenario if this situation escalates further. '
+        '(2) Identify the specific trigger that could cause rapid deterioration. '
+        '(3) Name which markets and instruments would be most severely impacted. '
+        '(4) Recommend one specific hedge or defensive position. '
+        'Focus on tail risk -- the scenario that is possible but not yet priced in. '
+        'Keep your analysis to 3-4 sentences. Be specific and quantitative.'
+    )
+
+    # -- Arbitrator ----------------------------------------
     arb_system = (
         'You are a senior macro strategist and impartial arbitrator. '
-        'Your job: weigh the bull and bear cases against the geopolitical evidence and deliver a verdict. '
-        'Consider: escalation trajectory, historical precedents, market positioning. '
+        'You have received four independent analyses: Bull case, Bear case, '
+        'Historical precedent, and Risk Manager tail risk assessment. '
+        'Your job: weigh all four against the geopolitical evidence and deliver a final verdict. '
+        'Consider: escalation trajectory, historical base rates, tail risk probability, '
+        'market positioning, and any dark side effects identified. '
         'Respond ONLY with valid JSON, no preamble, no markdown, no explanation outside JSON. '
-        'Format exactly: {"verdict": "bullish or bearish or neutral", "confidence": 0.0-1.0, "reasoning": "2-3 sentences explaining the verdict with specific causal language"}'
+        'Format exactly: {"verdict": "bullish or bearish or neutral", '
+        '"confidence": 0.0-1.0, '
+        '"reasoning": "2-3 sentences explaining the verdict with specific causal language"}'
     )
 
     # Run agents
     bull_case = _call_agent(bull_system, context, max_tokens=350)
     bear_case = _call_agent(bear_system, context, max_tokens=350)
+    historian_case = _call_agent(historian_system, context, max_tokens=350)
+    risk_case = _call_agent(risk_manager_system, context, max_tokens=350)
 
     arb_user = (
-        f"INTELLIGENCE REPORT:\n{context}\n\n"
-        f"BULL CASE:\n{bull_case}\n\n"
-        f"BEAR CASE:\n{bear_case}\n\n"
-        f"Current escalation level: {escalation_level} | Risk: {risk_level}\n\n"
-        f"Deliver your arbitration verdict as JSON only."
+        "INTELLIGENCE REPORT:\n" + context + "\n\n"
+        "BULL CASE:\n" + bull_case + "\n\n"
+        "BEAR CASE:\n" + bear_case + "\n\n"
+        "HISTORICAL PRECEDENT:\n" + historian_case + "\n\n"
+        "TAIL RISK ASSESSMENT:\n" + risk_case + "\n\n"
+        "Current escalation: " + escalation_level + " | Risk: " + risk_level + "\n"
+        + ("Weakness identified: " + weakness + "\n" if weakness else "")
+        + ("Dark side detected: " + dark_side + "\n" if dark_side and dark_side != 'None' else "")
+        + "\nDeliver your arbitration verdict as JSON only."
     )
-    arb_raw = _call_agent(arb_system, arb_user, max_tokens=300)
+    arb_raw = _call_agent(arb_system, arb_user, max_tokens=350)
 
     # Parse arbitrator output
     mad_verdict = 'neutral'
@@ -169,16 +208,19 @@ def run_mad_protocol(report: dict) -> dict:
         mad_confidence = max(0.0, min(1.0, mad_confidence))
         mad_reasoning = arb_json.get('reasoning', '')
     except (json.JSONDecodeError, ValueError):
-        # arb_raw kept as mad_reasoning for debugging
         pass
 
     print(f'   Bull: {bull_case[:80]}...')
     print(f'   Bear: {bear_case[:80]}...')
+    print(f'   Historian: {historian_case[:80]}...')
+    print(f'   Risk Manager: {risk_case[:80]}...')
     print(f'   Verdict: {mad_verdict} ({round(mad_confidence, 2)})')
 
     result = {
         'mad_bull_case': bull_case,
         'mad_bear_case': bear_case,
+        'mad_historian_case': historian_case,
+        'mad_risk_case': risk_case,
         'mad_verdict': mad_verdict,
         'mad_confidence': mad_confidence,
         'mad_reasoning': mad_reasoning,
