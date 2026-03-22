@@ -60,54 +60,50 @@ def generate_digest_summary(reports: list[dict]) -> str:
         return _generate_fallback_summary(reports)
 
     try:
-        import urllib.request
-        import json
-
+        import requests as req_lib
         report_lines = ""
         for i, r in enumerate(reports[:10], 1):
-            report_lines += f"""
-Report {i} ({r.get('created_at', '')[:10]}):
-- Title: {r.get('title', '')[:80]}
-- Sentiment: {r.get('sentiment', '')} | Risk: {r.get('risk_level', '')} | Quality: {r.get('quality_score', 0):.1f}/10
-- Summary: {r.get('summary', '')[:200]}
-"""
+            title = r.get('title', '')[:80].encode('ascii', 'ignore').decode()
+            summary = r.get('summary', '')[:200].encode('ascii', 'ignore').decode()
+            report_lines += (
+                "Report " + str(i) + " (" + r.get('created_at', '')[:10] + "):\n"
+                "- Title: " + title + "\n"
+                "- Sentiment: " + r.get('sentiment', '') +
+                " | Risk: " + r.get('risk_level', '') + "\n"
+                "- Summary: " + summary + "\n"
+            )
 
-        prompt = f"""You are GNI — Global Nexus Insights. Summarize the following {len(reports)} intelligence reports from the past week into a concise weekly digest.
-
-REPORTS:
-{report_lines}
-
-Write a 3-4 sentence weekly intelligence digest that:
-1. Identifies the dominant geopolitical theme of the week
-2. Explains the cumulative market impact
-3. Notes any escalation or de-escalation trend
-4. Gives a forward-looking sentence for the coming week
-
-Use professional analytical language. No bullet points. Plain prose only."""
-
-        payload = json.dumps({
-            "model": GROQ_MODEL,
-            "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": 300,
-            "temperature": 0.4,
-        }).encode("utf-8")
-
-        req = urllib.request.Request(
-            "https://api.groq.com/openai/v1/chat/completions",
-            data=payload,
-            headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json",
-            }
+        prompt = (
+            "You are a geopolitical intelligence analyst. "
+            "Summarize these " + str(len(reports)) + " intelligence reports "
+            "from the past week into a concise weekly digest.\n\n"
+            "REPORTS:\n" + report_lines + "\n"
+            "Write 3-4 sentences covering: "
+            "(1) dominant geopolitical theme, "
+            "(2) cumulative market impact, "
+            "(3) escalation or de-escalation trend, "
+            "(4) forward outlook for next week. "
+            "Professional analytical prose only. No bullet points."
         )
 
-        with urllib.request.urlopen(req, timeout=30) as response:
-            data = json.loads(response.read())
+        response = req_lib.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": "Bearer " + GROQ_API_KEY,
+                     "Content-Type": "application/json"},
+            json={"model": GROQ_MODEL,
+                  "messages": [{"role": "user", "content": prompt}],
+                  "max_tokens": 300, "temperature": 0.4},
+            timeout=30,
+        )
 
-        return data["choices"][0]["message"]["content"].strip()
+        if response.status_code == 200:
+            return response.json()["choices"][0]["message"]["content"].strip()
+        else:
+            print("  Warning: Groq digest HTTP " + str(response.status_code))
+            return _generate_fallback_summary(reports)
 
     except Exception as e:
-        print(f"  ⚠️  Groq digest failed: {e}")
+        print("  Warning: Groq digest error: " + str(e))
         return _generate_fallback_summary(reports)
 
 
