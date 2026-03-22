@@ -4,7 +4,7 @@ import { z } from 'zod'
 const VALID_RANGES = ['3d', '7d', '1m', '1y', '10y'] as const
 
 const QuerySchema = z.object({
-  ticker: z.string().regex(/^[A-Z0-9]{1,10}$/, { message: 'ticker must be 1-10 uppercase alphanumeric chars' }).default('SPY'),
+  ticker: z.string().regex(/^[\^A-Z0-9][\^A-Z0-9\-\.]{0,9}$/, { message: 'ticker must be 1-10 chars: uppercase letters, numbers, ^, -, .' }).default('SPY'),
   range: z.enum(VALID_RANGES).default('10y'),
 })
 
