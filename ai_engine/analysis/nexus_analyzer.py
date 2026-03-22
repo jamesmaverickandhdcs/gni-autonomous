@@ -11,7 +11,7 @@ load_dotenv()
 # Primary:  Groq API (GitHub Actions / cloud)
 # Local:    Llama 3 8B via Ollama (local development)
 # Auto-detects environment and uses appropriate LLM
-# Myanmar summary generated as separate post-processing step
+# myanmar_summary: empty string -- translation handled by GNI_Myanmar app
 # ============================================================
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
@@ -299,63 +299,6 @@ def _extract_fields_regex(raw: str) -> dict | None:
     }
 
 
-def _generate_myanmar_summary(report: dict) -> str:
-    """Generate a Burmese language summary as a separate post-processing step."""
-    if not GROQ_API_KEY:
-        return ""
-
-    summary = report.get("summary", "")
-
-    prompt = f"""Translate this EXACT text into Myanmar (Burmese) language. 
-Translate word-for-word accurately. Do not summarize or change the meaning.
-Respond with ONLY the Burmese translation, nothing else.
-
-Text to translate:
-{summary}"""
-
-    try:
-        response = requests.post(
-            GROQ_URL,
-            headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": GROQ_MODEL,
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.3,
-                "max_tokens": 300
-            },
-            timeout=15
-        )
-        if response.status_code == 200:
-            result = response.json()["choices"][0]["message"]["content"].strip()
-            print(f"  ✅ Myanmar summary generated ({len(result)} chars)")
-            return result
-        else:
-            print(f"  ⚠️  Myanmar summary failed: {response.status_code}")
-            return ""
-    except Exception as e:
-        print(f"  ⚠️  Myanmar summary error: {e}")
-        return ""
-
-
-
-
-# Required fields: name -> (expected_type, validator_fn or None)
-_REQUIRED_FIELDS = {
-    "title":                 (str,   lambda v: len(v.strip()) > 0),
-    "summary":               (str,   lambda v: len(v.strip()) > 0),
-    "sentiment":             (str,   lambda v: v.strip() in ["Bullish", "Bearish", "Neutral"]),
-    "sentiment_score":       (float, lambda v: -1.0 <= float(v) <= 1.0),
-    "source_consensus_score":(float, lambda v: 0.0 <= float(v) <= 1.0),
-    "location_name":         (str,   lambda v: len(v.strip()) > 0),
-    "tickers_affected":      (list,  lambda v: len(v) > 0),
-    "market_impact":         (str,   lambda v: len(v.strip()) > 0),
-    "risk_level":            (str,   lambda v: v.strip() in ["Low", "Medium", "High", "Critical"]),
-}
-
-
 def _validate_report_schema(report: dict) -> dict | None:
     """
     Validate all required fields exist, have correct type, and pass range checks.
@@ -468,9 +411,8 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     report["articles_analyzed"] = len(articles)
     report["sources_used"] = list(set(a["source"] for a in articles))
 
-    # ── Myanmar Summary (separate Groq call) ──────────────────
-    print("  🇲🇲 Generating Myanmar summary...")
-    report["myanmar_summary"] = _generate_myanmar_summary(report)
+    # myanmar_summary handled by GNI_Myanmar app (separate project)
+    report["myanmar_summary"] = ""
 
     return report
 
@@ -509,6 +451,5 @@ if __name__ == "__main__":
         print(f"  LLM Used:        {report.get('llm_source')}")
         print(f"  Market Impact:   {report.get('market_impact')}")
         print(f"\n  Summary:\n  {report.get('summary')}")
-        print(f"\n  Myanmar Summary:\n  {report.get('myanmar_summary')}")
     else:
         print("  ❌ Analysis failed")
