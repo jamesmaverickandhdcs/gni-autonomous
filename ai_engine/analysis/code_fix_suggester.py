@@ -47,6 +47,10 @@ BUG_PATTERNS = [
      "patterns": ["Failed to parse LLM", "JSONDecodeError", "invalid JSON"],
      "description": "LLM returned invalid or malformed JSON",
      "affected_file": "ai_engine/analysis/nexus_analyzer.py"},
+    {"class": "groq_rate_limit",
+     "patterns": ["rate limit", "429", "quota exceeded", "rate_limit_exceeded"],
+     "description": "Groq API rate limit hit -- too many requests on free tier",
+     "affected_file": "ai_engine/analysis/nexus_analyzer.py + frequency_controller.py"},
 ]
 
 STRIKE_WARNINGS = [
