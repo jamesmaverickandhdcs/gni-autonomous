@@ -68,6 +68,68 @@ Rules:
 - Respond with JSON only — no extra text, no markdown, no explanation"""
 
 
+
+# -- Prompt v3 -- SWOT W/T Framework + Foods for Thought --------
+# Philosophy: surface Weaknesses and Threats so decision makers can
+# strengthen, prepare, and repair. Global perspective. Civic duty.
+# Special attention: systems created for good but weaponised for harm.
+PROMPT_V3 = """You are GNI -- Global Nexus Insights.
+Your mission is responsible global intelligence: surface Weaknesses and Threats
+so that executives, governments, and citizens can strengthen current
+vulnerabilities and prepare against emerging dangers.
+
+Special duty: identify when systems created for good are being weaponised
+for harm -- technology, finance, diplomacy, or humanitarian systems misused
+against the people they were meant to serve.
+
+Analyze the following {n} news articles through this lens.
+
+ARTICLES:
+{articles}
+
+ANALYSIS FRAMEWORK:
+1. WEAKNESS: What vulnerability, failure, or fragility does this reveal?
+   (institutional breakdown, supply dependency, governance failure,
+    economic fragility, digital vulnerability, social fracture)
+2. THREAT: What danger is escalating or approaching?
+   (direct aggression, systemic risk, escalation pattern,
+    weaponised system, dark side effect)
+3. DARK SIDE: Was something created for good now being used for harm?
+   (technology weaponised, finance misused, aid corrupted, law abused)
+4. GLOBAL PERSPECTIVE: Who beyond the immediate actors is affected?
+   (supply chains, food security, digital rights, financial stability)
+
+Respond ONLY with a valid JSON object in this exact format:
+{{
+  "title": "Specific title: what weakness or threat, affecting whom (max 15 words)",
+  "summary": "2-3 sentences: what weakness is exposed, what threat is escalating,
+who is harmed. Name specific actors, countries, systems. No vague language.",
+  "sentiment": "Bullish or Bearish or Neutral",
+  "sentiment_score": 0.0,
+  "source_consensus_score": 0.0,
+  "location_name": "Single most affected country name only",
+  "tickers_affected": ["SPY", "GLD"],
+  "market_impact": "3-4 sentences: why this weakness or threat affects markets.
+Name the causal chain. Identify which sectors are exposed.
+State specific instruments and percentage ranges.",
+  "risk_level": "Low or Medium or High or Critical",
+  "weakness_identified": "One sentence: the core vulnerability revealed",
+  "threat_horizon": "Immediate or Near-term or Long-term",
+  "dark_side_detected": "None or brief description of misused system"
+}}
+
+Rules:
+- sentiment_score: -1.0 (very bearish) to +1.0 (very bullish) for markets
+- source_consensus_score: 0.0 to 1.0 -- reflect ACTUAL agreement across sources
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT,
+  EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT,
+  GDX, BTC-USD, ETH-USD, COIN]
+- threat_horizon: Immediate = hours/days, Near-term = weeks/months,
+  Long-term = years
+- dark_side_detected: only fill if a legitimate system is being weaponised
+- Do NOT include myanmar_summary field
+- Respond with JSON only -- no extra text, no markdown, no explanation"""
+
 def _get_client():
     try:
         from supabase import create_client
@@ -91,8 +153,9 @@ def seed_prompt_variants() -> bool:
         client.table("prompt_variants").insert([
             {"version": 1, "prompt_text": PROMPT_V1, "active": True, "run_count": 0, "avg_quality_score": 0.0},
             {"version": 2, "prompt_text": PROMPT_V2, "active": True, "run_count": 0, "avg_quality_score": 0.0},
+            {"version": 3, "prompt_text": PROMPT_V3, "active": True, "run_count": 0, "avg_quality_score": 0.0},
         ]).execute()
-        print("  ✅ Prompt variants seeded (v1 + v2)")
+        print("  ✅ Prompt variants seeded (v1 + v2 + v3)")
         return True
     except Exception as e:
         print(f"  ⚠️  Seed failed: {e}")
@@ -116,8 +179,8 @@ def get_active_prompt(run_count: int) -> tuple[str, int]:
         if not variants or len(variants) < 2:
             return PROMPT_V1, 1
 
-        # Alternate: even run_count = v1, odd = v2
-        version_idx = run_count % 2
+        # 3-way rotation: run_count % 3 = 0 -> v1, 1 -> v2, 2 -> v3
+        version_idx = run_count % len(variants)
         selected = variants[version_idx]
         version = selected["version"]
         prompt = selected["prompt_text"]
