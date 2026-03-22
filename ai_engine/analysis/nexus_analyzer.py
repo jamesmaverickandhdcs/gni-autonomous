@@ -299,6 +299,20 @@ def _extract_fields_regex(raw: str) -> dict | None:
     }
 
 
+
+# Required fields for schema validation -- (type, validator_fn or None)
+_REQUIRED_FIELDS = {
+    "title":                  (str,   lambda v: len(v) > 0),
+    "summary":                 (str,   lambda v: len(v) > 0),
+    "sentiment":               (str,   lambda v: v in ["Bullish", "Bearish", "Neutral"]),
+    "sentiment_score":         (float, lambda v: -1.0 <= v <= 1.0),
+    "source_consensus_score":  (float, lambda v: 0.0 <= v <= 1.0),
+    "location_name":           (str,   lambda v: len(v) > 0),
+    "tickers_affected":        (list,  lambda v: len(v) > 0),
+    "market_impact":           (str,   None),
+    "risk_level":              (str,   lambda v: v in ["Low", "Medium", "High", "Critical"]),
+}
+
 def _validate_report_schema(report: dict) -> dict | None:
     """
     Validate all required fields exist, have correct type, and pass range checks.
