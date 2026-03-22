@@ -19,7 +19,7 @@ from collectors.alpha_vantage import fetch_price_change_with_fallback
 # Day 1: Added 30-day window + black swan auto-detection
 # ============================================================
 
-TICKERS_TO_CHECK = ['SPY', 'GLD', 'USO']
+TICKERS_TO_CHECK = ['SPY', 'GLD', 'USO', 'DXY', 'XOM', 'TLT']
 BLACK_SWAN_THRESHOLD = 5.0   # SPY move % in 48h that triggers black swan
 BLACK_SWAN_HOURS = 48
 
@@ -168,6 +168,47 @@ def check_human_review_needed(
     return False
 
 
+
+
+# Financial event categories for expanded GPVS
+FINANCIAL_EVENT_KEYWORDS = {
+    'currency_shock':   ['currency collapse', 'devaluation', 'capital flight', 'hyperinflation'],
+    'commodity_shock':  ['oil price spike', 'commodity shock', 'food crisis', 'energy crisis'],
+    'banking_crisis':   ['bank run', 'banking crisis', 'credit crunch', 'liquidity crisis'],
+    'market_crash':     ['market crash', 'stock market crash', 'circuit breaker', 'sell-off'],
+    'debt_crisis':      ['debt default', 'debt ceiling', 'sovereign debt', 'bond yield spike'],
+    'trade_shock':      ['trade war', 'tariff', 'sanctions', 'export control', 'trade embargo'],
+}
+
+
+def detect_financial_event_category(title: str, summary: str) -> str | None:
+    """
+    Detect the primary financial event category from report text.
+    Used to enrich GPVS records with event type for pattern analysis.
+    """
+    text = f'{title} {summary}'.lower()
+    for category, keywords in FINANCIAL_EVENT_KEYWORDS.items():
+        if any(kw in text for kw in keywords):
+            return category
+    return None
+
+
+def check_escalation_accuracy(predicted_level: str, actual_spy_change: float | None) -> bool | None:
+    """
+    Check if escalation level prediction was accurate.
+    CRITICAL/HIGH prediction is correct if SPY moved >2% in either direction.
+    MODERATE/LOW prediction is correct if SPY stayed within +-1%.
+    """
+    if actual_spy_change is None:
+        return None
+    abs_move = abs(actual_spy_change)
+    if predicted_level in ['CRITICAL', 'HIGH']:
+        return abs_move >= 2.0
+    elif predicted_level in ['MODERATE', 'ELEVATED']:
+        return 0.5 <= abs_move < 3.0
+    elif predicted_level == 'LOW':
+        return abs_move < 1.0
+    return None
 def verify_pending_outcomes():
     """
     Fetch reports that need outcome verification and measure them.
@@ -224,6 +265,21 @@ def verify_pending_outcomes():
         gld_30d = fetch_price_change_with_fallback('GLD', 30)
         uso_30d = fetch_price_change_with_fallback('USO', 30)
 
+        # Expanded tickers: dollar, oil stock, bonds
+        dxy_7d  = fetch_price_change_with_fallback('DXY', 7)
+        xom_7d  = fetch_price_change_with_fallback('XOM', 7)
+        tlt_7d  = fetch_price_change_with_fallback('TLT', 7)
+
+        # Financial event category detection
+        fin_category = detect_financial_event_category(
+            report.get('title', ''), report.get('summary', '')
+        )
+
+        # Escalation level accuracy
+        escalation_accurate = check_escalation_accuracy(
+            report.get('risk_level', ''), spy_3d
+        )
+
         print(f"  SPY: 3d={spy_3d}% / 7d={spy_7d}% / 30d={spy_30d}%")
         print(f"  GLD: 3d={gld_3d}% / 7d={gld_7d}% / 30d={gld_30d}%")
         print(f"  USO: 3d={uso_3d}% / 7d={uso_7d}% / 30d={uso_30d}%")
@@ -276,6 +332,11 @@ def verify_pending_outcomes():
             'context_credit': False,
             'status': 'measured',
             'measured_at': datetime.now(timezone.utc).isoformat(),
+            'dxy_change_7d': dxy_7d,
+            'xom_change_7d': xom_7d,
+            'tlt_change_7d': tlt_7d,
+            'financial_event_category': fin_category,
+            'escalation_accurate': escalation_accurate,
         }
 
         client.table('prediction_outcomes').insert(record).execute()

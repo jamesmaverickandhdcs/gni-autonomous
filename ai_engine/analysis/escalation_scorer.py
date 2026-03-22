@@ -11,6 +11,8 @@ TECH_SIGNALS = [
     'critical minerals', 'rare earth', 'lithium', 'cobalt',
     'debt trap', 'belt and road', 'cyber', 'hack', 'ransomware',
     'tech war', 'huawei', 'nvidia', 'tsmc',
+    'artificial intelligence', 'quantum computing', 'drone', 'satellite',
+    'biotech', 'electric vehicle', 'battery', 'data center',
 ]
 
 # Pillar 2 — Geopolitical / Maritime signals
@@ -29,6 +31,11 @@ FIN_SIGNALS = [
     'federal reserve', 'interest rate', 'market crash', 'currency',
     'dollar', 'gold', 'crude', 'opec', 'supply chain disruption',
     'trade war', 'tariff', 'gdp', 'economic crisis',
+    'bank run', 'banking crisis', 'credit crunch', 'debt default',
+    'currency collapse', 'hyperinflation', 'devaluation', 'capital flight',
+    'commodity shock', 'wheat', 'food crisis', 'natural gas',
+    'bond yield', 'yield curve', 'treasury', 'debt ceiling',
+    'crypto crash', 'bitcoin', 'stablecoin', 'liquidity crisis',
 ]
 
 # Critical escalation combinations — when these co-occur, score jumps
@@ -40,6 +47,10 @@ CRITICAL_COMBOS = [
     (['semiconductor', 'export control', 'china'], 2),
     (['oil', 'sanction', 'russia'], 2),
     (['malacca', 'blockade'], 2),
+    (['bank run', 'banking crisis'], 3),
+    (['currency collapse', 'dollar'], 2),
+    (['commodity shock', 'food crisis'], 2),
+    (['debt default', 'recession'], 2),
 ]
 
 
