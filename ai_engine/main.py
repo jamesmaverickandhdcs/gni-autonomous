@@ -21,6 +21,7 @@ from analysis.deception_detector import enrich_report_with_deception
 from analysis.frequency_controller import get_recommended_interval, log_frequency_decision
 from analysis.audit_trail import log_audit_event
 from analysis.code_fix_suggester import run_code_fix_suggester
+from analysis.source_health_monitor import run_source_health_check
 from analysis.staging_checker import run_staging_checks
 from analysis.health_agent import run_health_checks
 from analysis.weekly_digest import should_generate_digest, generate_weekly_digest
@@ -99,6 +100,11 @@ def run_pipeline():
         articles = collect_articles(max_per_source=20)
         step_timings["collection"] = round(time.time() - t0, 2)
         articles_collected = len(articles)
+
+        # -- Source health check (RSS failure detection) --------
+        from collectors.rss_collector import SOURCES as RSS_SOURCES
+        print("\n  Checking source health...")
+        run_source_health_check(articles, RSS_SOURCES)
 
         if articles_collected < 10:
             raise Exception(f"Too few articles: {articles_collected}")
