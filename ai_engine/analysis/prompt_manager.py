@@ -33,7 +33,7 @@ Respond ONLY with a valid JSON object in this exact format:
 Rules:
 - sentiment_score: -1.0 (very bearish) to +1.0 (very bullish) for markets
 - source_consensus_score: 0.0 to 1.0 (how much sources agree)
-- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY]
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
 - Do NOT include myanmar_summary field
 - Respond with JSON only — no extra text, no markdown, no explanation"""
 
@@ -63,7 +63,7 @@ Respond ONLY with a valid JSON object in this exact format:
 Rules:
 - sentiment_score: -1.0 (very bearish) to +1.0 (very bullish) for markets
 - source_consensus_score: 0.0 to 1.0 — reflect ACTUAL agreement level across sources
-- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY]
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
 - Do NOT include myanmar_summary field
 - Respond with JSON only — no extra text, no markdown, no explanation"""
 
