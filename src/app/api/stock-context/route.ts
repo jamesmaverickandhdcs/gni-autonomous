@@ -10,7 +10,7 @@ const supabase = createClient(
 const contextCache: Record<string, { context: string, date: string }> = {}
 
 const QuerySchema = z.object({
-  ticker: z.string().regex(/^[A-Z0-9]{1,10}$/, { message: 'ticker must be 1-10 uppercase alphanumeric chars' }).default('SPY'),
+  ticker: z.string().regex(/^[\^A-Z0-9][\^A-Z0-9\-\.]{0,9}$/, { message: 'ticker must be 1-10 chars: uppercase letters, numbers, ^, -, .' }).default('SPY'),
   change: z.string().regex(/^-?[0-9]+(\.[0-9]+)?$/, { message: 'change must be a numeric value' }).default('0'),
 })
 
