@@ -13,6 +13,7 @@ STAGING_URL = os.getenv(
     'STAGING_URL',
     'https://gni-autonomous-git-staging-jamesmaverickandhdcs-projects.vercel.app'
 )
+VERCEL_BYPASS_SECRET = os.getenv('VERCEL_BYPASS_SECRET', '')
 
 # Pages to check with their required content signatures
 PAGES = [
@@ -34,7 +35,10 @@ def check_page(path, signature, label):
     """
     url = STAGING_URL.rstrip('/') + path
     try:
-        response = requests.get(url, timeout=15)
+        headers = {}
+        if VERCEL_BYPASS_SECRET:
+            headers['x-vercel-protection-bypass'] = VERCEL_BYPASS_SECRET
+        response = requests.get(url, headers=headers, timeout=15)
         if response.status_code != 200:
             return False, f'HTTP {response.status_code}'
         if signature.lower() not in response.text.lower():
