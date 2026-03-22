@@ -316,35 +316,87 @@ def run_funnel(
     print(f"  Stage 3 (Significance):    Scored {len(stage2_pass)} articles")
 
     # â”€â”€ Stage 4: Diversity Ranking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    sorted_arts = sorted(stage2_pass, key=lambda x: x['stage3_score'], reverse=True)
+        # -- Stage 4: Pillar Quota + Diversity Ranking -----------
+    # Quota: 60% Geo (3) + 20% Tech (1) + 20% Fin (1) = 5
+    PILLAR_QUOTA = {"geo": 3, "tech": 1, "fin": 1}
 
-    source_counts = {}
-    selected = []
+    sorted_arts = sorted(stage2_pass, key=lambda x: x["stage3_score"], reverse=True)
+
+    # Group by pillar
+    by_pillar = {"geo": [], "tech": [], "fin": []}
+    unclassified = []
     for art in sorted_arts:
-        source = art.get('source', 'Unknown')
-        count = source_counts.get(source, 0)
-        if count < max_per_source and len(selected) < top_n:
-            source_counts[source] = count + 1
-            art['stage4_selected'] = True
-            art['stage4_rank'] = len(selected) + 1
-            art['stage4_reason'] = f"Rank {len(selected)+1} â€” score {art['stage3_score']} â€” {source} ({count+1}/{max_per_source})"
-            selected.append(art)
+        pillar = art.get("pillar", "").lower()
+        if pillar in by_pillar:
+            by_pillar[pillar].append(art)
         else:
-            if count >= max_per_source:
-                art['stage4_selected'] = False
-                art['stage4_reason'] = f"Source limit reached: {source} already has {count} articles"
+            unclassified.append(art)
+
+    selected = []
+    source_counts = {}
+
+    # Fill quota per pillar -- highest score first, max_per_source respected
+    for pillar, quota in PILLAR_QUOTA.items():
+        filled = 0
+        for art in by_pillar[pillar]:
+            if filled >= quota:
+                break
+            source = art.get("source", "Unknown")
+            count = source_counts.get(source, 0)
+            if count < max_per_source:
+                source_counts[source] = count + 1
+                art["stage4_selected"] = True
+                art["stage4_rank"] = len(selected) + 1
+                art["stage4_reason"] = (
+                    "Pillar quota " + pillar.upper() + " (" + str(filled+1) + "/" + str(quota) + ")"
+                    " -- score " + str(art["stage3_score"])
+                )
+                selected.append(art)
+                filled += 1
             else:
-                art['stage4_selected'] = False
-                art['stage4_reason'] = f"Top {top_n} already selected"
+                art["stage4_selected"] = False
+                art["stage4_reason"] = "Source limit: " + source + " already has " + str(count)
+
+        # Mark unfilled pillar articles as not selected
+        for art in by_pillar[pillar]:
+            if not art.get("stage4_selected") and "stage4_reason" not in art:
+                art["stage4_selected"] = False
+                art["stage4_reason"] = "Pillar quota " + pillar.upper() + " already filled"
+
+    # Fallback: if total < top_n, fill from highest-scoring remaining
+    if len(selected) < top_n:
+        remaining = [a for a in sorted_arts if not a.get("stage4_selected")]
+        for art in remaining:
+            if len(selected) >= top_n:
+                break
+            source = art.get("source", "Unknown")
+            count = source_counts.get(source, 0)
+            if count < max_per_source:
+                source_counts[source] = count + 1
+                art["stage4_selected"] = True
+                art["stage4_rank"] = len(selected) + 1
+                art["stage4_reason"] = "Fallback fill -- score " + str(art["stage3_score"])
+                selected.append(art)
+
+    # Mark all unclassified as not selected
+    for art in unclassified:
+        if not art.get("stage4_selected"):
+            art["stage4_selected"] = False
+            art["stage4_reason"] = "No pillar assigned"
 
     # Add all stage2_pass to trace
     trace.extend(stage2_pass)
 
     dist = {}
+    pillar_dist = {"geo": 0, "tech": 0, "fin": 0}
     for a in selected:
-        dist[a['source']] = dist.get(a['source'], 0) + 1
+        dist[a["source"]] = dist.get(a["source"], 0) + 1
+        p = a.get("pillar", "unknown")
+        if p in pillar_dist:
+            pillar_dist[p] += 1
 
     print(f"  Stage 4 (Ranking+Diversity): Top {len(selected)} selected")
+    print(f"  Pillar distribution: Geo={pillar_dist['geo']} Tech={pillar_dist['tech']} Fin={pillar_dist['fin']} (60/20/20)")
     print(f"  Source distribution: {dist}")
     print(f"  âœ… Funnel complete â€” {len(selected)} articles ready for AI analysis")
     print(f"  ðŸ“Š Total trace: {len(trace)} articles documented")
