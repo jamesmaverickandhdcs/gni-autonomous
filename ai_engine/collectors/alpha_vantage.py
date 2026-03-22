@@ -1,60 +1,119 @@
 # ============================================================
-# GNI - Alpha Vantage Price Collector
-# Day 3 - Primary price source, Yahoo Finance as fallback
+# GNI Price Collector -- Rewritten
+# Primary:  Yahoo Finance (free, no hard limit)
+# Fallback: Twelve Data (free, 800 calls/day)
+# Removed:  Alpha Vantage (25 calls/day -- too low for volume)
+# Architecture decision: March 22, 2026
 # ============================================================
 
 import os
 import json
-import urllib.request
+import requests
 from dotenv import load_dotenv
-
 load_dotenv(override=False)
 
-AV_API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY", "")
-AV_BASE = "https://www.alphavantage.co/query"
+TWELVE_DATA_API_KEY = os.getenv("TWELVE_DATA_API_KEY", "")
+TWELVE_DATA_BASE = "https://api.twelvedata.com"
 
 
-def fetch_price_change_av(ticker: str, days_ago: int):
+def _yahoo_primary(ticker: str, days_ago: int):
     """
-    Fetch price change % for ticker over days_ago using Alpha Vantage.
-    Returns float or None on failure.
+    Primary price source: Yahoo Finance.
+    Free, no hard limit, works most of the time.
+    Occasionally blocks Vercel IPs -- Twelve Data fallback handles this.
     """
-    if not AV_API_KEY:
-        print("  WARNING: ALPHA_VANTAGE_API_KEY not set")
-        return None
     try:
+        range_map = {3: "5d", 7: "7d", 14: "1mo", 30: "1mo"}
+        period = range_map.get(days_ago, "7d")
+
+        # Handle crypto tickers -- Yahoo uses different format
+        yahoo_ticker = ticker
+        if ticker in ["BTC-USD", "ETH-USD"]:
+            yahoo_ticker = ticker  # Yahoo supports BTC-USD directly
+
         url = (
-            AV_BASE
-            + "?function=TIME_SERIES_DAILY"
-            + "&symbol=" + ticker
-            + "&outputsize=compact"
-            + "&apikey=" + AV_API_KEY
+            "https://query1.finance.yahoo.com/v8/finance/chart/"
+            + yahoo_ticker
+            + "?interval=1d&range=" + period
         )
-        req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0"
-        })
-        with urllib.request.urlopen(req, timeout=15) as response:
-            data = json.loads(response.read())
-
-        if "Note" in data:
-            print("  WARNING: Alpha Vantage rate limit hit")
+        response = requests.get(
+            url,
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+            timeout=10,
+        )
+        if response.status_code != 200:
             return None
 
-        if "Error Message" in data:
-            print("  WARNING: Alpha Vantage error for " + ticker)
+        data = response.json()
+        result = data.get("chart", {}).get("result", [])
+        if not result:
             return None
 
-        ts = data.get("Time Series (Daily)", {})
-        if not ts:
+        closes = result[0].get("indicators", {}).get("quote", [{}])[0].get("close", [])
+        closes = [c for c in closes if c is not None]
+
+        if len(closes) < 2:
             return None
 
-        dates = sorted(ts.keys(), reverse=True)
-        if len(dates) < 2:
+        if days_ago == 30 and len(closes) >= 20:
+            closes = closes[-30:] if len(closes) >= 30 else closes
+
+        change_pct = ((closes[-1] - closes[0]) / closes[0]) * 100
+        return round(change_pct, 2)
+
+    except Exception as e:
+        print("  [Yahoo] Failed for " + ticker + ": " + str(e)[:60])
+        return None
+
+
+def _twelve_data_fallback(ticker: str, days_ago: int):
+    """
+    Fallback price source: Twelve Data.
+    Free tier: 800 calls/day -- covers our volume easily.
+    Used when Yahoo Finance blocks Vercel IPs.
+    """
+    if not TWELVE_DATA_API_KEY:
+        print("  [TwelveData] No API key -- skipping fallback")
+        return None
+
+    try:
+        # Twelve Data uses different crypto format
+        td_ticker = ticker
+        if ticker == "BTC-USD":
+            td_ticker = "BTC/USD"
+        elif ticker == "ETH-USD":
+            td_ticker = "ETH/USD"
+
+        # Map days_ago to outputsize
+        outputsize = max(days_ago + 5, 10)
+
+        url = (
+            TWELVE_DATA_BASE + "/time_series"
+            + "?symbol=" + td_ticker
+            + "&interval=1day"
+            + "&outputsize=" + str(outputsize)
+            + "&apikey=" + TWELVE_DATA_API_KEY
+        )
+        response = requests.get(url, timeout=15)
+        if response.status_code != 200:
+            print("  [TwelveData] HTTP " + str(response.status_code) + " for " + ticker)
             return None
 
-        needed = min(days_ago, len(dates) - 1)
-        price_latest = float(ts[dates[0]]["4. close"])
-        price_old = float(ts[dates[needed]]["4. close"])
+        data = response.json()
+
+        # Check for API errors
+        if data.get("status") == "error":
+            print("  [TwelveData] Error for " + ticker + ": " + data.get("message", "")[:60])
+            return None
+
+        values = data.get("values", [])
+        if not values or len(values) < 2:
+            return None
+
+        # Values are newest first
+        price_latest = float(values[0]["close"])
+        needed = min(days_ago, len(values) - 1)
+        price_old = float(values[needed]["close"])
 
         if price_old == 0:
             return None
@@ -63,50 +122,40 @@ def fetch_price_change_av(ticker: str, days_ago: int):
         return round(change_pct, 2)
 
     except Exception as e:
-        print("  WARNING: Alpha Vantage fetch failed for " + ticker + ": " + str(e))
+        print("  [TwelveData] Failed for " + ticker + ": " + str(e)[:60])
         return None
 
 
 def fetch_price_change_with_fallback(ticker: str, days_ago: int):
     """
-    Primary: Alpha Vantage. Fallback: Yahoo Finance.
-    Returns float or None.
+    Main entry point -- called by outcome_verifier.py.
+    Primary: Yahoo Finance.
+    Fallback: Twelve Data.
+    Returns float (% change) or None.
     """
-    result = fetch_price_change_av(ticker, days_ago)
+    # Primary: Yahoo Finance
+    result = _yahoo_primary(ticker, days_ago)
     if result is not None:
-        print("  [AV] " + ticker + " " + str(days_ago) + "d: " + str(result) + "%")
+        print("  [Yahoo] " + ticker + " " + str(days_ago) + "d: " + str(result) + "%")
         return result
 
-    print("  [AV->Yahoo fallback] " + ticker + " " + str(days_ago) + "d")
-    return _yahoo_fallback(ticker, days_ago)
+    # Fallback: Twelve Data
+    print("  [Yahoo->TwelveData fallback] " + ticker + " " + str(days_ago) + "d")
+    result = _twelve_data_fallback(ticker, days_ago)
+    if result is not None:
+        print("  [TwelveData] " + ticker + " " + str(days_ago) + "d: " + str(result) + "%")
+        return result
+
+    print("  [Both failed] " + ticker + " " + str(days_ago) + "d")
+    return None
 
 
-def _yahoo_fallback(ticker: str, days_ago: int):
-    """Yahoo Finance fallback — original outcome_verifier logic."""
-    try:
-        range_map = {3: "5d", 7: "7d", 14: "1mo", 30: "1mo"}
-        period = range_map.get(days_ago, "7d")
-        url = (
-            "https://query1.finance.yahoo.com/v8/finance/chart/"
-            + ticker
-            + "?interval=1d&range=" + period
-        )
-        req = urllib.request.Request(url, headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-        })
-        with urllib.request.urlopen(req, timeout=10) as response:
-            data = json.loads(response.read())
-        result = data.get("chart", {}).get("result", [])
-        if not result:
-            return None
-        closes = result[0].get("indicators", {}).get("quote", [{}])[0].get("close", [])
-        closes = [c for c in closes if c is not None]
-        if len(closes) < 2:
-            return None
-        if days_ago == 30 and len(closes) >= 20:
-            closes = closes[-30:] if len(closes) >= 30 else closes
-        change_pct = ((closes[-1] - closes[0]) / closes[0]) * 100
-        return round(change_pct, 2)
-    except Exception as e:
-        print("  WARNING: Yahoo fallback failed for " + ticker + ": " + str(e))
-        return None
+if __name__ == "__main__":
+    print("\nGNI Price Collector -- Test Run\n")
+    test_tickers = ["SPY", "GLD", "BTC-USD", "SOXX", "VIX"]
+    for t in test_tickers:
+        result = fetch_price_change_with_fallback(t, 7)
+        if result is not None:
+            print("  " + t + " 7d: " + str(result) + "%")
+        else:
+            print("  " + t + ": No data")
