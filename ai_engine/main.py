@@ -22,6 +22,7 @@ from analysis.frequency_controller import get_recommended_interval, log_frequenc
 from analysis.audit_trail import log_audit_event
 from analysis.code_fix_suggester import run_code_fix_suggester
 from analysis.source_health_monitor import run_source_health_check
+from analysis.keyword_sensor import run_keyword_sensor
 from analysis.staging_checker import run_staging_checks
 from analysis.health_agent import run_health_checks
 from analysis.weekly_digest import should_generate_digest, generate_weekly_digest
@@ -105,6 +106,11 @@ def run_pipeline():
         from collectors.rss_collector import SOURCES as RSS_SOURCES
         print("\n  Checking source health...")
         run_source_health_check(articles, RSS_SOURCES)
+
+        # -- Emerging keyword detection --------------------------
+        if GITHUB_ACTIONS:
+            print("  Scanning for emerging keywords...")
+            run_keyword_sensor(articles)
 
         if articles_collected < 10:
             raise Exception(f"Too few articles: {articles_collected}")
