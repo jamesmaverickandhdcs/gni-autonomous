@@ -1,3 +1,18 @@
+"""
+GNI Weekly Digest -- Full Clean Rewrite
+Replaces mangled weekly_digest.py with correct pillar sections
+GNI-R-037: Full file read done -- file was mangled by previous patches
+GNI-R-062: py_compile check at end
+Run from: C:\HDCS_Project\03\GNI_Autonomous
+Usage: python rewrite_weekly_digest.py
+"""
+
+import os
+import py_compile
+
+file_path = os.path.join("ai_engine", "analysis", "weekly_digest.py")
+
+content = '''\
 # ============================================================
 # GNI Weekly Digest Generator -- Day 13 (v2 -- Pillar Sections)
 # Aggregates 7 days of reports into weekly intelligence summary
@@ -46,11 +61,11 @@ def fetch_week_reports(weeks_ago: int = 0) -> list[dict]:
     week_start, week_end = _get_week_boundaries(weeks_ago)
 
     try:
-        result = client.table("reports") \
-            .select("id, title, summary, sentiment, risk_level, location_name, tickers_affected, quality_score, escalation_score, created_at, market_impact") \
-            .gte("created_at", week_start) \
-            .lte("created_at", week_end) \
-            .order("created_at", desc=False) \
+        result = client.table("reports") \\
+            .select("id, title, summary, sentiment, risk_level, location_name, tickers_affected, quality_score, escalation_score, created_at, market_impact") \\
+            .gte("created_at", week_start) \\
+            .lte("created_at", week_end) \\
+            .order("created_at", desc=False) \\
             .execute()
         return result.data or []
     except Exception as e:
@@ -67,11 +82,11 @@ def fetch_week_pillar_reports(weeks_ago: int = 0) -> list[dict]:
     week_start, week_end = _get_week_boundaries(weeks_ago)
 
     try:
-        result = client.table("pillar_reports") \
-            .select("id, pillar, title, summary, sentiment, risk_level, tickers_affected, quality_score, created_at") \
-            .gte("created_at", week_start) \
-            .lte("created_at", week_end) \
-            .order("created_at", desc=False) \
+        result = client.table("pillar_reports") \\
+            .select("id, pillar, title, summary, sentiment, risk_level, tickers_affected, quality_score, created_at") \\
+            .gte("created_at", week_start) \\
+            .lte("created_at", week_end) \\
+            .order("created_at", desc=False) \\
             .execute()
         return result.data or []
     except Exception as e:
@@ -102,11 +117,11 @@ def generate_pillar_summary(pillar: str, reports: list[dict]) -> str:
             title = r.get("title", "")[:80].encode("ascii", "ignore").decode()
             summary = r.get("summary", "")[:150].encode("ascii", "ignore").decode()
             report_lines += (
-                "Report " + str(i) + " (" + r.get("created_at", "")[:10] + "):\n"
-                "- Title: " + title + "\n"
+                "Report " + str(i) + " (" + r.get("created_at", "")[:10] + "):\\n"
+                "- Title: " + title + "\\n"
                 "- Sentiment: " + r.get("sentiment", "") +
-                " | Risk: " + r.get("risk_level", "") + "\n"
-                "- Summary: " + summary + "\n"
+                " | Risk: " + r.get("risk_level", "") + "\\n"
+                "- Summary: " + summary + "\\n"
             )
 
         prompt = (
@@ -114,8 +129,8 @@ def generate_pillar_summary(pillar: str, reports: list[dict]) -> str:
             "Summarize these " + str(len(reports)) + " " + pillar.upper() + " pillar reports "
             "from the past week into 2-3 sentences covering: "
             "(1) dominant theme, (2) key risk or opportunity, (3) outlook. "
-            "Professional analytical prose only. No bullet points.\n\n"
-            "REPORTS:\n" + report_lines
+            "Professional analytical prose only. No bullet points.\\n\\n"
+            "REPORTS:\\n" + report_lines
         )
 
         response = req_lib.post(
@@ -151,18 +166,18 @@ def generate_digest_summary(reports: list[dict]) -> str:
             title = r.get("title", "")[:80].encode("ascii", "ignore").decode()
             summary = r.get("summary", "")[:200].encode("ascii", "ignore").decode()
             report_lines += (
-                "Report " + str(i) + " (" + r.get("created_at", "")[:10] + "):\n"
-                "- Title: " + title + "\n"
+                "Report " + str(i) + " (" + r.get("created_at", "")[:10] + "):\\n"
+                "- Title: " + title + "\\n"
                 "- Sentiment: " + r.get("sentiment", "") +
-                " | Risk: " + r.get("risk_level", "") + "\n"
-                "- Summary: " + summary + "\n"
+                " | Risk: " + r.get("risk_level", "") + "\\n"
+                "- Summary: " + summary + "\\n"
             )
 
         prompt = (
             "You are a geopolitical intelligence analyst. "
             "Summarize these " + str(len(reports)) + " intelligence reports "
-            "from the past week into a concise weekly digest.\n\n"
-            "REPORTS:\n" + report_lines + "\n"
+            "from the past week into a concise weekly digest.\\n\\n"
+            "REPORTS:\\n" + report_lines + "\\n"
             "Write 3-4 sentences covering: "
             "(1) dominant geopolitical theme, "
             "(2) cumulative market impact, "
@@ -218,7 +233,7 @@ def generate_weekly_digest(weeks_ago: int = 1) -> dict | None:
     Generate and save weekly digest for the specified week.
     weeks_ago=0 = current week, weeks_ago=1 = last week
     """
-    print(f"  📅 Generating weekly digest (weeks_ago={weeks_ago})...")
+    print(f"  \U0001f4c5 Generating weekly digest (weeks_ago={weeks_ago})...")
 
     # Fetch main reports
     reports = fetch_week_reports(weeks_ago)
@@ -226,7 +241,7 @@ def generate_weekly_digest(weeks_ago: int = 1) -> dict | None:
         print(f"  Warning: No reports found for week {weeks_ago} weeks ago")
         return None
 
-    print(f"  📊 Found {len(reports)} reports for this week")
+    print(f"  \U0001f4ca Found {len(reports)} reports for this week")
 
     # Aggregate stats
     sentiments = [r.get("sentiment", "Neutral") for r in reports]
@@ -247,11 +262,11 @@ def generate_weekly_digest(weeks_ago: int = 1) -> dict | None:
     avg_quality = round(sum(r.get("quality_score", 0) for r in reports) / len(reports), 2)
 
     # Generate main summary
-    print("  🤖 Generating digest summary...")
+    print("  \U0001f916 Generating digest summary...")
     digest_summary = generate_digest_summary(reports)
 
     # Fetch pillar reports for the week
-    print("  🌍 Fetching pillar reports...")
+    print("  \U0001f30d Fetching pillar reports...")
     pillar_reports_week = fetch_week_pillar_reports(weeks_ago)
     geo_reports  = [r for r in pillar_reports_week if r.get("pillar") == "geo"]
     tech_reports = [r for r in pillar_reports_week if r.get("pillar") == "tech"]
@@ -259,11 +274,11 @@ def generate_weekly_digest(weeks_ago: int = 1) -> dict | None:
     print(f"  Pillar reports: GEO={len(geo_reports)} TECH={len(tech_reports)} FIN={len(fin_reports)}")
 
     # Generate pillar summaries
-    print("  🌐 Generating GEO pillar summary...")
+    print("  \U0001f310 Generating GEO pillar summary...")
     geo_summary  = generate_pillar_summary("geo",  geo_reports)
-    print("  💻 Generating TECH pillar summary...")
+    print("  \U0001f4bb Generating TECH pillar summary...")
     tech_summary = generate_pillar_summary("tech", tech_reports)
-    print("  💰 Generating FIN pillar summary...")
+    print("  \U0001f4b0 Generating FIN pillar summary...")
     fin_summary  = generate_pillar_summary("fin",  fin_reports)
 
     week_start, week_end = _get_week_boundaries(weeks_ago)
@@ -306,10 +321,10 @@ def get_latest_digest() -> dict | None:
     if not client:
         return None
     try:
-        result = client.table("weekly_digests") \
-            .select("*") \
-            .order("week_end", desc=True) \
-            .limit(1) \
+        result = client.table("weekly_digests") \\
+            .select("*") \\
+            .order("week_end", desc=True) \\
+            .limit(1) \\
             .execute()
         return result.data[0] if result.data else None
     except Exception:
@@ -317,17 +332,28 @@ def get_latest_digest() -> dict | None:
 
 
 if __name__ == "__main__":
-    print("📅 GNI Weekly Digest Generator\n")
+    print("\U0001f4c5 GNI Weekly Digest Generator\\n")
     digest = generate_weekly_digest(weeks_ago=0)
     if digest:
-        print(f"\n  Week: {digest['week_start']} to {digest['week_end']}")
-        print(f"  Reports: {digest['report_count']}")
-        print(f"  Sentiment: {digest['dominant_sentiment']}")
-        print(f"  Risk: {digest['dominant_risk_level']}")
-        print(f"  Quality: {digest['avg_quality_score']}/10")
-        print(f"  Locations: {digest['top_locations']}")
-        print(f"  Tickers: {digest['top_tickers']}")
-        print(f"\n  Summary:\n  {digest['digest_summary']}")
-        print(f"\n  GEO:\n  {digest.get('geo_summary', 'N/A')}")
-        print(f"\n  TECH:\n  {digest.get('tech_summary', 'N/A')}")
-        print(f"\n  FIN:\n  {digest.get('fin_summary', 'N/A')}")
+        print(f"\\n  Week: {digest[\'week_start\']} to {digest[\'week_end\']}")
+        print(f"  Reports: {digest[\'report_count\']}")
+        print(f"  Sentiment: {digest[\'dominant_sentiment\']}")
+        print(f"  Risk: {digest[\'dominant_risk_level\']}")
+        print(f"  Quality: {digest[\'avg_quality_score\']}/10")
+        print(f"  Locations: {digest[\'top_locations\']}")
+        print(f"  Tickers: {digest[\'top_tickers\']}")
+        print(f"\\n  Summary:\\n  {digest[\'digest_summary\']}")
+        print(f"\\n  GEO:\\n  {digest.get(\'geo_summary\', \'N/A\')}")
+        print(f"\\n  TECH:\\n  {digest.get(\'tech_summary\', \'N/A\')}")
+        print(f"\\n  FIN:\\n  {digest.get(\'fin_summary\', \'N/A\')}")
+'''
+
+with open(file_path, "w", encoding="utf-8", newline="\n") as f:
+    f.write(content)
+
+print(f"OK Written: {file_path}")
+
+# GNI-R-062: py_compile check
+py_compile.compile(file_path, doraise=True)
+print("OK py_compile: syntax OK")
+print("DONE. Now run: npm run build")
