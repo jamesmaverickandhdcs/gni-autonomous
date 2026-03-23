@@ -28,7 +28,7 @@ def fetch_price_change(ticker: str, days_ago: int) -> float | None:
     """Fetch actual price change % for a ticker over N days."""
     try:
         import urllib.request
-        range_map = {3: '5d', 7: '7d', 14: '1mo', 30: '1mo'}
+        range_map = {3: '5d', 7: '7d', 14: '1mo', 30: '1mo', 90: '3mo', 180: '6mo'}
         period = range_map.get(days_ago, '7d')
         url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}?interval=1d&range={period}"
         req = urllib.request.Request(url, headers={
@@ -253,6 +253,9 @@ def verify_pending_outcomes():
         print(f"  Prediction: {report['sentiment']} | Risk: {report['risk_level']}")
 
         # Fetch price changes across all timeframes
+        spy_180d = None  # initialized before fetch
+        gld_180d = None
+        direction_180d = None
         spy_3d  = fetch_price_change_with_fallback('SPY', 3)
         gld_3d  = fetch_price_change_with_fallback('GLD', 3)
         uso_3d  = fetch_price_change_with_fallback('USO', 3)
@@ -261,9 +264,11 @@ def verify_pending_outcomes():
         gld_7d  = fetch_price_change_with_fallback('GLD', 7)
         uso_7d  = fetch_price_change_with_fallback('USO', 7)
 
-        spy_30d = fetch_price_change_with_fallback('SPY', 30)
-        gld_30d = fetch_price_change_with_fallback('GLD', 30)
-        uso_30d = fetch_price_change_with_fallback('USO', 30)
+        spy_30d  = fetch_price_change_with_fallback('SPY', 30)
+        gld_30d  = fetch_price_change_with_fallback('GLD', 30)
+        uso_30d  = fetch_price_change_with_fallback('USO', 30)
+        spy_180d = fetch_price_change_with_fallback('SPY', 180)
+        gld_180d = fetch_price_change_with_fallback('GLD', 180)
 
         # Expanded tickers: dollar, oil stock, bonds
         dxy_7d  = fetch_price_change_with_fallback('DXY', 7)
@@ -280,7 +285,7 @@ def verify_pending_outcomes():
             report.get('risk_level', ''), spy_3d
         )
 
-        print(f"  SPY: 3d={spy_3d}% / 7d={spy_7d}% / 30d={spy_30d}%")
+        print(f"  SPY: 3d={spy_3d}% / 7d={spy_7d}% / 30d={spy_30d}% / 180d={spy_180d}%")
         print(f"  GLD: 3d={gld_3d}% / 7d={gld_7d}% / 30d={gld_30d}%")
         print(f"  USO: 3d={uso_3d}% / 7d={uso_7d}% / 30d={uso_30d}%")
 
@@ -295,9 +300,10 @@ def verify_pending_outcomes():
                 return change > 0
             return None
 
-        direction_3d  = direction(spy_3d, sentiment)
-        direction_7d  = direction(spy_7d, sentiment)
-        direction_30d = direction(spy_30d, sentiment)
+        direction_3d   = direction(spy_3d, sentiment)
+        direction_7d   = direction(spy_7d, sentiment)
+        direction_30d  = direction(spy_30d, sentiment)
+        direction_180d = direction(spy_180d, sentiment)
 
         accuracy = calculate_accuracy_score(
             sentiment, spy_3d, spy_7d, spy_30d,
@@ -325,6 +331,9 @@ def verify_pending_outcomes():
             'gld_change_30d': gld_30d,
             'uso_change_30d': uso_30d,
             'direction_correct_30d': direction_30d,
+            'spy_change_180d': spy_180d,
+            'gld_change_180d': gld_180d,
+            'direction_correct_180d': direction_180d,
             'accuracy_score': accuracy,
             'human_review_needed': review_needed,
             'black_swan_flag': black_swan_active,

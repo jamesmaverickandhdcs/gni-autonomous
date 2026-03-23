@@ -315,7 +315,7 @@ export default function Home() {
           {/* Intelligence group */}
           <div className="mb-2">
             <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">Intelligence</div>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
               <a href="/history" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-orange-700 border border-gray-700 hover:border-orange-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>📋</span><span>History</span>
               </a>
@@ -330,6 +330,9 @@ export default function Home() {
               </a>
               <a href="/keywords" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>🔤</span><span>Keywords</span>
+              </a>
+              <a href="/correlations" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-violet-700 border border-gray-700 hover:border-violet-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>📊</span><span>Correlations</span>
               </a>
             </div>
           </div>
