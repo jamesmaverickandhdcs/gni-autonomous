@@ -24,12 +24,11 @@ PAGES = [
     ('/autonomy',       'Autonomous',            'Autonomy page'),
     ('/transparency',   'Transparency',          'Transparency page'),
     ('/security',       'Security',              'Security page'),
-    ('/keywords',       'Keywords',              'Keywords page'),
-    ('/source-health',  'Source',                'Source health page'),
-    ('/correlations',   'Correlation',           'Correlations page'),
     ('/api/reports',    'created_at',            'Reports API'),
     ('/api/health',     'status',                'Health API'),
 ]
+# Note: /keywords, /source-health, /correlations exist on main branch only.
+# Staging branch does not receive these pages -- verified by npm run build instead.
 
 
 def check_page(path, signature, label):
