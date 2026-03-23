@@ -125,6 +125,106 @@ Rules:
 - Do NOT include myanmar_summary field
 - Respond with JSON only -- no extra text, no markdown, no explanation"""
 
+
+# ── Pillar Prompts ────────────────────────────────────────────────────────────
+# Three dedicated prompts for separate Geo / Tech / Fin pillar reports.
+# Each pillar gets its own analytical lens.
+# GNI-R-095: all JSON field descriptions on single lines.
+
+PROMPT_GEO = """You are GNI -- Global Nexus Insights, Geopolitical Intelligence Division.
+Analyze the following {n} geopolitical news articles. Focus exclusively on political risk, conflict escalation, state actor behaviour, diplomatic developments, and humanitarian threats.
+
+ARTICLES:
+{articles}
+
+Respond ONLY with a valid JSON object:
+{{
+  "title": "Specific geopolitical title: event, actors, consequence (max 15 words)",
+  "summary": "2-3 sentences: what political or security event is occurring, which state actors are involved, what the immediate consequence is. Name specific countries, leaders, dates.",
+  "sentiment": "Bullish or Bearish or Neutral",
+  "sentiment_score": 0.0,
+  "source_consensus_score": 0.0,
+  "location_name": "Single most affected country name only",
+  "tickers_affected": ["SPY", "GLD"],
+  "market_impact": "3-4 sentences: why this geopolitical event affects markets. Name the causal chain. Specific instruments and percentage ranges.",
+  "risk_level": "Low or Medium or High or Critical",
+  "weakness_identified": "One sentence: the geopolitical vulnerability or institutional failure revealed",
+  "threat_horizon": "Immediate or Near-term or Long-term",
+  "dark_side_detected": "None or brief description of misused system"
+}}
+Rules:
+- sentiment_score: -1.0 (very bearish) to +1.0 (very bullish)
+- source_consensus_score: 0.0 to 1.0 -- reflect ACTUAL agreement
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
+- Do NOT include myanmar_summary field
+- Respond with JSON only -- no extra text, no markdown, no explanation"""
+
+PROMPT_TECH = """You are GNI -- Global Nexus Insights, Technology Intelligence Division.
+Analyze the following {n} technology and digital security news articles. Focus exclusively on AI developments, semiconductor supply chains, cyber threats, digital sovereignty, surveillance technology, and technology policy.
+
+ARTICLES:
+{articles}
+
+Respond ONLY with a valid JSON object:
+{{
+  "title": "Specific technology title: technology, threat or development, who is affected (max 15 words)",
+  "summary": "2-3 sentences: what technology event, policy, or threat is occurring. Name specific companies, countries, technologies, dates. Focus on systemic digital risk.",
+  "sentiment": "Bullish or Bearish or Neutral",
+  "sentiment_score": 0.0,
+  "source_consensus_score": 0.0,
+  "location_name": "Single most affected country name only",
+  "tickers_affected": ["SOXX", "HACK"],
+  "market_impact": "3-4 sentences: why this technology development affects markets. Name the causal chain. Specific instruments and percentage ranges.",
+  "risk_level": "Low or Medium or High or Critical",
+  "weakness_identified": "One sentence: the digital vulnerability, dependency, or systemic failure revealed",
+  "threat_horizon": "Immediate or Near-term or Long-term",
+  "dark_side_detected": "None or brief description of technology being weaponised or misused"
+}}
+Rules:
+- sentiment_score: -1.0 (very bearish) to +1.0 (very bullish)
+- source_consensus_score: 0.0 to 1.0 -- reflect ACTUAL agreement
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
+- Do NOT include myanmar_summary field
+- Respond with JSON only -- no extra text, no markdown, no explanation"""
+
+PROMPT_FIN = """You are GNI -- Global Nexus Insights, Financial Intelligence Division.
+Analyze the following {n} financial and economic news articles. Focus exclusively on market movements, monetary policy, trade disputes, commodity markets, capital flows, sanctions, and economic statecraft.
+
+ARTICLES:
+{articles}
+
+Respond ONLY with a valid JSON object:
+{{
+  "title": "Specific financial title: economic event, market affected, magnitude (max 15 words)",
+  "summary": "2-3 sentences: what financial or economic event is occurring. Name specific instruments, central banks, countries, amounts, dates. Focus on market-moving developments.",
+  "sentiment": "Bullish or Bearish or Neutral",
+  "sentiment_score": 0.0,
+  "source_consensus_score": 0.0,
+  "location_name": "Single most affected country name only",
+  "tickers_affected": ["SPY", "DXY"],
+  "market_impact": "3-4 sentences: why this financial development affects specific markets. Name exact instruments, percentage moves, time horizons. Causal chain required.",
+  "risk_level": "Low or Medium or High or Critical",
+  "weakness_identified": "One sentence: the economic vulnerability, financial fragility, or systemic risk revealed",
+  "threat_horizon": "Immediate or Near-term or Long-term",
+  "dark_side_detected": "None or brief description of financial system being misused"
+}}
+Rules:
+- sentiment_score: -1.0 (very bearish) to +1.0 (very bullish)
+- source_consensus_score: 0.0 to 1.0 -- reflect ACTUAL agreement
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
+- Do NOT include myanmar_summary field
+- Respond with JSON only -- no extra text, no markdown, no explanation"""
+
+PILLAR_PROMPTS = {
+    "geo":  PROMPT_GEO,
+    "tech": PROMPT_TECH,
+    "fin":  PROMPT_FIN,
+}
+
+def get_pillar_prompt(pillar: str) -> str:
+    """Return the dedicated prompt for a pillar. Fallback to PROMPT_V3."""
+    return PILLAR_PROMPTS.get(pillar.lower(), PROMPT_V3)
+
 def _get_client():
     try:
         from supabase import create_client

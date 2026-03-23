@@ -307,7 +307,7 @@ def _score_article(article: dict) -> tuple[float, str]:
 
 def run_funnel(
     articles: list[dict],
-    top_n: int = 5,
+    top_n: int = 11,  # 5 geo + 3 tech + 3 fin
     max_per_source: int = 3
 ) -> tuple[list[dict], list[dict]]:
     """
@@ -403,7 +403,7 @@ def run_funnel(
     # â”€â”€ Stage 4: Diversity Ranking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         # -- Stage 4: Pillar Quota + Diversity Ranking -----------
     # Quota: 60% Geo (3) + 20% Tech (1) + 20% Fin (1) = 5
-    PILLAR_QUOTA = {"geo": 3, "tech": 1, "fin": 1}
+    PILLAR_QUOTA = {"geo": 5, "tech": 3, "fin": 3}  # Three Pillar Reports: 5/3/3 = 11 total
 
     sorted_arts = sorted(stage2_pass, key=lambda x: x["stage3_score"], reverse=True)
 
@@ -481,7 +481,7 @@ def run_funnel(
             pillar_dist[p] += 1
 
     print(f"  Stage 4 (Ranking+Diversity): Top {len(selected)} selected")
-    print(f"  Pillar distribution: Geo={pillar_dist['geo']} Tech={pillar_dist['tech']} Fin={pillar_dist['fin']} (60/20/20)")
+    print(f"  Pillar distribution: Geo={pillar_dist['geo']}/5 Tech={pillar_dist['tech']}/3 Fin={pillar_dist['fin']}/3 (Three Pillar Reports)")
     print(f"  Source distribution: {dist}")
     print(f"  âœ… Funnel complete â€” {len(selected)} articles ready for AI analysis")
     print(f"  ðŸ“Š Total trace: {len(trace)} articles documented")

@@ -348,6 +348,45 @@ def save_runtime_log(
         return False
 
 
+
+def save_pillar_report(report: dict, pillar: str, run_id: str | None, report_id: str | None) -> str | None:
+    """Save a pillar-specific report to pillar_reports table."""
+    client = get_client()
+    if not client:
+        return None
+    try:
+        record = {
+            "run_id": run_id,
+            "report_id": report_id,
+            "pillar": pillar,
+            "title": report.get("title", ""),
+            "summary": report.get("summary", ""),
+            "sentiment": report.get("sentiment", "Neutral"),
+            "sentiment_score": float(report.get("sentiment_score", 0.0)),
+            "sentiment_score_lower": float(report.get("sentiment_score_lower", report.get("sentiment_score", 0.0))),
+            "sentiment_score_upper": float(report.get("sentiment_score_upper", report.get("sentiment_score", 0.0))),
+            "confidence_interval_width": float(report.get("confidence_interval_width", 0.0)),
+            "risk_level": report.get("risk_level", "Medium"),
+            "location_name": report.get("location_name", ""),
+            "tickers_affected": report.get("tickers_affected", []),
+            "market_impact": report.get("market_impact", ""),
+            "weakness_identified": report.get("weakness_identified", ""),
+            "threat_horizon": report.get("threat_horizon", ""),
+            "dark_side_detected": report.get("dark_side_detected", ""),
+            "quality_score": float(report.get("quality_score", 0.0)),
+            "llm_source": report.get("llm_source", ""),
+        }
+        result = client.table("pillar_reports").insert(record).execute()
+        if result.data:
+            pid = result.data[0]["id"]
+            print(f"  OK {pillar.upper()} pillar report saved: {pid[:8]}...")
+            return pid
+        return None
+    except Exception as e:
+        print(f"  Warning: Failed to save {pillar} pillar report: {e}")
+        return None
+
+
 def get_pipeline_run_count() -> int:
     """Return total number of pipeline runs — used for A/B prompt alternation."""
     client = get_client()

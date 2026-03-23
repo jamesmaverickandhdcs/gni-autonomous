@@ -18,7 +18,10 @@ VERCEL_BYPASS_SECRET = os.getenv('VERCEL_BYPASS_SECRET', '')
 # Pages to check with their required content signatures
 PAGES = [
     ('/',            'Global Nexus Insights',    'Homepage'),
-    ('/history',     'Intelligence',             'History page'),
+    ('/history',
+        '/keywords',
+        '/source-health',
+        '/correlations',     'Intelligence',             'History page'),
     ('/health',      'Health',                   'Health page'),
     ('/debate',      'Debate',                   'Debate page'),
     ('/autonomy',    'Autonomous',               'Autonomy page'),

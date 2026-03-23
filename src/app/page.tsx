@@ -2,6 +2,24 @@
 import { useEffect, useState } from 'react'
 
 
+interface PillarReport {
+  id: string
+  pillar: string
+  title: string
+  summary: string
+  sentiment: string
+  sentiment_score: number
+  risk_level: string
+  location_name: string
+  tickers_affected: string[]
+  market_impact: string
+  weakness_identified: string
+  threat_horizon: string
+  dark_side_detected: string
+  quality_score: number
+  created_at: string
+}
+
 interface Report {
   id: string
   title: string
@@ -200,6 +218,7 @@ function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
 export default function Home() {
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
+  const [pillarReports, setPillarReports] = useState<PillarReport[]>([])
   const [error, setError] = useState('')
   const [latestArticles, setLatestArticles] = useState<PipelineArticle[]>([])
   const [showAIThinking, setShowAIThinking] = useState(false)
@@ -233,6 +252,11 @@ export default function Home() {
       })
       .catch(() => setError('Failed to load reports'))
       .finally(() => setLoading(false))
+
+    fetch('/api/pillar-reports')
+      .then(r => r.json())
+      .then(data => setPillarReports(data.reports || []))
+      .catch(() => {})
 
     fetch('/api/prediction-outcomes')
       .then(r => r.json())
@@ -558,6 +582,66 @@ export default function Home() {
                 </div>
               </div>
             </section>
+
+            {/* Three Pillar Intelligence Reports */}
+            {pillarReports.length > 0 && (() => {
+              const geoR  = pillarReports.find(r => r.pillar === 'geo')
+              const techR = pillarReports.find(r => r.pillar === 'tech')
+              const finR  = pillarReports.find(r => r.pillar === 'fin')
+              const pillars = [
+                { key: 'geo',  label: 'Geopolitical', emoji: '🌍', report: geoR,  border: 'border-red-800',   bg: 'bg-red-950',   accent: 'text-red-400'   },
+                { key: 'tech', label: 'Technology',   emoji: '💻', report: techR, border: 'border-blue-800',  bg: 'bg-blue-950',  accent: 'text-blue-400'  },
+                { key: 'fin',  label: 'Financial',    emoji: '💰', report: finR,  border: 'border-green-800', bg: 'bg-green-950', accent: 'text-green-400' },
+              ]
+              return (
+                <section className="mb-8">
+                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Three Pillar Intelligence Reports</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {pillars.map(({ key, label, emoji, report, border, bg, accent }) => (
+                      <div key={key} className={`border rounded-xl p-4 ${border} ${bg}`}>
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-xl">{emoji}</span>
+                          <span className={`text-xs font-bold uppercase tracking-wider ${accent}`}>{label}</span>
+                        </div>
+                        {report ? (
+                          <>
+                            <div className="text-sm font-bold text-white mb-1 leading-tight line-clamp-2">{report.title}</div>
+                            <div className="text-xs text-gray-400 mb-3 line-clamp-3">{report.summary}</div>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                                report.risk_level === 'Critical' ? 'bg-red-700 text-white' :
+                                report.risk_level === 'High'     ? 'bg-orange-700 text-white' :
+                                report.risk_level === 'Medium'   ? 'bg-yellow-700 text-white' :
+                                'bg-gray-700 text-gray-300'
+                              }`}>{report.risk_level}</span>
+                              <span className={`text-xs font-bold ${
+                                report.sentiment === 'Bearish' ? 'text-red-400' :
+                                report.sentiment === 'Bullish' ? 'text-green-400' : 'text-gray-400'
+                              }`}>{report.sentiment} {report.sentiment_score >= 0 ? '+' : ''}{report.sentiment_score?.toFixed(2)}</span>
+                            </div>
+                            {report.weakness_identified && (
+                              <div className="text-xs text-gray-500 border-t border-gray-700 pt-2 mt-1">
+                                <span className="text-yellow-600 font-bold">Weakness: </span>
+                                <span className="line-clamp-2">{report.weakness_identified}</span>
+                              </div>
+                            )}
+                            {report.tickers_affected?.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-2">
+                                {report.tickers_affected.slice(0, 3).map((t: string) => (
+                                  <span key={t} className="text-xs font-mono text-blue-400 bg-blue-950 px-1.5 py-0.5 rounded">{t}</span>
+                                ))}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div className="text-xs text-gray-600 italic py-4 text-center">Pending next pipeline run</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )
+            })()}
 
             {latestArticles.length > 0 && (
               <section className="mb-8">
