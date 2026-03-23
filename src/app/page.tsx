@@ -390,12 +390,15 @@ export default function Home() {
           {/* Info group */}
           <div>
             <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">Info</div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <a href="/transparency" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-700 border border-gray-700 hover:border-purple-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>🔍</span><span>Transparency</span>
               </a>
               <a href="/about" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-yellow-700 border border-gray-700 hover:border-yellow-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>🌟</span><span>About</span>
+              </a>
+              <a href="/comparison" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-amber-700 border border-gray-700 hover:border-amber-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🔍</span><span>Comparison</span>
               </a>
             </div>
           </div>
