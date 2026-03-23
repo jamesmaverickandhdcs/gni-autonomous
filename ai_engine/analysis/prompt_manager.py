@@ -102,16 +102,13 @@ ANALYSIS FRAMEWORK:
 Respond ONLY with a valid JSON object in this exact format:
 {{
   "title": "Specific title: what weakness or threat, affecting whom (max 15 words)",
-  "summary": "2-3 sentences: what weakness is exposed, what threat is escalating,
-who is harmed. Name specific actors, countries, systems. No vague language.",
+  "summary": "2-3 sentences: what weakness is exposed, what threat is escalating, who is harmed. Name specific actors, countries, systems. No vague language.",
   "sentiment": "Bullish or Bearish or Neutral",
   "sentiment_score": 0.0,
   "source_consensus_score": 0.0,
   "location_name": "Single most affected country name only",
   "tickers_affected": ["SPY", "GLD"],
-  "market_impact": "3-4 sentences: why this weakness or threat affects markets.
-Name the causal chain. Identify which sectors are exposed.
-State specific instruments and percentage ranges.",
+  "market_impact": "3-4 sentences: why this weakness or threat affects markets. Name the causal chain. Identify which sectors are exposed. State specific instruments and percentage ranges.",
   "risk_level": "Low or Medium or High or Critical",
   "weakness_identified": "One sentence: the core vulnerability revealed",
   "threat_horizon": "Immediate or Near-term or Long-term",
@@ -121,9 +118,7 @@ State specific instruments and percentage ranges.",
 Rules:
 - sentiment_score: -1.0 (very bearish) to +1.0 (very bullish) for markets
 - source_consensus_score: 0.0 to 1.0 -- reflect ACTUAL agreement across sources
-- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT,
-  EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT,
-  GDX, BTC-USD, ETH-USD, COIN]
+- tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
 - threat_horizon: Immediate = hours/days, Near-term = weeks/months,
   Long-term = years
 - dark_side_detected: only fill if a legitimate system is being weaponised
@@ -146,8 +141,12 @@ def seed_prompt_variants() -> bool:
     if not client:
         return False
     try:
-        existing = client.table("prompt_variants").select("id").execute()
-        if existing.data:
+        existing = client.table("prompt_variants").select("id, version").execute()
+        if existing.data and len(existing.data) >= 3:
+            # Update v3 prompt text to latest version (fixes multiline issues)
+            client.table("prompt_variants").update(
+                {"prompt_text": PROMPT_V3}
+            ).eq("version", 3).execute()
             return True  # Already seeded
 
         client.table("prompt_variants").insert([

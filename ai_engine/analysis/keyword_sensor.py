@@ -41,6 +41,16 @@ STOP_WORDS = {
     "people", "country", "countries", "government", "governments",
     "world", "global", "international", "national", "local",
     "news", "latest", "update", "updates", "analysis", "opinion",
+    # Common English words that appear everywhere -- not emerging terms
+    "using", "access", "used", "make", "made", "take", "taken", "need",
+    "needs", "include", "including", "based", "come", "comes", "going",
+    "work", "works", "working", "help", "helps", "said", "says", "told",
+    "show", "shows", "showing", "give", "given", "get", "gets", "getting",
+    "know", "known", "well", "also", "just", "even", "back", "still",
+    "first", "last", "long", "high", "large", "small", "major", "many",
+    "most", "much", "must", "very", "over", "under", "both", "each",
+    "between", "through", "during", "without", "within", "against",
+    "while", "across", "following", "within", "around",
 }
 
 # Security: characters not allowed in keywords
