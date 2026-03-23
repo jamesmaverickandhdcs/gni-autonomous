@@ -104,7 +104,7 @@ export default function DebatePage() {
   const [reports, setReports] = useState<Report[]>([])
   const [selected, setSelected] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'transcript' | 'verdict' | 'predictions'>('transcript')
+  const [activeTab, setActiveTab] = useState<'transcript' | 'verdict' | 'predictions'>('verdict')
 
   useEffect(() => {
     fetch('/api/reports')
@@ -186,7 +186,7 @@ export default function DebatePage() {
                   {reports.map(r => {
                     const { pct, color } = confidenceBar(r.mad_confidence)
                     return (
-                      <button key={r.id} onClick={() => { setSelected(r); setActiveTab('transcript') }}
+                      <button key={r.id} onClick={() => { setSelected(r); setActiveTab('verdict') }}
                         className={`w-full text-left p-3 rounded-lg text-xs transition-colors ${
                           selected?.id === r.id ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                         }`}>
@@ -270,7 +270,7 @@ export default function DebatePage() {
 
                 {/* Tabs */}
                 <div className="flex gap-2">
-                  {(['transcript', 'verdict', 'predictions'] as const).map(tab => (
+                  {(['verdict', 'transcript', 'predictions'] as const).map(tab => (
                     <button key={tab} onClick={() => setActiveTab(tab)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                         activeTab === tab ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
@@ -433,7 +433,7 @@ export default function DebatePage() {
 
                     {selected.mad_blind_spot && (
                       <div className="bg-orange-950 border border-orange-800 rounded-xl p-5">
-                        <div className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">\U0001f50d Blind Spot Quadrant</div>
+                        <div className="text-xs text-orange-400 font-bold uppercase tracking-wider mb-2">🔍 Blind Spot Quadrant</div>
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_blind_spot}</p>
                       </div>
                     )}
@@ -476,7 +476,7 @@ export default function DebatePage() {
                       )}
                     </div>
                     <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">\U0001f3af Long Shoots — {selected.long_verify_days || 180} Days</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">🎯 Long Shoots — {selected.long_verify_days || 180} Days</div>
                       {selected.long_shoot_threats ? (
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.long_shoot_threats}</p>
                       ) : (
