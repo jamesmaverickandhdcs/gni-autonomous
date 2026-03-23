@@ -252,10 +252,8 @@ export default function DebatePage() {
                 </div>
 
 
-                {/* Historian and Risk Manager */}
-                {(selected.mad_historian_case || selected.mad_risk_case) && (
+                {/* Historian and Risk Manager -- always visible */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {selected.mad_historian_case && (
                   <div className="bg-amber-950 border border-amber-800 rounded-xl p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-2xl">📜</span>
@@ -264,10 +262,12 @@ export default function DebatePage() {
                         <div className="text-xs text-amber-700">Historical precedents and base rates</div>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_historian_case}</p>
+                    {selected.mad_historian_case ? (
+                      <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_historian_case}</p>
+                    ) : (
+                      <p className="text-sm text-amber-900 italic">Available for reports generated after March 23, 2026.</p>
+                    )}
                   </div>
-                  )}
-                  {selected.mad_risk_case && (
                   <div className="bg-purple-950 border border-purple-800 rounded-xl p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <span className="text-2xl">🚨</span>
@@ -276,11 +276,13 @@ export default function DebatePage() {
                         <div className="text-xs text-purple-700">Worst credible scenario and tail risk</div>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_risk_case}</p>
+                    {selected.mad_risk_case ? (
+                      <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_risk_case}</p>
+                    ) : (
+                      <p className="text-sm text-purple-900 italic">Available for reports generated after March 23, 2026.</p>
+                    )}
                   </div>
-                  )}
                 </div>
-                )}
 
                 {/* How MAD works */}
                 <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
