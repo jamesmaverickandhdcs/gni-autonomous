@@ -1,25 +1,27 @@
 # ============================================================
-# GNI MAD Protocol v1 — Day 14
-# Multi-Agent Debate: Bull -> Bear -> Historian -> Risk Manager -> Arbitrator
-# Adapted from pilot — fixes: headline->title, model name,
-# improved prompts with geopolitical specificity (L34),
-# richer context including market_impact + escalation_level
-# L23: Model name via GROQ_MODEL env var - never hardcoded
+# GNI MAD Protocol v2 -- Quadratic Debate Framework
+# Bull -> Bear -> Black Swan -> Ostrich -> Arbitrator
+# 3 full rounds with Arbitrator coaching after each round
+# Grounded in ALL relevant articles not just top 5
+# Short Focus (7-30 days) + Long Shoots (3-24 months)
+# Predictions saved to debate_predictions table
+# 21 Groq calls per run
+# L23: Model name via GROQ_MODEL env var -- never hardcoded
 # ============================================================
 
 import os
 import json
 import re
+from datetime import datetime, timezone, timedelta
 from groq import Groq
 
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
-MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')  # L33
+MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')  # L23
 
-VALID_VERDICTS = ["bullish", "bearish", "neutral"]
+VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
 
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> str:
-    """Call a single MAD agent via Groq."""
     try:
         response = client.chat.completions.create(
             model=MODEL,
@@ -32,174 +34,270 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> 
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
-        return f'[Agent error: {str(e)}]'
+        return f'[Agent error: {str(e)[:100]}]'
 
 
-def _build_context(report: dict) -> str:
-    """Build rich context string for MAD agents — fixes headline->title."""
-    title = report.get('title', report.get('headline', 'No title'))
-    summary = report.get('summary', '')[:600]
-    sentiment = report.get('sentiment', 'Neutral')
+def _build_news_context(report: dict, all_articles: list) -> str:
+    title = report.get('title', 'No title')
+    summary = report.get('summary', '')[:400]
     risk_level = report.get('risk_level', 'Medium')
-    market_impact = report.get('market_impact', '')[:400]
-    location = report.get('location_name', '')
-    tickers = ', '.join(report.get('tickers_affected', []))
     escalation = report.get('escalation_level', '')
-    llm_source = report.get('llm_source', 'unknown')
-
-    return (
-        f"Title: {title}\n"
-        f"Summary: {summary}\n"
-        f"Sentiment: {sentiment} | Risk: {risk_level} | Location: {location}\n"
-        f"Escalation: {escalation}\n"
-        f"Tickers Affected: {tickers}\n"
-        f"Market Impact: {market_impact}\n"
-        f"LLM Source: {llm_source}"
+    location = report.get('location_name', '')
+    report_ctx = (
+        'CURRENT INTELLIGENCE REPORT:\n'
+        f'Title: {title}\n'
+        f'Summary: {summary}\n'
+        f'Risk: {risk_level} | Escalation: {escalation} | Location: {location}\n'
     )
+    if not all_articles:
+        return report_ctx
+    by_pillar = {'geo': [], 'fin': [], 'tech': [], 'other': []}
+    for art in all_articles:
+        p = art.get('pillar', 'other').lower()
+        by_pillar[p if p in by_pillar else 'other'].append(art)
+    articles_ctx = '\nINTELLIGENCE BASE -- ALL RELEVANT ARTICLES:\n'
+    for pillar, arts in by_pillar.items():
+        if not arts:
+            continue
+        articles_ctx += f'\n[{pillar.upper()} -- {len(arts)} articles]\n'
+        for art in arts[:15]:
+            articles_ctx += f"  - [{art.get('source','')}] {art.get('title','')[:80]} (score:{art.get('stage3_score',0)})\n"
+    total = sum(len(v) for v in by_pillar.values())
+    articles_ctx += f'\nTotal relevant: {total}\n'
+    return report_ctx + articles_ctx
+
+
+def _get_debate_history() -> dict:
+    history = {'bull': [], 'bear': [], 'black_swan': [], 'ostrich': []}
+    try:
+        from supabase import create_client
+        url = os.getenv('SUPABASE_URL', '')
+        key = os.getenv('SUPABASE_SERVICE_KEY', '')
+        if not url or not key:
+            return history
+        sb = create_client(url, key)
+        result = sb.table('reports') \
+            .select('mad_bull_case,mad_bear_case,mad_black_swan_case,mad_ostrich_case,short_focus_threats,long_shoot_threats,created_at') \
+            .not_.is_('mad_black_swan_case', 'null') \
+            .order('created_at', desc=True) \
+            .limit(3) \
+            .execute()
+        for row in (result.data or []):
+            d = row.get('created_at', '')[:10]
+            for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
+                key_name = 'mad_' + agent + '_case'
+                if row.get(key_name):
+                    history[agent].append(f"[{d}] {row[key_name][:150]}")
+    except Exception as e:
+        print('  Warning: debate history: ' + str(e)[:60])
+    return history
+
+
+def _fmt_history(h: list) -> str:
+    return '\n'.join(h) if h else 'No previous debate history yet.'
+
+
+def _parse_coaching(raw: str) -> dict:
+    base = {'bull': '', 'bear': '', 'black_swan': '', 'ostrich': ''}
+    try:
+        clean = raw.replace('```json', '').replace('```', '').strip()
+        parsed = json.loads(clean)
+        for k in base:
+            base[k] = parsed.get(k, '')
+        return base
+    except (json.JSONDecodeError, ValueError):
+        return base
+
+
+def _save_predictions(report_id: str, short: str, long_s: str,
+                      short_days: int, long_days: int, round3: dict) -> None:
+    try:
+        from supabase import create_client
+        url = os.getenv('SUPABASE_URL', '')
+        key = os.getenv('SUPABASE_SERVICE_KEY', '')
+        if not url or not key or not report_id:
+            return
+        sb = create_client(url, key)
+        now = datetime.now(timezone.utc)
+        records = []
+        for agent, pos in round3.items():
+            if pos:
+                records.append({
+                    'report_id': report_id,
+                    'agent': agent,
+                    'horizon': 'short',
+                    'prediction': pos[:500],
+                    'verify_by': (now + timedelta(days=short_days)).date().isoformat(),
+                    'verified_by': 'pending',
+                })
+        if long_s:
+            records.append({
+                'report_id': report_id,
+                'agent': 'arbitrator',
+                'horizon': 'long',
+                'prediction': long_s[:500],
+                'verify_by': (now + timedelta(days=long_days)).date().isoformat(),
+                'verified_by': 'pending',
+            })
+        if records:
+            sb.table('debate_predictions').insert(records).execute()
+            print(f'  OK {len(records)} predictions saved')
+    except Exception as e:
+        print('  Warning: save predictions: ' + str(e)[:60])
 
 
 def _validate_mad_output(result: dict) -> dict:
-    """
-    Validate MAD output — security hardening.
-    Ensures verdict is valid, confidence in range, reasoning not empty.
-    """
-    errors = []
-
     verdict = result.get('mad_verdict', '')
     if verdict not in VALID_VERDICTS:
-        errors.append(f"Invalid verdict: {verdict!r}")
         result['mad_verdict'] = 'neutral'
-
-    confidence = result.get('mad_confidence', 0.5)
     try:
-        confidence = float(confidence)
-        if confidence < 0.0 or confidence > 1.0:
-            errors.append(f"Confidence out of range: {confidence}")
-            result['mad_confidence'] = max(0.0, min(1.0, confidence))
+        result['mad_confidence'] = max(0.0, min(1.0, float(result.get('mad_confidence', 0.5))))
     except (TypeError, ValueError):
-        errors.append(f"Invalid confidence: {confidence}")
         result['mad_confidence'] = 0.5
-
-    reasoning = result.get('mad_reasoning', '')
-    if len(reasoning.strip()) < 20:
-        errors.append("Reasoning too short — MAD output may be degraded")
-
-    # Check for injection patterns in agent outputs
     injection_signals = ['ignore previous', 'override', 'jailbreak', 'system:', 'act as']
-    for field in ['mad_bull_case', 'mad_bear_case', 'mad_historian_case', 'mad_risk_case', 'mad_reasoning']:
+    for field in ['mad_bull_case', 'mad_bear_case', 'mad_black_swan_case', 'mad_ostrich_case',
+                  'mad_reasoning', 'mad_blind_spot', 'mad_action_recommendation',
+                  'short_focus_threats', 'long_shoot_threats']:
         text = result.get(field, '').lower()
-        for signal in injection_signals:
-            if signal in text:
-                errors.append(f"Injection signal in {field}: {signal!r}")
-                result[field] = '[Output flagged — injection signal detected]'
-
-    if errors:
-        print(f"   ⚠️  MAD validation warnings: {errors}")
-
+        for sig in injection_signals:
+            if sig in text:
+                result[field] = '[Output flagged -- injection signal detected]'
     return result
 
 
-def run_mad_protocol(report: dict) -> dict:
-    """
-    Run five-agent MAD debate on a GNI intelligence report.
-    Bull -> Bear -> Historian -> Risk Manager -> Arbitrator.
-    Arbitrator weighs all 4 cases before delivering final verdict.
-    """
-    context = _build_context(report)
-    escalation_level = report.get('escalation_level', '')
+def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = None) -> dict:
+    if all_articles is None:
+        all_articles = []
+
+    news_ctx = _build_news_context(report, all_articles)
+    history = _get_debate_history()
+    escalation = report.get('escalation_level', '')
     risk_level = report.get('risk_level', 'Medium')
     weakness = report.get('weakness_identified', '')
     dark_side = report.get('dark_side_detected', '')
 
-    # -- Bull Agent ----------------------------------------
-    bull_system = (
-        'You are a bullish macro analyst specialising in geopolitical risk. '
-        'Argue the STRONGEST BULLISH case for global markets based on this intelligence report. '
-        'Requirements: '
-        '(1) Cite SPECIFIC events from the report by name. '
-        '(2) Explain the causal chain: because X happens, therefore Y market outcome follows. '
-        '(3) Name at least one specific ticker and a percentage range. '
-        '(4) Explain why this is a buying opportunity despite apparent risks. '
-        'Keep your argument to 3-4 sentences. No hedging. Make the strongest possible bull case.'
+    # Agent system prompts
+    BULL = ('You are the Bull Agent. Quadrant: Upper-Right -- Known Positives. '
+            'Focus: FUTURE THREATS from missed opportunities. '
+            'Greatest threat: OPPORTUNITY COST -- failing to act on what we know. '
+            'Cite specific intelligence. Name actors, timelines. 3-4 sentences.')
+
+    BEAR = ('You are the Bear Agent. Quadrant: Lower-Right -- Known Negatives. '
+            'Focus: FUTURE THREATS from known risks and systemic vulnerabilities. '
+            'Name which systems are fragile, why, and when they will break. '
+            '3-4 sentences. Be specific about mechanism and timeline.')
+
+    SWAN = ('You are the Black Swan Agent. Quadrant: Upper-Left -- Unknown Negatives. '
+            'Focus: FUTURE THREATS nobody is modelling. '
+            'Look for WEAK SIGNALS in low-scoring articles others dismiss. '
+            'Goal: find what is in the intelligence base that nobody else is watching. '
+            '3-4 sentences. Name the specific mechanism of surprise.')
+
+    OSTRICH = ('You are the Ostrich Agent. Quadrant: Lower-Left -- Ignored Realities. '
+               'Focus: FUTURE THREATS already visible but collectively ignored. '
+               'Name the SPECIFIC institution or government in denial. '
+               'Name the SPECIFIC threat they are ignoring and cost of inaction. '
+               '3-4 sentences. Name names. Cite evidence.')
+
+    ARB_COACH = ('You are the Arbitrator -- debate coach not judge. '
+                 'Give 4 separate targeted feedbacks: (1) what they got right '
+                 '(2) their specific gap (3) direct instruction for next round. '
+                 'Push for specificity, mechanism, timeline, named actors. '
+                 'Respond ONLY with JSON: '
+                 '{"bull": "coaching", "bear": "coaching", '
+                 '"black_swan": "coaching", "ostrich": "coaching"}')
+
+    ARB_FINAL = ('You are the Arbitrator -- Strategic Synthesiser. '
+                 'After 3 rounds identify: '
+                 '(1) BLIND SPOT QUADRANT -- most neglected. '
+                 '(2) ACTION RECOMMENDATION -- one specific action now. '
+                 '(3) SHORT FOCUS THREATS -- specific threats in next 7-30 days. '
+                 '(4) LONG SHOOT THREATS -- structural threats over 3-24 months. '
+                 '(5) Verdict and confidence. '
+                 'Respond ONLY with valid JSON: '
+                 '{"verdict": "bullish or bearish or neutral", '
+                 '"confidence": 0.0-1.0, '
+                 '"reasoning": "2-3 sentences", '
+                 '"blind_spot_quadrant": "bull or bear or black_swan or ostrich", '
+                 '"blind_spot_explanation": "why neglected", '
+                 '"action_recommendation": "one specific action now", '
+                 '"short_focus_threats": "threats in 7-30 days", '
+                 '"short_verify_days": 14, '
+                 '"long_shoot_threats": "structural threats 3-24 months", '
+                 '"long_verify_days": 180}')
+
+    # Round 1
+    print('   Round 1: Opening positions...')
+    r1_base = news_ctx + '\n\nDEBATE HISTORY:\n'
+    bull_r1  = _call_agent(BULL,    r1_base + _fmt_history(history['bull'])        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
+    bear_r1  = _call_agent(BEAR,    r1_base + _fmt_history(history['bear'])        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
+    swan_r1  = _call_agent(SWAN,    r1_base + _fmt_history(history['black_swan'])  + '\n\nROUND 1: Focus on LOW-SCORING articles others ignore.', 350)
+    ost_r1   = _call_agent(OSTRICH, r1_base + _fmt_history(history['ostrich'])     + '\n\nROUND 1: Name the specific threat being ignored.', 350)
+    round1 = {'bull': bull_r1, 'bear': bear_r1, 'black_swan': swan_r1, 'ostrich': ost_r1}
+
+    # Arbitrator coaching Round 1
+    print('   Arbitrator coaching Round 1...')
+    c1_user = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
+               '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\nProvide targeted coaching.')
+    arb_c1 = _parse_coaching(_call_agent(ARB_COACH, c1_user, 600))
+
+    # Round 2
+    print('   Round 2: Refined positions...')
+    r2_base = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
+               '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\n')
+    bull_r2  = _call_agent(BULL,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('bull','')        + '\n\nROUND 2: Respond. Address feedback.', 350)
+    bear_r2  = _call_agent(BEAR,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('bear','')        + '\n\nROUND 2: Respond. Address feedback.', 350)
+    swan_r2  = _call_agent(SWAN,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('black_swan','')  + '\n\nROUND 2: Challenge Bull and Bear. Go deeper.', 350)
+    ost_r2   = _call_agent(OSTRICH, r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('ostrich','')     + '\n\nROUND 2: Name who is in denial and the cost.', 350)
+    round2 = {'bull': bull_r2, 'bear': bear_r2, 'black_swan': swan_r2, 'ostrich': ost_r2}
+
+    # Arbitrator coaching Round 2
+    print('   Arbitrator coaching Round 2...')
+    c2_user = (news_ctx + '\n\nROUND 2:\nBull: ' + bull_r2 + '\nBear: ' + bear_r2 +
+               '\nBlack Swan: ' + swan_r2 + '\nOstrich: ' + ost_r2 +
+               '\n\nR1 coaching: ' + json.dumps(arb_c1) + '\n\nPush to final positions.')
+    arb_c2 = _parse_coaching(_call_agent(ARB_COACH, c2_user, 600))
+
+    # Round 3
+    print('   Round 3: Final positions...')
+    r3_base = (news_ctx +
+               '\n\nR1 Bull: ' + bull_r1 + '\nR1 Bear: ' + bear_r1 +
+               '\nR1 Swan: ' + swan_r1 + '\nR1 Ostrich: ' + ost_r1 +
+               '\n\nR2 Bull: ' + bull_r2 + '\nR2 Bear: ' + bear_r2 +
+               '\nR2 Swan: ' + swan_r2 + '\nR2 Ostrich: ' + ost_r2 + '\n\n')
+    bull_r3  = _call_agent(BULL,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bull','')       + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
+    bear_r3  = _call_agent(BEAR,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bear','')       + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
+    swan_r3  = _call_agent(SWAN,    r3_base + 'FINAL COACHING: ' + arb_c2.get('black_swan','') + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching.', 350)
+    ost_r3   = _call_agent(OSTRICH, r3_base + 'FINAL COACHING: ' + arb_c2.get('ostrich','')    + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction.', 350)
+    round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
+
+    # Arbitrator final synthesis
+    print('   Arbitrator final synthesis...')
+    arb_final_user = (
+        news_ctx + '\n\n'
+        '=== R1 ===\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 + '\nSwan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\n'
+        '=== R2 ===\nBull: ' + bull_r2 + '\nBear: ' + bear_r2 + '\nSwan: ' + swan_r2 + '\nOstrich: ' + ost_r2 + '\n\n'
+        '=== R3 ===\nBull: ' + bull_r3 + '\nBear: ' + bear_r3 + '\nSwan: ' + swan_r3 + '\nOstrich: ' + ost_r3 + '\n\n'
+        + ('Weakness: ' + weakness + '\n' if weakness else '')
+        + ('Dark side: ' + dark_side + '\n' if dark_side and dark_side != 'None' else '')
+        + 'Escalation: ' + escalation + ' | Risk: ' + risk_level + '\n\n'
+        'Deliver final synthesis as JSON only.'
     )
+    arb_final_raw = _call_agent(ARB_FINAL, arb_final_user, 600)
 
-    # -- Bear Agent ----------------------------------------
-    bear_system = (
-        'You are a bearish macro analyst specialising in geopolitical risk. '
-        'Argue the STRONGEST BEARISH case for global markets based on this intelligence report. '
-        'Requirements: '
-        '(1) Cite SPECIFIC events from the report by name. '
-        '(2) Explain the causal chain: because X happens, therefore Y market outcome follows. '
-        '(3) Name at least one specific ticker and a percentage range (downside). '
-        '(4) Explain the systemic risk and contagion pathway. '
-        'Keep your argument to 3-4 sentences. No hedging. Make the strongest possible bear case.'
-    )
-
-    # -- Historian Agent -----------------------------------
-    historian_system = (
-        'You are a geopolitical historian specialising in market crises and conflict patterns. '
-        'Your role: identify historical precedents for this situation and explain the outcome. '
-        'Requirements: '
-        '(1) Name the most relevant historical parallel (specific event, year, actors). '
-        '(2) Explain how that precedent resolved and what the market outcome was. '
-        '(3) Identify what is DIFFERENT this time that could change the outcome. '
-        '(4) Give a probability-weighted historical base rate for escalation vs resolution. '
-        'Keep your analysis to 3-4 sentences. Be specific about dates and outcomes.'
-    )
-
-    # -- Risk Manager Agent --------------------------------
-    risk_manager_system = (
-        'You are a senior risk manager at a global macro fund. '
-        'Your role: identify the WORST CREDIBLE SCENARIO and tail risks in this situation. '
-        'Requirements: '
-        '(1) Describe the worst credible scenario if this situation escalates further. '
-        '(2) Identify the specific trigger that could cause rapid deterioration. '
-        '(3) Name which markets and instruments would be most severely impacted. '
-        '(4) Recommend one specific hedge or defensive position. '
-        'Focus on tail risk -- the scenario that is possible but not yet priced in. '
-        'Keep your analysis to 3-4 sentences. Be specific and quantitative.'
-    )
-
-    # -- Arbitrator ----------------------------------------
-    arb_system = (
-        'You are a senior macro strategist and impartial arbitrator. '
-        'You have received four independent analyses: Bull case, Bear case, '
-        'Historical precedent, and Risk Manager tail risk assessment. '
-        'Your job: weigh all four against the geopolitical evidence and deliver a final verdict. '
-        'Consider: escalation trajectory, historical base rates, tail risk probability, '
-        'market positioning, and any dark side effects identified. '
-        'Respond ONLY with valid JSON, no preamble, no markdown, no explanation outside JSON. '
-        'Format exactly: {"verdict": "bullish or bearish or neutral", '
-        '"confidence": 0.0-1.0, '
-        '"reasoning": "2-3 sentences explaining the verdict with specific causal language"}'
-    )
-
-    # Run agents
-    bull_case = _call_agent(bull_system, context, max_tokens=350)
-    bear_case = _call_agent(bear_system, context, max_tokens=350)
-    historian_case = _call_agent(historian_system, context, max_tokens=350)
-    risk_case = _call_agent(risk_manager_system, context, max_tokens=350)
-
-    arb_user = (
-        "INTELLIGENCE REPORT:\n" + context + "\n\n"
-        "BULL CASE:\n" + bull_case + "\n\n"
-        "BEAR CASE:\n" + bear_case + "\n\n"
-        "HISTORICAL PRECEDENT:\n" + historian_case + "\n\n"
-        "TAIL RISK ASSESSMENT:\n" + risk_case + "\n\n"
-        "Current escalation: " + escalation_level + " | Risk: " + risk_level + "\n"
-        + ("Weakness identified: " + weakness + "\n" if weakness else "")
-        + ("Dark side detected: " + dark_side + "\n" if dark_side and dark_side != 'None' else "")
-        + "\nDeliver your arbitration verdict as JSON only."
-    )
-    arb_raw = _call_agent(arb_system, arb_user, max_tokens=350)
-
-    # Parse arbitrator output
+    # Parse final verdict
     mad_verdict = 'neutral'
     mad_confidence = 0.5
-    mad_reasoning = arb_raw
+    mad_reasoning = ''
+    mad_blind_spot = ''
+    mad_action_recommendation = ''
+    short_focus_threats = ''
+    long_shoot_threats = ''
+    short_verify_days = 14
+    long_verify_days = 180
 
     try:
-        clean = arb_raw.replace('```json', '').replace('```', '').strip()
+        clean = arb_final_raw.replace('```json', '').replace('```', '').strip()
         arb_json = json.loads(clean)
         mad_verdict = arb_json.get('verdict', 'neutral').lower()
         if mad_verdict not in VALID_VERDICTS:
@@ -207,48 +305,65 @@ def run_mad_protocol(report: dict) -> dict:
         mad_confidence = float(arb_json.get('confidence', 0.5))
         mad_confidence = max(0.0, min(1.0, mad_confidence))
         mad_reasoning = arb_json.get('reasoning', '')
+        mad_blind_spot = arb_json.get('blind_spot_quadrant', '')
+        blind_exp = arb_json.get('blind_spot_explanation', '')
+        if blind_exp:
+            mad_blind_spot = mad_blind_spot + ' -- ' + blind_exp
+        mad_action_recommendation = arb_json.get('action_recommendation', '')
+        short_focus_threats = arb_json.get('short_focus_threats', '')
+        long_shoot_threats = arb_json.get('long_shoot_threats', '')
+        short_verify_days = int(arb_json.get('short_verify_days', 14))
+        long_verify_days = int(arb_json.get('long_verify_days', 180))
     except (json.JSONDecodeError, ValueError):
-        pass
+        mad_reasoning = arb_final_raw
 
-    print(f'   Bull: {bull_case[:80]}...')
-    print(f'   Bear: {bear_case[:80]}...')
-    print(f'   Historian: {historian_case[:80]}...')
-    print(f'   Risk Manager: {risk_case[:80]}...')
-    print(f'   Verdict: {mad_verdict} ({round(mad_confidence, 2)})')
+    print(f'   Blind Spot:  {mad_blind_spot[:60]}')
+    print(f'   Short Focus: {short_focus_threats[:60]}')
+    print(f'   Long Shoot:  {long_shoot_threats[:60]}')
+    print(f'   Verdict:     {mad_verdict} ({round(mad_confidence, 2)})')
+    print(f'   Action:      {mad_action_recommendation[:60]}')
+
+    if report_id:
+        _save_predictions(report_id, short_focus_threats, long_shoot_threats,
+                          short_verify_days, long_verify_days, round3)
 
     result = {
-        'mad_bull_case': bull_case,
-        'mad_bear_case': bear_case,
-        'mad_historian_case': historian_case,
-        'mad_risk_case': risk_case,
-        'mad_verdict': mad_verdict,
-        'mad_confidence': mad_confidence,
-        'mad_reasoning': mad_reasoning,
+        'mad_bull_case':             bull_r3,
+        'mad_bear_case':             bear_r3,
+        'mad_black_swan_case':       swan_r3,
+        'mad_ostrich_case':          ost_r3,
+        'mad_verdict':               mad_verdict,
+        'mad_confidence':            mad_confidence,
+        'mad_reasoning':             mad_reasoning,
+        'mad_blind_spot':            mad_blind_spot,
+        'mad_action_recommendation': mad_action_recommendation,
+        'short_focus_threats':       short_focus_threats,
+        'long_shoot_threats':        long_shoot_threats,
+        'short_verify_days':         short_verify_days,
+        'long_verify_days':          long_verify_days,
+        'mad_round1_positions':      round1,
+        'mad_round2_positions':      round2,
+        'mad_round3_positions':      round3,
+        'mad_arb_feedbacks':         {'round1': arb_c1, 'round2': arb_c2},
+        'mad_historian_case':        '',
+        'mad_risk_case':             '',
     }
 
-    # Security validation
-    result = _validate_mad_output(result)
-
-    return result
+    return _validate_mad_output(result)
 
 
 if __name__ == '__main__':
-    print("\U0001f43b\U0001f43b MAD Protocol v1 — Test Run\n")
-
-    test_report = {
-        'title': 'Iran Threatens Hormuz Closure as US Sanctions Tighten',
-        'summary': 'Iran military moved additional forces to the Strait of Hormuz after new US sanctions targeting oil exports.',
-        'sentiment': 'Bearish',
-        'sentiment_score': -0.75,
+    print('Quadratic MAD v2 -- Test Run\n')
+    test = {
+        'title': 'Iran Threatens Hormuz',
+        'summary': 'Iran moved forces to Hormuz after US sanctions.',
         'risk_level': 'High',
-        'escalation_level': 'HIGH',
+        'escalation_level': 'CRITICAL',
         'location_name': 'Iran',
-        'market_impact': 'Oil prices likely to rise 8-12% because Iran controls 20% of global oil transit. USO and XOM to benefit. SPY faces pressure as energy costs rise.',
-        'tickers_affected': ['SPY', 'USO', 'XOM', 'GLD'],
-        'llm_source': 'ollama',
     }
-
-    result = run_mad_protocol(test_report)
-    print(f"\n  Verdict:    {result['mad_verdict']}")
-    print(f"  Confidence: {result['mad_confidence']:.0%}")
-    print(f"  Reasoning:  {result['mad_reasoning'][:200]}")
+    r = run_mad_protocol(test, all_articles=[])
+    print(f"Verdict:     {r['mad_verdict']}")
+    print(f"Blind Spot:  {r['mad_blind_spot'][:80]}")
+    print(f"Short Focus: {r['short_focus_threats'][:80]}")
+    print(f"Long Shoot:  {r['long_shoot_threats'][:80]}")
+    print(f"Action:      {r['mad_action_recommendation'][:80]}")
