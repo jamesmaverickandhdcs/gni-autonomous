@@ -142,7 +142,7 @@ export default function KeywordsPage() {
               <div key={kw.id} className="bg-gray-900 border border-gray-700 rounded-xl p-5">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex items-center gap-3 flex-wrap">
-                    <span className="text-lg font-bold text-white font-mono">"{kw.keyword}"</span>
+                    <span className="text-lg font-bold text-white font-mono">&quot;{kw.keyword}&quot;</span>
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${status.bg} ${status.color}`}>
                       {status.emoji} {status.label}
                     </span>
