@@ -18,7 +18,12 @@ interface Report {
   created_at: string
   mad_bull_case: string
   mad_bear_case: string
+  mad_historian_case: string
+  mad_risk_case: string
   mad_verdict: string
+  weakness_identified: string
+  threat_horizon: string
+  dark_side_detected: string
   mad_confidence: number
   escalation_score: number
   escalation_level: string
@@ -437,6 +442,32 @@ export default function Home() {
                   </p>
                 </div>
 
+                {(latest.weakness_identified || latest.threat_horizon || latest.dark_side_detected) && (
+                <div className="bg-gray-800 rounded-lg p-4 mb-4">
+                  <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">🔍 SWOT Intelligence — Weakness & Threat Analysis</div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {latest.weakness_identified && (
+                    <div className="bg-orange-950 border border-orange-800 rounded-lg p-3">
+                      <div className="text-xs text-orange-400 font-bold mb-1">⚠️ Weakness Identified</div>
+                      <p className="text-xs text-gray-300 leading-relaxed">{latest.weakness_identified}</p>
+                    </div>
+                    )}
+                    {latest.threat_horizon && (
+                    <div className="bg-red-950 border border-red-800 rounded-lg p-3">
+                      <div className="text-xs text-red-400 font-bold mb-1">⏱ Threat Horizon</div>
+                      <p className="text-xs text-gray-300 leading-relaxed">{latest.threat_horizon}</p>
+                    </div>
+                    )}
+                    {latest.dark_side_detected && latest.dark_side_detected !== 'None' && (
+                    <div className="bg-purple-950 border border-purple-800 rounded-lg p-3">
+                      <div className="text-xs text-purple-400 font-bold mb-1">🌍 Dark Side Detected</div>
+                      <p className="text-xs text-gray-300 leading-relaxed">{latest.dark_side_detected}</p>
+                    </div>
+                    )}
+                  </div>
+                </div>
+                )}
+
                 {latest.mad_verdict && (
                   <div className="bg-gray-800 rounded-lg p-4 mb-4">
                     <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
@@ -463,6 +494,22 @@ export default function Home() {
                       <div className="bg-red-950 border border-red-800 rounded-lg p-3">
                         <div className="text-xs text-red-400 font-bold mb-1">🐻 Bear Case</div>
                         <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_bear_case}</p>
+                      </div>
+                      <div className="bg-amber-950 border border-amber-800 rounded-lg p-3">
+                        <div className="text-xs text-amber-400 font-bold mb-1">📜 Historian</div>
+                        {latest.mad_historian_case ? (
+                          <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_historian_case}</p>
+                        ) : (
+                          <p className="text-xs text-amber-900 italic">Available for reports after March 23, 2026.</p>
+                        )}
+                      </div>
+                      <div className="bg-purple-950 border border-purple-800 rounded-lg p-3">
+                        <div className="text-xs text-purple-400 font-bold mb-1">🚨 Risk Manager</div>
+                        {latest.mad_risk_case ? (
+                          <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_risk_case}</p>
+                        ) : (
+                          <p className="text-xs text-purple-900 italic">Available for reports after March 23, 2026.</p>
+                        )}
                       </div>
                     </div>
                   </div>
