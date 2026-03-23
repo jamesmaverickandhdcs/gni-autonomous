@@ -126,7 +126,11 @@ INJECTION_PATTERNS = [
     r'send\s+(all|this)\s+(data|article|information)\s+to',
     r'forward\s+(all|this)\s+(data|article|information)\s+to',
     r'exfiltrate\s+(data|information|results)',
-    r'http[s]?://(?!www\.(aljazeera|cnn|foxnews|bbc|dw|reuters|bloomberg|nikkei|wired|technologyreview|france24|usni|straitstimes|rcinet)\.(com|org|net|co))',
+    # Category 10b: URLs only flagged when combined with exfiltration language
+    # NOT blocking all external URLs -- legitimate articles routinely cite sources
+    # Only flag: send/forward/exfiltrate + URL pattern (true data exfiltration)
+    r'(send|forward|post|submit|exfiltrate).{0,50}https?://',
+    r'https?://[^\s]{5,}.{0,30}(api.key|password|token|secret)',
 ]
 
 
