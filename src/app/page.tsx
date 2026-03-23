@@ -388,7 +388,7 @@ export default function Home() {
               <a href="/about" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-yellow-700 border border-gray-700 hover:border-yellow-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>🌟</span><span>About</span>
               </a>
-              <a href="/comparison" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-amber-700 border border-gray-700 hover:border-amber-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+              <a href="/comparison" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>⚖️</span><span>Comparison</span>
               </a>
             </div>
