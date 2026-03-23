@@ -66,6 +66,16 @@ const AGENTS = [
   { key: 'ostrich',    label: 'Ostrich',     emoji: '\U0001f9a4', color: 'text-yellow-400',bg: 'bg-yellow-950',border: 'border-yellow-800',desc: 'Ignored Realities \u2014 Inertia' },
 ]
 
+function getRoundPosition(positions: RoundPositions | null | undefined, key: string): string {
+  if (!positions) return ''
+  return (positions as Record<string, string>)[key] || ''
+}
+
+function getArbFeedback(feedbacks: ArbFeedbacks | null | undefined, round: 'round1' | 'round2', key: string): string {
+  if (!feedbacks) return ''
+  return (feedbacks[round] as Record<string, string>)[key] || ''
+}
+
 function AgentCard({ agent, text, coaching, round }: {
   agent: typeof AGENTS[0], text: string, coaching?: string, round: number
 }) {
@@ -285,8 +295,8 @@ export default function DebatePage() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {AGENTS.map(agent => (
                               <AgentCard key={agent.key} agent={agent} round={1}
-                                text={(selected.mad_round1_positions as any)?.[agent.key] || ''}
-                                coaching={(selected.mad_arb_feedbacks as any)?.round1?.[agent.key]} />
+                                text={getRoundPosition(selected.mad_round1_positions, agent.key) || ''}
+                                coaching={getArbFeedback(selected.mad_arb_feedbacks, 'round1', agent.key)} />
                             ))}
                           </div>
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
@@ -298,7 +308,7 @@ export default function DebatePage() {
                               {AGENTS.map(agent => (
                                 <div key={agent.key} className="bg-gray-800 rounded-lg p-2">
                                   <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} To {agent.label}</div>
-                                  <p className="text-gray-400 italic">{(selected.mad_arb_feedbacks as any)?.round1?.[agent.key] || 'No coaching recorded'}</p>
+                                  <p className="text-gray-400 italic">{getArbFeedback(selected.mad_arb_feedbacks, 'round1', agent.key) || 'No coaching recorded'}</p>
                                 </div>
                               ))}
                             </div>
@@ -314,8 +324,8 @@ export default function DebatePage() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {AGENTS.map(agent => (
                               <AgentCard key={agent.key} agent={agent} round={2}
-                                text={(selected.mad_round2_positions as any)?.[agent.key] || ''}
-                                coaching={(selected.mad_arb_feedbacks as any)?.round2?.[agent.key]} />
+                                text={getRoundPosition(selected.mad_round2_positions, agent.key) || ''}
+                                coaching={getArbFeedback(selected.mad_arb_feedbacks, 'round2', agent.key)} />
                             ))}
                           </div>
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
@@ -327,7 +337,7 @@ export default function DebatePage() {
                               {AGENTS.map(agent => (
                                 <div key={agent.key} className="bg-gray-800 rounded-lg p-2">
                                   <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} To {agent.label}</div>
-                                  <p className="text-gray-400 italic">{(selected.mad_arb_feedbacks as any)?.round2?.[agent.key] || 'No coaching recorded'}</p>
+                                  <p className="text-gray-400 italic">{getArbFeedback(selected.mad_arb_feedbacks, 'round2', agent.key) || 'No coaching recorded'}</p>
                                 </div>
                               ))}
                             </div>
@@ -343,7 +353,7 @@ export default function DebatePage() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {AGENTS.map(agent => (
                               <AgentCard key={agent.key} agent={agent} round={3}
-                                text={(selected.mad_round3_positions as any)?.[agent.key] || ''} />
+                                text={getRoundPosition(selected.mad_round3_positions, agent.key) || ''} />
                             ))}
                           </div>
                         </div>
@@ -444,7 +454,7 @@ export default function DebatePage() {
                             <div key={agent.key} className={`${agent.bg} ${agent.border} border rounded-lg p-3`}>
                               <div className={`text-xs font-bold ${agent.color} mb-1`}>{agent.emoji} {agent.label}</div>
                               <p className="text-xs text-gray-300 leading-relaxed line-clamp-3">
-                                {(selected.mad_round3_positions as any)?.[agent.key] || selected[`mad_${agent.key === 'black_swan' ? 'black_swan' : agent.key}_case` as keyof Report] as string || 'No position'}
+                                {getRoundPosition(selected.mad_round3_positions, agent.key) || selected[`mad_${agent.key === 'black_swan' ? 'black_swan' : agent.key}_case` as keyof Report] as string || 'No position'}
                               </p>
                             </div>
                           ))}
