@@ -60,10 +60,10 @@ function confidenceBar(confidence: number) {
 }
 
 const AGENTS = [
-  { key: 'bull',       label: 'Bull',        emoji: '\U0001f402', color: 'text-green-400', bg: 'bg-green-950', border: 'border-green-800', desc: 'Known Positives \u2014 Opportunity Cost' },
-  { key: 'bear',       label: 'Bear',        emoji: '\U0001f43b', color: 'text-red-400',   bg: 'bg-red-950',   border: 'border-red-800',   desc: 'Known Negatives \u2014 Systemic Failure' },
-  { key: 'black_swan', label: 'Black Swan',  emoji: '\U0001f9a2', color: 'text-blue-400',  bg: 'bg-blue-950',  border: 'border-blue-800',  desc: 'Unknown Negatives \u2014 Antifragility' },
-  { key: 'ostrich',    label: 'Ostrich',     emoji: '\U0001f9a4', color: 'text-yellow-400',bg: 'bg-yellow-950',border: 'border-yellow-800',desc: 'Ignored Realities \u2014 Inertia' },
+  { key: 'bull',       label: 'Bull',        emoji: '🐂', color: 'text-green-400', bg: 'bg-green-950', border: 'border-green-800', desc: 'Known Positives — Opportunity Cost' },
+  { key: 'bear',       label: 'Bear',        emoji: '🐻', color: 'text-red-400',   bg: 'bg-red-950',   border: 'border-red-800',   desc: 'Known Negatives — Systemic Failure' },
+  { key: 'black_swan', label: 'Black Swan',  emoji: '🦢', color: 'text-blue-400',  bg: 'bg-blue-950',  border: 'border-blue-800',  desc: 'Unknown Negatives — Antifragility' },
+  { key: 'ostrich',    label: 'Ostrich',     emoji: '🦦', color: 'text-yellow-400',bg: 'bg-yellow-950',border: 'border-yellow-800',desc: 'Ignored Realities — Inertia' },
 ]
 
 function getRoundPosition(positions: RoundPositions | null | undefined, key: string): string {
@@ -92,7 +92,7 @@ function AgentCard({ agent, text, coaching, round }: {
       <p className="text-sm text-gray-300 leading-relaxed">{text || <span className="italic text-gray-600">No position recorded</span>}</p>
       {coaching && (
         <div className="mt-3 pt-3 border-t border-gray-700">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">\u2696\ufe0f Arbitrator feedback</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">⚖️ Arbitrator feedback</div>
           <p className="text-xs text-gray-400 italic leading-relaxed">{coaching}</p>
         </div>
       )}
@@ -132,29 +132,29 @@ export default function DebatePage() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-white">\U0001f402\U0001f43b\U0001f9a2\U0001f9a4 Quadratic MAD Protocol</h1>
-              <p className="text-sm text-gray-400">Bull \u2192 Bear \u2192 Black Swan \u2192 Ostrich \u2192 Arbitrator \u2014 3 Live Rounds on Future Threats</p>
+              <h1 className="text-2xl font-bold text-white">🐂🐻🦢🦦 Quadratic MAD Protocol</h1>
+              <p className="text-sm text-gray-400">Bull → Bear → Black Swan → Ostrich → Arbitrator — 3 Live Rounds on Future Threats</p>
               <p className="text-xs text-gray-500 mt-1 max-w-3xl">
-                Four agents debate future threats across two axes: Known/Unknown \u00d7 Proactive/Ignored.
+                Four agents debate future threats across two axes: Known/Unknown × Proactive/Ignored.
                 Arbitrator coaches each agent after every round. Based on all relevant intelligence articles.
                 Short Focus (7-30 days) and Long Shoots (3-24 months) tracked for real-world validation.
               </p>
             </div>
-            <a href="/" className="text-sm text-blue-400 hover:text-blue-300 shrink-0 mt-1">\u2190 Dashboard</a>
+            <a href="/" className="text-sm text-blue-400 hover:text-blue-300 shrink-0 mt-1">← Dashboard</a>
           </div>
           {reports.length > 0 && (
             <div className="grid grid-cols-4 gap-3 mt-4">
               <div className="bg-green-950 border border-green-800 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-green-400">{verdictCounts.bullish}</div>
-                <div className="text-xs text-green-600">\U0001f402 Bullish</div>
+                <div className="text-xs text-green-600">🐂 Bullish</div>
               </div>
               <div className="bg-red-950 border border-red-800 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-red-400">{verdictCounts.bearish}</div>
-                <div className="text-xs text-red-600">\U0001f43b Bearish</div>
+                <div className="text-xs text-red-600">🐻 Bearish</div>
               </div>
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-gray-400">{verdictCounts.neutral}</div>
-                <div className="text-xs text-gray-500">\u25c6 Neutral</div>
+                <div className="text-xs text-gray-500">◆ Neutral</div>
               </div>
               <div className="bg-blue-950 border border-blue-800 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-blue-400">{reports.length}</div>
@@ -170,7 +170,7 @@ export default function DebatePage() {
 
         {!loading && reports.length === 0 && (
           <div className="text-center py-20 text-gray-400">
-            <div className="text-4xl mb-4">\U0001f402\U0001f43b\U0001f9a2\U0001f9a4</div>
+            <div className="text-4xl mb-4">🐂🐻🦢🦦</div>
             <p>No Quadratic debates yet. Pipeline will generate debates on next run.</p>
           </div>
         )}
@@ -201,7 +201,7 @@ export default function DebatePage() {
                         <div className="mt-1.5 bg-gray-700 rounded-full h-1">
                           <div className={`${color} h-1 rounded-full`} style={{ width: pct + '%' }} />
                         </div>
-                        {isQuadratic(r) && <div className="text-blue-400 text-xs mt-1">\u2605 Quadratic</div>}
+                        {isQuadratic(r) && <div className="text-blue-400 text-xs mt-1">★ Quadratic</div>}
                         <div className="text-gray-600 mt-1">{new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
                       </button>
                     )
@@ -214,19 +214,19 @@ export default function DebatePage() {
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Quadrant Map</div>
                 <div className="grid grid-cols-2 gap-1 text-xs">
                   <div className="bg-green-950 border border-green-800 rounded p-2 text-center">
-                    <div>\U0001f402 Bull</div>
+                    <div>🐂 Bull</div>
                     <div className="text-gray-500">Known +</div>
                   </div>
                   <div className="bg-blue-950 border border-blue-800 rounded p-2 text-center">
-                    <div>\U0001f9a2 Swan</div>
+                    <div>🦢 Swan</div>
                     <div className="text-gray-500">Unknown -</div>
                   </div>
                   <div className="bg-red-950 border border-red-800 rounded p-2 text-center">
-                    <div>\U0001f43b Bear</div>
+                    <div>🐻 Bear</div>
                     <div className="text-gray-500">Known -</div>
                   </div>
                   <div className="bg-yellow-950 border border-yellow-800 rounded p-2 text-center">
-                    <div>\U0001f9a4 Ostrich</div>
+                    <div>🦦 Ostrich</div>
                     <div className="text-gray-500">Ignored</div>
                   </div>
                 </div>
@@ -248,19 +248,19 @@ export default function DebatePage() {
                       }`}>{selected.risk_level?.toUpperCase()}</span>
                       {selected.escalation_score > 0 && (
                         <span className="text-xs font-bold px-2 py-1 rounded-full bg-red-900 border border-red-700 text-red-200">
-                          \u26a1 {selected.escalation_score.toFixed(1)}/10
+                          ⚡ {selected.escalation_score.toFixed(1)}/10
                         </span>
                       )}
                       {isQuadratic(selected) && (
                         <span className="text-xs font-bold px-2 py-1 rounded-full bg-blue-900 border border-blue-700 text-blue-200">
-                          \u2605 Quadratic
+                          ★ Quadratic
                         </span>
                       )}
                     </div>
                   </div>
                   <p className="text-gray-400 text-sm">{selected.summary}</p>
                   <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-                    <span>\U0001f4cd {selected.location_name || 'Global'}</span>
+                    <span>📍 {selected.location_name || 'Global'}</span>
                     <span>{new Date(selected.created_at).toLocaleString()}</span>
                     {selected.tickers_affected?.slice(0, 4).map(t => (
                       <span key={t} className="font-mono text-blue-400">{t}</span>
@@ -275,8 +275,8 @@ export default function DebatePage() {
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                         activeTab === tab ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                       }`}>
-                      {tab === 'transcript' ? '\U0001f4dc Debate Transcript' :
-                       tab === 'verdict' ? '\u2696\ufe0f Verdict & Synthesis' : '\U0001f52e Predictions'}
+                      {tab === 'transcript' ? '📜 Debate Transcript' :
+                       tab === 'verdict' ? '⚖️ Verdict & Synthesis' : '🔮 Predictions'}
                     </button>
                   ))}
                 </div>
@@ -301,8 +301,8 @@ export default function DebatePage() {
                           </div>
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="text-lg">\u2696\ufe0f</span>
-                              <div className="text-sm font-bold text-blue-400">Arbitrator Coaching \u2014 After Round 1</div>
+                              <span className="text-lg">⚖️</span>
+                              <div className="text-sm font-bold text-blue-400">Arbitrator Coaching — After Round 1</div>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                               {AGENTS.map(agent => (
@@ -330,8 +330,8 @@ export default function DebatePage() {
                           </div>
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="text-lg">\u2696\ufe0f</span>
-                              <div className="text-sm font-bold text-blue-400">Arbitrator Coaching \u2014 After Round 2</div>
+                              <span className="text-lg">⚖️</span>
+                              <div className="text-sm font-bold text-blue-400">Arbitrator Coaching — After Round 2</div>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                               {AGENTS.map(agent => (
@@ -348,7 +348,7 @@ export default function DebatePage() {
                         <div>
                           <div className="flex items-center gap-3 mb-3">
                             <div className="bg-purple-900 text-purple-200 text-xs font-bold px-3 py-1 rounded-full">ROUND 3</div>
-                            <div className="text-sm text-gray-400">Final positions \u2014 sharpest analysis</div>
+                            <div className="text-sm text-gray-400">Final positions — sharpest analysis</div>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {AGENTS.map(agent => (
@@ -363,7 +363,7 @@ export default function DebatePage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="bg-green-950 border border-green-800 rounded-xl p-5">
                           <div className="flex items-center gap-2 mb-3">
-                            <span className="text-2xl">\U0001f402</span>
+                            <span className="text-2xl">🐂</span>
                             <div>
                               <div className="text-sm font-bold text-green-400">Bull Agent</div>
                               <div className="text-xs text-green-700">Argues for opportunity</div>
@@ -373,7 +373,7 @@ export default function DebatePage() {
                         </div>
                         <div className="bg-red-950 border border-red-800 rounded-xl p-5">
                           <div className="flex items-center gap-2 mb-3">
-                            <span className="text-2xl">\U0001f43b</span>
+                            <span className="text-2xl">🐻</span>
                             <div>
                               <div className="text-sm font-bold text-red-400">Bear Agent</div>
                               <div className="text-xs text-red-700">Argues for risk</div>
@@ -383,7 +383,7 @@ export default function DebatePage() {
                         </div>
                         <div className="bg-amber-950 border border-amber-800 rounded-xl p-5">
                           <div className="flex items-center gap-2 mb-3">
-                            <span className="text-2xl">\U0001f4dc</span>
+                            <span className="text-2xl">📜</span>
                             <div>
                               <div className="text-sm font-bold text-amber-400">Historian Agent</div>
                               <div className="text-xs text-amber-700">Historical precedents</div>
@@ -393,7 +393,7 @@ export default function DebatePage() {
                         </div>
                         <div className="bg-purple-950 border border-purple-800 rounded-xl p-5">
                           <div className="flex items-center gap-2 mb-3">
-                            <span className="text-2xl">\U0001f6a8</span>
+                            <span className="text-2xl">🚨</span>
                             <div>
                               <div className="text-sm font-bold text-purple-400">Risk Manager</div>
                               <div className="text-xs text-purple-700">Tail risk</div>
@@ -412,7 +412,7 @@ export default function DebatePage() {
                     <div className={`border rounded-xl p-5 ${verdictColor(selected.mad_verdict)}`}>
                       <div className="flex items-center gap-3 mb-3">
                         <span className="text-3xl">
-                          {selected.mad_verdict === 'bullish' ? '\U0001f402' : selected.mad_verdict === 'bearish' ? '\U0001f43b' : '\u2696\ufe0f'}
+                          {selected.mad_verdict === 'bullish' ? '🐂' : selected.mad_verdict === 'bearish' ? '🐻' : '⚖️'}
                         </span>
                         <div>
                           <div className="text-xl font-bold">ARBITRATOR VERDICT: {selected.mad_verdict?.toUpperCase()}</div>
@@ -440,7 +440,7 @@ export default function DebatePage() {
 
                     {selected.mad_action_recommendation && (
                       <div className="bg-green-950 border border-green-800 rounded-xl p-5">
-                        <div className="text-xs text-green-400 font-bold uppercase tracking-wider mb-2">\u26a1 Action Recommendation</div>
+                        <div className="text-xs text-green-400 font-bold uppercase tracking-wider mb-2">⚡ Action Recommendation</div>
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_action_recommendation}</p>
                       </div>
                     )}
@@ -448,7 +448,7 @@ export default function DebatePage() {
                     {/* Final positions summary */}
                     {isQuadratic(selected) && (
                       <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-                        <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Final Positions \u2014 Round 3</div>
+                        <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Final Positions — Round 3</div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           {AGENTS.map(agent => (
                             <div key={agent.key} className={`${agent.bg} ${agent.border} border rounded-lg p-3`}>
@@ -468,7 +468,7 @@ export default function DebatePage() {
                 {activeTab === 'predictions' && (
                   <div className="space-y-4">
                     <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">\U0001f52e Short Focus \u2014 {selected.short_verify_days || 14} Days</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">🔮 Short Focus — {selected.short_verify_days || 14} Days</div>
                       {selected.short_focus_threats ? (
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.short_focus_threats}</p>
                       ) : (
@@ -476,7 +476,7 @@ export default function DebatePage() {
                       )}
                     </div>
                     <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">\U0001f3af Long Shoots \u2014 {selected.long_verify_days || 180} Days</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">\U0001f3af Long Shoots — {selected.long_verify_days || 180} Days</div>
                       {selected.long_shoot_threats ? (
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.long_shoot_threats}</p>
                       ) : (
@@ -503,7 +503,7 @@ export default function DebatePage() {
 
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-7xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI \u2014 Global Nexus Insights (Autonomous) | Quadratic MAD Protocol \u2014 Future Threat Intelligence | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
+          GNI — Global Nexus Insights (Autonomous) | Quadratic MAD Protocol — Future Threat Intelligence | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>
