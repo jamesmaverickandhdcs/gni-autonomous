@@ -67,6 +67,46 @@ def _build_news_context(report: dict, all_articles: list) -> str:
     return report_ctx + articles_ctx
 
 
+def _detect_dominant_pillar(all_articles: list) -> str:
+    """Detect which pillar dominates this run's article set."""
+    counts = {'geo': 0, 'tech': 0, 'fin': 0}
+    for art in all_articles:
+        p = art.get('pillar', '').lower()
+        if p in counts:
+            counts[p] += 1
+    if not any(counts.values()):
+        return 'geo'
+    return max(counts, key=counts.get)
+
+
+def _get_pillar_arb_instruction(pillar: str) -> str:
+    """Return pillar-specific weighting instruction for Arbitrator."""
+    if pillar == 'tech':
+        return (
+            'PILLAR WEIGHTING -- TECHNOLOGY DOMINANT: '
+            'Give extra weight to the Black Swan agent position. '
+            'Technology threats are often unknown unknowns -- '
+            'zero-day exploits, AI capability jumps, chip supply shocks. '
+            'The Bear agent downside is important but Black Swan is highest value here. '
+        )
+    elif pillar == 'fin':
+        return (
+            'PILLAR WEIGHTING -- FINANCIAL DOMINANT: '
+            'Give extra weight to the Bear agent position. '
+            'Financial threats are typically known risks playing out -- '
+            'rate shocks, sovereign defaults, currency crises, contagion. '
+            'The Bear agent systematic risk analysis is highest value here. '
+        )
+    else:
+        return (
+            'PILLAR WEIGHTING -- GEOPOLITICAL DOMINANT: '
+            'Balanced weighting across all 4 agents. '
+            'Geopolitical threats span all quadrants equally -- '
+            'known conflicts (Bear), missed opportunities (Bull), '
+            'ignored realities (Ostrich), and unknown escalations (Black Swan). '
+        )
+
+
 def _get_debate_history() -> dict:
     history = {'bull': [], 'bear': [], 'black_swan': [], 'ostrich': []}
     try:
@@ -170,6 +210,9 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
         all_articles = []
 
     news_ctx = _build_news_context(report, all_articles)
+    dominant_pillar = _detect_dominant_pillar(all_articles)
+    pillar_instruction = _get_pillar_arb_instruction(dominant_pillar)
+    print(f'   Dominant pillar: {dominant_pillar.upper()} -- {pillar_instruction[:60]}...')
     history = _get_debate_history()
     escalation = report.get('escalation_level', '')
     risk_level = report.get('risk_level', 'Medium')
@@ -281,7 +324,8 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
         + ('Weakness: ' + weakness + '\n' if weakness else '')
         + ('Dark side: ' + dark_side + '\n' if dark_side and dark_side != 'None' else '')
         + 'Escalation: ' + escalation + ' | Risk: ' + risk_level + '\n\n'
-        'Deliver final synthesis as JSON only.'
+        + 'PILLAR WEIGHTING: ' + pillar_instruction + '\n\n'
+        + 'Deliver final synthesis as JSON only.'
     )
     arb_final_raw = _call_agent(ARB_FINAL, arb_final_user, 600)
 
