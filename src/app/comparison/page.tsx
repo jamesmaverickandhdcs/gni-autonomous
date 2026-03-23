@@ -82,17 +82,29 @@ export default function ComparisonPage() {
 
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <a href="/" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">&larr; Dashboard</a>
-              <h1 className="text-2xl font-bold text-white mt-1">&#x1F50D; Report vs Debate Comparison</h1>
+              <h1 className="text-2xl font-bold text-white">&#x1F50D; Report vs Debate Comparison</h1>
               <p className="text-sm text-gray-400">When AI report and MAD debate disagree &mdash; that is the highest-value signal</p>
             </div>
-            <div className="text-right text-sm text-gray-400">
-              <div>Total Runs: <span className="text-white font-bold">{reports.length}</span></div>
-              <div>DISAGREE signals: <span className="text-red-400 font-bold">{disagreeCount}</span></div>
-            </div>
+            <a href="/" className="text-sm text-blue-400 hover:text-blue-300 shrink-0 mt-1">&larr; Dashboard</a>
           </div>
+          {reports.length > 0 && (
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-white">{reports.length}</div>
+                <div className="text-xs text-gray-500">Total Runs</div>
+              </div>
+              <div className="bg-green-950 border border-green-800 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-green-400">{agreeCount}</div>
+                <div className="text-xs text-green-600">&#x2705; AGREE</div>
+              </div>
+              <div className="bg-red-950 border border-red-800 rounded-lg p-3 text-center">
+                <div className="text-2xl font-bold text-red-400">{disagreeCount}</div>
+                <div className="text-xs text-red-600">&#x26A0;&#xFE0F; DISAGREE</div>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -221,23 +233,7 @@ export default function ComparisonPage() {
               )}
             </section>
 
-            {/* Stats Bar */}
-            <section className="mb-8">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-white">{reports.length}</div>
-                  <div className="text-xs text-gray-500 mt-1">Total Runs Tracked</div>
-                </div>
-                <div className="bg-green-950 border border-green-800 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-green-400">{agreeCount}</div>
-                  <div className="text-xs text-gray-500 mt-1">&#x2705; AGREE Signals</div>
-                </div>
-                <div className="bg-red-950 border border-red-800 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-red-400">{disagreeCount}</div>
-                  <div className="text-xs text-gray-500 mt-1">&#x26A0;&#xFE0F; DISAGREE Signals</div>
-                </div>
-              </div>
-            </section>
+
 
             {/* Historical Timeline */}
             <section className="mb-8">
