@@ -80,6 +80,19 @@ interface GpvsTimelineEntry {
   black_swan: boolean
 }
 
+function decodeHtml(text: string): string {
+  if (!text) return ''
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+}
+
 function riskColor(risk: string) {
   switch (risk?.toLowerCase()) {
     case 'critical': return 'bg-red-600 text-white'
@@ -269,11 +282,11 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">
                 Consolidated Intelligence Report
               </div>
-              <p className="text-gray-300 text-sm leading-relaxed mb-2">{report.summary}</p>
+              <p className="text-gray-300 text-sm leading-relaxed mb-2">{decodeHtml(report.summary)}</p>
               {report.market_impact && (
                 <p className="text-gray-400 text-xs leading-relaxed mb-2">
                   <span className="text-gray-500">Market Impact: </span>
-                  {report.market_impact}
+                  {decodeHtml(report.market_impact)}
                 </p>
               )}
               <div className="flex items-center gap-3 flex-wrap">
@@ -372,13 +385,13 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                         rel="noopener noreferrer"
                         className="text-sm text-blue-300 hover:text-blue-200 leading-tight"
                       >
-                        {art.title}
+                        {decodeHtml(art.title)}
                       </a>
                     ) : (
-                      <div className="text-sm text-white leading-tight">{art.title}</div>
+                      <div className="text-sm text-white leading-tight">{decodeHtml(art.title)}</div>
                     )}
                     {art.summary && (
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{art.summary}</p>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">{decodeHtml(art.summary)}</p>
                     )}
                   </div>
                 </div>
