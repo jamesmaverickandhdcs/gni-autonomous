@@ -268,35 +268,6 @@ def run_pipeline():
             )
             log_audit_event('REPORT_SAVED', {'quality_score': report.get('quality_score', 0), 'sentiment': report.get('sentiment', ''), 'escalation_level': report.get('escalation_level', ''), 'mad_verdict': report.get('mad_verdict', ''), 'deception_level': report.get('deception_level', '')}, report_id=report_id)
 
-        # -- Step 4b: Three Pillar Reports ---------------------------------
-        # Run dedicated Geo / Tech / Fin analysis from separate article sets.
-        # Only runs in GitHub Actions -- not local dev (speed).
-        # Pillar articles already tagged by funnel Stage 4.
-        # GNI-R-064: pillar_reports table created before this code deployed.
-        if report_id and GITHUB_ACTIONS:
-            print("\n🌐💻💰 Step 4b: Running Three Pillar Reports...")
-            _t4b = time.time()
-            _pillar_buckets = {"geo": [], "tech": [], "fin": []}
-            for _art in trace:
-                if _art.get("stage4_selected"):
-                    _p = _art.get("pillar", "geo").lower()
-                    if _p in _pillar_buckets:
-                        _pillar_buckets[_p].append(_art)
-            for _pillar_name in ["geo", "tech", "fin"]:
-                _p_arts = _pillar_buckets[_pillar_name]
-                if not _p_arts:
-                    print(f"  Warning: No {_pillar_name.upper()} articles -- skipping pillar report")
-                    continue
-                _p_prompt = get_pillar_prompt(_pillar_name)
-                _p_report = analyze(_p_arts, prompt_override=_p_prompt)
-                if _p_report:
-                    save_pillar_report(_p_report, _pillar_name, run_id, report_id)
-                else:
-                    print(f"  Warning: {_pillar_name.upper()} pillar analysis returned no report")
-            step_timings["pillar"] = round(time.time() - _t4b, 2)
-            print(f"  OK Three Pillar Reports complete ({step_timings['pillar']:.1f}s)")
-
-                # â”€â”€ Step 5: Save Pipeline Run & Article Trace â”€â”€â”€â”€â”€â”€â”€
         print("\nðŸ“Š Step 5: Saving Pipeline Run & Article Trace...")
         total_seconds_so_far = round(
             (datetime.now(timezone.utc) - run_start).total_seconds(), 2
@@ -316,6 +287,34 @@ def run_pipeline():
         if run_id and trace:
             save_pipeline_articles(run_id, trace)
             save_article_events(run_id, report_id, trace)
+
+        # -- Step 4b: Three Pillar Reports (GNI-R-097 + GNI-R-098) ----------
+        # After Step 5 so run_id is available. sleep(10) prevents Groq 429.
+        if report_id and run_id and GITHUB_ACTIONS:
+            print("\n🌐💻💰 Step 4b: Running Three Pillar Reports...")
+            _t4b = time.time()
+            _pillar_buckets = {"geo": [], "tech": [], "fin": []}
+            for _art in trace:
+                if _art.get("stage4_selected"):
+                    _p = _art.get("pillar", "geo").lower()
+                    if _p in _pillar_buckets:
+                        _pillar_buckets[_p].append(_art)
+            for _pillar_idx, _pillar_name in enumerate(["geo", "tech", "fin"]):
+                _p_arts = _pillar_buckets[_pillar_name]
+                if not _p_arts:
+                    print(f"  Warning: No {_pillar_name.upper()} articles -- skipping")
+                    continue
+                if _pillar_idx > 0:
+                    print("  Waiting 10s for Groq rate limit reset...")
+                    time.sleep(10)
+                _p_prompt = get_pillar_prompt(_pillar_name)
+                _p_report = analyze(_p_arts, prompt_override=_p_prompt)
+                if _p_report:
+                    save_pillar_report(_p_report, _pillar_name, run_id, report_id)
+                else:
+                    print(f"  Warning: {_pillar_name.upper()} pillar returned no report")
+            step_timings["pillar"] = round(time.time() - _t4b, 2)
+            print(f"  OK Three Pillar Reports complete ({step_timings['pillar']:.1f}s)")
 
         # â”€â”€ Step 6: Telegram Notification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if report and report_id:
