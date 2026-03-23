@@ -32,6 +32,13 @@ interface Report {
   mad_confidence: number
   escalation_score: number
   escalation_level: string
+  weakness_identified: string
+  threat_horizon: string
+  dark_side_detected: string
+  mad_blind_spot: string
+  mad_action_recommendation: string
+  short_focus_threats: string
+  long_shoot_threats: string
 }
 
 interface Article {
@@ -277,6 +284,66 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                   </span>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* SWOT Intelligence */}
+          {report && (report.weakness_identified || report.threat_horizon || report.dark_side_detected) && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {report.weakness_identified && (
+              <div className="bg-orange-950 border border-orange-800 rounded-lg p-3">
+                <div className="text-xs text-orange-400 font-bold mb-1">⚠️ Weakness</div>
+                <p className="text-xs text-gray-300 leading-relaxed">{report.weakness_identified}</p>
+              </div>
+              )}
+              {report.threat_horizon && (
+              <div className="bg-red-950 border border-red-800 rounded-lg p-3">
+                <div className="text-xs text-red-400 font-bold mb-1">⏱ Threat Horizon</div>
+                <p className="text-xs text-gray-300 leading-relaxed">{report.threat_horizon}</p>
+              </div>
+              )}
+              {report.dark_side_detected && report.dark_side_detected !== "None" && (
+              <div className="bg-purple-950 border border-purple-800 rounded-lg p-3">
+                <div className="text-xs text-purple-400 font-bold mb-1">🌑 Dark Side</div>
+                <p className="text-xs text-gray-300 leading-relaxed">{report.dark_side_detected}</p>
+              </div>
+              )}
+            </div>
+          )}
+
+          {/* Blind Spot + Action */}
+          {report && (report.mad_blind_spot || report.mad_action_recommendation) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {report.mad_blind_spot && (
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
+                <div className="text-xs text-orange-400 font-bold mb-1">🔍 Blind Spot</div>
+                <p className="text-xs text-gray-300 leading-relaxed">{report.mad_blind_spot}</p>
+              </div>
+              )}
+              {report.mad_action_recommendation && (
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
+                <div className="text-xs text-green-400 font-bold mb-1">⚡ Action</div>
+                <p className="text-xs text-gray-300 leading-relaxed">{report.mad_action_recommendation}</p>
+              </div>
+              )}
+            </div>
+          )}
+
+          {/* Short/Long predictions */}
+          {report && (report.short_focus_threats || report.long_shoot_threats) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {report.short_focus_threats && (
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
+                <div className="text-xs text-blue-400 font-bold mb-1">🔮 Short Focus (30d)</div>
+                <p className="text-xs text-gray-300 leading-relaxed">{report.short_focus_threats}</p>
+              </div>
+              )}
+              {report.long_shoot_threats && (
+              <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
+                <div className="text-xs text-blue-400 font-bold mb-1">🎯 Long Shoots (180d)</div>
+                <p className="text-xs text-gray-300 leading-relaxed">{report.long_shoot_threats}</p>
+              </div>
+              )}
             </div>
           )}
 
