@@ -214,7 +214,10 @@ export default function ComparisonPage() {
                       <div className="flex justify-between text-xs">
                         <span className="text-gray-500">Escalation Level</span>
                         <span className={`font-bold ${escalationColor(latest.escalation_score)}`}>
-                          {latest.escalation_level?.toUpperCase() || 'N/A'}
+                          {latest.escalation_level?.toUpperCase() ||
+                            (latest.escalation_score >= 8 ? 'CRITICAL' :
+                             latest.escalation_score >= 6 ? 'HIGH' :
+                             latest.escalation_score >= 4 ? 'ELEVATED' : 'MODERATE')}
                         </span>
                       </div>
                       <div className="flex justify-between text-xs">
@@ -224,7 +227,7 @@ export default function ComparisonPage() {
                             ? 'bg-red-950 border-red-600 text-red-300'
                             : 'bg-green-950 border-green-600 text-green-300'
                         }`}>
-                          {latestDisagree ? '&#x26A0; DISAGREE' : '&#x2713; AGREE'}
+                          {latestDisagree ? '⚠️ DISAGREE' : '✓ AGREE'}
                         </span>
                       </div>
                     </div>
