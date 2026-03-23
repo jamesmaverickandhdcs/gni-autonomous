@@ -375,6 +375,66 @@ def _validate_report_schema(report: dict) -> dict | None:
 
     return report
 
+def _run_with_temperature(prompt: str, temperature: float) -> dict | None:
+    """Run a single analysis at a specific temperature. Returns parsed report or None."""
+    if not GROQ_API_KEY:
+        return None
+    try:
+        response = requests.post(
+            GROQ_URL,
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": GROQ_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": temperature,
+                "max_tokens": 2000
+            },
+            timeout=30
+        )
+        if response.status_code == 200:
+            raw = response.json()["choices"][0]["message"]["content"]
+            return _parse_json_response(raw)
+    except Exception:
+        pass
+    return None
+
+
+def _calculate_confidence_intervals(scores: list[float]) -> dict:
+    """
+    Calculate mean, std dev, and 95% CI from multiple runs.
+    Returns confidence interval metadata.
+    """
+    if not scores:
+        return {"lower": 0.0, "upper": 0.0, "width": 0.0, "runs": 0}
+
+    n = len(scores)
+    mean = sum(scores) / n
+
+    if n < 2:
+        return {"lower": mean, "upper": mean, "width": 0.0, "runs": n}
+
+    variance = sum((x - mean) ** 2 for x in scores) / (n - 1)
+    std_dev = variance ** 0.5
+
+    # 95% CI using t-distribution approximation (t=4.303 for n=3, df=2)
+    t_value = 4.303 if n == 3 else 2.576
+    margin = t_value * (std_dev / (n ** 0.5))
+
+    lower = max(-1.0, mean - margin)
+    upper = min(1.0, mean + margin)
+
+    return {
+        "lower": round(lower, 3),
+        "upper": round(upper, 3),
+        "width": round(upper - lower, 3),
+        "runs": n,
+        "std_dev": round(std_dev, 3),
+    }
+
+
 def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     """
     Analyze top articles using appropriate LLM.
@@ -427,6 +487,35 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
 
     # myanmar_summary handled by GNI_Myanmar app (separate project)
     report["myanmar_summary"] = ""
+
+    # Confidence intervals -- run 2 more times with different temperatures
+    if GITHUB_ACTIONS:
+        print("  Running confidence interval analysis (2 additional runs)...")
+        base_score = report.get("sentiment_score", 0.0)
+        scores = [base_score]  # include primary run (temp 0.3)
+
+        for temp in [0.1, 0.7]:
+            alt = _run_with_temperature(prompt, temp)
+            if alt and "sentiment_score" in alt:
+                try:
+                    scores.append(float(alt["sentiment_score"]))
+                except (TypeError, ValueError):
+                    pass
+
+        ci = _calculate_confidence_intervals(scores)
+        report["sentiment_score_lower"] = ci["lower"]
+        report["sentiment_score_upper"] = ci["upper"]
+        report["confidence_interval_width"] = ci["width"]
+        report["analysis_runs"] = ci["runs"]
+        print(f"  CI: {base_score:.2f} [{ci['lower']:.2f}, {ci['upper']:.2f}] "
+              f"width={ci['width']:.2f} runs={ci['runs']}")
+    else:
+        # Local dev -- skip extra runs for speed
+        score = report.get("sentiment_score", 0.0)
+        report["sentiment_score_lower"] = score
+        report["sentiment_score_upper"] = score
+        report["confidence_interval_width"] = 0.0
+        report["analysis_runs"] = 1
 
     return report
 

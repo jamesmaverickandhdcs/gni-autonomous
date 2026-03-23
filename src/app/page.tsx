@@ -8,6 +8,10 @@ interface Report {
   summary: string
   sentiment: string
   sentiment_score: number
+  sentiment_score_lower: number
+  sentiment_score_upper: number
+  confidence_interval_width: number
+  analysis_runs: number
   risk_level: string
   location_name: string
   lat: number | null
@@ -414,6 +418,25 @@ export default function Home() {
                       {sentimentIcon(latest.sentiment)} {latest.sentiment}
                     </div>
                     <div className="text-xs text-gray-400">{latest.sentiment_score?.toFixed(2)}</div>
+                    {latest.confidence_interval_width > 0 && (
+                      <div className="text-xs text-gray-600 mt-1">
+                        CI: [{latest.sentiment_score_lower?.toFixed(2)}, {latest.sentiment_score_upper?.toFixed(2)}]
+                        {latest.analysis_runs > 1 && <span className="ml-1 text-blue-700">({latest.analysis_runs} runs)</span>}
+                      </div>
+                    )}
+                    {latest.confidence_interval_width > 0 && (
+                      <div className="mt-1.5 relative h-1.5 bg-gray-700 rounded-full">
+                        <div className="absolute h-1.5 rounded-full bg-blue-600 opacity-50"
+                          style={{
+                            left: `${((latest.sentiment_score_lower + 1) / 2) * 100}%`,
+                            width: `${(latest.confidence_interval_width / 2) * 100}%`
+                          }}
+                        />
+                        <div className="absolute w-0.5 h-1.5 bg-white rounded-full"
+                          style={{ left: `${((latest.sentiment_score + 1) / 2) * 100}%` }}
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">Location</div>
