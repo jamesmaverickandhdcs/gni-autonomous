@@ -68,12 +68,12 @@ const AGENTS = [
 
 function getRoundPosition(positions: RoundPositions | null | undefined, key: string): string {
   if (!positions) return ''
-  return (positions as Record<string, string>)[key] || ''
+  return (positions as unknown as Record<string, string>)[key] || ''
 }
 
 function getArbFeedback(feedbacks: ArbFeedbacks | null | undefined, round: 'round1' | 'round2', key: string): string {
   if (!feedbacks) return ''
-  return (feedbacks[round] as Record<string, string>)[key] || ''
+  return (feedbacks[round] as unknown as Record<string, string>)[key] || ''
 }
 
 function AgentCard({ agent, text, coaching, round }: {
