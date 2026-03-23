@@ -11,6 +11,8 @@ interface Report {
   mad_confidence: number
   mad_bull_case: string
   mad_bear_case: string
+  mad_historian_case: string
+  mad_risk_case: string
   mad_reasoning: string
   escalation_score: number
   risk_level: string
@@ -64,9 +66,9 @@ export default function DebatePage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">🐂🐻 MAD Protocol</h1>
-              <p className="text-sm text-gray-400">Multi-Agent Debate — Bull vs Bear vs Arbitrator</p>
+              <p className="text-sm text-gray-400">Multi-Agent Debate — Bull → Bear → Historian → Risk Manager → Arbitrator</p>
               <p className="text-xs text-gray-500 mt-1 max-w-2xl">
-                Three independent AI agents analyse every report from opposing perspectives.
+                Five independent AI agents analyse every report from multiple perspectives.
                 The Bull Agent argues for market opportunity. The Bear Agent argues for risk and decline.
                 The Arbitrator weighs both cases and delivers a final verdict with confidence score.
               </p>
@@ -249,12 +251,43 @@ export default function DebatePage() {
                   </div>
                 </div>
 
+
+                {/* Historian and Risk Manager */}
+                {(selected.mad_historian_case || selected.mad_risk_case) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {selected.mad_historian_case && (
+                  <div className="bg-amber-950 border border-amber-800 rounded-xl p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-2xl">📜</span>
+                      <div>
+                        <div className="text-sm font-bold text-amber-400">Historian Agent</div>
+                        <div className="text-xs text-amber-700">Historical precedents and base rates</div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_historian_case}</p>
+                  </div>
+                  )}
+                  {selected.mad_risk_case && (
+                  <div className="bg-purple-950 border border-purple-800 rounded-xl p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-2xl">🚨</span>
+                      <div>
+                        <div className="text-sm font-bold text-purple-400">Risk Manager Agent</div>
+                        <div className="text-xs text-purple-700">Worst credible scenario and tail risk</div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">{selected.mad_risk_case}</p>
+                  </div>
+                  )}
+                </div>
+                )}
+
                 {/* How MAD works */}
                 <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
                     How the MAD Protocol Works
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-3 text-xs">
                     <div className="bg-gray-800 rounded-lg p-3">
                       <div className="text-green-400 font-bold mb-1">🐂 Step 1: Bull Agent</div>
                       <p className="text-gray-400">Analyses the report and constructs the strongest possible bullish case. Identifies buying opportunities, positive catalysts, and upside scenarios.</p>
@@ -264,8 +297,16 @@ export default function DebatePage() {
                       <p className="text-gray-400">Constructs the strongest possible bearish case. Identifies risks, negative catalysts, and downside scenarios independently of the Bull Agent.</p>
                     </div>
                     <div className="bg-gray-800 rounded-lg p-3">
-                      <div className="text-blue-400 font-bold mb-1">⚖️ Step 3: Arbitrator</div>
-                      <p className="text-gray-400">Reads both cases without knowing which agent wrote which. Weighs the evidence and delivers a final verdict with confidence score.</p>
+                      <div className="text-amber-400 font-bold mb-1">📜 Step 3: Historian</div>
+                      <p className="text-gray-400">Identifies historical precedents. States base rates for escalation vs resolution from past events.</p>
+                    </div>
+                    <div className="bg-gray-800 rounded-lg p-3">
+                      <div className="text-purple-400 font-bold mb-1">🚨 Step 4: Risk Manager</div>
+                      <p className="text-gray-400">Identifies worst credible scenario and tail risk. Names the specific trigger for rapid deterioration.</p>
+                    </div>
+                    <div className="bg-gray-800 rounded-lg p-3">
+                      <div className="text-blue-400 font-bold mb-1">⚖️ Step 5: Arbitrator</div>
+                      <p className="text-gray-400">Weighs all four cases plus escalation data. Delivers final verdict with confidence score and reasoning.</p>
                     </div>
                   </div>
                 </div>
