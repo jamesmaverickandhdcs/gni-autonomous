@@ -199,18 +199,35 @@ def run_pipeline():
         print(f"   ✅ Semantic validation passed ({validation['checks_passed']}/{validation['total_checks']} checks)")
 
         # -- Step 3c: MAD Protocol ------------------------
-        print("\n🐂🐻 Step 3c: Running MAD Protocol (Multi-Agent Debate)...")
+        print("\n🐂🐻 Step 3c: Running Quadratic MAD Protocol...")
         t0 = time.time()
-        mad_result = run_mad_protocol(report)
-        report['mad_bull_case']  = mad_result['mad_bull_case']
-        report['mad_bear_case']  = mad_result['mad_bear_case']
-        report['mad_verdict']    = mad_result['mad_verdict']
-        report['mad_confidence'] = mad_result['mad_confidence']
+        # Quadratic MAD: pass ALL relevant articles (301) + report_id for prediction saving
+        all_relevant = [a for a in trace if a.get('stage1_passed', False)]
+        mad_result = run_mad_protocol(report, all_articles=all_relevant, report_id=report_id)
+        # Unpack all Quadratic MAD fields
+        report['mad_bull_case']             = mad_result.get('mad_bull_case', '')
+        report['mad_bear_case']             = mad_result.get('mad_bear_case', '')
+        report['mad_black_swan_case']        = mad_result.get('mad_black_swan_case', '')
+        report['mad_ostrich_case']           = mad_result.get('mad_ostrich_case', '')
+        report['mad_verdict']               = mad_result.get('mad_verdict', 'neutral')
+        report['mad_confidence']            = mad_result.get('mad_confidence', 0.5)
+        report['mad_blind_spot']            = mad_result.get('mad_blind_spot', '')
+        report['mad_action_recommendation'] = mad_result.get('mad_action_recommendation', '')
+        report['short_focus_threats']       = mad_result.get('short_focus_threats', '')
+        report['long_shoot_threats']        = mad_result.get('long_shoot_threats', '')
+        report['short_verify_days']         = mad_result.get('short_verify_days', 14)
+        report['long_verify_days']          = mad_result.get('long_verify_days', 180)
+        report['mad_round1_positions']      = mad_result.get('mad_round1_positions', {})
+        report['mad_round2_positions']      = mad_result.get('mad_round2_positions', {})
+        report['mad_round3_positions']      = mad_result.get('mad_round3_positions', {})
+        report['mad_arb_feedbacks']         = mad_result.get('mad_arb_feedbacks', {})
+        report['mad_historian_case']        = mad_result.get('mad_historian_case', '')
+        report['mad_risk_case']             = mad_result.get('mad_risk_case', '')
         # -- Step 3f: Deception Detection -----------------
         print("\n\U0001f575  Step 3f: Deception Detection...")
         report = enrich_report_with_deception(report, top_articles)
 
-        report['mad_reasoning']  = mad_result['mad_reasoning']
+        report['mad_reasoning']  = mad_result.get('mad_reasoning', '')
 
         # -- Step 3d: Escalation Scoring ------------------
         print("\n🚨 Step 3d: Scoring Escalation Risk...")
