@@ -12,7 +12,7 @@ from collectors.rss_collector import collect_articles
 from funnel.intelligence_funnel import run_funnel
 from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
-from analysis.mad_protocol import run_mad_protocol
+from analysis.mad_protocol import run_mad_protocol, _save_predictions
 from analysis.semantic_validator import validate_report
 from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score, update_mad_confidence
 from analysis.credibility_model import seed_initial_credibility, update_credibility_scores
@@ -203,7 +203,7 @@ def run_pipeline():
         t0 = time.time()
         # Quadratic MAD: pass ALL relevant articles (301) + report_id for prediction saving
         all_relevant = [a for a in trace if a.get('stage1_passed', False)]
-        mad_result = run_mad_protocol(report, all_articles=all_relevant, report_id=report_id)
+        mad_result = run_mad_protocol(report, all_articles=all_relevant)
         # Unpack all Quadratic MAD fields
         report['mad_bull_case']             = mad_result.get('mad_bull_case', '')
         report['mad_bear_case']             = mad_result.get('mad_bear_case', '')
@@ -256,6 +256,15 @@ def run_pipeline():
 
         if report_id:
             reports_saved = 1
+            # Save debate predictions now that we have real report_id
+            _save_predictions(
+                report_id=report_id,
+                short=report.get('short_focus_threats', ''),
+                long_s=report.get('long_shoot_threats', ''),
+                short_days=report.get('short_verify_days', 14),
+                long_days=report.get('long_verify_days', 180),
+                round3=report.get('mad_round3_positions', {}),
+            )
             log_audit_event('REPORT_SAVED', {'quality_score': report.get('quality_score', 0), 'sentiment': report.get('sentiment', ''), 'escalation_level': report.get('escalation_level', ''), 'mad_verdict': report.get('mad_verdict', ''), 'deception_level': report.get('deception_level', '')}, report_id=report_id)
 
         # â”€â”€ Step 5: Save Pipeline Run & Article Trace â”€â”€â”€â”€â”€â”€â”€
