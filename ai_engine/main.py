@@ -136,7 +136,7 @@ def run_pipeline():
 
         # -- Step 2b: Report Deduplication ----------------
         print("\n🔄 Step 2b: Checking for Duplicate Topics...")
-        duplicate = check_recent_duplicate(top_articles, hours=6, overlap_threshold=0.7)
+        duplicate = check_recent_duplicate(top_articles, hours=0, overlap_threshold=0.7)  # TEMP: restored after test run
         if duplicate:
             print(f"   ⚠️  SKIPPED — same topic covered {duplicate['created_at'][:16]}")
             print(f"   Recent: {duplicate['title'][:60]}")
