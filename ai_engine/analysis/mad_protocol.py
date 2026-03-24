@@ -12,6 +12,7 @@
 import os
 import json
 import re
+import time
 from datetime import datetime, timezone, timedelta
 from groq import Groq
 
@@ -22,19 +23,31 @@ VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
 
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> str:
-    try:
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {'role': 'system', 'content': system_prompt},
-                {'role': 'user', 'content': user_prompt},
-            ],
-            max_tokens=max_tokens,
-            temperature=0.7,
-        )
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        return f'[Agent error: {str(e)[:100]}]'
+    # GNI-R-107: Rate-limit-aware Groq call with 429 retry
+    # Attempt 1: normal call
+    # If 429 detected: sleep 12s then retry once
+    # If still fails: return error string (pipeline continues)
+    for attempt in range(2):
+        try:
+            response = client.chat.completions.create(
+                model=MODEL,
+                messages=[
+                    {'role': 'system', 'content': system_prompt},
+                    {'role': 'user', 'content': user_prompt},
+                ],
+                max_tokens=max_tokens,
+                temperature=0.7,
+            )
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            err = str(e)
+            is_rate_limit = '429' in err or 'rate_limit' in err.lower() or 'rate limit' in err.lower()
+            if is_rate_limit and attempt == 0:
+                print('  WARNING: Groq 429 rate limit -- sleeping 12s before retry...')
+                time.sleep(12)
+                continue
+            return '[Agent error: ' + err[:100] + ']'
+    return '[Agent error: max retries exceeded]'
 
 
 def _build_news_context(report: dict, all_articles: list) -> str:
@@ -284,6 +297,11 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\nProvide targeted coaching.')
     arb_c1 = _parse_coaching(_call_agent(ARB_COACH, c1_user, 600))
 
+    # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
+    # Round 1 used 5 calls. Sleep lets the rate limit window breathe.
+    print('  Waiting 8s between rounds (Groq rate limit protection)...')
+    time.sleep(8)
+
     # Round 2
     print('   Round 2: Refined positions...')
     r2_base = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
@@ -301,6 +319,10 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                '\n\nR1 coaching: ' + json.dumps(arb_c1) + '\n\nPush to final positions.')
     arb_c2 = _parse_coaching(_call_agent(ARB_COACH, c2_user, 600))
 
+    # GNI-R-107: Sleep between rounds
+    print('  Waiting 8s between rounds (Groq rate limit protection)...')
+    time.sleep(8)
+
     # Round 3
     print('   Round 3: Final positions...')
     r3_base = (news_ctx +
@@ -313,6 +335,10 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     swan_r3  = _call_agent(SWAN,    r3_base + 'FINAL COACHING: ' + arb_c2.get('black_swan','') + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching.', 350)
     ost_r3   = _call_agent(OSTRICH, r3_base + 'FINAL COACHING: ' + arb_c2.get('ostrich','')    + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction.', 350)
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
+
+    # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
+    print('  Waiting 8s before arbitrator synthesis (Groq rate limit protection)...')
+    time.sleep(8)
 
     # Arbitrator final synthesis
     print('   Arbitrator final synthesis...')
@@ -340,26 +366,49 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     short_verify_days = 14
     long_verify_days = 180
 
-    try:
-        clean = arb_final_raw.replace('```json', '').replace('```', '').strip()
-        arb_json = json.loads(clean)
-        mad_verdict = arb_json.get('verdict', 'neutral').lower()
-        if mad_verdict not in VALID_VERDICTS:
-            mad_verdict = 'neutral'
-        mad_confidence = float(arb_json.get('confidence', 0.5))
-        mad_confidence = max(0.0, min(1.0, mad_confidence))
-        mad_reasoning = arb_json.get('reasoning', '')
-        mad_blind_spot = arb_json.get('blind_spot_quadrant', '')
-        blind_exp = arb_json.get('blind_spot_explanation', '')
-        if blind_exp:
-            mad_blind_spot = mad_blind_spot + ' -- ' + blind_exp
-        mad_action_recommendation = arb_json.get('action_recommendation', '')
-        short_focus_threats = arb_json.get('short_focus_threats', '')
-        long_shoot_threats = arb_json.get('long_shoot_threats', '')
-        short_verify_days = int(arb_json.get('short_verify_days', 14))
-        long_verify_days = int(arb_json.get('long_verify_days', 180))
-    except (json.JSONDecodeError, ValueError):
+    # GNI-R-107: Check for 429 error before attempting JSON parse
+    # If arbitrator call failed with rate limit, arb_final_raw is an error string
+    # Detect this early and use safe defaults -- do not try to parse error as JSON
+    _arb_is_error = (
+        arb_final_raw.startswith('[Agent error') or
+        '429' in arb_final_raw or
+        'rate limit' in arb_final_raw.lower()
+    )
+    if _arb_is_error:
+        print('  WARNING: Arbitrator call failed -- using safe defaults')
         mad_reasoning = arb_final_raw
+    else:
+        try:
+            clean = arb_final_raw.replace('```json', '').replace('```', '').strip()
+            # Strategy 1: direct parse
+            try:
+                arb_json = json.loads(clean)
+            except json.JSONDecodeError:
+                # Strategy 2: extract JSON object between first { and last }
+                start = clean.find('{')
+                end = clean.rfind('}') + 1
+                if start >= 0 and end > start:
+                    arb_json = json.loads(clean[start:end])
+                else:
+                    raise json.JSONDecodeError('No JSON object found', clean, 0)
+            mad_verdict = arb_json.get('verdict', 'neutral').lower()
+            if mad_verdict not in VALID_VERDICTS:
+                mad_verdict = 'neutral'
+            mad_confidence = float(arb_json.get('confidence', 0.5))
+            mad_confidence = max(0.0, min(1.0, mad_confidence))
+            mad_reasoning = arb_json.get('reasoning', '')
+            mad_blind_spot = arb_json.get('blind_spot_quadrant', '')
+            blind_exp = arb_json.get('blind_spot_explanation', '')
+            if blind_exp:
+                mad_blind_spot = mad_blind_spot + ' -- ' + blind_exp
+            mad_action_recommendation = arb_json.get('action_recommendation', '')
+            short_focus_threats = arb_json.get('short_focus_threats', '')
+            long_shoot_threats = arb_json.get('long_shoot_threats', '')
+            short_verify_days = int(arb_json.get('short_verify_days', 14))
+            long_verify_days = int(arb_json.get('long_verify_days', 180))
+        except (json.JSONDecodeError, ValueError, KeyError) as e:
+            print('  WARNING: Arbitrator JSON parse failed: ' + str(e)[:60])
+            mad_reasoning = arb_final_raw
 
     print(f'   Blind Spot:  {mad_blind_spot[:60]}')
     print(f'   Short Focus: {short_focus_threats[:60]}')
