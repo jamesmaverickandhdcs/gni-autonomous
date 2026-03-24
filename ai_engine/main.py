@@ -1,4 +1,4 @@
-﻿import os
+import os
 import time
 import sys
 from datetime import datetime, timezone
@@ -22,7 +22,7 @@ from analysis.frequency_controller import get_recommended_interval, log_frequenc
 from analysis.audit_trail import log_audit_event
 from analysis.code_fix_suggester import run_code_fix_suggester
 from analysis.source_health_monitor import run_source_health_check
-from analysis.keyword_sensor import run_keyword_sensor
+# from analysis.keyword_sensor import run_keyword_sensor  # DISABLED: Groq quota saving
 from analysis.staging_checker import run_staging_checks
 from analysis.health_agent import run_health_checks
 from analysis.weekly_digest import should_generate_digest, generate_weekly_digest
@@ -40,7 +40,7 @@ from analysis.supabase_saver import (
 from notifications.telegram_notifier import notify_report
 
 # ============================================================
-# GNI Main Pipeline — Day 6
+# GNI Main Pipeline � Day 6
 # Full orchestration with Explainable AI article trace
 # ============================================================
 
@@ -65,13 +65,13 @@ def run_pipeline():
     top_articles = []
 
     print("=" * 60)
-    print("🌐 GNI — Global Nexus Insights")
+    print("?? GNI � Global Nexus Insights")
     print(f"   Pipeline Start: {run_at}")
     print("=" * 60)
 
     # -- Pre-flight: LLM Health Probe -----------------------
     # Catches Tier 3 failures before the pipeline starts.
-    # If Groq is down, abort immediately � no wasted compute.
+    # If Groq is down, abort immediately ? no wasted compute.
     print("\n\U0001f52c Pre-flight: LLM health probe...")
     from analysis.llm_health_probe import run_llm_health_probe
     probe = run_llm_health_probe()
@@ -96,8 +96,8 @@ def run_pipeline():
         log_audit_event("GROQ_MODEL_FALLBACK_ACTIVE", {"model": probe["model_used"]})
 
     try:
-        # ── Step 1: Collect Articles ────────────────────────
-        print("\n📡 Step 1: Collecting RSS Articles...")
+        # -- Step 1: Collect Articles ------------------------
+        print("\n?? Step 1: Collecting RSS Articles...")
         t0 = time.time()
         articles = collect_articles(max_per_source=20)
         step_timings["collection"] = round(time.time() - t0, 2)
@@ -111,13 +111,13 @@ def run_pipeline():
         # -- Emerging keyword detection --------------------------
         if GITHUB_ACTIONS:
             print("  Scanning for emerging keywords...")
-            run_keyword_sensor(articles)
+            # run_keyword_sensor(articles)  # DISABLED: Groq quota saving
 
         if articles_collected < 10:
             raise Exception(f"Too few articles: {articles_collected}")
 
-        # ── Step 2: Intelligence Funnel ─────────────────────
-        print("\n🔽 Step 2: Running Intelligence Funnel...")
+        # -- Step 2: Intelligence Funnel ---------------------
+        print("\n?? Step 2: Running Intelligence Funnel...")
         t0 = time.time()
         top_n = 11 if GITHUB_ACTIONS else 11  # 5 geo + 3 tech + 3 fin (Three Pillar Reports)
         top_articles, trace = run_funnel(
@@ -138,7 +138,7 @@ def run_pipeline():
         print("\n?? Step 2b: Checking for Duplicate Topics...")
         duplicate = check_recent_duplicate(top_articles, hours=6, overlap_threshold=0.7)
         if duplicate:
-            print(f"   ??  SKIPPED � same topic covered {duplicate['created_at'][:16]}")
+            print(f"   ??  SKIPPED ? same topic covered {duplicate['created_at'][:16]}")
             print(f"   Recent: {duplicate['title'][:60]}")
             save_runtime_log(
                 run_at=run_at,
@@ -151,7 +151,7 @@ def run_pipeline():
                 error_message=f"Duplicate topic: {duplicate['title'][:80]}",
             )
             return True
-        print("   ? No duplicate � proceeding with analysis")
+        print("   ? No duplicate ? proceeding with analysis")
 
         # -- Step 2c: Prompt A/B Selection ---------------
         seed_initial_credibility()
@@ -160,8 +160,8 @@ def run_pipeline():
         run_count_hash = get_pipeline_run_count()
         prompt_template, prompt_version = get_active_prompt(run_count_hash)
 
-        # ── Step 3: AI Analysis ─────────────────────────────
-        print("\n🧠 Step 3: AI Analysis (Llama 3)...")
+        # -- Step 3: AI Analysis -----------------------------
+        print("\n?? Step 3: AI Analysis (Llama 3)...")
         t0 = time.time()
         report = analyze(top_articles, prompt_override=prompt_template)
         step_timings["analysis"] = round(time.time() - t0, 2)
@@ -185,7 +185,7 @@ def run_pipeline():
             health = run_health_checks()
             print(f"   Health: {health['status']} ({health['checks_passed']}/{health['checks_total']} checks, {health['alert_count']} alerts)")
         if should_generate_digest():
-            print("\n\U0001f4c5 Sunday detected � generating weekly digest...")
+            print("\n\U0001f4c5 Sunday detected ? generating weekly digest...")
             generate_weekly_digest(weeks_ago=1)
 
         # -- Step 3e: Semantic Validation ---------------
@@ -242,13 +242,13 @@ def run_pipeline():
         if hist_context:
             report['historical_context'] = hist_context
             print(f"   ?? {hist_context}")
-        print(f"   ? Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) � {escalation['active_pillars']}/3 pillars active")
+        print(f"   ? Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) ? {escalation['active_pillars']}/3 pillars active")
         step_timings["mad"] = round(time.time() - t0, 2)
         print(f"   ? MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
         update_mad_confidence(prompt_version, report['mad_confidence'])
 
         # -- Step 4: Save Report
-        print("\n💾 Step 4: Saving Report to Supabase...")
+        print("\n?? Step 4: Saving Report to Supabase...")
         t0 = time.time()
         report_id = save_report(report, top_articles,
             quality_score=report.get('quality_score', 0),
@@ -268,7 +268,7 @@ def run_pipeline():
             )
             log_audit_event('REPORT_SAVED', {'quality_score': report.get('quality_score', 0), 'sentiment': report.get('sentiment', ''), 'escalation_level': report.get('escalation_level', ''), 'mad_verdict': report.get('mad_verdict', ''), 'deception_level': report.get('deception_level', '')}, report_id=report_id)
 
-        print("\n📊 Step 5: Saving Pipeline Run & Article Trace...")
+        print("\n?? Step 5: Saving Pipeline Run & Article Trace...")
         total_seconds_so_far = round(
             (datetime.now(timezone.utc) - run_start).total_seconds(), 2
         )
@@ -322,21 +322,21 @@ def run_pipeline():
             step_timings["pillar"] = round(time.time() - _t4b, 2)
             print(f"  OK Three Pillar Reports complete ({step_timings['pillar']:.1f}s)")
 
-        # ── Step 6: Telegram Notification ──────────────────
+        # -- Step 6: Telegram Notification ------------------
         if report and report_id:
             notify_report(report, top_articles)
 
     except Exception as e:
         status = "failed"
         error_message = str(e)
-        print(f"\n❌ Pipeline error: {e}")
+        print(f"\n? Pipeline error: {e}")
 
     finally:
-        # ── Step 7: Save Runtime Log ────────────────────────
+        # -- Step 7: Save Runtime Log ------------------------
         total_seconds = round(
             (datetime.now(timezone.utc) - run_start).total_seconds(), 2
         )
-        print(f"\n📋 Step 7: Saving Runtime Log...")
+        print(f"\n?? Step 7: Saving Runtime Log...")
         save_runtime_log(
             run_at=run_at,
             total_seconds=total_seconds,
