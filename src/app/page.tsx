@@ -355,8 +355,6 @@ export default function Home() {
               <a href="/keywords" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>🔤</span><span>Keywords</span>
               </a>
-              <a href="/keyword-intelligence" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-red-800 border border-gray-700 hover:border-red-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🔐</span><span>KW Intel</span>
               </a>
               <a href="/correlations" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-violet-700 border border-gray-700 hover:border-violet-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>📊</span><span>Correlations</span>
