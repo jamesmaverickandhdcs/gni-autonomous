@@ -293,6 +293,12 @@ def run_pipeline():
         if report_id and run_id and GITHUB_ACTIONS:
             print("\n🌐💻💰 Step 4b: Running Three Pillar Reports...")
             _t4b = time.time()
+            # GNI-R-097: sleep(60) before first pillar.
+            # Step 3 burns ~10 Groq calls (analysis + CI runs + MAD rounds).
+            # Groq free tier rate limit window needs 60s to reset fully.
+            # sleep(10) between pillars is not enough after that many calls.
+            print("  Waiting 60s for Groq rate limit to reset after Step 3...")
+            time.sleep(60)
             _pillar_buckets = {"geo": [], "tech": [], "fin": []}
             for _art in trace:
                 if _art.get("stage4_selected"):
@@ -305,8 +311,8 @@ def run_pipeline():
                     print(f"  Warning: No {_pillar_name.upper()} articles -- skipping")
                     continue
                 if _pillar_idx > 0:
-                    print("  Waiting 10s for Groq rate limit reset...")
-                    time.sleep(10)
+                    print("  Waiting 30s for Groq rate limit reset between pillars...")
+                    time.sleep(30)
                 _p_prompt = get_pillar_prompt(_pillar_name)
                 _p_report = analyze(_p_arts, prompt_override=_p_prompt)
                 if _p_report:
