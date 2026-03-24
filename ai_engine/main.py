@@ -40,7 +40,7 @@ from analysis.supabase_saver import (
 from notifications.telegram_notifier import notify_report
 
 # ============================================================
-# GNI Main Pipeline â€” Day 6
+# GNI Main Pipeline — Day 6
 # Full orchestration with Explainable AI article trace
 # ============================================================
 
@@ -65,13 +65,13 @@ def run_pipeline():
     top_articles = []
 
     print("=" * 60)
-    print("ðŸŒ GNI â€” Global Nexus Insights")
+    print("🌐 GNI — Global Nexus Insights")
     print(f"   Pipeline Start: {run_at}")
     print("=" * 60)
 
     # -- Pre-flight: LLM Health Probe -----------------------
     # Catches Tier 3 failures before the pipeline starts.
-    # If Groq is down, abort immediately — no wasted compute.
+    # If Groq is down, abort immediately � no wasted compute.
     print("\n\U0001f52c Pre-flight: LLM health probe...")
     from analysis.llm_health_probe import run_llm_health_probe
     probe = run_llm_health_probe()
@@ -96,8 +96,8 @@ def run_pipeline():
         log_audit_event("GROQ_MODEL_FALLBACK_ACTIVE", {"model": probe["model_used"]})
 
     try:
-        # â”€â”€ Step 1: Collect Articles â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        print("\nðŸ“¡ Step 1: Collecting RSS Articles...")
+        # ── Step 1: Collect Articles ────────────────────────
+        print("\n📡 Step 1: Collecting RSS Articles...")
         t0 = time.time()
         articles = collect_articles(max_per_source=20)
         step_timings["collection"] = round(time.time() - t0, 2)
@@ -116,8 +116,8 @@ def run_pipeline():
         if articles_collected < 10:
             raise Exception(f"Too few articles: {articles_collected}")
 
-        # â”€â”€ Step 2: Intelligence Funnel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        print("\nðŸ”½ Step 2: Running Intelligence Funnel...")
+        # ── Step 2: Intelligence Funnel ─────────────────────
+        print("\n🔽 Step 2: Running Intelligence Funnel...")
         t0 = time.time()
         top_n = 11 if GITHUB_ACTIONS else 11  # 5 geo + 3 tech + 3 fin (Three Pillar Reports)
         top_articles, trace = run_funnel(
@@ -135,10 +135,10 @@ def run_pipeline():
             raise Exception(f"Too few after funnel: {articles_after_funnel}")
 
         # -- Step 2b: Report Deduplication ----------------
-        print("\n🔄 Step 2b: Checking for Duplicate Topics...")
+        print("\n?? Step 2b: Checking for Duplicate Topics...")
         duplicate = check_recent_duplicate(top_articles, hours=6, overlap_threshold=0.7)
         if duplicate:
-            print(f"   ⚠️  SKIPPED — same topic covered {duplicate['created_at'][:16]}")
+            print(f"   ??  SKIPPED � same topic covered {duplicate['created_at'][:16]}")
             print(f"   Recent: {duplicate['title'][:60]}")
             save_runtime_log(
                 run_at=run_at,
@@ -151,7 +151,7 @@ def run_pipeline():
                 error_message=f"Duplicate topic: {duplicate['title'][:80]}",
             )
             return True
-        print("   ✅ No duplicate — proceeding with analysis")
+        print("   ? No duplicate � proceeding with analysis")
 
         # -- Step 2c: Prompt A/B Selection ---------------
         seed_initial_credibility()
@@ -160,8 +160,8 @@ def run_pipeline():
         run_count_hash = get_pipeline_run_count()
         prompt_template, prompt_version = get_active_prompt(run_count_hash)
 
-        # â”€â”€ Step 3: AI Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        print("\nðŸ§  Step 3: AI Analysis (Llama 3)...")
+        # ── Step 3: AI Analysis ─────────────────────────────
+        print("\n🧠 Step 3: AI Analysis (Llama 3)...")
         t0 = time.time()
         report = analyze(top_articles, prompt_override=prompt_template)
         step_timings["analysis"] = round(time.time() - t0, 2)
@@ -170,7 +170,7 @@ def run_pipeline():
             raise Exception("AI analysis returned no report")
 
         # -- Step 3b: Quality Scoring ---------------------
-        print("\n📊 Step 3b: Scoring Report Quality...")
+        print("\n?? Step 3b: Scoring Report Quality...")
         quality = score_report(report)
         report['quality_score']     = quality['quality_score']
         report['quality_breakdown'] = quality['quality_breakdown']
@@ -185,22 +185,22 @@ def run_pipeline():
             health = run_health_checks()
             print(f"   Health: {health['status']} ({health['checks_passed']}/{health['checks_total']} checks, {health['alert_count']} alerts)")
         if should_generate_digest():
-            print("\n\U0001f4c5 Sunday detected — generating weekly digest...")
+            print("\n\U0001f4c5 Sunday detected � generating weekly digest...")
             generate_weekly_digest(weeks_ago=1)
 
         # -- Step 3e: Semantic Validation ---------------
-        print("\n🧪 Step 3e: Semantic Validation...")
+        print("\n?? Step 3e: Semantic Validation...")
         validation = validate_report(report)
         report = validation['fixed_report']
         if validation['warnings']:
             for w in validation['warnings']:
-                print(f"   ⚠️  {w}")
+                print(f"   ??  {w}")
         if not validation['is_valid']:
             raise Exception(f"Report failed semantic validation: {validation['errors']}")
-        print(f"   ✅ Semantic validation passed ({validation['checks_passed']}/{validation['total_checks']} checks)")
+        print(f"   ? Semantic validation passed ({validation['checks_passed']}/{validation['total_checks']} checks)")
 
         # -- Step 3c: MAD Protocol ------------------------
-        print("\n🐂🐻 Step 3c: Running Quadratic MAD Protocol...")
+        print("\n???? Step 3c: Running Quadratic MAD Protocol...")
         t0 = time.time()
         # Quadratic MAD: pass ALL relevant articles (301) + report_id for prediction saving
         all_relevant = [a for a in trace if a.get('stage1_passed', False)]
@@ -231,24 +231,24 @@ def run_pipeline():
         report['mad_reasoning']  = mad_result.get('mad_reasoning', '')
 
         # -- Step 3d: Escalation Scoring ------------------
-        print("\n🚨 Step 3d: Scoring Escalation Risk...")
+        print("\n?? Step 3d: Scoring Escalation Risk...")
         escalation = score_escalation(top_articles)
         report['escalation_score'] = escalation['escalation_score']
         report['escalation_level'] = escalation['escalation_level']
         recommended_interval = get_recommended_interval(escalation['escalation_level'], escalation['escalation_score'])
         log_frequency_decision(escalation['escalation_score'], escalation['escalation_level'], recommended_interval, f"Escalation {escalation['escalation_level']} {escalation['escalation_score']}/10")
-        print(f"   ⏱  Next run recommended in {recommended_interval:.1f}h ({escalation['escalation_level']})")
+        print(f"   ?  Next run recommended in {recommended_interval:.1f}h ({escalation['escalation_level']})")
         hist_context = get_historical_context(escalation['escalation_score'])
         if hist_context:
             report['historical_context'] = hist_context
-            print(f"   📊 {hist_context}")
-        print(f"   ✅ Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) — {escalation['active_pillars']}/3 pillars active")
+            print(f"   ?? {hist_context}")
+        print(f"   ? Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) � {escalation['active_pillars']}/3 pillars active")
         step_timings["mad"] = round(time.time() - t0, 2)
-        print(f"   ✅ MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
+        print(f"   ? MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
         update_mad_confidence(prompt_version, report['mad_confidence'])
 
-        # ── Step 4: Save Report
-        print("\nðŸ’¾ Step 4: Saving Report to Supabase...")
+        # -- Step 4: Save Report
+        print("\n💾 Step 4: Saving Report to Supabase...")
         t0 = time.time()
         report_id = save_report(report, top_articles,
             quality_score=report.get('quality_score', 0),
@@ -268,7 +268,7 @@ def run_pipeline():
             )
             log_audit_event('REPORT_SAVED', {'quality_score': report.get('quality_score', 0), 'sentiment': report.get('sentiment', ''), 'escalation_level': report.get('escalation_level', ''), 'mad_verdict': report.get('mad_verdict', ''), 'deception_level': report.get('deception_level', '')}, report_id=report_id)
 
-        print("\nðŸ“Š Step 5: Saving Pipeline Run & Article Trace...")
+        print("\n📊 Step 5: Saving Pipeline Run & Article Trace...")
         total_seconds_so_far = round(
             (datetime.now(timezone.utc) - run_start).total_seconds(), 2
         )
@@ -291,14 +291,14 @@ def run_pipeline():
         # -- Step 4b: Three Pillar Reports (GNI-R-097 + GNI-R-098) ----------
         # After Step 5 so run_id is available. sleep(10) prevents Groq 429.
         if report_id and run_id and GITHUB_ACTIONS:
-            print("\n🌐💻💰 Step 4b: Running Three Pillar Reports...")
+            print("\n?????? Step 4b: Running Three Pillar Reports...")
             _t4b = time.time()
-            # GNI-R-097: sleep(60) before first pillar.
-            # Step 3 burns ~10 Groq calls (analysis + CI runs + MAD rounds).
-            # Groq free tier rate limit window needs 60s to reset fully.
+            # GNI-R-097: sleep(120) before first pillar.
+            # Step 3 burns ~15-18 Groq calls (analysis + CI runs + MAD rounds).
+            # Groq free tier rate limit window needs 120s to reset fully.
             # sleep(10) between pillars is not enough after that many calls.
-            print("  Waiting 60s for Groq rate limit to reset after Step 3...")
-            time.sleep(60)
+            print("  Waiting 120s for Groq rate limit to reset after Step 3...")
+            time.sleep(120)
             _pillar_buckets = {"geo": [], "tech": [], "fin": []}
             for _art in trace:
                 if _art.get("stage4_selected"):
@@ -322,21 +322,21 @@ def run_pipeline():
             step_timings["pillar"] = round(time.time() - _t4b, 2)
             print(f"  OK Three Pillar Reports complete ({step_timings['pillar']:.1f}s)")
 
-        # â”€â”€ Step 6: Telegram Notification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # ── Step 6: Telegram Notification ──────────────────
         if report and report_id:
             notify_report(report, top_articles)
 
     except Exception as e:
         status = "failed"
         error_message = str(e)
-        print(f"\nâŒ Pipeline error: {e}")
+        print(f"\n❌ Pipeline error: {e}")
 
     finally:
-        # â”€â”€ Step 7: Save Runtime Log â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        # ── Step 7: Save Runtime Log ────────────────────────
         total_seconds = round(
             (datetime.now(timezone.utc) - run_start).total_seconds(), 2
         )
-        print(f"\nðŸ“‹ Step 7: Saving Runtime Log...")
+        print(f"\n📋 Step 7: Saving Runtime Log...")
         save_runtime_log(
             run_at=run_at,
             total_seconds=total_seconds,
@@ -361,17 +361,17 @@ def run_pipeline():
 
         # -- Staging regression check ------------------
         if status == "success" and GITHUB_ACTIONS:
-            print("\n📸 Post-pipeline: staging regression check...")
+            print("\n?? Post-pipeline: staging regression check...")
             staging = run_staging_checks()
             if staging['failed'] > 0:
-                print(f"  ⚠️  Staging check: {staging['failed']} page(s) failed")
+                print(f"  ??  Staging check: {staging['failed']} page(s) failed")
             else:
-                print(f"  ✅ Staging check: all {staging['total']} pages OK")
+                print(f"  ? Staging check: all {staging['total']} pages OK")
 
 
         # -- Phase 1 code fix suggester ---------------
         if GITHUB_ACTIONS:
-            print("\n🔧 Checking for fix suggestions...")
+            print("\n?? Checking for fix suggestions...")
             run_code_fix_suggester()
         return status == "success"
 
