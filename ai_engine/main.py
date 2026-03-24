@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import time
 import sys
@@ -40,7 +41,7 @@ from analysis.supabase_saver import (
 from notifications.telegram_notifier import notify_report
 
 # ============================================================
-# GNI Main Pipeline — Day 6
+# GNI Main Pipeline - Day 6
 # Full orchestration with Explainable AI article trace
 # ============================================================
 
@@ -65,7 +66,7 @@ def run_pipeline():
     top_articles = []
 
     print("=" * 60)
-    print("?? GNI — Global Nexus Insights")
+    print("?? GNI - Global Nexus Insights")
     print(f"   Pipeline Start: {run_at}")
     print("=" * 60)
 
