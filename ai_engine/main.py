@@ -312,8 +312,8 @@ def run_pipeline():
                     print(f"  Warning: No {_pillar_name.upper()} articles -- skipping")
                     continue
                 if _pillar_idx > 0:
-                    print("  Waiting 30s for Groq rate limit reset between pillars...")
-                    time.sleep(30)
+                    print("  Waiting 45s for Groq rate limit reset between pillars...")
+                    time.sleep(45)
                 _p_prompt = get_pillar_prompt(_pillar_name)
                 _p_report = analyze(_p_arts, prompt_override=_p_prompt)
                 if _p_report:
