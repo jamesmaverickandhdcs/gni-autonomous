@@ -488,34 +488,14 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     # myanmar_summary handled by GNI_Myanmar app (separate project)
     report["myanmar_summary"] = ""
 
-    # Confidence intervals -- run 2 more times with different temperatures
-    if GITHUB_ACTIONS:
-        print("  Running confidence interval analysis (2 additional runs)...")
-        base_score = report.get("sentiment_score", 0.0)
-        scores = [base_score]  # include primary run (temp 0.3)
-
-        for temp in [0.1, 0.7]:
-            alt = _run_with_temperature(prompt, temp)
-            if alt and "sentiment_score" in alt:
-                try:
-                    scores.append(float(alt["sentiment_score"]))
-                except (TypeError, ValueError):
-                    pass
-
-        ci = _calculate_confidence_intervals(scores)
-        report["sentiment_score_lower"] = ci["lower"]
-        report["sentiment_score_upper"] = ci["upper"]
-        report["confidence_interval_width"] = ci["width"]
-        report["analysis_runs"] = ci["runs"]
-        print(f"  CI: {base_score:.2f} [{ci['lower']:.2f}, {ci['upper']:.2f}] "
-              f"width={ci['width']:.2f} runs={ci['runs']}")
-    else:
-        # Local dev -- skip extra runs for speed
-        score = report.get("sentiment_score", 0.0)
-        report["sentiment_score_lower"] = score
-        report["sentiment_score_upper"] = score
-        report["confidence_interval_width"] = 0.0
-        report["analysis_runs"] = 1
+    # CI runs disabled -- GNI-R-107 Groq quota saving (saves 8 calls/run)
+    # _run_with_temperature() and _calculate_confidence_intervals() kept intact
+    # Re-enable by restoring the if GITHUB_ACTIONS block when quota headroom confirmed
+    score = report.get("sentiment_score", 0.0)
+    report["sentiment_score_lower"] = score
+    report["sentiment_score_upper"] = score
+    report["confidence_interval_width"] = 0.0
+    report["analysis_runs"] = 1
 
     return report
 
