@@ -300,7 +300,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
     # Round 1 used 5 calls. Sleep lets the rate limit window breathe.
     print('  Waiting 8s between rounds (Groq rate limit protection)...')
-    time.sleep(8)
+    time.sleep(15)
 
     # Round 2
     print('   Round 2: Refined positions...')
@@ -321,7 +321,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # GNI-R-107: Sleep between rounds
     print('  Waiting 8s between rounds (Groq rate limit protection)...')
-    time.sleep(8)
+    time.sleep(15)
 
     # Round 3
     print('   Round 3: Final positions...')
@@ -338,7 +338,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
     print('  Waiting 8s before arbitrator synthesis (Groq rate limit protection)...')
-    time.sleep(8)
+    time.sleep(20)
 
     # Arbitrator final synthesis
     print('   Arbitrator final synthesis...')
