@@ -17,12 +17,21 @@ interface PromptVariant {
   active: boolean
 }
 
+interface EscalationData {
+  escalation_score: number
+  escalation_score_lower: number | null
+  escalation_score_upper: number | null
+  title: string
+  created_at: string
+}
+
 interface HealthData {
   status: string
   avg_quality_score: number
   frequency_log: FrequencyEntry[]
   prompt_variants: PromptVariant[]
   recent_quality: Array<{ date: string; score: number; llm: string }>
+  latest_escalation: EscalationData | null
 }
 
 // Derive level label from escalation_score (FT-11: no escalation_level column in DB)
@@ -136,6 +145,39 @@ export default function AutonomyPage() {
                 ))}
               </div>
             </div>
+
+            {/* Escalation Evidence -- GNI-R-117 */}
+            {health.latest_escalation && (
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Escalation Evidence -- Score Breakdown (GNI-R-117)</div>
+                <div className="mb-3">
+                  <div className="text-xs text-gray-500 mb-1">Latest Report</div>
+                  <div className="text-sm text-gray-300">{health.latest_escalation.title}</div>
+                  <div className="text-xs text-gray-600 mt-1">{new Date(health.latest_escalation.created_at).toLocaleString()}</div>
+                </div>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <div className="bg-gray-800 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-white">{health.latest_escalation.escalation_score?.toFixed(1)}</div>
+                    <div className="text-xs text-gray-500 mt-1">Final Score</div>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-blue-400">
+                      {health.latest_escalation.escalation_score_lower?.toFixed(1) ?? '--'}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">Lower Bound</div>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-orange-400">
+                      {health.latest_escalation.escalation_score_upper?.toFixed(1) ?? '--'}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">Upper Bound</div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-600 text-center">
+                  Score breakdown and signal evidence stored in pipeline -- visible in Transparency page
+                </div>
+              </div>
+            )}
 
             {/* Frequency Log History */}
             {health.frequency_log.length > 0 && (

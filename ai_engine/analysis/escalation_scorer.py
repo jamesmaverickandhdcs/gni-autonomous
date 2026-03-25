@@ -112,6 +112,29 @@ def score_escalation(articles: list[dict]) -> dict:
     else:
         level = 'LOW'
 
+    # GNI-R-117: Return full evidence object -- never discard reasoning
+    score_breakdown = {
+        'tech_base':       round(tech_score, 1),
+        'geo_base':        round(geo_score, 1),
+        'fin_base':        round(fin_score, 1),
+        'base_total':      round(base_score, 1),
+        'diversity_bonus': round(diversity_bonus, 1),
+        'combo_bonus':     round(combo_bonus, 1),
+        'raw_score':       round(raw_score, 1),
+        'final_score':     final_score,
+    }
+    factors = []
+    if tech_hits:
+        factors.append('Tech signals: ' + ', '.join(tech_hits[:3]))
+    if geo_hits:
+        factors.append('Geo signals: ' + ', '.join(geo_hits[:3]))
+    if fin_hits:
+        factors.append('Fin signals: ' + ', '.join(fin_hits[:3]))
+    if diversity_bonus > 0:
+        factors.append('Multi-pillar convergence: +' + str(round(diversity_bonus, 1)))
+    if combo_bonus > 0:
+        factors.append('Critical combination detected: +' + str(combo_bonus))
+
     return {
         'escalation_score': final_score,
         'escalation_level': level,
@@ -126,7 +149,9 @@ def score_escalation(articles: list[dict]) -> dict:
             'geopolitical': geo_hits[:5],
             'financial': fin_hits[:5],
         },
-        'combo_bonus': combo_bonus,
+        'combo_bonus':     combo_bonus,
+        'score_breakdown': score_breakdown,
+        'factors':         factors,
     }
 
 
