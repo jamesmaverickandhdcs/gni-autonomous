@@ -31,6 +31,7 @@ from monitoring_pipeline import (
     _send_telegram,
     _score_to_level,
 )
+from analysis.supabase_saver import save_pipeline_run
 
 GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true'
 
@@ -248,8 +249,26 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
         print('\nRunning ' + mode.upper() + ' analysis...')
         result = run_standard_mode(client, {}, reason)
 
-    # -- Done
+    # -- Log this adaptive run so get_last_adaptive_run() finds it
     total = round((datetime.now(timezone.utc) - now).total_seconds(), 2)
+    try:
+        save_pipeline_run(
+            run_at=now.isoformat(),
+            report_id=None,
+            total_collected=0,
+            total_after_relevance=0,
+            total_after_dedup=0,
+            total_after_funnel=0,
+            llm_source='adaptive',
+            status='success',
+            duration_seconds=total,
+            pipeline_type='adaptive',
+        )
+        print('  OK Adaptive run logged to pipeline_runs')
+    except Exception as _e:
+        print('  WARNING: Could not log adaptive run: ' + str(_e)[:60])
+
+    # -- Done
     print('\n' + '=' * 60)
     print('  Status:     SUCCESS')
     print('  Mode:       ' + result.get('mode', mode))

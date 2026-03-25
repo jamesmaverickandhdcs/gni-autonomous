@@ -167,6 +167,7 @@ def save_pipeline_run(
     llm_source: str,
     status: str,
     duration_seconds: float,
+    pipeline_type: str = 'main',
 ) -> str | None:
     """Save a pipeline run record. Returns run_id or None."""
     client = get_client()
@@ -184,6 +185,7 @@ def save_pipeline_run(
             "llm_source": llm_source,
             "status": status,
             "duration_seconds": duration_seconds,
+            "pipeline_type": pipeline_type,
         }
         result = client.table("pipeline_runs").insert(record).execute()
         if result.data:
