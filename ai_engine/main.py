@@ -13,7 +13,8 @@ from collectors.rss_collector import collect_articles
 from funnel.intelligence_funnel import run_funnel
 from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
-from analysis.mad_protocol import run_mad_protocol, _save_predictions
+# MAD protocol moved to mad_runner.py (GNI-R-110 -- separate pipeline)
+# from analysis.mad_protocol import run_mad_protocol, _save_predictions
 from analysis.semantic_validator import validate_report
 from analysis.prompt_manager import seed_prompt_variants, get_active_prompt, update_prompt_score, update_mad_confidence, get_pillar_prompt
 from analysis.credibility_model import seed_initial_credibility, update_credibility_scores
@@ -200,36 +201,37 @@ def run_pipeline():
             raise Exception(f"Report failed semantic validation: {validation['errors']}")
         print(f"   ? Semantic validation passed ({validation['checks_passed']}/{validation['total_checks']} checks)")
 
-        # -- Step 3c: MAD Protocol ------------------------
-        print("\n???? Step 3c: Running Quadratic MAD Protocol...")
+        # -- Step 3c: MAD Protocol (MOVED to mad_runner.py) ----
+        # GNI-R-110: MAD runs as separate pipeline (gni_mad.yml)
+        # 5 minutes after main pipeline -- clean Groq TPM window
+        # mad_runner.py reads this report from Supabase and updates it
+        print("\n???? Step 3c: MAD Protocol running separately (gni_mad.yml)")
+        print("   GNI-R-110: MAD will run in 5 min with clean Groq TPM window")
         t0 = time.time()
-        # Quadratic MAD: pass ALL relevant articles (301) + report_id for prediction saving
-        all_relevant = [a for a in trace if a.get('stage1_passed', False)]
-        mad_result = run_mad_protocol(report, all_articles=all_relevant)
-        # Unpack all Quadratic MAD fields
-        report['mad_bull_case']             = mad_result.get('mad_bull_case', '')
-        report['mad_bear_case']             = mad_result.get('mad_bear_case', '')
-        report['mad_black_swan_case']        = mad_result.get('mad_black_swan_case', '')
-        report['mad_ostrich_case']           = mad_result.get('mad_ostrich_case', '')
-        report['mad_verdict']               = mad_result.get('mad_verdict', 'neutral')
-        report['mad_confidence']            = mad_result.get('mad_confidence', 0.5)
-        report['mad_blind_spot']            = mad_result.get('mad_blind_spot', '')
-        report['mad_action_recommendation'] = mad_result.get('mad_action_recommendation', '')
-        report['short_focus_threats']       = mad_result.get('short_focus_threats', '')
-        report['long_shoot_threats']        = mad_result.get('long_shoot_threats', '')
-        report['short_verify_days']         = mad_result.get('short_verify_days', 14)
-        report['long_verify_days']          = mad_result.get('long_verify_days', 180)
-        report['mad_round1_positions']      = mad_result.get('mad_round1_positions', {})
-        report['mad_round2_positions']      = mad_result.get('mad_round2_positions', {})
-        report['mad_round3_positions']      = mad_result.get('mad_round3_positions', {})
-        report['mad_arb_feedbacks']         = mad_result.get('mad_arb_feedbacks', {})
-        report['mad_historian_case']        = mad_result.get('mad_historian_case', '')
-        report['mad_risk_case']             = mad_result.get('mad_risk_case', '')
+        # Set safe defaults -- mad_runner.py will overwrite these
+        report['mad_bull_case']             = ''
+        report['mad_bear_case']             = ''
+        report['mad_black_swan_case']       = ''
+        report['mad_ostrich_case']          = ''
+        report['mad_verdict']               = 'pending'
+        report['mad_confidence']            = 0.5
+        report['mad_blind_spot']            = ''
+        report['mad_action_recommendation'] = ''
+        report['short_focus_threats']       = ''
+        report['long_shoot_threats']        = ''
+        report['short_verify_days']         = 14
+        report['long_verify_days']          = 180
+        report['mad_round1_positions']      = {}
+        report['mad_round2_positions']      = {}
+        report['mad_round3_positions']      = {}
+        report['mad_arb_feedbacks']         = {}
+        report['mad_historian_case']        = ''
+        report['mad_risk_case']             = ''
         # -- Step 3f: Deception Detection -----------------
         print("\n\U0001f575  Step 3f: Deception Detection...")
         report = enrich_report_with_deception(report, top_articles)
 
-        report['mad_reasoning']  = mad_result.get('mad_reasoning', '')
+        report['mad_reasoning']  = ''
 
         # -- Step 3d: Escalation Scoring ------------------
         print("\n?? Step 3d: Scoring Escalation Risk...")
@@ -245,8 +247,7 @@ def run_pipeline():
             print(f"   ?? {hist_context}")
         print(f"   ? Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) ? {escalation['active_pillars']}/3 pillars active")
         step_timings["mad"] = round(time.time() - t0, 2)
-        print(f"   ? MAD verdict: {report['mad_verdict']} ({report['mad_confidence']:.0%} confidence)")
-        update_mad_confidence(prompt_version, report['mad_confidence'])
+        print("   ? MAD pending -- mad_runner.py will run in 5 minutes")
 
         # -- Step 4: Save Report
         print("\n?? Step 4: Saving Report to Supabase...")
@@ -258,15 +259,8 @@ def run_pipeline():
 
         if report_id:
             reports_saved = 1
-            # Save debate predictions now that we have real report_id
-            _save_predictions(
-                report_id=report_id,
-                short=report.get('short_focus_threats', ''),
-                long_s=report.get('long_shoot_threats', ''),
-                short_days=report.get('short_verify_days', 14),
-                long_days=report.get('long_verify_days', 180),
-                round3=report.get('mad_round3_positions', {}),
-            )
+            # Predictions saved by mad_runner.py after MAD completes
+            # GNI-R-110: mad_runner.py handles prediction saving
             log_audit_event('REPORT_SAVED', {'quality_score': report.get('quality_score', 0), 'sentiment': report.get('sentiment', ''), 'escalation_level': report.get('escalation_level', ''), 'mad_verdict': report.get('mad_verdict', ''), 'deception_level': report.get('deception_level', '')}, report_id=report_id)
 
         print("\n?? Step 5: Saving Pipeline Run & Article Trace...")
