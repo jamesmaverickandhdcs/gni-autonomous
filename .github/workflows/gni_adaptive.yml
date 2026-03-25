@@ -1,0 +1,40 @@
+﻿name: GNI Adaptive Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Trigger reason from heartbeat'
+        required: false
+        default: 'escalation-delta'
+
+jobs:
+  run-adaptive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run adaptive pipeline
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TELEGRAM_BOT_TOKEN:   ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:     ${{ secrets.TELEGRAM_CHAT_ID }}
+          GROQ_API_KEY:         ${{ secrets.GROQ_API_KEY }}
+          GITHUB_TOKEN:         ${{ secrets.GITHUB_TOKEN }}
+          GROQ_MODEL:           llama-3.3-70b-versatile
+        run: |
+          cd ai_engine
+          python adaptive_pipeline.py "${{ github.event.inputs.reason }}"
