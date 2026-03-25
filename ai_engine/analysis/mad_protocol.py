@@ -43,8 +43,8 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> 
             err = str(e)
             is_rate_limit = '429' in err or 'rate_limit' in err.lower() or 'rate limit' in err.lower()
             if is_rate_limit and attempt == 0:
-                print('  WARNING: Groq 429 rate limit -- sleeping 12s before retry...')
-                time.sleep(12)
+                print('  WARNING: Groq 429 rate limit -- sleeping 20s before retry...')
+                time.sleep(20)
                 continue
             return '[Agent error: ' + err[:100] + ']'
     return '[Agent error: max retries exceeded]'
@@ -321,7 +321,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # GNI-R-107: Sleep between rounds
     print('  Waiting 8s between rounds (Groq rate limit protection)...')
-    time.sleep(15)
+    time.sleep(20)
 
     # Round 3
     print('   Round 3: Final positions...')
@@ -338,7 +338,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
     print('  Waiting 8s before arbitrator synthesis (Groq rate limit protection)...')
-    time.sleep(20)
+    time.sleep(30)
 
     # Arbitrator final synthesis
     print('   Arbitrator final synthesis...')
