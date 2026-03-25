@@ -325,6 +325,19 @@ def run_pipeline():
             step_timings["pillar"] = round(time.time() - _t4b, 2)
             print(f"  OK Three Pillar Reports complete ({step_timings['pillar']:.1f}s)")
 
+        # -- Step 5b: Log Groq usage (GNI-R-124) ------------
+        if GITHUB_ACTIONS:
+            _client = _get_supabase_client() if False else None
+            try:
+                from supabase import create_client as _create_client
+                _sb = _create_client(
+                    os.getenv('SUPABASE_URL', ''),
+                    os.getenv('SUPABASE_SERVICE_KEY', '')
+                )
+                log_usage(_sb, 'gni_pipeline', 6175, 6, run_id or '')
+            except Exception as _e:
+                print('  WARNING: Could not log usage: ' + str(_e)[:60])
+
         # -- Step 6: Telegram Notification ------------------
         if report and report_id:
             notify_report(report, top_articles)

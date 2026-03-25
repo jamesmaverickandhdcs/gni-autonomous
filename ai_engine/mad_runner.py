@@ -260,6 +260,18 @@ def run_mad_pipeline():
         print('\n?? Step 6: Sending MAD Telegram...')
         _send_mad_telegram(report, mad_result)
 
+    # Log Groq usage (GNI-R-124)
+    if os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true':
+        try:
+            from supabase import create_client as _create_client
+            _sb = _create_client(
+                os.getenv('SUPABASE_URL', ''),
+                os.getenv('SUPABASE_SERVICE_KEY', '')
+            )
+            log_usage(_sb, 'gni_mad', 12393, 15, report_id or '')
+        except Exception as _e:
+            print('  WARNING: Could not log usage: ' + str(_e)[:60])
+
     # Done
     total = round((datetime.now(timezone.utc) - start).total_seconds(), 2)
     print('\n' + '=' * 60)
