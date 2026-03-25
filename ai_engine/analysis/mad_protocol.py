@@ -25,7 +25,7 @@ VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> str:
     # GNI-R-107: Rate-limit-aware Groq call with 429 retry
     # Attempt 1: normal call
-    # If 429 detected: sleep 12s then retry once
+    # If 429 detected: sleep 20s then retry once
     # If still fails: return error string (pipeline continues)
     for attempt in range(2):
         try:
@@ -299,8 +299,8 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
     # Round 1 used 5 calls. Sleep lets the rate limit window breathe.
-    print('  Waiting 8s between rounds (Groq rate limit protection)...')
-    time.sleep(15)
+    print('  Waiting 20s between rounds (Groq rate limit protection)...')
+    time.sleep(20)
 
     # Round 2
     print('   Round 2: Refined positions...')
@@ -320,7 +320,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     arb_c2 = _parse_coaching(_call_agent(ARB_COACH, c2_user, 600))
 
     # GNI-R-107: Sleep between rounds
-    print('  Waiting 8s between rounds (Groq rate limit protection)...')
+    print('  Waiting 20s between rounds (Groq rate limit protection)...')
     time.sleep(20)
 
     # Round 3
@@ -337,7 +337,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
 
     # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
-    print('  Waiting 8s before arbitrator synthesis (Groq rate limit protection)...')
+    print('  Waiting 30s before arbitrator synthesis (Groq rate limit protection)...')
     time.sleep(30)
 
     # Arbitrator final synthesis
