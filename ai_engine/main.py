@@ -40,6 +40,7 @@ from analysis.supabase_saver import (
     get_pipeline_run_count,
 )
 from notifications.telegram_notifier import notify_report
+from quota_guard import check_quota, log_usage
 
 # ============================================================
 # GNI Main Pipeline - Day 6
@@ -96,6 +97,13 @@ def run_pipeline():
         os.environ["GROQ_MODEL"] = probe["model_used"]
         print(f"  \u26a0\ufe0f  GROQ_MODEL set to fallback: {probe['model_used']}")
         log_audit_event("GROQ_MODEL_FALLBACK_ACTIVE", {"model": probe["model_used"]})
+
+    # GNI-R-112: Check quota before pipeline runs
+    # sacred=True -- never blocks sacred runs, alerts only
+    print("\n\U0001f6e1  Quota check (GNI-R-112)...")
+    _quota = check_quota('gni_pipeline', sacred=True)
+    print("  " + _quota['reason'].split("\n")[0])
+    print("  Used today: " + str(_quota['tokens_used']) + " tokens | Headroom: " + str(_quota['headroom']) + " tokens")
 
     try:
         # -- Step 1: Collect Articles ------------------------

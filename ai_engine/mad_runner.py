@@ -19,6 +19,9 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true'
 
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from quota_guard import check_quota, log_usage
+
 
 def _get_client():
     from supabase import create_client
@@ -204,6 +207,18 @@ def run_mad_pipeline():
         return True
 
     report_id = report['id']
+
+    # GNI-R-112: Check quota before MAD runs
+    # sacred=False -- MAD will be blocked if quota too low
+    print('\n\U0001f6e1  Quota check (GNI-R-112)...')
+    _quota = check_quota('gni_mad', sacred=False)
+    print('  ' + _quota['reason'].split('\n')[0])
+    if not _quota['allowed']:
+        print('  BLOCKED: Insufficient quota -- exiting cleanly')
+        print('  Used today: ' + str(_quota['tokens_used']) + ' tokens')
+        print('  Headroom: ' + str(_quota['headroom']) + ' tokens')
+        return True
+    print('  Used today: ' + str(_quota['tokens_used']) + ' tokens | Headroom: ' + str(_quota['headroom']) + ' tokens')
 
     # Fetch relevant articles for MAD context
     print('\n?? Step 2: Fetching article context...')
