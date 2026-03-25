@@ -207,10 +207,11 @@ export default function StocksPage() {
       .then(data => setAiContext(data.context || ''))
       .catch(() => setAiContext('AI context temporarily unavailable.'))
       .finally(() => setAiLoading(false))
-  }, [selectedTicker])
+  }, [selectedTicker, priceCache])
 
-  // Pre-load prices for sidebar cards
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Pre-load prices for sidebar cards -- runs once on mount only
+  // priceCache excluded from deps intentionally: adding it causes infinite re-renders
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     WATCHLIST_TICKERS.forEach(({ ticker }) => {
       if (!priceCache[ticker]) {
@@ -228,6 +229,7 @@ export default function StocksPage() {
       }
     })
   }, [])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const isPositive = stockData ? parseFloat(stockData.changePercent) >= 0 : true
   const chartColor = isPositive ? '#22c55e' : '#ef4444'
