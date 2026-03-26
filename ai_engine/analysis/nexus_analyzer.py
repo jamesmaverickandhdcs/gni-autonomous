@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import time
 import requests
 from dotenv import load_dotenv
 
@@ -488,14 +489,33 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     # myanmar_summary handled by GNI_Myanmar app (separate project)
     report["myanmar_summary"] = ""
 
-    # CI runs disabled -- GNI-R-107 Groq quota saving (saves 8 calls/run)
-    # _run_with_temperature() and _calculate_confidence_intervals() kept intact
-    # Re-enable by restoring the if GITHUB_ACTIONS block when quota headroom confirmed
-    score = report.get("sentiment_score", 0.0)
-    report["sentiment_score_lower"] = score
-    report["sentiment_score_upper"] = score
-    report["confidence_interval_width"] = 0.0
-    report["analysis_runs"] = 1
+    # CI runs restored -- quota headroom confirmed (~47,136/day vs 85K ceiling)
+    # 2 extra calls: temp 0.1 (lower bound) + temp 0.7 (upper bound)
+    # sleep(30) before each CI call -- TPM protection after primary analysis
+    base_score = report.get("sentiment_score", 0.0)
+    if GITHUB_ACTIONS:
+        print("  Running confidence interval analysis (2 additional runs)...")
+        scores = [base_score]
+        for temp in [0.1, 0.7]:
+            print("  Waiting 30s before CI call (TPM protection)...")
+            time.sleep(30)
+            alt = _run_with_temperature(prompt, temp)
+            if alt and "sentiment_score" in alt:
+                try:
+                    scores.append(float(alt["sentiment_score"]))
+                except (TypeError, ValueError):
+                    pass
+        ci = _calculate_confidence_intervals(scores)
+        report["sentiment_score_lower"] = ci["lower"]
+        report["sentiment_score_upper"] = ci["upper"]
+        report["confidence_interval_width"] = ci["width"]
+        report["analysis_runs"] = ci["runs"]
+        print(f"  CI: {base_score:.2f} [{ci['lower']:.2f}, {ci['upper']:.2f}] width={ci['width']:.2f} runs={ci['runs']}")
+    else:
+        report["sentiment_score_lower"] = base_score
+        report["sentiment_score_upper"] = base_score
+        report["confidence_interval_width"] = 0.0
+        report["analysis_runs"] = 1
 
     return report
 
