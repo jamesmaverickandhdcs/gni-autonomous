@@ -168,7 +168,7 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
         </div>
         <div className="mt-4 bg-gray-800 rounded-lg p-3 text-xs text-gray-400 leading-relaxed">
           <span className="text-white font-bold">How GPVS works: </span>
-          Every GNI report makes a prediction — Bearish or Bullish on SPY market direction. After 3 and 7 days, actual market movement is measured and compared. Correct predictions increase a source's trust weight (up to 2.0). Wrong predictions reduce it (down to 0.5). Over time this builds a self-improving intelligence system where accuracy drives credibility.
+          Every GNI report makes a prediction — Bearish or Bullish on SPY market direction. After 3 and 7 days, actual market movement is measured and compared. Correct predictions increase a source&apos;s trust weight (up to 2.0). Wrong predictions reduce it (down to 0.5). Over time this builds a self-improving intelligence system where accuracy drives credibility.
         </div>
         <div className="mt-3 text-xs text-gray-600 text-center">
           Powered by GPVS v1.1 — GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
