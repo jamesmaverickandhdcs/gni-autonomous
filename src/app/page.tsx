@@ -738,12 +738,13 @@ export default function Home() {
                     <span className="text-gray-400 text-sm">{showAIThinking ? '▲ Hide' : '▼ Show'}</span>
                   </button>
 
+                  <div className="px-6 pt-2 pb-3 text-xs text-gray-400 leading-relaxed">
+                    <span className="text-white font-bold">How AI Thinking works: </span>
+                    GNI collects articles from 25 RSS sources, then passes them through a 4-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 66 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
+                  </div>
+
                   {showAIThinking && (
                     <div className="px-6 pb-6 border-t border-gray-700">
-                      <div className="mt-4 mb-4 text-xs text-gray-400 leading-relaxed">
-                        <span className="text-white font-bold">How AI Thinking works: </span>
-                        GNI collects articles from 25 RSS sources, then passes them through a 4-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 66 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
-                      </div>
                       <div className="grid grid-cols-2 md:grid-cols-5 gap-2 my-4">
                         {[
                           { label: 'Collected', value: latestRun?.total_collected ?? latestArticles.length * 24, color: 'bg-gray-700' },
