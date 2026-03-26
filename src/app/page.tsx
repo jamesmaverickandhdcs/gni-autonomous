@@ -189,8 +189,7 @@ function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
         <div className="flex items-center gap-3 mb-4">
           <span className="text-lg">⚖️</span>
           <div>
-            <div className="text-sm font-bold text-white">Dynamic Source Weights</div>
-            <div className="text-xs text-gray-400">Updated automatically based on GPVS prediction accuracy</div>
+            <div className="text-sm font-bold text-white">Dynamic Source Weights <span className="text-xs text-gray-400 font-normal">(Updated automatically based on GPVS prediction accuracy)</span></div>
           </div>
         </div>
         <div className="space-y-2">
@@ -210,6 +209,10 @@ function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
               </div>
             )
           })}
+        </div>
+        <div className="mt-4 bg-gray-800 rounded-lg p-3 text-xs text-gray-400 leading-relaxed">
+          <span className="text-white font-bold">How Source Weights work: </span>
+          Every GNI prediction is tracked against real market outcomes via GPVS. Sources whose articles led to correct predictions earn higher trust weights (up to 2.0). Sources linked to wrong predictions are penalised (down to 0.5). Weights update automatically using an Exponential Moving Average (EMA) after each verified prediction, so the most accurate sources drive the intelligence over time.
         </div>
         <div className="mt-3 text-xs text-gray-600">
           Weight: 0.5 (penalised) → 1.0 (neutral) → 2.0 (highly trusted) | Updates via EMA after each verified prediction
