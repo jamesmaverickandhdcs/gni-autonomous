@@ -233,6 +233,8 @@ export default function Home() {
   const [sourceWeights, setSourceWeights] = useState<SourceWeight[]>([])
   const [latestRun, setLatestRun] = useState<PipelineRun | null>(null)
   const [showPreviousReports, setShowPreviousReports] = useState(false)
+  const [mapEvents, setMapEvents] = useState<{location_name: string, stage3_score: number}[]>([])
+  const [stockTickers, setStockTickers] = useState<{ticker: string, price: number, changePercent: string}[]>([])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -275,6 +277,29 @@ export default function Home() {
       .then(r => r.json())
       .then(data => setSourceWeights(data.weights || []))
       .catch(() => {})
+
+    // Live map events widget
+    fetch('/api/article-events?days=1')
+      .then(r => r.json())
+      .then(data => {
+        const events = data.events || []
+        const unique = events.filter((e: {location_name: string}, i: number, arr: {location_name: string}[]) =>
+          arr.findIndex(x => x.location_name === e.location_name) === i
+        ).slice(0, 3)
+        setMapEvents(unique)
+      })
+      .catch(() => {})
+
+    // Live stock tickers widget
+    const tickers = ['SPY', 'GLD', 'USO', '%5EVIX']
+    Promise.all(
+      tickers.map(t => fetch(`/api/stocks?ticker=${t}&range=3d`).then(r => r.json()))
+    ).then(results => {
+      const stocks = results
+        .filter(r => r.price)
+        .map(r => ({ ticker: r.ticker, price: r.price, changePercent: r.changePercent }))
+      setStockTickers(stocks)
+    }).catch(() => {})
 
     fetch('/api/pipeline-runs')
       .then(r => r.json())
@@ -429,6 +454,72 @@ export default function Home() {
 
         {!loading && reports.length > 0 && (
           <>
+            {/* Live Map + Stocks Widgets */}
+            <section className="mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                {/* Map Widget */}
+                <a href="/map" className="block bg-gray-900 border border-gray-700 hover:border-blue-500 rounded-xl p-4 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🗺️</span>
+                      <div>
+                        <div className="text-sm font-bold text-white">Geopolitical Event Map</div>
+                        <div className="text-xs text-gray-400">Live pins from today&apos;s intelligence</div>
+                      </div>
+                    </div>
+                    <span className="text-xs text-blue-400 border border-blue-800 rounded px-2 py-1">View Map →</span>
+                  </div>
+                  {mapEvents.length > 0 ? (
+                    <div className="space-y-1">
+                      {mapEvents.map((e, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <span className="text-red-400 text-xs">●</span>
+                          <span className="text-xs text-gray-300">{e.location_name}</span>
+                          <span className="text-xs text-yellow-500">Score: {e.stage3_score}</span>
+                        </div>
+                      ))}
+                      <div className="text-xs text-gray-500 mt-1">{mapEvents.length}+ active locations today</div>
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-600">Loading live events...</div>
+                  )}
+                </a>
+
+                {/* Stocks Widget */}
+                <a href="/stocks" className="block bg-gray-900 border border-gray-700 hover:border-green-500 rounded-xl p-4 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">📈</span>
+                      <div>
+                        <div className="text-sm font-bold text-white">Market Intelligence</div>
+                        <div className="text-xs text-gray-400">Live prices — 25 geopolitical instruments</div>
+                      </div>
+                    </div>
+                    <span className="text-xs text-green-400 border border-green-800 rounded px-2 py-1">View Charts →</span>
+                  </div>
+                  {stockTickers.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {stockTickers.map((s, i) => (
+                        <div key={i} className="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between">
+                          <span className="text-xs font-mono font-bold text-white">{s.ticker === '^VIX' ? 'VIX' : s.ticker}</span>
+                          <div className="text-right">
+                            <div className="text-xs font-bold text-white">{s.price?.toFixed(2)}</div>
+                            <div className={`text-xs font-bold ${parseFloat(s.changePercent) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                              {parseFloat(s.changePercent) >= 0 ? '+' : ''}{s.changePercent}%
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-600">Loading live prices...</div>
+                  )}
+                </a>
+
+              </div>
+            </section>
+
             <section className="mb-8">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Latest Intelligence Report</div>
               <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
