@@ -66,7 +66,7 @@ function createLocationIcon(L: any, count: number, maxScore: number) {
   })
 }
 
-export default function MapView({ events }: { events: ArticleEvent[] }) {
+export default function MapView({ events, height = 'calc(100vh - 140px)' }: { events: ArticleEvent[], height?: string }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [MapComponents, setMapComponents] = useState<any>(null)
 
@@ -133,7 +133,7 @@ export default function MapView({ events }: { events: ArticleEvent[] }) {
       <MapContainer
         center={[25, 40]}
         zoom={2}
-        style={{ height: 'calc(100vh - 140px)', width: '100%' }}
+        style={{ height, width: '100%' }}
         scrollWheelZoom={true}
       >
         <TileLayer

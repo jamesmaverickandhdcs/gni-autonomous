@@ -470,13 +470,13 @@ export default function Home() {
                   <div className="flex items-center justify-between px-4 py-3 border-b border-gray-700">
                     <div>
                       <div className="text-sm font-bold text-white">🗺️ Geopolitical Event Map</div>
-                      <div className="text-xs text-gray-400">{mapEvents.length} live events — click pins for details</div>
+                      <div className="text-xs text-gray-400">Live Events — Click Pins for Details</div>
                     </div>
                     <a href="/map" className="text-xs text-blue-400 border border-blue-800 rounded px-2 py-1 hover:border-blue-500 transition-colors">Full Map →</a>
                   </div>
                   <div style={{ height: "220px", width: "100%" }}>
                     {mapEvents.length > 0 ? (
-                      <MiniMapView events={mapEvents} />
+                      <MiniMapView events={mapEvents} height="220px" />
                     ) : (
                       <div className="flex items-center justify-center h-full text-xs text-gray-600">Loading map events...</div>
                     )}
@@ -493,7 +493,7 @@ export default function Home() {
                           <>
                             <span className="text-white font-bold">${btcPrice.price?.toLocaleString()}</span>
                             <span className={`font-bold ${parseFloat(btcPrice.changePercent) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                              {parseFloat(btcPrice.changePercent) >= 0 ? '+' : ''}{btcPrice.changePercent}%
+                              10Y: {parseFloat(btcPrice.changePercent) >= 0 ? '+' : ''}{btcPrice.changePercent}%
                             </span>
                           </>
                         ) : (
