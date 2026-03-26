@@ -98,7 +98,7 @@ def save_report(report: dict, articles: list[dict], quality_score: float = 0, qu
         record = {
             "title": report.get("title", "Untitled Report"),
             "summary": report.get("summary", ""),
-            "myanmar_summary": report.get("myanmar_summary", ""),
+            # myanmar_summary removed -- handled by GNI_Myanmar app (separate project)
             "full_analysis": json.dumps(report),
             "source_consensus_score": float(report.get("source_consensus_score", 0.0)),
             "sentiment": report.get("sentiment", "Neutral"),

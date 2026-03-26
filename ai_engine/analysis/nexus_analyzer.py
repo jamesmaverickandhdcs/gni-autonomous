@@ -486,8 +486,7 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     report["articles_analyzed"] = len(articles)
     report["sources_used"] = list(set(a["source"] for a in articles))
 
-    # myanmar_summary handled by GNI_Myanmar app (separate project)
-    report["myanmar_summary"] = ""
+    # myanmar_summary removed -- handled entirely by GNI_Myanmar app (separate project)
 
     # CI runs restored -- quota headroom confirmed (~47,136/day vs 85K ceiling)
     # 2 extra calls: temp 0.1 (lower bound) + temp 0.7 (upper bound)
