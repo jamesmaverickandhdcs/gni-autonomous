@@ -131,7 +131,7 @@ export default function MapView({ events, height = 'calc(100vh - 140px)' }: { ev
       `}</style>
 
       <MapContainer
-        center={[25, 40]}
+        center={[20, 10]}
         zoom={2}
         style={{ height, width: '100%' }}
         scrollWheelZoom={true}
