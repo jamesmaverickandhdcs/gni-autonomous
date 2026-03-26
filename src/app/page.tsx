@@ -536,72 +536,25 @@ export default function Home() {
                 </div>
                 )}
 
-                {latest.mad_verdict && (
-                  <div className="bg-gray-800 rounded-lg p-4 mb-4">
-                    <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
-                      🐂🐻🦢🦦 Quadratic MAD — Future Threats
-                    </div>
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className={`text-sm font-bold px-3 py-1 rounded-full ${latest.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300' : latest.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-gray-700 text-gray-300'}`}>
-                        {latest.mad_verdict === 'bullish' ? '🐂' : latest.mad_verdict === 'bearish' ? '🐻' : '◆'} {latest.mad_verdict?.toUpperCase()}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        Confidence: {latest.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}
-                      </span>
-                      {latest.deception_level && latest.deception_level !== 'NONE' && (
-                        <span className="text-xs bg-orange-900 text-orange-300 px-2 py-1 rounded-full">
-                          🕵️ {latest.deception_level} coordination
-                        </span>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div className="bg-green-950 border border-green-800 rounded-lg p-3">
-                        <div className="text-xs text-green-400 font-bold mb-1">🐂 Bull Case</div>
-                        <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_bull_case}</p>
-                      </div>
-                      <div className="bg-red-950 border border-red-800 rounded-lg p-3">
-                        <div className="text-xs text-red-400 font-bold mb-1">🐻 Bear Case</div>
-                        <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_bear_case}</p>
-                      </div>
-                      <div className="bg-blue-950 border border-blue-800 rounded-lg p-3">
-                        <div className="text-xs text-blue-400 font-bold mb-1">🦢 Black Swan</div>
-                        {latest.mad_black_swan_case ? (
-                          <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_black_swan_case}</p>
-                        ) : (
-                          <p className="text-xs text-blue-900 italic">Available for Quadratic MAD reports.</p>
-                        )}
-                      </div>
-                      <div className="bg-yellow-950 border border-yellow-800 rounded-lg p-3">
-                        <div className="text-xs text-yellow-400 font-bold mb-1">🦦 Ostrich</div>
-                        {latest.mad_ostrich_case ? (
-                          <p className="text-xs text-gray-300 leading-relaxed">{latest.mad_ostrich_case}</p>
-                        ) : (
-                          <p className="text-xs text-yellow-900 italic">Available for Quadratic MAD reports.</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
                 {reports.length > 1 && (
                   <div className="bg-gray-800 rounded-lg p-4 mt-4 mb-4">
                     <button
                       onClick={() => setShowPreviousReports(prev => !prev)}
                       className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
                     >
-                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">{reports.length - 1} Previous Reports</div>
-                      <span className="text-xs text-gray-400 border border-gray-600 rounded px-2 py-1">
+                      <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">{reports.length - 1} Previous Reports</div>
+                      <span className="text-xs text-gray-300 border border-gray-500 rounded px-2 py-1">
                         {showPreviousReports ? "▲ Hide" : "▼ Show"}
                       </span>
                     </button>
                     {showPreviousReports && (
                       <div className="space-y-3 mt-3">
                         {reports.slice(1).map(report => (
-                          <div key={report.id} className="bg-gray-800 border border-gray-700 rounded-xl p-4 hover:border-gray-600 transition-colors">
+                          <div key={report.id} className="bg-gray-700 border border-gray-600 rounded-xl p-4 hover:border-gray-500 transition-colors">
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-semibold text-white text-sm mb-1 truncate">{report.title}</h3>
-                                <p className="text-gray-400 text-xs line-clamp-5">{report.summary}</p>
+                                <p className="text-gray-300 text-xs line-clamp-5">{report.summary}</p>
                               </div>
                               <div className="flex flex-col items-end gap-2 shrink-0">
                                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${riskColor(report.risk_level)}`}>
@@ -613,8 +566,8 @@ export default function Home() {
                               </div>
                             </div>
                             <div className="flex items-center gap-4 mt-2">
-                              <span className="text-xs text-gray-500">� {report.location_name || 'Global'}</span>
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-gray-400">� {report.location_name || 'Global'}</span>
+                              <span className="text-xs text-gray-400">
                                 {new Date(report.created_at).toLocaleDateString('en-US', {
                                   month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
                                 })}
