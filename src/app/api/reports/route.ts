@@ -16,7 +16,7 @@ export async function GET() {
 
     if (error) throw error
 
-    return NextResponse.json({ reports: data })
+    return NextResponse.json({ reports: data }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json(
       { error: 'Failed to fetch reports' },

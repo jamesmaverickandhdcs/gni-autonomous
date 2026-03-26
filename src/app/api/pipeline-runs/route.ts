@@ -14,7 +14,7 @@ export async function GET() {
       .order('run_at', { ascending: false })
       .limit(30)
     if (error) throw error
-    return NextResponse.json({ runs: data })
+    return NextResponse.json({ runs: data }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json({ error: 'Failed to fetch pipeline runs' }, { status: 500 })
   }

@@ -13,9 +13,9 @@ export async function GET() {
       .order('created_at', { ascending: false })
       .limit(9)
     if (error) throw error
-    return NextResponse.json({ reports: data || [] })
+    return NextResponse.json({ reports: data || [] }, { headers: { 'Cache-Control': 'no-store' } })
   } catch (e) {
     console.error('pillar-reports API error:', e)
-    return NextResponse.json({ reports: [] })
+    return NextResponse.json({ reports: [] }, { headers: { 'Cache-Control': 'no-store' } })
   }
 }

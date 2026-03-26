@@ -52,7 +52,7 @@ export async function GET() {
         accuracy_7d: accuracy7d,
         pending_review: outcomes.filter(o => o.human_review_needed).length,
       }
-    })
+    }, { headers: { 'Cache-Control': 'no-store' } })
 
   } catch {
     return NextResponse.json({ error: 'Failed to fetch outcomes' }, { status: 500 })

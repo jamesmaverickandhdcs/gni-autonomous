@@ -15,7 +15,7 @@ export async function GET() {
 
     if (error) throw error
 
-    return NextResponse.json({ weights: data || [] })
+    return NextResponse.json({ weights: data || [] }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json({ error: 'Failed to fetch source weights' }, { status: 500 })
   }

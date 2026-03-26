@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
       .eq('run_id', run_id)
       .order('stage3_score', { ascending: false })
     if (error) throw error
-    return NextResponse.json({ articles: data })
+    return NextResponse.json({ articles: data }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json({ error: 'Failed to fetch articles' }, { status: 500 })
   }
