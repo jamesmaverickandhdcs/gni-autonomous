@@ -225,6 +225,7 @@ export default function Home() {
   const [predictionSummary, setPredictionSummary] = useState<PredictionSummary | null>(null)
   const [sourceWeights, setSourceWeights] = useState<SourceWeight[]>([])
   const [latestRun, setLatestRun] = useState<PipelineRun | null>(null)
+  const [showPreviousReports, setShowPreviousReports] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -718,14 +719,24 @@ export default function Home() {
 
             {reports.length > 1 && (
               <section className="mb-8">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Previous Reports</div>
-                <div className="space-y-3">
+                <button
+                  onClick={() => setShowPreviousReports(prev => !prev)}
+                  className="w-full flex items-center justify-between mb-3 hover:opacity-80 transition-opacity"
+                >
+                  <div className="text-xs text-gray-500 uppercase tracking-wider">
+                    Latest Intelligence Report + {reports.length - 1} Previous Reports
+                  </div>
+                  <span className="text-xs text-gray-500 border border-gray-700 rounded px-2 py-1">
+                    {showPreviousReports ? "▲ Hide" : "▼ Show"}
+                  </span>
+                </button>
+                {showPreviousReports && <div className="space-y-3">
                   {reports.slice(1).map(report => (
                     <div key={report.id} className="bg-gray-900 border border-gray-800 rounded-xl p-4 hover:border-gray-600 transition-colors">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <h3 className="font-semibold text-white text-sm mb-1 truncate">{report.title}</h3>
-                          <p className="text-gray-400 text-xs line-clamp-2">{report.summary}</p>
+                          <p className="text-gray-400 text-xs line-clamp-3">{report.summary}</p>
                         </div>
                         <div className="flex flex-col items-end gap-2 shrink-0">
                           <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${riskColor(report.risk_level)}`}>
@@ -749,7 +760,7 @@ export default function Home() {
                       </div>
                     </div>
                   ))}
-                </div>
+                </div>}
               </section>
             )}
           </>
