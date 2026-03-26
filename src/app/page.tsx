@@ -700,6 +700,67 @@ export default function Home() {
               )
             })()}
 
+            {/* MAD Verdict Section */}
+            {latest?.mad_verdict && (
+              <section className="mb-8">
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">
+                  🐂🐻🦢🦦 Quadratic MAD — Latest Threat Verdict
+                </div>
+                <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className={`text-lg font-bold px-4 py-2 rounded-full ${latest.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300' : latest.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-gray-700 text-gray-300'}`}>
+                        {latest.mad_verdict === 'bullish' ? '🐂' : latest.mad_verdict === 'bearish' ? '🐻' : '◆'} {latest.mad_verdict?.toUpperCase()}
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        Confidence: {latest.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}
+                      </span>
+                      {latest.deception_level && latest.deception_level !== 'NONE' && (
+                        <span className="text-xs bg-orange-900 text-orange-300 px-2 py-1 rounded-full">
+                          🕵️ {latest.deception_level} coordination
+                        </span>
+                      )}
+                    </div>
+                    <a href="/debate" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 hover:border-blue-600 rounded px-3 py-1 transition-colors">
+                      Full Debate →
+                    </a>
+                  </div>
+                  {latest.mad_confidence > 0 && (
+                    <div className="w-full bg-gray-800 rounded-full h-2 mb-4">
+                      <div
+                        className={`h-2 rounded-full ${latest.mad_verdict === 'bullish' ? 'bg-green-500' : latest.mad_verdict === 'bearish' ? 'bg-red-500' : 'bg-gray-500'}`}
+                        style={{ width: Math.round(latest.mad_confidence * 100) + '%' }}
+                      />
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="bg-green-950 border border-green-800 rounded-lg p-4">
+                      <div className="text-xs text-green-400 font-bold mb-2">🐂 Bull — Known Positives</div>
+                      <p className="text-xs text-gray-300 leading-relaxed line-clamp-4">{latest.mad_bull_case || 'Pending next MAD run.'}</p>
+                    </div>
+                    <div className="bg-red-950 border border-red-800 rounded-lg p-4">
+                      <div className="text-xs text-red-400 font-bold mb-2">🐻 Bear — Known Negatives</div>
+                      <p className="text-xs text-gray-300 leading-relaxed line-clamp-4">{latest.mad_bear_case || 'Pending next MAD run.'}</p>
+                    </div>
+                    <div className="bg-blue-950 border border-blue-800 rounded-lg p-4">
+                      <div className="text-xs text-blue-400 font-bold mb-2">🦢 Black Swan — Unknown Negatives</div>
+                      <p className="text-xs text-gray-300 leading-relaxed line-clamp-4">{latest.mad_black_swan_case || 'Pending next MAD run.'}</p>
+                    </div>
+                    <div className="bg-yellow-950 border border-yellow-800 rounded-lg p-4">
+                      <div className="text-xs text-yellow-400 font-bold mb-2">🦦 Ostrich — Ignored Realities</div>
+                      <p className="text-xs text-gray-300 leading-relaxed line-clamp-4">{latest.mad_ostrich_case || 'Pending next MAD run.'}</p>
+                    </div>
+                  </div>
+                  {latest.mad_action_recommendation && (
+                    <div className="mt-3 bg-gray-800 rounded-lg p-3">
+                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Action Recommendation</div>
+                      <p className="text-xs text-gray-300">{latest.mad_action_recommendation}</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+
             {latestArticles.length > 0 && (
               <section className="mb-8">
                 <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
