@@ -586,7 +586,7 @@ export default function Home() {
                       className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
                     >
                       <div className="text-xs text-gray-500 uppercase tracking-wider">
-                        Latest Intelligence Report + {reports.length - 1} Previous Reports
+                        {reports.length - 1} Previous Reports
                       </div>
                       <span className="text-xs text-gray-500 border border-gray-700 rounded px-2 py-1">
                         {showPreviousReports ? "▲ Hide" : "▼ Show"}
@@ -599,7 +599,7 @@ export default function Home() {
                             <div className="flex items-start justify-between gap-4">
                               <div className="flex-1 min-w-0">
                                 <h3 className="font-semibold text-white text-sm mb-1 truncate">{report.title}</h3>
-                                <p className="text-gray-400 text-xs line-clamp-3">{report.summary}</p>
+                                <p className="text-gray-400 text-xs line-clamp-5">{report.summary}</p>
                               </div>
                               <div className="flex flex-col items-end gap-2 shrink-0">
                                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${riskColor(report.risk_level)}`}>
