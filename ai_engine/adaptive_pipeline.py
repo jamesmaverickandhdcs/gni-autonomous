@@ -268,6 +268,21 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
     except Exception as _e:
         print('  WARNING: Could not log adaptive run: ' + str(_e)[:60])
 
+    # -- Log Groq usage so quota_guard can see adaptive token consumption (GNI-R-131)
+    groq_calls = result.get('groq_calls', 0)
+    if groq_calls > 0:
+        try:
+            tokens_estimate = groq_calls * 6175
+            log_usage(
+                pipeline='gni_adaptive',
+                tokens_used=tokens_estimate,
+                requests_used=groq_calls,
+                run_id=None,
+            )
+            print('  OK Usage logged: gni_adaptive +' + str(tokens_estimate) + ' tokens, +' + str(groq_calls) + ' requests')
+        except Exception as _e2:
+            print('  WARNING: Could not log usage: ' + str(_e2)[:60])
+
     # -- Done
     print('\n' + '=' * 60)
     print('  Status:     SUCCESS')

@@ -151,6 +151,7 @@ def get_latest_escalation(client) -> dict:
         result = client.table('reports') \
             .select('id,title,escalation_score,created_at') \
             .not_.is_('escalation_score', 'null') \
+            .gt('escalation_score', 0) \
             .order('created_at', desc=True) \
             .limit(2) \
             .execute()
