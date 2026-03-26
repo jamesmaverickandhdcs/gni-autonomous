@@ -679,6 +679,10 @@ export default function Home() {
                       Full Debate →
                     </a>
                   </div>
+                  <div className="bg-gray-800 rounded-lg p-3 mb-4 text-xs text-gray-400 leading-relaxed">
+                    <span className="text-white font-bold">How MAD works: </span>
+                    Four AI agents debate future threats across two axes: Known/Unknown × Proactive/Ignored. Bull identifies opportunity costs, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. After 3 rounds with Arbitrator coaching, a final verdict is reached. This is GNI&apos;s Novel Contribution #1 — the Johari Window applied to AI geopolitical intelligence.
+                  </div>
                   {latest.mad_confidence > 0 && (
                     <div className="w-full bg-gray-800 rounded-full h-2 mb-4">
                       <div
