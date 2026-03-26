@@ -1,8 +1,0 @@
-﻿# GNI requirements -- Linux/Ubuntu compatible
-# Used by: gni_heartbeat.yml, gni_adaptive.yml
-feedparser==6.0.12
-geopy==2.4.1
-supabase
-python-dotenv
-groq
-requests

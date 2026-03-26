@@ -297,9 +297,9 @@ def run_pipeline():
             print("\n?????? Step 4b: Running Three Pillar Reports...")
             _t4b = time.time()
             # GNI-R-097: sleep(120) before first pillar.
-            # Step 3 burns ~15-18 Groq calls (analysis + CI runs + MAD rounds).
+            # Step 3 burns ~3 Groq calls (primary analysis + 2 CI runs).
+            # MAD moved to separate pipeline (GNI-R-110).
             # Groq free tier rate limit window needs 120s to reset fully.
-            # sleep(10) between pillars is not enough after that many calls.
             print("  Waiting 120s for Groq rate limit to reset after Step 3...")
             time.sleep(120)
             _pillar_buckets = {"geo": [], "tech": [], "fin": []}
