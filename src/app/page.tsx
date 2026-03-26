@@ -584,15 +584,13 @@ export default function Home() {
                 )}
 
                 {reports.length > 1 && (
-                  <div className="border-t border-gray-700 pt-4 mt-4 mb-4">
+                  <div className="bg-gray-800 rounded-lg p-4 mt-4 mb-4">
                     <button
                       onClick={() => setShowPreviousReports(prev => !prev)}
                       className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
                     >
-                      <div className="text-xs text-gray-500 uppercase tracking-wider">
-                        {reports.length - 1} Previous Reports
-                      </div>
-                      <span className="text-xs text-gray-500 border border-gray-700 rounded px-2 py-1">
+                      <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">{reports.length - 1} Previous Reports</div>
+                      <span className="text-xs text-gray-400 border border-gray-600 rounded px-2 py-1">
                         {showPreviousReports ? "▲ Hide" : "▼ Show"}
                       </span>
                     </button>
