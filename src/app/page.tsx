@@ -773,7 +773,7 @@ export default function Home() {
 
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI — Global Nexus Insights | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipeline runs 2x daily via GitHub Actions
+          Global Nexus Insights (Autonomous) | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipelines runs 2x daily via GitHub Actions
         </div>
       </footer>
     </div>
