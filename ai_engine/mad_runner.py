@@ -151,7 +151,7 @@ def _send_mad_telegram(report, mad_result):
     """Send Telegram with MAD verdict."""
     import requests
     token = os.getenv('TELEGRAM_BOT_TOKEN', '')
-    chat_id = os.getenv('TELEGRAM_CHAT_ID', '')
+    chat_id = os.getenv('TELEGRAM_ADMIN_ID', os.getenv('TELEGRAM_CHAT_ID', ''))
     if not token or not chat_id:
         return
 
