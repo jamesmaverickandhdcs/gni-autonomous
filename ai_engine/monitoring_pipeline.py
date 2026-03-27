@@ -149,7 +149,7 @@ def get_latest_escalation(client) -> dict:
     """Get the two most recent escalation scores from reports table."""
     try:
         result = client.table('reports') \
-            .select('id,title,escalation_score,created_at') \
+            .select('id,title,escalation_score,sentiment,mad_verdict,created_at') \
             .not_.is_('escalation_score', 'null') \
             .gt('escalation_score', 0) \
             .order('created_at', desc=True) \
@@ -201,6 +201,58 @@ def _score_to_level(score: float) -> str:
     return 'LOW'
 
 
+def check_divergence_alert(client) -> bool:
+    """
+    I-02: Indirect+Active report -- detect pipeline vs MAD divergence.
+    Fires Telegram alert when report sentiment disagrees with MAD verdict.
+    """
+    try:
+        result = client.table('reports') \
+            .select('id,title,sentiment,mad_verdict,mad_confidence,escalation_score,created_at') \
+            .not_.is_('mad_verdict', 'null') \
+            .not_.is_('sentiment', 'null') \
+            .order('created_at', desc=True) \
+            .limit(1) \
+            .execute()
+
+        if not result.data:
+            return False
+
+        report = result.data[0]
+        sentiment = (report.get('sentiment') or '').lower()
+        mad_verdict = (report.get('mad_verdict') or '').lower()
+        title = report.get('title', '')[:60]
+        esc_score = report.get('escalation_score', 0) or 0
+        mad_conf = report.get('mad_confidence', 0) or 0
+
+        # Skip if either is neutral/pending/empty
+        if not sentiment or not mad_verdict:
+            return False
+        if sentiment in ('neutral', 'pending') or mad_verdict in ('neutral', 'pending'):
+            return False
+        if sentiment == mad_verdict:
+            return False
+
+        # Divergence detected!
+        msg = (
+            '[GNI DIVERGENCE ALERT] Pipeline vs MAD Disagree\n'
+            'Report: ' + title + '\n'
+            'Report sentiment: ' + sentiment.upper() + '\n'
+            'MAD verdict: ' + mad_verdict.upper() +
+            ' (confidence: ' + str(round(mad_conf * 100)) + '%)\n'
+            'Escalation: ' + str(esc_score) + '/10\n'
+            'Action: Investigate divergence -- highest-value signal\n'
+            'Time: ' + datetime.now(timezone.utc).strftime('%H:%M UTC')
+        )
+        print('  DIVERGENCE DETECTED: ' + sentiment.upper() + ' vs ' + mad_verdict.upper())
+        _send_telegram(msg)
+        return True
+
+    except Exception as e:
+        print('  Warning: Divergence check failed: ' + str(e)[:60])
+        return False
+
+
 def run_monitoring_pipeline():
     now = datetime.now(timezone.utc)
     print('=' * 60)
@@ -218,6 +270,12 @@ def run_monitoring_pipeline():
     if not client:
         print('ERROR: Cannot connect to Supabase')
         return False
+
+    # -- I-02: Divergence alert -- pipeline vs MAD disagree
+    print('\nChecking pipeline vs MAD divergence...')
+    divergence_found = check_divergence_alert(client)
+    if not divergence_found:
+        print('  No divergence -- report and MAD aligned')
 
     # -- NYSE transition alerts (GNI-R-120) -- always fire
     nyse_transition = get_nyse_transition(now)
