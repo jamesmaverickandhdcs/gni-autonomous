@@ -246,10 +246,7 @@ export default function Home() {
         .then(r => r.json())
         .then(data => {
           if (data.reports && data.reports.length > 0) {
-            setReports(prev => {
-              if (prev[0]?.id !== data.reports[0]?.id) return data.reports
-              return prev
-            })
+            setReports(data.reports)
           }
         })
         .catch(() => {})
