@@ -239,6 +239,7 @@ export default function Home() {
   const [mapEvents, setMapEvents] = useState<{id: string, source: string, bias: string, title: string, url: string, summary: string, stage3_score: number, stage4_rank: number, location_name: string, lat: number, lng: number, created_at: string}[]>([])
   const [btcChartData, setBtcChartData] = useState<{date: string, close: number}[]>([])
   const [btcPrice, setBtcPrice] = useState<{price: number, changePercent: string} | null>(null)
+  const [baseline, setBaseline] = useState<{score: number, percentile: number, total_non_zero: number} | null>(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -259,7 +260,10 @@ export default function Home() {
       .then(r => r.json())
       .then(data => {
         if (data.error) setError(data.error)
-        else setReports(data.reports || [])
+        else {
+          setReports(data.reports || [])
+          setBaseline(data.baseline || null)
+        }
       })
       .catch(() => setError('Failed to load reports'))
       .finally(() => setLoading(false))
@@ -338,6 +342,14 @@ export default function Home() {
             <div className="text-right text-sm text-gray-400">
               <div>Pipeline: <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-green-400"></span><span className="text-green-400">Active</span></span></div>
               <div>Intelligence Reports: <span className="text-white font-bold">{reports.length}</span></div>
+              {baseline && baseline.score > 0 && (
+                <div className="text-xs mt-1">
+                  <span className={`font-bold ${baseline.percentile >= 75 ? 'text-red-400' : baseline.percentile >= 50 ? 'text-orange-400' : 'text-yellow-400'}`}>
+                    Today is top {100 - baseline.percentile}% most escalated
+                  </span>
+                  <span className="text-gray-600 ml-1">({baseline.total_non_zero} runs)</span>
+                </div>
+              )}
             </div>
           </div>
 
