@@ -476,7 +476,7 @@ export default function Home() {
           {/* System group */}
           <div className="mb-2">
             <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">System</div>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
               <a href="/health" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>🏥</span><span>Health</span>
               </a>
@@ -488,6 +488,12 @@ export default function Home() {
               </a>
               <a href="/autonomy" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-indigo-800 border border-gray-700 hover:border-indigo-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
                 <span>🧠</span><span>Autonomy</span>
+              </a>
+              <a href="/alerts" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-red-800 border border-gray-700 hover:border-red-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>🚨</span><span>Alerts</span>
+              </a>
+              <a href="/adaptive-log" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-800 border border-gray-700 hover:border-blue-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
+                <span>⚡</span><span>Adaptive</span>
               </a>
             </div>
           </div>
