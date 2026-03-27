@@ -19,86 +19,86 @@ interface StockData {
 const RANGES = ['3d', '7d', '1m', '1y', '10y']
 
 const CATEGORIES = [
-  { key: 'Commodity', label: 'Commodity', emoji: '🛢️' },
-  { key: 'Index',     label: 'Index',     emoji: '📊' },
-  { key: 'Stocks',   label: 'Stocks',    emoji: '🏢' },
-  { key: 'Forex',    label: 'Forex',     emoji: '💱' },
-  { key: 'Crypto',   label: 'Crypto',    emoji: '🃏' },
-  { key: 'Bond',     label: 'Bond',      emoji: '📜' },
+  { key: 'Commodity', label: 'Commodity', emoji: '\U0001f6e2\ufe0f' },
+  { key: 'Index',     label: 'Index',     emoji: '\U0001f4ca' },
+  { key: 'Stocks',   label: 'Stocks',    emoji: '\U0001f3e2' },
+  { key: 'Forex',    label: 'Forex',     emoji: '\U0001f4b1' },
+  { key: 'Crypto',   label: 'Crypto',    emoji: '\U0001f0cf' },
+  { key: 'Bond',     label: 'Bond',      emoji: '\U0001f4dc' },
 ]
 
-const CATEGORY_TICKERS: Record<string, { ticker: string; label: string }[]> = {
+const CATEGORY_TICKERS: Record<string, { ticker: string; label: string; note: string }[]> = {
   Commodity: [
-    { ticker: 'CL=F',   label: 'Crude Oil' },
-    { ticker: 'BZ=F',   label: 'Brent Crude' },
-    { ticker: 'NG=F',   label: 'Natural Gas' },
-    { ticker: 'GC=F',   label: 'Gold' },
-    { ticker: 'SI=F',   label: 'Silver' },
-    { ticker: 'HG=F',   label: 'Copper' },
-    { ticker: 'ZS=F',   label: 'Soybeans' },
-    { ticker: 'ZW=F',   label: 'Wheat' },
-    { ticker: 'GLD',    label: 'Gold ETF' },
-    { ticker: 'GDX',    label: 'Gold Miners' },
+    { ticker: 'CL=F',   label: 'Crude Oil',    note: 'WTI crude benchmark. Rises with Middle East conflict, OPEC cuts, and supply disruptions.' },
+    { ticker: 'BZ=F',   label: 'Brent Crude',  note: 'Global oil benchmark. Reflects geopolitical risk in oil-producing regions.' },
+    { ticker: 'NG=F',   label: 'Natural Gas',  note: 'Energy price signal. Spiked when Russia weaponised gas supply against Europe in 2022.' },
+    { ticker: 'GC=F',   label: 'Gold',         note: 'Safe-haven asset. Rises during crises, wars, and when confidence in fiat currency falls.' },
+    { ticker: 'SI=F',   label: 'Silver',       note: 'Dual role: safe haven + industrial metal. Tracks gold but more volatile.' },
+    { ticker: 'HG=F',   label: 'Copper',       note: 'Economic growth indicator. Rising copper = expanding global industrial activity.' },
+    { ticker: 'ZS=F',   label: 'Soybeans',     note: 'Food security signal. Ukraine war + China demand drives soybean price volatility.' },
+    { ticker: 'ZW=F',   label: 'Wheat',        note: 'Food weapon signal. Ukraine conflict directly disrupted global wheat supply chains.' },
+    { ticker: 'GLD',    label: 'Gold ETF',     note: 'Accessible gold exposure. Tracks physical gold price without futures complexity.' },
+    { ticker: 'GDX',    label: 'Gold Miners',  note: 'Amplified gold signal. Miners move 2-3x gold price -- stronger crisis indicator.' },
   ],
   Index: [
-    { ticker: 'SPY',    label: 'US500 (S&P 500)' },
-    { ticker: '^DJI',   label: 'US30 (Dow Jones)' },
-    { ticker: '^NDX',   label: 'US100 (Nasdaq)' },
-    { ticker: '^N225',  label: 'JP225 (Nikkei)' },
-    { ticker: '^FTSE',  label: 'GB100 (FTSE)' },
-    { ticker: '^GDAXI', label: 'DE40 (DAX)' },
-    { ticker: 'FXI',    label: 'China ETF' },
-    { ticker: 'EWJ',    label: 'Japan ETF' },
-    { ticker: 'EWT',    label: 'Taiwan ETF' },
-    { ticker: 'EWY',    label: 'Korea ETF' },
+    { ticker: 'SPY',    label: 'US500 (S&P 500)',   note: 'Global confidence barometer. 500 largest US companies. Falling SPY = global worry.' },
+    { ticker: '^DJI',   label: 'US30 (Dow Jones)',  note: '30 blue-chip US companies. Oldest US index, watched by policymakers worldwide.' },
+    { ticker: '^NDX',   label: 'US100 (Nasdaq)',    note: 'Tech-heavy index. Sensitive to AI, semiconductors, and US-China tech war.' },
+    { ticker: '^N225',  label: 'JP225 (Nikkei)',    note: 'Japan market. Key Asia-Pacific hub -- reacts to yen strength and regional tensions.' },
+    { ticker: '^FTSE',  label: 'GB100 (FTSE)',      note: 'UK market. Reflects Brexit impact, energy sector weight, and London financial health.' },
+    { ticker: '^GDAXI', label: 'DE40 (DAX)',        note: 'German market. Europe largest economy -- energy crisis and Russia sanctions hit hard.' },
+    { ticker: 'FXI',    label: 'China ETF',         note: 'China market proxy. Myanmar largest trading partner -- FXI fall = China slowdown.' },
+    { ticker: 'EWJ',    label: 'Japan ETF',         note: 'Japan equity exposure. Tracks Nikkei companies including Toyota, Sony, SoftBank.' },
+    { ticker: 'EWT',    label: 'Taiwan ETF',        note: 'Taiwan market. TSMC-heavy -- any China-Taiwan tension hits this immediately.' },
+    { ticker: 'EWY',    label: 'Korea ETF',         note: 'South Korea market. Samsung, SK Hynix, Hyundai -- North Korea risk proxy.' },
   ],
   Stocks: [
-    { ticker: 'AAPL',   label: 'Apple' },
-    { ticker: 'TSLA',   label: 'Tesla' },
-    { ticker: 'MSFT',   label: 'Microsoft' },
-    { ticker: 'AMZN',   label: 'Amazon' },
-    { ticker: 'META',   label: 'Meta' },
-    { ticker: 'NVDA',   label: 'Nvidia' },
-    { ticker: 'JPM',    label: 'JPMorgan' },
-    { ticker: 'XOM',    label: 'ExxonMobil' },
-    { ticker: 'LMT',    label: 'Lockheed Martin' },
-    { ticker: 'SOXX',   label: 'Semiconductors ETF' },
+    { ticker: 'AAPL',   label: 'Apple',              note: 'World most valuable company. Supply chain runs through Asia -- US-China tensions affect costs.' },
+    { ticker: 'TSLA',   label: 'Tesla',              note: 'EV bellwether. Sensitive to China sales, lithium prices, and Elon Musk news.' },
+    { ticker: 'MSFT',   label: 'Microsoft',          note: 'Cloud and AI leader. Azure growth drives valuation -- AI arms race beneficiary.' },
+    { ticker: 'AMZN',   label: 'Amazon',             note: 'E-commerce and cloud giant. AWS is the backbone of the modern internet.' },
+    { ticker: 'META',   label: 'Meta',               note: 'Social media and VR. Regulatory risk in EU and US directly impacts valuation.' },
+    { ticker: 'NVDA',   label: 'Nvidia',             note: 'AI chip monopoly. Export controls to China are the single biggest risk factor.' },
+    { ticker: 'JPM',    label: 'JPMorgan',           note: 'Largest US bank. Falls sharply in financial crises -- early warning indicator.' },
+    { ticker: 'XOM',    label: 'ExxonMobil',         note: 'Oil supermajor. Rises when conflicts threaten supply -- geopolitical risk proxy.' },
+    { ticker: 'LMT',    label: 'Lockheed Martin',    note: 'Defence giant. Rises when military conflicts escalate -- direct war indicator.' },
+    { ticker: 'SOXX',   label: 'Semiconductors ETF', note: 'Chip industry basket. Tech war, Taiwan risk, and AI demand all move SOXX.' },
   ],
   Forex: [
-    { ticker: 'EURUSD=X', label: 'EUR/USD' },
-    { ticker: 'GBPUSD=X', label: 'GBP/USD' },
-    { ticker: 'AUDUSD=X', label: 'AUD/USD' },
-    { ticker: 'JPY=X',    label: 'USD/JPY' },
-    { ticker: 'DX-Y.NYB', label: 'DXY (USD Index)' },
-    { ticker: 'CNY=X',    label: 'USD/CNY' },
-    { ticker: 'CHFUSD=X', label: 'CHF/USD' },
-    { ticker: 'CADUSD=X', label: 'CAD/USD' },
-    { ticker: 'INRUSD=X', label: 'INR/USD' },
-    { ticker: 'THBUSD=X', label: 'THB/USD' },
+    { ticker: 'EURUSD=X', label: 'EUR/USD',       note: 'Most traded pair. Euro weakness signals European energy/political stress.' },
+    { ticker: 'GBPUSD=X', label: 'GBP/USD',       note: 'Sterling reflects UK economic health and post-Brexit trade confidence.' },
+    { ticker: 'AUDUSD=X', label: 'AUD/USD',        note: 'Commodity currency. Tracks iron ore and China demand -- risk-on/off signal.' },
+    { ticker: 'JPY=X',    label: 'USD/JPY',        note: 'Yen is a safe haven. USD/JPY falls when global fear rises (yen strengthens).' },
+    { ticker: 'DX-Y.NYB', label: 'DXY (USD Index)',note: 'Dollar strength index. Strong DXY weakens all other currencies including Myanmar kyat.' },
+    { ticker: 'CNY=X',    label: 'USD/CNY',        note: 'Yuan rate. China controls this tightly -- devaluation signals trade war escalation.' },
+    { ticker: 'CHFUSD=X', label: 'CHF/USD',        note: 'Swiss franc is a safe haven. Rises when European political risk spikes.' },
+    { ticker: 'CADUSD=X', label: 'CAD/USD',        note: 'Petrocurrency. Tracks oil prices closely -- rises with energy sector strength.' },
+    { ticker: 'INRUSD=X', label: 'INR/USD',        note: 'Indian rupee. Key South Asian currency -- tracks India growth and oil import costs.' },
+    { ticker: 'THBUSD=X', label: 'THB/USD',        note: 'Thai baht. Closest major currency to Myanmar -- tracks Southeast Asian risk.' },
   ],
   Crypto: [
-    { ticker: 'BTC-USD', label: 'Bitcoin' },
-    { ticker: 'ETH-USD', label: 'Ethereum' },
-    { ticker: 'BNB-USD', label: 'Binance' },
-    { ticker: 'SOL-USD', label: 'Solana' },
-    { ticker: 'XRP-USD', label: 'Ripple' },
-    { ticker: 'ADA-USD', label: 'Cardano' },
-    { ticker: 'AVAX-USD', label: 'Avalanche' },
-    { ticker: 'DOGE-USD', label: 'Dogecoin' },
-    { ticker: 'COIN',    label: 'Coinbase' },
-    { ticker: 'HACK',    label: 'Cybersecurity ETF' },
+    { ticker: 'BTC-USD',  label: 'Bitcoin',         note: 'Sanctions evasion signal and dollar confidence barometer. Rises during capital flight.' },
+    { ticker: 'ETH-USD',  label: 'Ethereum',        note: 'Smart contract platform. DeFi and regulatory risk drive ETH price movements.' },
+    { ticker: 'BNB-USD',  label: 'Binance',         note: 'Exchange token. Tracks Binance health -- regulatory crackdowns hit BNB first.' },
+    { ticker: 'SOL-USD',  label: 'Solana',          note: 'High-speed blockchain. Developer activity and network reliability drive valuation.' },
+    { ticker: 'XRP-USD',  label: 'Ripple',          note: 'Cross-border payment token. SEC lawsuit resolution was key price catalyst.' },
+    { ticker: 'ADA-USD',  label: 'Cardano',         note: 'Research-driven blockchain. Academic approach to smart contracts and DeFi.' },
+    { ticker: 'AVAX-USD', label: 'Avalanche',       note: 'Fast finality blockchain. DeFi ecosystem growth drives AVAX demand.' },
+    { ticker: 'DOGE-USD', label: 'Dogecoin',        note: 'Meme coin. Elon Musk tweets are the primary price driver -- sentiment indicator.' },
+    { ticker: 'COIN',     label: 'Coinbase',        note: 'Largest US crypto exchange. Regulatory environment directly impacts COIN valuation.' },
+    { ticker: 'HACK',     label: 'Cybersecurity ETF',note: 'Cyber defence basket. State-sponsored attacks and geopolitical tensions drive demand.' },
   ],
   Bond: [
-    { ticker: '^TNX',   label: 'US 10Y Treasury' },
-    { ticker: '^TYX',   label: 'US 30Y Treasury' },
-    { ticker: '^FVX',   label: 'US 5Y Treasury' },
-    { ticker: 'TLT',    label: 'US Bond ETF' },
-    { ticker: 'HYG',    label: 'High Yield Bonds' },
-    { ticker: 'EMB',    label: 'EM Bonds' },
-    { ticker: '^IRX',   label: 'US 13W T-Bill' },
-    { ticker: 'SHY',    label: 'Short-Term Bond ETF' },
-    { ticker: 'LQD',    label: 'Corp Bond ETF' },
-    { ticker: '^VIX',   label: 'VIX Fear Index' },
+    { ticker: '^TNX',   label: 'US 10Y Treasury',    note: 'Most important rate globally. Rising yield = tighter financial conditions worldwide.' },
+    { ticker: '^TYX',   label: 'US 30Y Treasury',    note: 'Long-term US borrowing cost. Inflation expectations drive 30Y yield movements.' },
+    { ticker: '^FVX',   label: 'US 5Y Treasury',     note: 'Medium-term rate expectations. Fed policy outlook drives 5Y yield closely.' },
+    { ticker: 'TLT',    label: 'US Bond ETF',        note: 'Safe haven ETF. Rises when investors panic and flee to US government bonds.' },
+    { ticker: 'HYG',    label: 'High Yield Bonds',   note: 'Early crisis warning. HYG falls before equities when credit stress appears.' },
+    { ticker: 'EMB',    label: 'EM Bonds',           note: 'Emerging market sovereign debt. Relevant to ASEAN economies including Myanmar.' },
+    { ticker: '^IRX',   label: 'US 13W T-Bill',      note: 'Short-term safe haven rate. Spikes when financial system stress is acute.' },
+    { ticker: 'SHY',    label: 'Short-Term Bond ETF',note: 'Low-duration safety. Investors rotate here from equities during uncertainty.' },
+    { ticker: 'LQD',    label: 'Corp Bond ETF',      note: 'Investment-grade corporate debt. Spreads widen in recessions and credit stress.' },
+    { ticker: '^VIX',   label: 'VIX Fear Index',     note: 'Market fear gauge. Above 30 = panic. Single most important stress signal.' },
   ],
 }
 
@@ -106,7 +106,7 @@ function formatPrice(price: number) {
   if (!price) return '--'
   return price >= 1000
     ? '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : '$' + price.toFixed(4).replace(/\.?0+$/, '') || price.toFixed(2)
+    : '$' + price.toFixed(2)
 }
 
 function formatDate(dateStr: string, range: string) {
@@ -128,7 +128,6 @@ export default function StocksPage() {
   const [aiContext, setAiContext] = useState('')
   const [aiLoading, setAiLoading] = useState(false)
 
-  // Load prices for current category
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     setLoadingCategory(true)
@@ -159,7 +158,6 @@ export default function StocksPage() {
     if (tickers.length === 0) setLoadingCategory(false)
   }, [selectedCategory])
 
-  // Load chart data
   useEffect(() => {
     setLoading(true)
     setError('')
@@ -179,9 +177,6 @@ export default function StocksPage() {
       .finally(() => setLoading(false))
   }, [selectedTicker, selectedRange])
 
-  /* eslint-enable react-hooks/exhaustive-deps */
-  // Load AI context
-  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     setAiContext('')
     setAiLoading(true)
@@ -200,34 +195,35 @@ export default function StocksPage() {
   const chartData = stockData?.chartData?.map(d => ({ ...d, date: formatDate(d.date, selectedRange) })) || []
   const tickCount = selectedRange === '3d' ? 3 : selectedRange === '7d' ? 7 : 8
 
+  const currentNote = CATEGORY_TICKERS[selectedCategory]?.find(t => t.ticker === selectedTicker)?.note || ''
+  const currentLabel = CATEGORY_TICKERS[selectedCategory]?.find(t => t.ticker === selectedTicker)?.label || selectedTicker
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
 
-      {/* Header */}
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-white">📈 Market Intelligence</h1>
+              <h1 className="text-xl font-bold text-white">\U0001f4c8 Market Intelligence</h1>
               <p className="text-xs text-gray-400">6-Category Market View -- Trading Economics Style -- Yahoo Finance Data</p>
             </div>
             <a href="/" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 rounded px-3 py-1">
-              ← Quantum Strategist
+              \u2190 Quantum Strategist
             </a>
           </div>
-          {/* Cross-nav */}
           <div className="flex flex-wrap gap-2">
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              📊 Researcher
+              \U0001f4ca Pattern Intelligence
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              🧠 Developer
+              \U0001f9e0 Dev Console
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              🎯 Reports
+              \U0001f3af Feedback Loop
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
-              🌟 About
+              \U0001f31f About
             </a>
           </div>
         </div>
@@ -256,137 +252,145 @@ export default function StocksPage() {
           ))}
         </div>
 
-        {/* Trading Economics Style Listing Table */}
-        <div className="bg-gray-900 border border-gray-700 rounded-xl mb-6 overflow-hidden">
-          <div className="grid grid-cols-4 px-4 py-2 border-b border-gray-800 text-xs text-gray-500 uppercase tracking-wider">
-            <div>Instrument</div>
-            <div className="text-right">Price</div>
-            <div className="text-right">Day Change</div>
-            <div className="text-right">% Change</div>
-          </div>
-          {loadingCategory && (
-            <div className="px-4 py-8 text-center text-xs text-gray-500">Loading {selectedCategory} prices...</div>
-          )}
-          {!loadingCategory && (CATEGORY_TICKERS[selectedCategory] || []).map(({ ticker, label }) => {
-            const cached = priceCache[ticker]
-            const pct = cached ? parseFloat(cached.changePercent) : null
-            const isUp = pct !== null ? pct >= 0 : null
-            return (
-              <button
-                key={ticker}
-                onClick={() => setSelectedTicker(ticker)}
-                className={`w-full grid grid-cols-4 px-4 py-3 border-b border-gray-800 hover:bg-gray-800 transition-colors text-left ${
-                  selectedTicker === ticker ? 'bg-gray-800 border-l-2 border-l-blue-500' : ''
-                }`}
-              >
-                <div>
-                  <div className="text-sm font-bold text-white">{label}</div>
-                  <div className="text-xs text-gray-500 font-mono">{ticker}</div>
-                </div>
-                <div className="text-right text-sm font-bold text-white self-center">
-                  {cached ? formatPrice(cached.price) : '--'}
-                </div>
-                <div className={`text-right text-sm font-bold self-center ${isUp === null ? 'text-gray-500' : isUp ? 'text-green-400' : 'text-red-400'}`}>
-                  {cached?.change ? (isUp ? '+' : '') + cached.change : '--'}
-                </div>
-                <div className="text-right self-center">
-                  {pct !== null ? (
-                    <span className={`text-xs font-bold px-2 py-1 rounded ${isUp ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
-                      {isUp ? '+' : ''}{pct.toFixed(2)}%
-                    </span>
-                  ) : (
-                    <span className="text-xs text-gray-600">--</span>
-                  )}
-                </div>
-              </button>
-            )
-          })}
-        </div>
+        {/* SIDE BY SIDE: Listing LEFT + Chart RIGHT */}
+        <div className="flex gap-4" style={{ minHeight: '520px' }}>
 
-        {/* Chart Section */}
-        <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <div className="text-white font-bold text-xl">{stockData?.ticker || selectedTicker}</div>
-              <div className="text-gray-400 text-sm">{stockData?.name || 'Loading...'}</div>
+          {/* LEFT -- Instrument Listing Table */}
+          <div className="w-2/5 bg-gray-900 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
+            <div className="grid grid-cols-4 px-3 py-2 border-b border-gray-800 text-xs text-gray-500 uppercase tracking-wider shrink-0">
+              <div className="col-span-2">Instrument</div>
+              <div className="text-right">Change</div>
+              <div className="text-right">%</div>
             </div>
+            <div className="overflow-y-auto flex-1">
+              {loadingCategory && (
+                <div className="px-4 py-8 text-center text-xs text-gray-500">Loading {selectedCategory}...</div>
+              )}
+              {!loadingCategory && (CATEGORY_TICKERS[selectedCategory] || []).map(({ ticker, label }) => {
+                const cached = priceCache[ticker]
+                const pct = cached ? parseFloat(cached.changePercent) : null
+                const isUp = pct !== null ? pct >= 0 : null
+                return (
+                  <button
+                    key={ticker}
+                    onClick={() => setSelectedTicker(ticker)}
+                    className={`w-full grid grid-cols-4 px-3 py-2.5 border-b border-gray-800 hover:bg-gray-800 transition-colors text-left ${
+                      selectedTicker === ticker ? 'bg-gray-800 border-l-2 border-l-blue-500' : ''
+                    }`}
+                  >
+                    <div className="col-span-2">
+                      <div className="text-xs font-bold text-white truncate">{label}</div>
+                      <div className="text-xs text-gray-600 font-mono">{ticker}</div>
+                    </div>
+                    <div className={`text-right text-xs font-bold self-center ${isUp === null ? 'text-gray-500' : isUp ? 'text-green-400' : 'text-red-400'}`}>
+                      {cached?.change ? (isUp ? '+' : '') + cached.change : '--'}
+                    </div>
+                    <div className="text-right self-center">
+                      {pct !== null ? (
+                        <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${isUp ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
+                          {isUp ? '+' : ''}{pct.toFixed(2)}%
+                        </span>
+                      ) : (
+                        <span className="text-xs text-gray-600">--</span>
+                      )}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* RIGHT -- Chart Card */}
+          <div className="w-3/5 bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col">
+
+            {/* Range selector */}
+            <div className="flex gap-2 mb-3 shrink-0">
+              {RANGES.map(range => (
+                <button
+                  key={range}
+                  onClick={() => setSelectedRange(range)}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                    selectedRange === range
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  {range.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {/* Chart */}
+            <div className="flex-1 min-h-0">
+              {loading && (
+                <div className="flex items-center justify-center h-full text-gray-400 text-sm">Loading chart...</div>
+              )}
+              {error && (
+                <div className="flex items-center justify-center h-full text-red-400 text-sm">\u26a0\ufe0f {error}</div>
+              )}
+              {!loading && !error && stockData && (
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
+                    <defs>
+                      <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+                        <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
+                    <XAxis dataKey="date" tick={{ fill: '#6b7280', fontSize: 9 }} tickLine={false} axisLine={false} interval={Math.floor(chartData.length / tickCount)} />
+                    <YAxis tick={{ fill: '#6b7280', fontSize: 9 }} tickLine={false} axisLine={false} tickFormatter={v => '$' + v.toLocaleString()} width={60} domain={['auto', 'auto']} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '8px', color: '#f9fafb', fontSize: '11px' }}
+                      formatter={(value) => ['$' + Number(value).toLocaleString(), 'Price']}
+                    />
+                    <Area type="monotone" dataKey="close" stroke={chartColor} strokeWidth={2} fill="url(#colorClose)" dot={false} activeDot={{ r: 4, fill: chartColor }} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+
+            {/* Parameters under chart */}
             {stockData && !loading && (
-              <div className="text-right">
-                <div className="text-white font-bold text-2xl">{formatPrice(stockData.price)}</div>
-                <div className={`text-sm font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                  {isPositive ? '▲' : '▼'} {stockData.change} ({stockData.changePercent}%)
+              <div className="mt-3 shrink-0 border-t border-gray-800 pt-3">
+                <div className="flex items-center justify-between mb-2">
+                  <div>
+                    <div className="text-white font-bold text-base">{currentLabel}</div>
+                    <div className="text-xs text-gray-500 font-mono">{stockData.ticker} -- {stockData.name}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-white font-bold text-lg">{formatPrice(stockData.price)}</div>
+                    <div className={`text-xs font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                      {isPositive ? '\u25b2' : '\u25bc'} {stockData.change} ({stockData.changePercent}%)
+                    </div>
+                  </div>
                 </div>
+                {/* Instrument description note */}
+                {currentNote && (
+                  <div className="bg-gray-800 rounded-lg px-3 py-2 text-xs text-gray-400 leading-relaxed">
+                    <span className="text-gray-300 font-bold">Note: </span>{currentNote}
+                  </div>
+                )}
               </div>
             )}
-          </div>
 
-          {/* Range selector */}
-          <div className="flex gap-2 mb-4">
-            {RANGES.map(range => (
-              <button
-                key={range}
-                onClick={() => setSelectedRange(range)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                  selectedRange === range
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
-                {range.toUpperCase()}
-              </button>
-            ))}
-          </div>
-
-          {loading && (
-            <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
-              Loading chart...
-            </div>
-          )}
-          {error && (
-            <div className="flex items-center justify-center h-48 text-red-400 text-sm">
-              ⚠️ {error}
-            </div>
-          )}
-          {!loading && !error && stockData && (
-            <ResponsiveContainer width="100%" height={260}>
-              <AreaChart data={chartData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
-                <defs>
-                  <linearGradient id="colorClose" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-                <XAxis dataKey="date" tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} interval={Math.floor(chartData.length / tickCount)} />
-                <YAxis tick={{ fill: '#6b7280', fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={v => '$' + v.toLocaleString()} width={65} domain={['auto', 'auto']} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '8px', color: '#f9fafb', fontSize: '11px' }}
-                  formatter={(value) => ['$' + Number(value).toLocaleString(), 'Price']}
-                />
-                <Area type="monotone" dataKey="close" stroke={chartColor} strokeWidth={2} fill="url(#colorClose)" dot={false} activeDot={{ r: 4, fill: chartColor }} />
-              </AreaChart>
-            </ResponsiveContainer>
-          )}
-          <div className="mt-2 text-center text-xs text-gray-600">
-            Data: Yahoo Finance -- Updates hourly -- Not financial advice
-          </div>
-
-          {/* AI Context */}
-          <div className="mt-4 bg-blue-950 border border-blue-800 rounded-lg p-3">
-            <div className="text-xs text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-2">
-              <span>🧠</span>
-              <span>GNI AI Context -- Why did {selectedTicker} move recently?</span>
-            </div>
-            {aiLoading && <p className="text-gray-400 text-xs">Analyzing geopolitical events...</p>}
-            {!aiLoading && aiContext && (
-              <div>
-                <p className="text-blue-200 text-xs leading-relaxed mb-2">{aiContext}</p>
-                <p className="text-yellow-400 text-xs">⚠️ For informational purposes only. Not financial advice.</p>
+            {/* AI Context */}
+            <div className="mt-3 shrink-0 bg-blue-950 border border-blue-800 rounded-lg p-3">
+              <div className="text-xs text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-2">
+                <span>\U0001f9e0</span>
+                <span>GNI AI Context -- Why did {selectedTicker} move recently?</span>
               </div>
-            )}
+              {aiLoading && <p className="text-gray-400 text-xs">Analyzing geopolitical events...</p>}
+              {!aiLoading && aiContext && (
+                <div>
+                  <p className="text-blue-200 text-xs leading-relaxed mb-1">{aiContext}</p>
+                  <p className="text-yellow-400 text-xs">\u26a0\ufe0f For informational purposes only. Not financial advice.</p>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
-
       </div>
 
       <footer className="border-t border-gray-800 mt-8">
