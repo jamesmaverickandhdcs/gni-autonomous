@@ -225,6 +225,54 @@ function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
   )
 }
 
+function EscalationSparkline({ reports }: { reports: { escalation_score: number; escalation_level: string; created_at: string }[] }) {
+  const last7 = reports.slice(0, 7).reverse()
+  if (last7.length < 2) return null
+  const scores = last7.map(r => r.escalation_score || 0)
+  const maxScore = 10
+  const width = 160
+  const height = 40
+  const points = scores.map((s, i) => {
+    const x = (i / (scores.length - 1)) * width
+    const y = height - (s / maxScore) * height
+    return `${x},${y}`
+  }).join(' ')
+  const latest = scores[scores.length - 1]
+  const prev = scores[scores.length - 2]
+  const trend = latest > prev ? 'up' : latest < prev ? 'down' : 'flat'
+  const trendColor = latest >= 8 ? '#ef4444' : latest >= 6 ? '#f97316' : latest >= 4 ? '#eab308' : '#22c55e'
+  return (
+    <div className="flex items-center gap-3 mt-1">
+      <div>
+        <div className="text-xs text-gray-500 mb-0.5">7-run escalation trend</div>
+        <svg width={width} height={height} className="overflow-visible">
+          <polyline
+            points={points}
+            fill="none"
+            stroke={trendColor}
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {scores.map((s, i) => {
+            const x = (i / (scores.length - 1)) * width
+            const y = height - (s / maxScore) * height
+            return <circle key={i} cx={x} cy={y} r={i === scores.length - 1 ? 3 : 2} fill={trendColor} />
+          })}
+        </svg>
+      </div>
+      <div>
+        <div className="text-xs font-bold" style={{ color: trendColor }}>
+          {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'} {latest.toFixed(1)}/10
+        </div>
+        <div className="text-xs text-gray-600">
+          {trend === 'up' ? 'escalating' : trend === 'down' ? 'de-escalating' : 'stable'}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Home() {
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
@@ -350,6 +398,7 @@ export default function Home() {
                   <span className="text-gray-600 ml-1">({baseline.total_non_zero} runs)</span>
                 </div>
               )}
+              {reports.length >= 2 && <EscalationSparkline reports={reports} />}
             </div>
           </div>
 
