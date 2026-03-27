@@ -436,6 +436,70 @@ def _calculate_confidence_intervals(scores: list[float]) -> dict:
     }
 
 
+def _build_plain_narrative(report: dict) -> str:
+    """
+    I-10: Generate a plain-language narrative from report fields.
+    No Groq call -- derived from existing data. Zero token cost.
+    """
+    try:
+        sentiment = (report.get("sentiment") or "Neutral").lower()
+        risk = (report.get("risk_level") or "Medium").lower()
+        location = report.get("location_name") or "Global"
+        escalation_level = (report.get("escalation_level") or "").lower()
+        tickers = report.get("tickers_affected") or []
+        market_impact = report.get("market_impact") or ""
+
+        # Sentiment phrase
+        if sentiment == "bearish":
+            sentiment_phrase = "markets are under pressure"
+        elif sentiment == "bullish":
+            sentiment_phrase = "markets are seeing positive momentum"
+        else:
+            sentiment_phrase = "markets are mixed"
+
+        # Risk phrase
+        if risk == "critical":
+            risk_phrase = "immediate attention required"
+        elif risk == "high":
+            risk_phrase = "elevated risk environment"
+        elif risk == "medium":
+            risk_phrase = "moderate risk level"
+        else:
+            risk_phrase = "low risk environment"
+
+        # Escalation phrase
+        if escalation_level == "critical":
+            esc_phrase = "Situation is CRITICAL -- pipeline monitoring every 30 minutes."
+        elif escalation_level == "high":
+            esc_phrase = "Escalation is HIGH -- increased monitoring active."
+        else:
+            esc_phrase = ""
+
+        # Ticker phrase
+        ticker_phrase = ""
+        if tickers:
+            top_tickers = tickers[:3]
+            ticker_phrase = "Watch: " + ", ".join(top_tickers) + "."
+
+        # Build narrative
+        narrative = (
+            f"In plain terms: Events in {location} mean {sentiment_phrase} ({risk_phrase}). "
+        )
+        if market_impact:
+            # Take first sentence of market impact
+            first_sentence = market_impact.split(".")[0].strip()
+            if first_sentence:
+                narrative += first_sentence + ". "
+        if esc_phrase:
+            narrative += esc_phrase + " "
+        if ticker_phrase:
+            narrative += ticker_phrase
+
+        return narrative.strip()
+    except Exception:
+        return ""
+
+
 def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     """
     Analyze top articles using appropriate LLM.
@@ -483,6 +547,9 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
         return None
 
     report["llm_source"] = source_used
+
+    # I-10: Plain-language narrative (zero token cost)
+    report["plain_narrative"] = _build_plain_narrative(report)
     report["articles_analyzed"] = len(articles)
     report["sources_used"] = list(set(a["source"] for a in articles))
 
