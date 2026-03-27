@@ -137,6 +137,7 @@ def save_report(report: dict, articles: list[dict], quality_score: float = 0, qu
             "mad_round3_positions": report.get("mad_round3_positions", {}),
             "mad_arb_feedbacks": report.get("mad_arb_feedbacks", {}),
             "escalation_score": float(report.get("escalation_score", 0.0)),
+            "escalation_level": report.get("escalation_level", ""),
             "weakness_identified": report.get("weakness_identified", ""),
             "threat_horizon": report.get("threat_horizon", ""),
             "dark_side_detected": report.get("dark_side_detected", ""),
