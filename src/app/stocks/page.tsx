@@ -12,6 +12,8 @@ interface StockData {
   price: number
   change: string
   changePercent: string
+  rangeChange: string
+  rangeChangePercent: string
   currency: string
   chartData: { date: string; close: number }[]
 }
@@ -190,8 +192,8 @@ export default function StocksPage() {
   }, [selectedTicker])
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  const isPositive = stockData ? parseFloat(stockData.changePercent) >= 0 : true
-  const chartColor = isPositive ? '#22c55e' : '#ef4444'
+  const isRangePositive = stockData ? parseFloat(stockData.rangeChangePercent || stockData.changePercent) >= 0 : true
+  const chartColor = isRangePositive ? '#22c55e' : '#ef4444'
   const chartData = stockData?.chartData?.map(d => ({ ...d, date: formatDate(d.date, selectedRange) })) || []
   const tickCount = selectedRange === '3d' ? 3 : selectedRange === '7d' ? 7 : 8
 
@@ -303,21 +305,28 @@ export default function StocksPage() {
           {/* RIGHT -- Chart Card */}
           <div className="w-2/3 bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col">
 
-            {/* Range selector */}
-            <div className="flex gap-2 mb-3 shrink-0">
-              {RANGES.map(range => (
-                <button
-                  key={range}
-                  onClick={() => setSelectedRange(range)}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
-                    selectedRange === range
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-                  }`}
-                >
-                  {range.toUpperCase()}
-                </button>
-              ))}
+            {/* Range selector + range change label */}
+            <div className="flex items-center justify-between mb-3 shrink-0">
+              <div className="flex gap-2">
+                {RANGES.map(range => (
+                  <button
+                    key={range}
+                    onClick={() => setSelectedRange(range)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${
+                      selectedRange === range
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+                    }`}
+                  >
+                    {range.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+              {stockData && (
+                <div className={`text-xs font-bold px-2 py-1 rounded ${isRangePositive ? 'text-green-400 bg-green-950' : 'text-red-400 bg-red-950'}`}>
+                  {selectedRange.toUpperCase()}: {isRangePositive ? '+' : ''}{stockData.rangeChangePercent || stockData.changePercent}%
+                </div>
+              )}
             </div>
 
             {/* Chart */}
@@ -360,9 +369,11 @@ export default function StocksPage() {
                   </div>
                   <div className="text-right">
                     <div className="text-white font-bold text-lg">{formatPrice(stockData.price)}</div>
-                    <div className={`text-xs font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                      {isPositive ? '▲' : '▼'} {stockData.change} ({stockData.changePercent}%)
-                    </div>
+                    {priceCache[selectedTicker] && (
+                      <div className={`text-xs font-bold ${parseFloat(priceCache[selectedTicker].changePercent) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {parseFloat(priceCache[selectedTicker].changePercent) >= 0 ? '▲' : '▼'} {priceCache[selectedTicker].change} ({priceCache[selectedTicker].changePercent}%) today
+                      </div>
+                    )}
                   </div>
                 </div>
                 {/* Instrument description note */}
