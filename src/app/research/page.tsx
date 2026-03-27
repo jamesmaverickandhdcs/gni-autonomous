@@ -56,7 +56,7 @@ export default function ResearchPage() {
               🧠 Developer
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              🎯 Active + Passive
+              🎯 Feedback Loop
             </a>
           </div>
 </div>

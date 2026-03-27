@@ -32,7 +32,7 @@ export default function ResearcherHub() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-green-300">\U0001f4ca Long-Term Researcher</h1>
+              <h1 className="text-xl font-bold text-green-300">\U0001f4ca Pattern Intelligence</h1>
               <p className="text-xs text-gray-400">What patterns emerge over time and how reliable is GNI?</p>
             </div>
             <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
@@ -44,10 +44,10 @@ export default function ResearcherHub() {
               \U0001f3af Quantum Strategist
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              \U0001f9e0 Insight Developer
+              \U0001f9e0 Dev Console
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              \U0001f3af Active + Passive
+              \U0001f3af Feedback Loop
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
               \U0001f31f About
@@ -66,7 +66,7 @@ export default function ResearcherHub() {
               🧠 Developer
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              🎯 Active + Passive
+              🎯 Feedback Loop
             </a>
           </div>
 </div>
@@ -197,7 +197,7 @@ export default function ResearcherHub() {
 
       <footer className="border-t border-gray-800 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | Long-Term Researcher Hub | Higher Diploma in Computer Science | SUM
+          GNI Autonomous | Pattern Intelligence Hub | Higher Diploma in Computer Science | SUM
         </div>
       </footer>
     </div>

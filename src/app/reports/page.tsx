@@ -36,7 +36,7 @@ export default function ReportsHub() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-amber-300">\U0001f3af Active + Passive Reports</h1>
+              <h1 className="text-xl font-bold text-amber-300">\U0001f3af Feedback Loop</h1>
               <p className="text-xs text-gray-400">What did reality confirm or surprise, and what does GNI do next?</p>
             </div>
             <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
@@ -135,7 +135,7 @@ export default function ReportsHub() {
 
       <footer className="border-t border-gray-800 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | Active + Passive Reports Hub | Higher Diploma in Computer Science | SUM
+          GNI Autonomous | Feedback Loop Hub | Higher Diploma in Computer Science | SUM
         </div>
       </footer>
     </div>

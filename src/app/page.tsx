@@ -437,13 +437,13 @@ export default function Home() {
                     {/* Cross-Navigation -- 4 buttons to other main pages (GNI-R-140) */}
           <div className="flex flex-wrap gap-2 mt-2">
             <a href="/researcher" className="flex items-center gap-2 bg-green-900 hover:bg-green-700 border border-green-700 hover:border-green-500 rounded-lg px-4 py-2 text-sm font-bold text-green-200 transition-colors">
-              📊 Long-Term Researcher
+              📊 Pattern Intelligence
             </a>
             <a href="/developer-hub" className="flex items-center gap-2 bg-purple-900 hover:bg-purple-700 border border-purple-700 hover:border-purple-500 rounded-lg px-4 py-2 text-sm font-bold text-purple-200 transition-colors">
-              🧠 Insight Developer
+              🧠 Dev Console
             </a>
             <a href="/reports" className="flex items-center gap-2 bg-amber-900 hover:bg-amber-700 border border-amber-700 hover:border-amber-500 rounded-lg px-4 py-2 text-sm font-bold text-amber-200 transition-colors">
-              🎯 Active + Passive Reports
+              🎯 Feedback Loop
             </a>
             <a href="/about" className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-gray-400 rounded-lg px-4 py-2 text-sm font-bold text-gray-200 transition-colors">
               🌟 About
