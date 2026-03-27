@@ -82,15 +82,7 @@ def build_correlation_table() -> dict:
 
         # Location and pillar pattern buckets
         location_patterns = {}
-        pillar_outcomes = client.table("pipeline_articles") \
-            .select("report_id, pillar, source") \
-            .in_("report_id", report_ids) \
-            .execute()
         pillar_map = {}
-        for row in (pillar_outcomes.data or []):
-            rid = row.get("report_id")
-            if rid and rid not in pillar_map:
-                pillar_map[rid] = row.get("pillar", "geo")
 
         pillar_buckets = {"geo": {"spy_3d": [], "correct_3d": []},
                           "fin": {"spy_3d": [], "correct_3d": []},
