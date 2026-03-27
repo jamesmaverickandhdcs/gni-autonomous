@@ -208,7 +208,7 @@ export default function StocksPage() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-white">\U0001f4c8 Market Intelligence</h1>
+              <h1 className="text-xl font-bold text-white">📈 Market Intelligence</h1>
               <p className="text-xs text-gray-400">6-Category Market View -- Trading Economics Style -- Yahoo Finance Data</p>
             </div>
             <a href="/" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 rounded px-3 py-1">
