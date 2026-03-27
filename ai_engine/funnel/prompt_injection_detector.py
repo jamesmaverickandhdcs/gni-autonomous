@@ -1,6 +1,14 @@
 import re
 from typing import Optional
 
+# I-09: Wire audit trail for injection detection
+try:
+    import sys as _sys, os as _os
+    _sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+    from analysis.audit_trail import log_audit_event as _log_audit
+except Exception:
+    _log_audit = None
+
 # ============================================================
 # GNI Prompt Injection Detector — Day 11
 # Expanded from 16 to 50+ patterns
@@ -176,6 +184,18 @@ def filter_injections(articles: list[dict]) -> tuple[list[dict], list[dict]]:
                 print(f"     Pattern: {scan['matched_patterns'][0][:80]}")
             if scan["triggered_signals"]:
                 print(f"     Signals: {', '.join(scan['triggered_signals'])}")
+            # I-09: Write to audit trail
+            if _log_audit:
+                try:
+                    _log_audit("SECURITY_FLAG", {
+                        "source": article.get("source", "unknown"),
+                        "title": article.get("title", "")[:120],
+                        "threat_level": scan["threat_level"],
+                        "matched_patterns": scan["matched_patterns"][:3],
+                        "triggered_signals": scan["triggered_signals"],
+                    })
+                except Exception:
+                    pass
 
     return clean, flagged
 
