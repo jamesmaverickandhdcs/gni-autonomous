@@ -19,12 +19,12 @@ interface StockData {
 const RANGES = ['3d', '7d', '1m', '1y', '10y']
 
 const CATEGORIES = [
-  { key: 'Commodity', label: 'Commodity', emoji: '\U0001f6e2\ufe0f' },
-  { key: 'Index',     label: 'Index',     emoji: '\U0001f4ca' },
-  { key: 'Stocks',   label: 'Stocks',    emoji: '\U0001f3e2' },
-  { key: 'Forex',    label: 'Forex',     emoji: '\U0001f4b1' },
-  { key: 'Crypto',   label: 'Crypto',    emoji: '\U0001f0cf' },
-  { key: 'Bond',     label: 'Bond',      emoji: '\U0001f4dc' },
+  { key: 'Commodity', label: 'Commodity', emoji: '🛢️' },
+  { key: 'Index',     label: 'Index',     emoji: '📊' },
+  { key: 'Stocks',   label: 'Stocks',    emoji: '🏢' },
+  { key: 'Forex',    label: 'Forex',     emoji: '💱' },
+  { key: 'Crypto',   label: 'Crypto',    emoji: '🃏' },
+  { key: 'Bond',     label: 'Bond',      emoji: '📜' },
 ]
 
 const CATEGORY_TICKERS: Record<string, { ticker: string; label: string; note: string }[]> = {
@@ -205,25 +205,25 @@ export default function StocksPage() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-white">\U0001f4c8 Market Intelligence</h1>
+              <h1 className="text-xl font-bold text-white">📈 Market Intelligence</h1>
               <p className="text-xs text-gray-400">6-Category Market View -- Trading Economics Style -- Yahoo Finance Data</p>
             </div>
             <a href="/" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 rounded px-3 py-1">
-              \u2190 Quantum Strategist
+              ← Quantum Strategist
             </a>
           </div>
           <div className="flex flex-wrap gap-2">
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              \U0001f4ca Pattern Intelligence
+              📊 Pattern Intelligence
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              \U0001f9e0 Dev Console
+              🧠 Dev Console
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              \U0001f3af Feedback Loop
+              🎯 Feedback Loop
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
-              \U0001f31f About
+              🌟 About
             </a>
           </div>
         </div>
@@ -256,7 +256,7 @@ export default function StocksPage() {
         <div className="flex gap-4" style={{ minHeight: '520px' }}>
 
           {/* LEFT -- Instrument Listing Table */}
-          <div className="w-2/5 bg-gray-900 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
+          <div className="w-1/3 bg-gray-900 border border-gray-700 rounded-xl overflow-hidden flex flex-col">
             <div className="grid grid-cols-4 px-3 py-2 border-b border-gray-800 text-xs text-gray-500 uppercase tracking-wider shrink-0">
               <div className="col-span-2">Instrument</div>
               <div className="text-right">Change</div>
@@ -301,7 +301,7 @@ export default function StocksPage() {
           </div>
 
           {/* RIGHT -- Chart Card */}
-          <div className="w-3/5 bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col">
+          <div className="w-2/3 bg-gray-900 border border-gray-700 rounded-xl p-4 flex flex-col">
 
             {/* Range selector */}
             <div className="flex gap-2 mb-3 shrink-0">
@@ -326,7 +326,7 @@ export default function StocksPage() {
                 <div className="flex items-center justify-center h-full text-gray-400 text-sm">Loading chart...</div>
               )}
               {error && (
-                <div className="flex items-center justify-center h-full text-red-400 text-sm">\u26a0\ufe0f {error}</div>
+                <div className="flex items-center justify-center h-full text-red-400 text-sm">⚠️ {error}</div>
               )}
               {!loading && !error && stockData && (
                 <ResponsiveContainer width="100%" height="100%">
@@ -361,7 +361,7 @@ export default function StocksPage() {
                   <div className="text-right">
                     <div className="text-white font-bold text-lg">{formatPrice(stockData.price)}</div>
                     <div className={`text-xs font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                      {isPositive ? '\u25b2' : '\u25bc'} {stockData.change} ({stockData.changePercent}%)
+                      {isPositive ? '▲' : '▼'} {stockData.change} ({stockData.changePercent}%)
                     </div>
                   </div>
                 </div>
@@ -377,14 +377,14 @@ export default function StocksPage() {
             {/* AI Context */}
             <div className="mt-3 shrink-0 bg-blue-950 border border-blue-800 rounded-lg p-3">
               <div className="text-xs text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-2">
-                <span>\U0001f9e0</span>
+                <span>🧠</span>
                 <span>GNI AI Context -- Why did {selectedTicker} move recently?</span>
               </div>
               {aiLoading && <p className="text-gray-400 text-xs">Analyzing geopolitical events...</p>}
               {!aiLoading && aiContext && (
                 <div>
                   <p className="text-blue-200 text-xs leading-relaxed mb-1">{aiContext}</p>
-                  <p className="text-yellow-400 text-xs">\u26a0\ufe0f For informational purposes only. Not financial advice.</p>
+                  <p className="text-yellow-400 text-xs">⚠️ For informational purposes only. Not financial advice.</p>
                 </div>
               )}
             </div>
