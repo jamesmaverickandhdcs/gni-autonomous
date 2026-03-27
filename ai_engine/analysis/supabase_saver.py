@@ -140,6 +140,7 @@ def save_report(report: dict, articles: list[dict], quality_score: float = 0, qu
             "weakness_identified": report.get("weakness_identified", ""),
             "threat_horizon": report.get("threat_horizon", ""),
             "dark_side_detected": report.get("dark_side_detected", ""),
+            "plain_narrative": report.get("plain_narrative", ""),
         }
 
         result = client.table("reports").insert(record).execute()
