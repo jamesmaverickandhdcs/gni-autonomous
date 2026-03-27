@@ -19,12 +19,12 @@ interface StockData {
 const RANGES = ['3d', '7d', '1m', '1y', '10y']
 
 const CATEGORIES = [
-  { key: 'Commodity', label: 'Commodity', emoji: '\U0001f6e2\ufe0f' },
-  { key: 'Index',     label: 'Index',     emoji: '\U0001f4ca' },
-  { key: 'Stocks',   label: 'Stocks',    emoji: '\U0001f3e2' },
-  { key: 'Forex',    label: 'Forex',     emoji: '\U0001f4b1' },
-  { key: 'Crypto',   label: 'Crypto',    emoji: '\U0001f0cf' },
-  { key: 'Bond',     label: 'Bond',      emoji: '\U0001f4dc' },
+  { key: 'Commodity', label: 'Commodity', emoji: '🛢️' },
+  { key: 'Index',     label: 'Index',     emoji: '📊' },
+  { key: 'Stocks',   label: 'Stocks',    emoji: '🏢' },
+  { key: 'Forex',    label: 'Forex',     emoji: '💱' },
+  { key: 'Crypto',   label: 'Crypto',    emoji: '🃏' },
+  { key: 'Bond',     label: 'Bond',      emoji: '📜' },
 ]
 
 const CATEGORY_TICKERS: Record<string, { ticker: string; label: string }[]> = {
@@ -212,22 +212,22 @@ export default function StocksPage() {
               <p className="text-xs text-gray-400">6-Category Market View -- Trading Economics Style -- Yahoo Finance Data</p>
             </div>
             <a href="/" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 rounded px-3 py-1">
-              \u2190 Quantum Strategist
+              ← Quantum Strategist
             </a>
           </div>
           {/* Cross-nav */}
           <div className="flex flex-wrap gap-2">
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              \U0001f4ca Researcher
+              📊 Researcher
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              \U0001f9e0 Developer
+              🧠 Developer
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              \U0001f3af Reports
+              🎯 Reports
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
-              \U0001f31f About
+              🌟 About
             </a>
           </div>
         </div>
@@ -314,7 +314,7 @@ export default function StocksPage() {
               <div className="text-right">
                 <div className="text-white font-bold text-2xl">{formatPrice(stockData.price)}</div>
                 <div className={`text-sm font-bold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                  {isPositive ? '\u25b2' : '\u25bc'} {stockData.change} ({stockData.changePercent}%)
+                  {isPositive ? '▲' : '▼'} {stockData.change} ({stockData.changePercent}%)
                 </div>
               </div>
             )}
@@ -344,7 +344,7 @@ export default function StocksPage() {
           )}
           {error && (
             <div className="flex items-center justify-center h-48 text-red-400 text-sm">
-              \u26a0\ufe0f {error}
+              ⚠️ {error}
             </div>
           )}
           {!loading && !error && stockData && (
@@ -374,14 +374,14 @@ export default function StocksPage() {
           {/* AI Context */}
           <div className="mt-4 bg-blue-950 border border-blue-800 rounded-lg p-3">
             <div className="text-xs text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-2">
-              <span>\U0001f9e0</span>
+              <span>🧠</span>
               <span>GNI AI Context -- Why did {selectedTicker} move recently?</span>
             </div>
             {aiLoading && <p className="text-gray-400 text-xs">Analyzing geopolitical events...</p>}
             {!aiLoading && aiContext && (
               <div>
                 <p className="text-blue-200 text-xs leading-relaxed mb-2">{aiContext}</p>
-                <p className="text-yellow-400 text-xs">\u26a0\ufe0f For informational purposes only. Not financial advice.</p>
+                <p className="text-yellow-400 text-xs">⚠️ For informational purposes only. Not financial advice.</p>
               </div>
             )}
           </div>
