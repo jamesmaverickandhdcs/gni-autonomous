@@ -52,7 +52,7 @@ export default function PredictionsPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-5xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">GPVS Predictions</h1>
@@ -93,7 +93,7 @@ export default function PredictionsPage() {
 </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading predictions...</div>}
 
         {!loading && (
@@ -158,7 +158,7 @@ export default function PredictionsPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-5xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI GPVS Predictions | Team Geeks | SUM
         </div>
       </footer>

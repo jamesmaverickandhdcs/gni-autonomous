@@ -99,11 +99,11 @@ export default function TransparencyPage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
 
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-start justify-between gap-6">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-start justify-between gap-6">
           <div>
             <h1 className="text-2xl font-bold text-white">🔍 GNI Transparency Engine</h1>
             <p className="text-sm text-gray-400 mb-1">Explainable AI — Full Intelligence Funnel Trace</p>
-            <p className="text-xs text-gray-500 max-w-3xl mt-1">
+            <p className="text-xs text-gray-500 max-w-6xl mt-1">
               This page shows exactly how GNI selects news articles and generates intelligence reports.
               Every algorithmic decision is documented — from collected articles down to the final report.
               Built for accountability: you can verify why any article was selected or rejected.
@@ -131,7 +131,7 @@ export default function TransparencyPage() {
 </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8">
 
         {loading && (
           <div className="text-center py-20 text-gray-400">
@@ -404,7 +404,7 @@ export default function TransparencyPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-7xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI Transparency Engine - Explainable AI | Every funnel decision documented
         </div>
       </footer>

@@ -35,7 +35,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">🌐 About GNI</h1>
             <p className="text-sm text-gray-400">Global Nexus Insights (Autonomous) — The $0.00/month intelligence platform</p>
@@ -60,7 +60,7 @@ export default function AboutPage() {
 </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
 
         {/* $0 Hero */}
         <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 text-center">
@@ -194,7 +194,7 @@ export default function AboutPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-5xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI — Global Nexus Insights (Autonomous) | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | © 2026
         </div>
       </footer>

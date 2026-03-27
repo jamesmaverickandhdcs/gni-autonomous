@@ -37,7 +37,7 @@ export default function ResearchPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">&#x1F52C; Research Data</h1>
             <p className="text-sm text-gray-400">GNI intelligence for academic and research use — IEEE paper evidence</p>
@@ -62,7 +62,7 @@ export default function ResearchPage() {
 </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8">
 
         {/* Key Stats for IEEE paper */}
         <section className="mb-8">
@@ -174,7 +174,7 @@ export default function ResearchPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI Research Data | IEEE Paper Evidence | Team Geeks | SUM
         </div>
       </footer>

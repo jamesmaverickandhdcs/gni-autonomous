@@ -58,7 +58,7 @@ export default function BriefPage() {
             <div>
               <a href="/" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">← Quantum Strategist</a>
               <h1 className="text-lg font-bold text-white mt-1">30-Second Executive Brief</h1>
-              <p className="text-xs text-gray-400">GNI Autonomous \u2014 {now}</p>
+              <p className="text-xs text-gray-400">GNI Autonomous — {now}</p>
             </div>
             <div className="text-right text-xs text-gray-500">
               <div>Auto-generated</div>
@@ -188,7 +188,7 @@ export default function BriefPage() {
             {/* GENERATED AT */}
             <section className="mb-4 bg-gray-900 border border-gray-800 rounded-xl p-3 text-center">
               <p className="text-xs text-gray-600">
-                Brief generated from latest pipeline run \u2014{' '}
+                Brief generated from latest pipeline run —{' '}
                 {brief.created_at ? new Date(brief.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A'}
               </p>
               <p className="text-xs text-gray-700 mt-1">Updates every pipeline run (02:00 + 10:00 UTC)</p>

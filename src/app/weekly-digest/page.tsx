@@ -56,7 +56,7 @@ export default function WeeklyDigestPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">Weekly Intelligence Digest</h1>
@@ -85,7 +85,7 @@ export default function WeeklyDigestPage() {
 </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading digest...</div>}
 
         {!loading && (
@@ -172,7 +172,7 @@ export default function WeeklyDigestPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI Weekly Digest | Team Geeks | SUM
         </div>
       </footer>

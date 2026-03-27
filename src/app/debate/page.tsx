@@ -129,12 +129,12 @@ export default function DebatePage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">🐂🐻🦢🦦 Quadratic MAD Protocol</h1>
               <p className="text-sm text-gray-400">Bull → Bear → Black Swan → Ostrich → Arbitrator — 3 Live Rounds on Future Threats</p>
-              <p className="text-xs text-gray-500 mt-1 max-w-3xl">
+              <p className="text-xs text-gray-500 mt-1 max-w-6xl">
                 Four agents debate future threats across two axes: Known/Unknown × Proactive/Ignored.
                 Arbitrator coaches each agent after every round. Based on all relevant intelligence articles.
                 Short Focus (7-30 days) and Long Shoots (3-24 months) tracked for real-world validation.
@@ -181,7 +181,7 @@ export default function DebatePage() {
 </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading debates...</div>}
 
         {!loading && reports.length === 0 && (
@@ -518,7 +518,7 @@ export default function DebatePage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-7xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI — Global Nexus Insights (Autonomous) | Quadratic MAD Protocol — Future Threat Intelligence | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>

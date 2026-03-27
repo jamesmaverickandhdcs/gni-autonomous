@@ -4,7 +4,7 @@ export default function MethodologyPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">&#x1F4D0; Methodology</h1>
             <p className="text-sm text-gray-400">How GNI_Autonomous works — full technical methodology</p>
@@ -29,7 +29,7 @@ export default function MethodologyPage() {
 </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
 
         {/* Pipeline Overview */}
         <section>
@@ -142,7 +142,7 @@ export default function MethodologyPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI Methodology | Team Geeks | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>

@@ -48,7 +48,7 @@ export default function AlertsPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">&#x1F6A8; Alert History</h1>
@@ -91,7 +91,7 @@ export default function AlertsPage() {
 </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading alerts...</div>}
 
         {!loading && alerts.length === 0 && usage.length === 0 && (
@@ -172,7 +172,7 @@ export default function AlertsPage() {
       </main>
 
       <footer className="border-t border-gray-800 mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
+        <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI Alert History | Heartbeat + Adaptive | Team Geeks | SUM
         </div>
       </footer>
