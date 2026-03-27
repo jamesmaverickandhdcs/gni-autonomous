@@ -434,92 +434,20 @@ export default function Home() {
             </div>
           )}
 
-          {/* Intelligence group */}
-          <div className="mb-2">
-            <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">Intelligence</div>
-            <div className="grid grid-cols-3 md:grid-cols-7 gap-2">
-              <a href="/history" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-orange-700 border border-gray-700 hover:border-orange-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>📋</span><span>History</span>
-              </a>
-              <a href="/debate" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-red-800 border border-gray-700 hover:border-red-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🐂🐻</span><span>Debate</span>
-              </a>
-              <a href="/stocks" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-green-700 border border-gray-700 hover:border-green-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>📈</span><span>Stocks</span>
-              </a>
-              <a href="/map" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-700 border border-gray-700 hover:border-blue-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🗺️</span><span>Map</span>
-              </a>
-              <a href="/correlations" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-violet-700 border border-gray-700 hover:border-violet-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>📊</span><span>Correlations</span>
-              </a>
-              <a href="/scenarios" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-indigo-700 border border-gray-700 hover:border-indigo-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🔮</span><span>Scenarios</span>
-              </a>
-              <a href="/pillars" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-rose-700 border border-gray-700 hover:border-rose-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🌍</span><span>Pillars</span>
-              </a>
-            </div>
-          </div>
-          {/* Reports group */}
-          <div className="mb-2">
-            <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">Reports</div>
-            <div className="grid grid-cols-3 gap-2">
-              <a href="/predictions" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-yellow-700 border border-gray-700 hover:border-yellow-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🎯</span><span>Predictions</span>
-              </a>
-              <a href="/weekly-digest" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-700 border border-gray-700 hover:border-blue-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>📅</span><span>Weekly Digest</span>
-              </a>
-              <a href="/quota" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-green-700 border border-gray-700 hover:border-green-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>⚡</span><span>Quota</span>
-              </a>
-            </div>
-          </div>
-          {/* System group */}
-          <div className="mb-2">
-            <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">System</div>
-            <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-              <a href="/health" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🏥</span><span>Health</span>
-              </a>
-              <a href="/source-health" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-cyan-700 border border-gray-700 hover:border-cyan-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>📡</span><span>Sources</span>
-              </a>
-              <a href="/security" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-800 border border-gray-700 hover:border-purple-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🛡️</span><span>Security</span>
-              </a>
-              <a href="/autonomy" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-indigo-800 border border-gray-700 hover:border-indigo-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🧠</span><span>Autonomy</span>
-              </a>
-              <a href="/alerts" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-red-800 border border-gray-700 hover:border-red-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🚨</span><span>Alerts</span>
-              </a>
-              <a href="/adaptive-log" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-800 border border-gray-700 hover:border-blue-600 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>⚡</span><span>Adaptive</span>
-              </a>
-            </div>
-          </div>
-          {/* Info group */}
-          <div>
-            <div className="text-xs text-gray-600 uppercase tracking-widest mb-1.5 px-1">Info</div>
-            <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
-              <a href="/transparency" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-purple-700 border border-gray-700 hover:border-purple-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>📜</span><span>Transparency</span>
-              </a>
-              <a href="/about" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-yellow-700 border border-gray-700 hover:border-yellow-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🌟</span><span>About</span>
-              </a>
-              <a href="/comparison" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-teal-700 border border-gray-700 hover:border-teal-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>⚖️</span><span>Comparison</span>
-              </a>
-              <a href="/research" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-blue-700 border border-gray-700 hover:border-blue-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>🔬</span><span>Research</span>
-              </a>
-              <a href="/methodology" className="flex items-center justify-center gap-2 bg-gray-800 hover:bg-indigo-700 border border-gray-700 hover:border-indigo-500 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors">
-                <span>📐</span><span>Methodology</span>
-              </a>
-            </div>
+                    {/* Cross-Navigation -- 4 buttons to other main pages (GNI-R-140) */}
+          <div className="flex flex-wrap gap-2 mt-2">
+            <a href="/researcher" className="flex items-center gap-2 bg-green-900 hover:bg-green-700 border border-green-700 hover:border-green-500 rounded-lg px-4 py-2 text-sm font-bold text-green-200 transition-colors">
+              📊 Long-Term Researcher
+            </a>
+            <a href="/developer-hub" className="flex items-center gap-2 bg-purple-900 hover:bg-purple-700 border border-purple-700 hover:border-purple-500 rounded-lg px-4 py-2 text-sm font-bold text-purple-200 transition-colors">
+              🧠 Insight Developer
+            </a>
+            <a href="/reports" className="flex items-center gap-2 bg-amber-900 hover:bg-amber-700 border border-amber-700 hover:border-amber-500 rounded-lg px-4 py-2 text-sm font-bold text-amber-200 transition-colors">
+              🎯 Active + Passive Reports
+            </a>
+            <a href="/about" className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-gray-400 rounded-lg px-4 py-2 text-sm font-bold text-gray-200 transition-colors">
+              🌟 About
+            </a>
           </div>
         </div>
       </header>
@@ -549,6 +477,111 @@ export default function Home() {
 
         {!loading && reports.length > 0 && (
           <>
+                      {/* Hub Preview Rows -- 8 sub-page previews (GNI-R-141, GNI-R-143) */}
+
+            {/* ROW: /brief -- most important missing page */}
+            <section className="mb-4">
+              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className={`w-3 h-3 rounded-full shrink-0 ${
+                      latest?.escalation_level?.toLowerCase() === 'critical' ? 'bg-red-500' :
+                      latest?.escalation_level?.toLowerCase() === 'high' ? 'bg-orange-500' :
+                      latest?.escalation_level?.toLowerCase() === 'elevated' ? 'bg-yellow-500' : 'bg-green-500'
+                    }`} />
+                    <div className={`text-xs font-bold px-3 py-1 rounded-full ${
+                      latest?.escalation_level?.toLowerCase() === 'critical' ? 'bg-red-900 text-red-200 border border-red-700' :
+                      latest?.escalation_level?.toLowerCase() === 'high' ? 'bg-orange-900 text-orange-200 border border-orange-700' :
+                      latest?.escalation_level?.toLowerCase() === 'elevated' ? 'bg-yellow-900 text-yellow-200 border border-yellow-700' :
+                      'bg-green-900 text-green-200 border border-green-700'
+                    }`}>
+                      {latest?.escalation_level?.toUpperCase() || 'MONITORING'}
+                    </div>
+                    <div className="text-sm text-gray-300 truncate">
+                      {latest?.mad_action_recommendation
+                        ? latest.mad_action_recommendation.slice(0, 120) + (latest.mad_action_recommendation.length > 120 ? '...' : '')
+                        : 'Executive brief loading...'}
+                    </div>
+                  </div>
+                  <a href="/brief" className="text-xs text-white bg-blue-700 hover:bg-blue-600 rounded px-3 py-1.5 font-bold ml-3 shrink-0 transition-colors">
+                    30-sec Brief →
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* ROW: /debate preview */}
+            <section className="mb-4">
+              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className={`text-sm font-bold px-3 py-1 rounded-full ${
+                      latest?.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300 border border-green-700' :
+                      latest?.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300 border border-red-700' :
+                      'bg-gray-700 text-gray-300 border border-gray-600'
+                    }`}>
+                      {latest?.mad_verdict === 'bullish' ? '🐂' : latest?.mad_verdict === 'bearish' ? '🐻' : '◆'} {latest?.mad_verdict?.toUpperCase() || 'PENDING'}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      Confidence: <span className="text-white font-bold">{latest?.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}</span>
+                    </span>
+                    <span className="text-xs text-gray-500 hidden md:block truncate max-w-xs">
+                      {latest?.mad_action_recommendation?.slice(0, 80) || 'Awaiting MAD verdict'}
+                    </span>
+                  </div>
+                  <a href="/debate" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                    Full Debate →
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* ROW: /comparison preview */}
+            <section className="mb-4">
+              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-4">
+                    <div className="text-xs text-gray-400">
+                      Pipeline: <span className="text-white font-bold">{latest?.sentiment_score?.toFixed(2) || 'N/A'}</span>
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      MAD: <span className="text-white font-bold">{latest?.mad_confidence ? (latest.mad_confidence * 2 - 1).toFixed(2) : 'N/A'}</span>
+                    </div>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                      latest?.sentiment && latest?.mad_verdict &&
+                      latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
+                        ? 'bg-orange-900 text-orange-300 border border-orange-700'
+                        : 'bg-green-900 text-green-300 border border-green-700'
+                    }`}>
+                      {latest?.sentiment && latest?.mad_verdict &&
+                       latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
+                        ? '⚠️ DIVERGING' : '✓ ALIGNED'}
+                    </span>
+                  </div>
+                  <a href="/comparison" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                    See Divergence →
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* ROW: /scenarios preview */}
+            <section className="mb-4">
+              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="text-xs text-gray-500 shrink-0">Base:</span>
+                    <span className="text-xs text-gray-300 truncate">{latest?.mad_historian_case?.slice(0, 60) || 'Pending'}</span>
+                    <span className="text-xs text-green-600 shrink-0 hidden md:block">| Upside</span>
+                    <span className="text-xs text-red-600 shrink-0 hidden md:block">| Downside</span>
+                  </div>
+                  <a href="/scenarios" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                    View Scenarios →
+                  </a>
+                </div>
+              </div>
+            </section>
+
             {/* Live Map + Stocks Widgets */}
             <section className="mb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
