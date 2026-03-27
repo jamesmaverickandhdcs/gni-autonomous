@@ -253,6 +253,60 @@ def check_divergence_alert(client) -> bool:
         return False
 
 
+def check_consensus_collapse(client) -> bool:
+    """
+    I-04: Detect consensus collapse -- when source_consensus_score
+    spikes suddenly, all sources agree on extreme threat.
+    This is a rare high-value signal worth alerting.
+    """
+    try:
+        result = client.table('reports') \
+            .select('id,title,source_consensus_score,escalation_score,sentiment,created_at') \
+            .not_.is_('source_consensus_score', 'null') \
+            .order('created_at', desc=True) \
+            .limit(5) \
+            .execute()
+
+        if not result.data or len(result.data) < 2:
+            return False
+
+        latest = result.data[0]
+        prev_scores = [r.get('source_consensus_score', 0) or 0 for r in result.data[1:]]
+
+        latest_consensus = float(latest.get('source_consensus_score', 0) or 0)
+        avg_prev = sum(prev_scores) / len(prev_scores) if prev_scores else 0
+        delta = latest_consensus - avg_prev
+
+        # Collapse = consensus jumped >= 0.25 AND is now >= 0.8
+        if delta >= 0.25 and latest_consensus >= 0.8:
+            title = latest.get('title', '')[:60]
+            esc_score = latest.get('escalation_score', 0) or 0
+            sentiment = (latest.get('sentiment') or 'Unknown').upper()
+
+            msg = (
+                '[GNI CONSENSUS COLLAPSE] Sources Suddenly Agree\n'
+                'Report: ' + title + '\n'
+                'Consensus score: ' + str(round(latest_consensus, 2)) +
+                ' (was avg ' + str(round(avg_prev, 2)) + ')\n'
+                'Delta: +' + str(round(delta, 2)) + ' -- all sources aligning\n'
+                'Sentiment: ' + sentiment + ' | Escalation: ' + str(esc_score) + '/10\n'
+                'Action: High-confidence signal -- sources converging on same threat\n'
+                'Time: ' + datetime.now(timezone.utc).strftime('%H:%M UTC')
+            )
+            print('  CONSENSUS COLLAPSE: ' + str(round(latest_consensus, 2)) +
+                  ' (delta +' + str(round(delta, 2)) + ')')
+            _send_telegram(msg)
+            return True
+
+        print('  No consensus collapse -- score=' + str(round(latest_consensus, 2)) +
+              ' delta=' + str(round(delta, 2)))
+        return False
+
+    except Exception as e:
+        print('  Warning: Consensus check failed: ' + str(e)[:60])
+        return False
+
+
 def run_monitoring_pipeline():
     now = datetime.now(timezone.utc)
     print('=' * 60)
@@ -276,6 +330,10 @@ def run_monitoring_pipeline():
     divergence_found = check_divergence_alert(client)
     if not divergence_found:
         print('  No divergence -- report and MAD aligned')
+
+    # -- I-04: Consensus collapse alert
+    print('\nChecking consensus collapse...')
+    check_consensus_collapse(client)
 
     # -- NYSE transition alerts (GNI-R-120) -- always fire
     nyse_transition = get_nyse_transition(now)
