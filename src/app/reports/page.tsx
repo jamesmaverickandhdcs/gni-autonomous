@@ -36,25 +36,25 @@ export default function ReportsHub() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-amber-300">\U0001f3af Feedback Loop</h1>
+              <h1 className="text-xl font-bold text-amber-300">🎯 Feedback Loop</h1>
               <p className="text-xs text-gray-400">What did reality confirm or surprise, and what does GNI do next?</p>
             </div>
             <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
-              \u2190 Quantum Strategist
+              ← Quantum Strategist
             </a>
           </div>
           <div className="flex flex-wrap gap-2">
             <a href="/" className="flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-200 transition-colors">
-              \U0001f3af Quantum Strategist
+              🎯 Quantum Strategist
             </a>
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              \U0001f4ca Researcher
+              📊 Researcher
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              \U0001f9e0 Developer
+              🧠 Developer
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
-              \U0001f31f About
+              🌟 About
             </a>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function ReportsHub() {
         {/* Next Verification Countdown */}
         {nextVerify && (
           <div className="bg-amber-950 border border-amber-700 rounded-xl p-4 mb-6">
-            <div className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-2">\u23f0 Next Verification</div>
+            <div className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-2">⏰ Next Verification</div>
             <div className="flex items-center gap-4">
               <div className="text-3xl font-bold text-white">{daysToNext}d</div>
               <div>
@@ -100,7 +100,7 @@ export default function ReportsHub() {
         <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Active Reports</div>
         <a href="/predictions" className="block bg-gray-900 border border-amber-700 hover:border-amber-500 rounded-xl p-5 mb-4 transition-colors">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-xl">\U0001f3af</span>
+            <span className="text-xl">🎯</span>
             <div className="text-sm font-bold text-white">Predictions</div>
             <span className="text-xs bg-amber-900 text-amber-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
           </div>

@@ -45,25 +45,25 @@ export default function DeveloperHub() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-purple-300">\U0001f9e0 Dev Console</h1>
+              <h1 className="text-xl font-bold text-purple-300">🧠 Dev Console</h1>
               <p className="text-xs text-gray-400">How does GNI work and how do I build on top of it?</p>
             </div>
             <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
-              \u2190 Quantum Strategist
+              ← Quantum Strategist
             </a>
           </div>
           <div className="flex flex-wrap gap-2">
             <a href="/" className="flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-200 transition-colors">
-              \U0001f3af Quantum Strategist
+              🎯 Quantum Strategist
             </a>
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              \U0001f4ca Researcher
+              📊 Researcher
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              \U0001f3af Feedback Loop
+              🎯 Feedback Loop
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
-              \U0001f31f About
+              🌟 About
             </a>
           </div>
         
@@ -118,13 +118,13 @@ export default function DeveloperHub() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
 
           {[
-            { href: '/transparency', emoji: '\U0001f4dc', label: 'Transparency', desc: 'Full AI funnel trace. How each article was selected stage by stage.', status: 'LIVE' },
-            { href: '/autonomy',     emoji: '\U0001f9e0', label: 'Autonomy',     desc: 'Frequency controller + A/B prompt system + L3.5 self-healing design.', status: 'LIVE' },
-            { href: '/health',       emoji: '\U0001f3e5', label: 'Health',       desc: 'Pipeline status + quality scores per run + A/B test current state.', status: 'LIVE' },
-            { href: '/security',     emoji: '\U0001f6e1\ufe0f', label: 'Security', desc: '66 injection patterns + SHA-256 audit chain + pentest results.', status: 'LIVE' },
-            { href: '/source-health',emoji: '\U0001f4e1', label: 'Source Health',desc: '25 RSS sources: healthy/degraded/down. Mini chart per source.', status: 'LIVE' },
-            { href: '/adaptive-log', emoji: '\u26a1',     label: 'Adaptive Log', desc: 'Self-healing log. When triggered, why, tokens used, result.', status: 'LIVE' },
-            { href: '/quota',        emoji: '\U0001f4b0', label: 'Quota',        desc: 'Live token budget per pipeline vs 85K safe ceiling vs 100K limit.', status: 'LIVE' },
+            { href: '/transparency', emoji: '📜', label: 'Transparency', desc: 'Full AI funnel trace. How each article was selected stage by stage.', status: 'LIVE' },
+            { href: '/autonomy',     emoji: '🧠', label: 'Autonomy',     desc: 'Frequency controller + A/B prompt system + L3.5 self-healing design.', status: 'LIVE' },
+            { href: '/health',       emoji: '🏥', label: 'Health',       desc: 'Pipeline status + quality scores per run + A/B test current state.', status: 'LIVE' },
+            { href: '/security',     emoji: '🛡️', label: 'Security', desc: '66 injection patterns + SHA-256 audit chain + pentest results.', status: 'LIVE' },
+            { href: '/source-health',emoji: '📡', label: 'Source Health',desc: '25 RSS sources: healthy/degraded/down. Mini chart per source.', status: 'LIVE' },
+            { href: '/adaptive-log', emoji: '⚡',     label: 'Adaptive Log', desc: 'Self-healing log. When triggered, why, tokens used, result.', status: 'LIVE' },
+            { href: '/quota',        emoji: '💰', label: 'Quota',        desc: 'Live token budget per pipeline vs 85K safe ceiling vs 100K limit.', status: 'LIVE' },
           ].map(({ href, emoji, label, desc, status }) => (
             <a key={href} href={href} className="bg-gray-900 border border-gray-700 hover:border-purple-600 rounded-xl p-4 transition-colors">
               <div className="flex items-center gap-3 mb-2">

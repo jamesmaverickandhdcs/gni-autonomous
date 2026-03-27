@@ -32,25 +32,25 @@ export default function ResearcherHub() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-green-300">\U0001f4ca Pattern Intelligence</h1>
+              <h1 className="text-xl font-bold text-green-300">📊 Pattern Intelligence</h1>
               <p className="text-xs text-gray-400">What patterns emerge over time and how reliable is GNI?</p>
             </div>
             <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
-              \u2190 Quantum Strategist
+              ← Quantum Strategist
             </a>
           </div>
           <div className="flex flex-wrap gap-2">
             <a href="/" className="flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-200 transition-colors">
-              \U0001f3af Quantum Strategist
+              🎯 Quantum Strategist
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              \U0001f9e0 Dev Console
+              🧠 Dev Console
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              \U0001f3af Feedback Loop
+              🎯 Feedback Loop
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
-              \U0001f31f About
+              🌟 About
             </a>
           </div>
         
@@ -120,7 +120,7 @@ export default function ResearcherHub() {
           {/* History */}
           <a href="/history" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-lg">\U0001f4cb</span>
+              <span className="text-lg">📋</span>
               <div className="text-sm font-bold text-white">History</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
@@ -130,7 +130,7 @@ export default function ResearcherHub() {
           {/* Research */}
           <a href="/research" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-lg">\U0001f52c</span>
+              <span className="text-lg">🔬</span>
               <div className="text-sm font-bold text-white">Research</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
@@ -140,7 +140,7 @@ export default function ResearcherHub() {
           {/* Correlations */}
           <a href="/correlations" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-lg">\U0001f4ca</span>
+              <span className="text-lg">📊</span>
               <div className="text-sm font-bold text-white">Correlations</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
@@ -150,7 +150,7 @@ export default function ResearcherHub() {
           {/* Weekly Digest */}
           <a href="/weekly-digest" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-lg">\U0001f4c5</span>
+              <span className="text-lg">📅</span>
               <div className="text-sm font-bold text-white">Weekly Digest</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
@@ -160,7 +160,7 @@ export default function ResearcherHub() {
           {/* Methodology */}
           <a href="/methodology" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-lg">\U0001f4dd</span>
+              <span className="text-lg">📝</span>
               <div className="text-sm font-bold text-white">Methodology</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
@@ -170,7 +170,7 @@ export default function ResearcherHub() {
           {/* About */}
           <a href="/about" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-lg">\U0001f31f</span>
+              <span className="text-lg">🌟</span>
               <div className="text-sm font-bold text-white">About GNI</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
@@ -182,7 +182,7 @@ export default function ResearcherHub() {
         {/* API Export */}
         <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-lg">\U0001f4e5</span>
+            <span className="text-lg">📥</span>
             <div className="text-sm font-bold text-white">Dataset Export API</div>
             <span className="text-xs bg-yellow-900 text-yellow-300 px-2 py-0.5 rounded-full ml-auto">COMING SOON</span>
           </div>
