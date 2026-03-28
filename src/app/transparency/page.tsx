@@ -99,7 +99,9 @@ export default function TransparencyPage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
 
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-start justify-between gap-6">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/developer-hub" className="inline-flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 text-purple-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors shrink-0">← Dev Console</a>
+          <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">🔍 GNI Transparency Engine</h1>
             <p className="text-sm text-gray-400 mb-1">Explainable AI — Full Intelligence Funnel Trace</p>
@@ -129,6 +131,7 @@ export default function TransparencyPage() {
             </a>
           </div>
 </div>
+          </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">

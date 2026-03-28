@@ -205,14 +205,13 @@ export default function StocksPage() {
 
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-7xl mx-auto px-6 py-4">
+          <a href="/" className="inline-flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 text-blue-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Quantum Strategist</a>
           <div className="flex items-center justify-between mb-3">
             <div>
               <h1 className="text-xl font-bold text-white">📈 Market Intelligence</h1>
               <p className="text-xs text-gray-400">6-Category Market View -- Trading Economics Style -- Yahoo Finance Data</p>
             </div>
-            <a href="/" className="text-xs text-blue-400 hover:text-blue-300 border border-blue-800 rounded px-3 py-1">
-              ← Quantum Strategist
-            </a>
+            
           </div>
           <div className="flex flex-wrap gap-2">
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">

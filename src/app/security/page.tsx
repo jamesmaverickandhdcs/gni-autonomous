@@ -60,11 +60,13 @@ export default function SecurityPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-start justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/developer-hub" className="inline-flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 text-purple-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors shrink-0">← Dev Console</a>
+          <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">🛡️ Security Engine</h1>
             <p className="text-sm text-gray-400">Injection Detection · Audit Trail · Chain Verification</p>
-            <p className="text-xs text-gray-500 mt-1 max-w-2xl">
+            <p className="text-xs text-gray-500 mt-1 max-w-6xl">
               Every article is scanned for 66 prompt injection patterns before entering the AI pipeline.
               Every pipeline event is recorded in an immutable SHA-256 hash chain audit trail.
             </p>
@@ -87,6 +89,7 @@ export default function SecurityPage() {
             </a>
           </div>
 </div>
+          </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">

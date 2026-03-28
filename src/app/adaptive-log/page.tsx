@@ -40,6 +40,7 @@ export default function AdaptiveLogPage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/developer-hub" className="inline-flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 text-purple-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Dev Console</a>
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">&#x26A1; Adaptive Pipeline Log</h1>

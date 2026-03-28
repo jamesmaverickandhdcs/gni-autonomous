@@ -435,7 +435,9 @@ export default function HistoryPage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
 
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/researcher" className="inline-flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 text-green-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors shrink-0">← Pattern Intelligence</a>
+          <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">Intelligence History</h1>
             <p className="text-sm text-gray-400">
@@ -462,6 +464,7 @@ export default function HistoryPage() {
             </a>
           </div>
 </div>
+          </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">

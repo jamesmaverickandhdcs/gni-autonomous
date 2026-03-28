@@ -130,6 +130,7 @@ export default function DebatePage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/" className="inline-flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 text-blue-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Quantum Strategist</a>
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">🐂🐻🦢🦦 Quadratic MAD Protocol</h1>
@@ -140,7 +141,7 @@ export default function DebatePage() {
                 Short Focus (7-30 days) and Long Shoots (3-24 months) tracked for real-world validation.
               </p>
             </div>
-            <a href="/" className="text-sm text-blue-400 hover:text-blue-300 shrink-0 mt-1">← Dashboard</a>
+            
           </div>
           {reports.length > 0 && (
             <div className="grid grid-cols-4 gap-3 mt-4">

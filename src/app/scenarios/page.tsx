@@ -231,13 +231,14 @@ export default function ScenariosPage() {
 
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/" className="inline-flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 text-blue-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Quantum Strategist</a>
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">📊 Scenario Planning</h1>
               <p className="text-sm text-gray-400">Base / Upside / Downside scenarios from Quadratic MAD debate</p>
               <p className="text-xs text-gray-600 mt-1">Reliability improves as GPVS correlation data accumulates.</p>
             </div>
-            <a href="/" className="text-sm text-blue-400 hover:text-blue-300 shrink-0 mt-1">← Dashboard</a>
+            
           </div>
           {reports.length > 0 && (
             <div className="grid grid-cols-3 gap-3 mt-4">

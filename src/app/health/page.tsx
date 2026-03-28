@@ -99,7 +99,9 @@ export default function HealthPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/developer-hub" className="inline-flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 text-purple-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors shrink-0">← Dev Console</a>
+          <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">System Health</h1>
             <p className="text-sm text-gray-400">Pipeline status, quality scores, source weights, credibility, A/B test</p>
@@ -122,6 +124,7 @@ export default function HealthPage() {
             </a>
           </div>
 </div>
+          </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">

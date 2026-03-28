@@ -33,9 +33,9 @@ const sentimentColor = (s: string) => {
 
 const sentimentIcon = (s: string) => {
   switch (s?.toLowerCase()) {
-    case 'bearish': return '\u25bc'
-    case 'bullish': return '\u25b2'
-    default: return '\u25c6'
+    case 'bearish': return '▼'
+    case 'bullish': return '▲'
+    default: return '◆'
   }
 }
 
@@ -99,6 +99,7 @@ export default function ComparisonPage() {
 
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/" className="inline-flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 text-blue-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Quantum Strategist</a>
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">&#x1F50D; Report vs Debate Comparison</h1>

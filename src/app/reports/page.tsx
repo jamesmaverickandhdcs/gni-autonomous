@@ -39,9 +39,7 @@ export default function ReportsHub() {
               <h1 className="text-xl font-bold text-amber-300">🎯 Feedback Loop</h1>
               <p className="text-xs text-gray-400">What did reality confirm or surprise, and what does GNI do next?</p>
             </div>
-            <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
-              ← Quantum Strategist
-            </a>
+            
           </div>
           <div className="flex flex-wrap gap-2">
             <a href="/" className="flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-200 transition-colors">

@@ -80,11 +80,13 @@ export default function AutonomyPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-start justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <a href="/developer-hub" className="inline-flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 text-purple-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors shrink-0">← Dev Console</a>
+          <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">🧠 Autonomy Engine</h1>
             <p className="text-sm text-gray-400">Frequency Control · Self-Improvement · Health Monitoring</p>
-            <p className="text-xs text-gray-500 mt-1 max-w-2xl">
+            <p className="text-xs text-gray-500 mt-1 max-w-6xl">
               GNI manages itself. The frequency controller decides how often to run based on world escalation.
               The A/B system tests prompt variants and auto-promotes the winner.
               The health agent monitors pipeline quality 24/7.
@@ -108,6 +110,7 @@ export default function AutonomyPage() {
             </a>
           </div>
 </div>
+          </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
