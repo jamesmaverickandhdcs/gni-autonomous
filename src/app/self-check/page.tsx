@@ -127,7 +127,7 @@ export default function SelfCheckPage() {
                 <div>
                   <div className="text-xl font-bold">{data.overall_status}</div>
                   <div className="text-xs opacity-80">
-                    {data.issues_found === 0 ? 'All systems operational' : `${data.issues_found} issue${data.issues_found > 1 ? 's' : ''} detected`}
+                    {data.overall_status === 'HEALTHY' ? 'All systems operational' : `${data.issues_found} issue${data.issues_found > 1 ? 's' : ''} detected`}
                     {data.telegram_sent && ' | Telegram alert sent'}
                   </div>
                 </div>

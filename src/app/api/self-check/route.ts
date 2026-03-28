@@ -32,7 +32,7 @@ export async function GET() {
     if (error) throw error
     checks['supabase_connection'] = { status: 'OK', message: 'Supabase connected successfully' }
   } catch (e) {
-    checks['supabase_connection'] = { status: 'CRITICAL', message: 'Supabase connection failed: ' + String(e) }
+    checks['supabase_connection'] = { status: 'CRITICAL', message: 'Supabase connection failed: ' + (e instanceof Error ? e.message : JSON.stringify(e)) }
     issuesFound++
   }
 
@@ -54,7 +54,7 @@ export async function GET() {
       }
     }
   } catch (e) {
-    checks['latest_report'] = { status: 'CRITICAL', message: 'Failed to fetch latest report: ' + String(e) }
+    checks['latest_report'] = { status: 'CRITICAL', message: 'Failed to fetch latest report: ' + (e instanceof Error ? e.message : JSON.stringify(e)) }
     issuesFound++
   }
 
@@ -75,7 +75,7 @@ export async function GET() {
       checks['groq_quota'] = { status: 'OK', message: `Quota at ${pct}% -- ${totalTokens}/100000 tokens` }
     }
   } catch (e) {
-    checks['groq_quota'] = { status: 'WARNING', message: 'Could not check quota: ' + String(e) }
+    checks['groq_quota'] = { status: 'WARNING', message: 'Could not check quota: ' + (e instanceof Error ? e.message : JSON.stringify(e)) }
   }
 
   // Check 4: Source health
@@ -97,7 +97,7 @@ export async function GET() {
       checks['source_health'] = { status: 'OK', message: `${healthy}/${total} sources healthy` }
     }
   } catch (e) {
-    checks['source_health'] = { status: 'WARNING', message: 'Could not check sources: ' + String(e) }
+    checks['source_health'] = { status: 'WARNING', message: 'Could not check sources: ' + (e instanceof Error ? e.message : JSON.stringify(e)) }
   }
 
   // Check 5: Pipeline ran in last 12 hours
@@ -113,7 +113,7 @@ export async function GET() {
       checks['pipeline_recent'] = { status: 'OK', message: 'Pipeline ran within last 12 hours' }
     }
   } catch (e) {
-    checks['pipeline_recent'] = { status: 'WARNING', message: 'Could not check pipeline: ' + String(e) }
+    checks['pipeline_recent'] = { status: 'WARNING', message: 'Could not check pipeline: ' + (e instanceof Error ? e.message : JSON.stringify(e)) }
   }
 
   // Check 6: MAD debate ran in last 12 hours
@@ -129,7 +129,7 @@ export async function GET() {
       checks['mad_recent'] = { status: 'OK', message: 'MAD debate ran within last 12 hours' }
     }
   } catch (e) {
-    checks['mad_recent'] = { status: 'WARNING', message: 'Could not check MAD runs: ' + String(e) }
+    checks['mad_recent'] = { status: 'WARNING', message: 'Could not check MAD runs: ' + (e instanceof Error ? e.message : JSON.stringify(e)) }
   }
 
   // Determine overall status
