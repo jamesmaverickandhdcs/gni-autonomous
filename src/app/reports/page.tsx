@@ -49,7 +49,7 @@ export default function ReportsHub() {
               📊 Researcher
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              🧠 Developer
+              🧠 Dev Console
             </a>
             <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
               🌟 About
@@ -127,20 +127,45 @@ export default function ReportsHub() {
         {/* Future Pages */}
         <div className="text-xs text-amber-400 uppercase tracking-wider mb-4 font-bold">Passive Reports -- Coming as GPVS Accumulates</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { label: 'Validation Log', when: 'April 10, 2026+', desc: 'When predictions verify accurately -- which agent was right and what to watch next.' },
-            { label: 'Model Learning', when: 'Q3 2026', desc: 'Surprise outcomes, model recalibration events, source bias corrections.' },
-            { label: 'Pattern Library', when: 'Q4 2026', desc: 'When current escalation matches historical validated sequences, GNI predicts what comes next.' },
-          ].map(({ label, when, desc }) => (
-            <div key={label} className="bg-gray-900 border border-gray-800 rounded-xl p-4 opacity-60">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="text-sm font-bold text-gray-400">{label}</div>
-                <span className="text-xs bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full ml-auto">FUTURE</span>
-              </div>
-              <div className="text-xs text-amber-600 mb-1">Available: {when}</div>
-              <p className="text-xs text-gray-600">{desc}</p>
+          <a href="/validation-log" className="bg-gray-900 border border-amber-900 hover:border-amber-600 rounded-xl p-4 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-amber-400 bg-amber-950 border border-amber-800 rounded-full w-6 h-6 flex items-center justify-center shrink-0">02</span>
+              <span className="text-base">📋</span>
+              <div className="text-sm font-bold text-amber-200">Validation Log</div>
+              <span className="text-xs bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full ml-auto">FUTURE</span>
             </div>
-          ))}
+            <div className="text-xs text-amber-600 mb-2">Available: April 10, 2026+</div>
+            <p className="text-xs text-gray-500 leading-relaxed">When predictions verify accurately -- which agent was right, which was wrong, and what patterns emerge in their accuracy over time. The GPVS scorecard in full detail.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-amber-300 bg-amber-950 border border-amber-800 rounded-lg px-3 py-1.5">Preview →</span>
+            </div>
+          </a>
+          <a href="/model-learning" className="bg-gray-900 border border-amber-900 hover:border-amber-600 rounded-xl p-4 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-amber-400 bg-amber-950 border border-amber-800 rounded-full w-6 h-6 flex items-center justify-center shrink-0">03</span>
+              <span className="text-base">🧠</span>
+              <div className="text-sm font-bold text-amber-200">Model Learning</div>
+              <span className="text-xs bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full ml-auto">FUTURE</span>
+            </div>
+            <div className="text-xs text-amber-600 mb-2">Available: Q3 2026</div>
+            <p className="text-xs text-gray-500 leading-relaxed">Surprise outcomes, model recalibration events, and source bias corrections. Tracks how GNI improves its prediction accuracy over time through autonomous self-correction.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-amber-300 bg-amber-950 border border-amber-800 rounded-lg px-3 py-1.5">Preview →</span>
+            </div>
+          </a>
+          <a href="/pattern-library" className="bg-gray-900 border border-amber-900 hover:border-amber-600 rounded-xl p-4 transition-colors">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-amber-400 bg-amber-950 border border-amber-800 rounded-full w-6 h-6 flex items-center justify-center shrink-0">04</span>
+              <span className="text-base">📚</span>
+              <div className="text-sm font-bold text-amber-200">Pattern Library</div>
+              <span className="text-xs bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full ml-auto">FUTURE</span>
+            </div>
+            <div className="text-xs text-amber-600 mb-2">Available: Q4 2026</div>
+            <p className="text-xs text-gray-500 leading-relaxed">When current escalation matches historical validated sequences, GNI predicts what comes next. The most advanced predictive capability in the GNI roadmap.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-amber-300 bg-amber-950 border border-amber-800 rounded-lg px-3 py-1.5">Preview →</span>
+            </div>
+          </a>
         </div>
 
       </main>
