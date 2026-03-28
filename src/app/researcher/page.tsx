@@ -35,9 +35,6 @@ export default function ResearcherHub() {
               <h1 className="text-xl font-bold text-green-300">📊 Pattern Intelligence</h1>
               <p className="text-xs text-gray-400">What patterns emerge over time and how reliable is GNI?</p>
             </div>
-            <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
-              ← Quantum Strategist
-            </a>
           </div>
           <div className="flex flex-wrap gap-2">
             <a href="/" className="flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-200 transition-colors">
@@ -54,21 +51,7 @@ export default function ResearcherHub() {
             </a>
           </div>
         
-          {/* Cross-Navigation -- 4 main pages (GNI-R-140) */}
-          <div className="flex flex-wrap gap-2 mt-2">
-            <a href="/" className="flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-200 transition-colors">
-              🎯 Quantum Strategist
-            </a>
-            <a href="/" className="flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 rounded-lg px-3 py-1.5 text-xs font-bold text-blue-200 transition-colors">
-              🎯 Quantum Strategist
-            </a>
-            <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              🧠 Developer
-            </a>
-            <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              🎯 Feedback Loop
-            </a>
-          </div>
+
 </div>
       </header>
 
