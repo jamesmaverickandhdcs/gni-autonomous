@@ -536,53 +536,7 @@ export default function Home() {
               </div>
             </section>
 
-            {/* ROW: /comparison preview */}
-            <section className="mb-4">
-              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
-                <div className="px-4 py-3 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-4">
-                    <div className="text-xs text-gray-400">
-                      Pipeline: <span className="text-white font-bold">{latest?.sentiment_score?.toFixed(2) || 'N/A'}</span>
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      MAD: <span className="text-white font-bold">{latest?.mad_confidence ? (latest.mad_confidence * 2 - 1).toFixed(2) : 'N/A'}</span>
-                    </div>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                      latest?.sentiment && latest?.mad_verdict &&
-                      latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
-                        ? 'bg-orange-900 text-orange-300 border border-orange-700'
-                        : 'bg-green-900 text-green-300 border border-green-700'
-                    }`}>
-                      {latest?.sentiment && latest?.mad_verdict &&
-                       latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
-                        ? '⚠️ DIVERGING' : '✓ ALIGNED'}
-                    </span>
-                  </div>
-                  <a href="/comparison" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
-                    See Divergence →
-                  </a>
-                </div>
-              </div>
-            </section>
-
-            {/* ROW: /scenarios preview */}
-            <section className="mb-4">
-              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
-                <div className="px-4 py-3 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <span className="text-xs text-gray-500 shrink-0">Base:</span>
-                    <span className="text-xs text-gray-300 truncate">{latest?.mad_historian_case?.slice(0, 60) || 'Pending'}</span>
-                    <span className="text-xs text-green-600 shrink-0 hidden md:block">| Upside</span>
-                    <span className="text-xs text-red-600 shrink-0 hidden md:block">| Downside</span>
-                  </div>
-                  <a href="/scenarios" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
-                    View Scenarios →
-                  </a>
-                </div>
-              </div>
-            </section>
-
-            {/* Live Map + Stocks Widgets */}
+{/* Live Map + Stocks Widgets */}
             <section className="mb-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
@@ -652,6 +606,53 @@ export default function Home() {
 
               </div>
             </section>
+
+                        {/* ROW: /comparison preview */}
+            <section className="mb-4">
+              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-4">
+                    <div className="text-xs text-gray-400">
+                      Pipeline: <span className="text-white font-bold">{latest?.sentiment_score?.toFixed(2) || 'N/A'}</span>
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      MAD: <span className="text-white font-bold">{latest?.mad_confidence ? (latest.mad_confidence * 2 - 1).toFixed(2) : 'N/A'}</span>
+                    </div>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                      latest?.sentiment && latest?.mad_verdict &&
+                      latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
+                        ? 'bg-orange-900 text-orange-300 border border-orange-700'
+                        : 'bg-green-900 text-green-300 border border-green-700'
+                    }`}>
+                      {latest?.sentiment && latest?.mad_verdict &&
+                       latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
+                        ? '⚠️ DIVERGING' : '✓ ALIGNED'}
+                    </span>
+                  </div>
+                  <a href="/comparison" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                    See Divergence →
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* ROW: /scenarios preview */}
+            <section className="mb-4">
+              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="text-xs text-gray-500 shrink-0">Base:</span>
+                    <span className="text-xs text-gray-300 truncate">{latest?.mad_historian_case?.slice(0, 60) || 'Pending'}</span>
+                    <span className="text-xs text-green-600 shrink-0 hidden md:block">| Upside</span>
+                    <span className="text-xs text-red-600 shrink-0 hidden md:block">| Downside</span>
+                  </div>
+                  <a href="/scenarios" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                    View Scenarios →
+                  </a>
+                </div>
+              </div>
+            </section>
+
 
             <section className="mb-8">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Latest Intelligence Report</div>
