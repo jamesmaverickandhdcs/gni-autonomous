@@ -60,7 +60,11 @@ export default function ResearcherHub() {
         {/* Intro */}
         <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
           <p className="text-sm text-gray-300 leading-relaxed">
-            Long-term analysis of GNI intelligence patterns. Track escalation trends across pipeline runs, validate prediction accuracy via GPVS, and understand how confidence intervals and source weights evolve over time. Built for researchers, analysts, and IEEE paper replication.
+            Pattern Intelligence is GNI&apos;s long-term research hub, designed for analysts and researchers who want to go beyond the latest report and understand how global intelligence evolves over time.
+            Every pipeline run produces structured data -- escalation scores, sentiment scores, MAD verdicts, and confidence intervals -- all of which are tracked, stored, and available for deep analysis here.
+            The GPVS (GNI Prediction Validation Standard) system continuously scores each agent&apos;s directional predictions against reality, building an evidence-based accuracy record over multiple horizons (7d, 30d, 180d).
+            Confidence interval analysis using the t-distribution (t=4.303, n=3, alpha=0.05) provides statistical rigor to every sentiment score, making GNI&apos;s outputs IEEE paper-citable.
+            All datasets are available for download via the Export API, enabling full replication of GNI&apos;s methodology for academic research and external validation.
           </p>
         </div>
         {/* Stats Row */}
@@ -113,7 +117,7 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">History</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">{reports.length} pipeline runs available. Scroll back to find escalation patterns over time.</p>
+            <p className="text-xs text-gray-400">{reports.length} pipeline runs are stored and available for analysis. Each run captures escalation score, sentiment score, MAD verdict, and confidence interval width. Scroll back through history to identify escalation patterns, trend reversals, and structural shifts over time.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View History →</span>
             </div>
@@ -126,7 +130,7 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">Research</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">Escalation trend charts, CI width over time, per-agent accuracy. Full research workspace.</p>
+            <p className="text-xs text-gray-400">A full research workspace with escalation trend charts, confidence interval width over time, and per-agent MAD accuracy tracking. Compare how Bull, Bear, Black Swan, and Ostrich agents perform across different geopolitical conditions. Designed for deep statistical analysis and IEEE paper evidence gathering.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Research →</span>
             </div>
@@ -139,7 +143,7 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">Correlations</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">3-horizon CFA (7d/30d/180d). Per-agent accuracy. CI width analysis. Statistical proof layer.</p>
+            <p className="text-xs text-gray-400">Cross-horizon Forecast Analysis (CFA) tracks GNI prediction accuracy across three time horizons: 7-day, 30-day, and 180-day. Per-agent accuracy scores reveal which MAD agents perform best under different market conditions. This is the statistical proof layer for GNI&apos;s GPVS standard -- essential for IEEE paper validation.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Correlations →</span>
             </div>
@@ -152,7 +156,7 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">Weekly Digest</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">Sunday digests as a time series. Week-over-week escalation delta = structural trend signal.</p>
+            <p className="text-xs text-gray-400">Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. Week-over-week escalation delta is one of GNI&apos;s most reliable structural trend signals -- consistent increases indicate sustained threat buildup. Use the digest time series to identify multi-week escalation cycles that single pipeline runs might miss.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Digest →</span>
             </div>
@@ -165,9 +169,21 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">Methodology</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">CI formula (t=4.303, n=3). MAD agent design. GPVS standard. CFA horizon justification. IEEE-citable.</p>
+            <p className="text-xs text-gray-400">Documents the complete scientific methodology behind GNI: the confidence interval formula using t-distribution (t=4.303, n=3, alpha=0.05), the Quadratic MAD agent design based on the Johari Window framework, and the GPVS prediction validation standard. All methodology is IEEE paper-citable and designed for academic peer review. Start here if you are writing a research paper that references GNI.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Methodology →</span>
+            </div>
+          </a>
+          {/* Dataset Export API */}
+          <a href="/developer" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-lg">📥</span>
+              <div className="text-sm font-bold text-white">Dataset Export API</div>
+              <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
+            </div>
+            <p className="text-xs text-gray-400">Download the complete GNI dataset as CSV for external analysis and IEEE paper replication. Three endpoints are available: reports, predictions, and pipeline articles. All data is publicly accessible with no authentication required.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View API →</span>
             </div>
           </a>
 
@@ -175,21 +191,7 @@ export default function ResearcherHub() {
 
         </div>
 
-        {/* API Export */}
-        <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-lg">📥</span>
-            <div className="text-sm font-bold text-white">Dataset Export API</div>
-            <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
-          </div>
-          <p className="text-xs text-gray-400 mb-3">Download full GNI dataset for external analysis and IEEE paper replication.</p>
-          <div className="space-y-1">
-            <div className="font-mono text-xs text-green-400 bg-gray-800 rounded px-3 py-1.5">GET /api/export/reports?format=csv&days=30</div>
-            <div className="font-mono text-xs text-green-400 bg-gray-800 rounded px-3 py-1.5">GET /api/export/predictions</div>
-          </div>
-        </div>
-
-      </main>
+</main>
 
       <footer className="border-t border-gray-800 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-4 text-center text-xs text-gray-600">
