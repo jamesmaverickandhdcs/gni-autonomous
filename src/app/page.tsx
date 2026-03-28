@@ -771,7 +771,7 @@ export default function Home() {
                       className="w-full flex items-center justify-between hover:opacity-80 transition-opacity"
                     >
                       <div className="text-xs text-gray-300 font-bold uppercase tracking-wider">{reports.length - 1} Previous Reports</div>
-                      <span className="text-xs text-gray-300 border border-gray-500 rounded px-2 py-1">
+                      <span className="text-xs font-bold text-gray-200 bg-gray-700 hover:bg-gray-600 rounded-lg px-3 py-1.5">
                         {showPreviousReports ? "▲ Hide" : "▼ Show"}
                       </span>
                     </button>
