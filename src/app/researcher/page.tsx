@@ -58,8 +58,8 @@ export default function ResearcherHub() {
       <main className="max-w-6xl mx-auto px-6 py-8">
 
         {/* Intro */}
-        <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
-          <p className="text-sm text-gray-300 leading-relaxed">
+        <div className="bg-green-950 border border-green-700 border-l-4 border-l-green-400 rounded-xl p-5 mb-6">
+          <p className="text-sm text-gray-100 leading-relaxed">
             Pattern Intelligence is GNI&apos;s long-term research hub, designed for analysts and researchers who want to go beyond the latest report and understand how global intelligence evolves over time.
             Every pipeline run produces structured data -- escalation scores, sentiment scores, MAD verdicts, and confidence intervals -- all of which are tracked, stored, and available for deep analysis here.
             The GPVS (GNI Prediction Validation Standard) system continuously scores each agent&apos;s directional predictions against reality, building an evidence-based accuracy record over multiple horizons (7d, 30d, 180d).
@@ -69,15 +69,15 @@ export default function ResearcherHub() {
         </div>
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-gray-900 border border-green-800 rounded-xl p-4 text-center">
+          <div className="bg-green-950 border border-green-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-green-300">{reports.length}</div>
             <div className="text-xs text-gray-500 mt-1">Total Pipeline Runs</div>
           </div>
-          <div className="bg-gray-900 border border-green-800 rounded-xl p-4 text-center">
+          <div className="bg-green-950 border border-green-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-green-300">{avgEsc}</div>
             <div className="text-xs text-gray-500 mt-1">Avg Escalation Score</div>
           </div>
-          <div className="bg-gray-900 border border-green-800 rounded-xl p-4 text-center">
+          <div className="bg-green-950 border border-green-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-green-300">{avgConf}%</div>
             <div className="text-xs text-gray-500 mt-1">Avg MAD Confidence</div>
           </div>
@@ -85,7 +85,7 @@ export default function ResearcherHub() {
 
         {/* Escalation Trend Sparkline */}
         {last7.length >= 2 && (
-          <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
+          <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
             <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Escalation Trend -- Last 7 Runs</div>
             <svg width="100%" height="60" viewBox="0 0 400 60" preserveAspectRatio="none">
               <polyline
@@ -107,12 +107,13 @@ export default function ResearcherHub() {
         )}
 
         {/* Sub-page Hub Previews */}
-        <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Research Pages</div>
+        <div className="text-xs text-green-400 uppercase tracking-wider mb-4 font-bold">Research Pages</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
           {/* History */}
-          <a href="/history" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
+          <a href="/history" className="bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-green-950 rounded-xl p-4 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-green-400 bg-green-950 border border-green-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">01</span>
               <span className="text-lg">📋</span>
               <div className="text-sm font-bold text-white">History</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
@@ -124,8 +125,9 @@ export default function ResearcherHub() {
           </a>
 
           {/* Research */}
-          <a href="/research" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
+          <a href="/research" className="bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-green-950 rounded-xl p-4 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-green-400 bg-green-950 border border-green-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">02</span>
               <span className="text-lg">🔬</span>
               <div className="text-sm font-bold text-white">Research</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
@@ -137,8 +139,9 @@ export default function ResearcherHub() {
           </a>
 
           {/* Correlations */}
-          <a href="/correlations" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
+          <a href="/correlations" className="bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-green-950 rounded-xl p-4 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-green-400 bg-green-950 border border-green-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">03</span>
               <span className="text-lg">📊</span>
               <div className="text-sm font-bold text-white">Correlations</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
@@ -150,8 +153,9 @@ export default function ResearcherHub() {
           </a>
 
           {/* Weekly Digest */}
-          <a href="/weekly-digest" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
+          <a href="/weekly-digest" className="bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-green-950 rounded-xl p-4 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-green-400 bg-green-950 border border-green-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">04</span>
               <span className="text-lg">📅</span>
               <div className="text-sm font-bold text-white">Weekly Digest</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
@@ -163,8 +167,9 @@ export default function ResearcherHub() {
           </a>
 
           {/* Methodology */}
-          <a href="/methodology" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
+          <a href="/methodology" className="bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-green-950 rounded-xl p-4 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-green-400 bg-green-950 border border-green-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">05</span>
               <span className="text-lg">📝</span>
               <div className="text-sm font-bold text-white">Methodology</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
@@ -175,8 +180,9 @@ export default function ResearcherHub() {
             </div>
           </a>
           {/* Dataset Export API */}
-          <a href="/developer" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
+          <a href="/developer" className="bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-green-950 rounded-xl p-4 transition-colors group">
             <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-green-400 bg-green-950 border border-green-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">06</span>
               <span className="text-lg">📥</span>
               <div className="text-sm font-bold text-white">Dataset Export API</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
