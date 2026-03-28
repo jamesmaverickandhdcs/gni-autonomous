@@ -35,12 +35,12 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div>
             <h1 className="text-2xl font-bold text-white">🌐 About GNI</h1>
             <p className="text-sm text-gray-400">Global Nexus Insights (Autonomous) — The $0.00/month intelligence platform</p>
           </div>
-          <a href="/" className="text-sm text-blue-400 hover:text-blue-300">← Dashboard</a>
+          
         
           {/* Cross-Navigation -- 4 main pages (GNI-R-140) */}
           <div className="flex flex-wrap gap-2 mt-2">

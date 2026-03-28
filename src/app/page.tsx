@@ -529,7 +529,7 @@ export default function Home() {
                       {latest?.mad_action_recommendation?.slice(0, 80) || 'Awaiting MAD verdict'}
                     </span>
                   </div>
-                  <a href="/debate" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                  <a href="/debate" className="text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 rounded-lg px-3 py-1.5 shrink-0 transition-colors">
                     Full Debate →
                   </a>
                 </div>
@@ -547,7 +547,7 @@ export default function Home() {
                       <div className="text-sm font-bold text-white">🗺️ Geopolitical Event Map</div>
                       <div className="text-xs text-gray-400">Live Events — Click Pins for Details</div>
                     </div>
-                    <a href="/map" className="text-xs text-blue-400 border border-blue-800 rounded px-2 py-1 hover:border-blue-500 transition-colors">Full Map →</a>
+                    <a href="/map" className="text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 rounded-lg px-3 py-1.5 transition-colors">Full Map →</a>
                   </div>
                   <div style={{ height: "220px", width: "100%" }}>
                     {mapEvents.length > 0 ? (
@@ -576,7 +576,7 @@ export default function Home() {
                         )}
                       </div>
                     </div>
-                    <a href="/stocks" className="text-xs text-green-400 border border-green-800 rounded px-2 py-1 hover:border-green-500 transition-colors">25 Charts →</a>
+                    <a href="/stocks" className="text-xs font-bold text-white bg-green-700 hover:bg-green-600 rounded-lg px-3 py-1.5 transition-colors">25 Charts →</a>
                   </div>
                   <div style={{ height: "220px", width: "100%", padding: "8px" }}>
                     {btcChartData.length > 0 ? (
@@ -629,7 +629,7 @@ export default function Home() {
                         ? '⚠️ DIVERGING' : '✓ ALIGNED'}
                     </span>
                   </div>
-                  <a href="/comparison" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                  <a href="/comparison" className="text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 rounded-lg px-3 py-1.5 shrink-0 transition-colors">
                     See Divergence →
                   </a>
                 </div>
@@ -646,7 +646,7 @@ export default function Home() {
                     <span className="text-xs text-green-600 shrink-0 hidden md:block">| Upside</span>
                     <span className="text-xs text-red-600 shrink-0 hidden md:block">| Downside</span>
                   </div>
-                  <a href="/scenarios" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-2 py-1 shrink-0 transition-colors">
+                  <a href="/scenarios" className="text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 rounded-lg px-3 py-1.5 shrink-0 transition-colors">
                     View Scenarios →
                   </a>
                 </div>
