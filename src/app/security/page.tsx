@@ -79,7 +79,7 @@ export default function SecurityPage() {
               🎯 Quantum Strategist
             </a>
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              📊 Researcher
+              📊 Pattern Intelligence
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
               🧠 Dev Console

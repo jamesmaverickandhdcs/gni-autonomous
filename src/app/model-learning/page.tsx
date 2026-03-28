@@ -5,7 +5,7 @@ export default function ModelLearningPage() {
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
-          <a href="/reports" className="inline-flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 text-amber-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">\u2190 Feedback Loop</a>
+          <a href="/reports" className="inline-flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 text-amber-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Feedback Loop</a>
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">🧠 Model Learning</h1>
@@ -18,7 +18,7 @@ export default function ModelLearningPage() {
               🎯 Quantum Strategist
             </a>
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              📊 Researcher
+              📊 Pattern Intelligence
             </a>
             <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
               🧠 Dev Console
@@ -40,7 +40,7 @@ export default function ModelLearningPage() {
             Model Learning tracks every event where reality surprised GNI&apos;s predictions -- and how the system responded. When a Black Swan event occurs, source weights are recalibrated, prompt templates are adjusted in the A/B system, and the adaptive pipeline modifies its escalation thresholds. This page will document GNI&apos;s learning trajectory, showing measurable improvement in prediction accuracy over time.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
-            <span className="text-xs text-amber-300">\u23f0 Available: <span className="font-bold text-white">Q3 2026</span></span>
+            <span className="text-xs text-amber-300">⏰ Available: <span className="font-bold text-white">Q3 2026</span></span>
           </div>
         </div>
 
@@ -48,11 +48,11 @@ export default function ModelLearningPage() {
         <div className="bg-gray-900 border border-amber-800 rounded-xl p-5 mb-6">
           <div className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-4">What This Page Will Show</div>
           <ul className="space-y-2">
-              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">\u2022</span>Surprise outcome registry -- events that defied all 4 agents</li>
-              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">\u2022</span>Source bias corrections triggered by systematic errors</li>
-              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">\u2022</span>A/B prompt template evolution history</li>
-              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">\u2022</span>Escalation threshold recalibration log</li>
-              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">\u2022</span>Accuracy improvement trend across pipeline generations</li>
+              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Surprise outcome registry -- events that defied all 4 agents</li>
+              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Source bias corrections triggered by systematic errors</li>
+              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>A/B prompt template evolution history</li>
+              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Escalation threshold recalibration log</li>
+              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Accuracy improvement trend across pipeline generations</li>
           </ul>
         </div>
 

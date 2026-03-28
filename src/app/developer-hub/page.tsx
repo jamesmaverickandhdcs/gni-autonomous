@@ -54,7 +54,7 @@ export default function DeveloperHub() {
               🎯 Quantum Strategist
             </a>
             <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              📊 Researcher
+              📊 Pattern Intelligence
             </a>
             <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
               🎯 Feedback Loop
