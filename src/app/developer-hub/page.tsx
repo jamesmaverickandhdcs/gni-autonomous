@@ -70,19 +70,29 @@ export default function DeveloperHub() {
 
       <main className="max-w-6xl mx-auto px-6 py-8">
 
+        {/* Intro */}
+        <div className="bg-purple-950 border border-purple-700 border-l-4 border-l-purple-400 rounded-xl p-5 mb-6">
+          <p className="text-sm text-gray-100 leading-relaxed">
+            Dev Console is GNI&apos;s technical transparency hub, designed for developers, system architects, and anyone who wants to understand how GNI works under the hood.
+            Every component of the autonomous pipeline is observable here -- from the 66-pattern injection security filter to the A/B prompt quality system and the self-healing adaptive engine.
+            The API reference documents all 21 endpoints with method, path, and description, making it straightforward to integrate GNI intelligence into external systems.
+            Source health monitoring tracks all 25 RSS feeds in real time, showing which sources are healthy, degraded, or down and how their trust weights are adjusted dynamically.
+            The quota monitor ensures GNI never exceeds its free-tier token budget, with a safe ceiling at 85K tokens and a hard limit at 100K per day -- the foundation of the /bin/sh.00/month architecture.
+          </p>
+        </div>
         {/* System Status Row */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-gray-900 border border-purple-800 rounded-xl p-4 text-center">
+          <div className="bg-purple-950 border border-purple-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-purple-300">{reportCount}</div>
             <div className="text-xs text-gray-500 mt-1">Reports Generated</div>
           </div>
-          <div className="bg-gray-900 border border-purple-800 rounded-xl p-4 text-center">
+          <div className="bg-purple-950 border border-purple-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-purple-300">
               {sourceCount ? `${sourceCount.healthy}/${sourceCount.total}` : '--'}
             </div>
             <div className="text-xs text-gray-500 mt-1">Sources Healthy</div>
           </div>
-          <div className="bg-gray-900 border border-purple-800 rounded-xl p-4 text-center">
+          <div className="bg-purple-950 border border-purple-700 rounded-xl p-4 text-center">
             <div className={`text-2xl font-bold ${quotaPct > 70 ? 'text-orange-400' : 'text-purple-300'}`}>
               {quota ? `${quotaPct}%` : '--'}
             </div>
@@ -97,32 +107,36 @@ export default function DeveloperHub() {
         </div>
 
         {/* Sub-page Grid */}
-        <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Developer Pages</div>
+        <div className="text-xs text-purple-400 uppercase tracking-wider mb-4 font-bold">Developer Pages</div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
 
           {[
-            { href: '/transparency', emoji: '📜', label: 'Transparency', desc: 'Full AI funnel trace. How each article was selected stage by stage.', status: 'LIVE' },
-            { href: '/autonomy',     emoji: '🧠', label: 'Autonomy',     desc: 'Frequency controller + A/B prompt system + L3.5 self-healing design.', status: 'LIVE' },
-            { href: '/health',       emoji: '🏥', label: 'Health',       desc: 'Pipeline status + quality scores per run + A/B test current state.', status: 'LIVE' },
-            { href: '/security',     emoji: '🛡️', label: 'Security', desc: '66 injection patterns + SHA-256 audit chain + pentest results.', status: 'LIVE' },
-            { href: '/source-health',emoji: '📡', label: 'Source Health',desc: '25 RSS sources: healthy/degraded/down. Mini chart per source.', status: 'LIVE' },
-            { href: '/adaptive-log', emoji: '⚡',     label: 'Adaptive Log', desc: 'Self-healing log. When triggered, why, tokens used, result.', status: 'LIVE' },
-            { href: '/quota',        emoji: '💰', label: 'Quota',        desc: 'Live token budget per pipeline vs 85K safe ceiling vs 100K limit.', status: 'LIVE' },
-          ].map(({ href, emoji, label, desc, status }) => (
-            <a key={href} href={href} className="bg-gray-900 border border-gray-700 hover:border-purple-600 rounded-xl p-4 transition-colors">
+            { href: '/transparency', emoji: '📜', num: '01', label: 'Transparency', desc: 'Full AI funnel trace showing how each article was selected stage by stage. View the complete pipeline from 150 raw articles down to the final 3 selected for analysis. Essential for understanding GNI’s editorial decision-making process.', status: 'LIVE' },
+            { href: '/autonomy',     emoji: '🧠', num: '02', label: 'Autonomy',     desc: 'The frequency controller, A/B prompt quality system, and L3.5 self-healing design that give GNI its autonomous capabilities. Shows how GNI adjusts its own behavior based on escalation levels and quota constraints. This is the architecture behind GNI’s L7 autonomy rating.', status: 'LIVE' },
+            { href: '/health',       emoji: '🏥', num: '03', label: 'Health',       desc: 'Real-time pipeline status with quality scores per run across 5 dimensions: relevance, depth, actionability, source diversity, and novelty. Includes A/B prompt test current state and historical quality trend. Use this to verify GNI is operating within expected quality parameters.', status: 'LIVE' },
+            { href: '/security',     emoji: '🛡️', num: '04', label: 'Security', desc: '66 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. Full pentest results and security audit trail available. GNI’s security layer ensures all 25 RSS sources are validated before any content reaches the AI analysis stage.', status: 'LIVE' },
+            { href: '/source-health',emoji: '📡', num: '05', label: 'Source Health',desc: 'Live status of all 25 RSS sources: healthy, degraded, or down. Dynamic trust weights adjusted by GPVS prediction accuracy are shown per source. Mini sparkline charts reveal each source’s reliability trend over the last 7 days.', status: 'LIVE' },
+            { href: '/adaptive-log', emoji: '⚡',     num: '06', label: 'Adaptive Log', desc: 'The self-healing log showing every time GNI’s heartbeat triggered the adaptive pipeline -- including the reason (escalation delta), tokens consumed, and analysis result. This is GNI’s L3.5 self-healing evidence, demonstrating autonomous response to geopolitical threat changes.', status: 'LIVE' },
+            { href: '/quota',        emoji: '💰', num: '07', label: 'Quota',        desc: 'Live Groq token budget showing usage per pipeline type vs the 85K safe ceiling vs the 100K hard limit. Historical usage trends and per-pipeline breakdown available. This page is the proof behind GNI’s /bin/sh.00/month architecture claim for the IEEE paper.', status: 'LIVE' },
+          ].map(({ href, emoji, num, label, desc, status }) => (
+            <a key={href} href={href} className="bg-gray-900 border border-gray-700 hover:border-purple-500 hover:bg-purple-950 rounded-xl p-4 transition-colors group">
               <div className="flex items-center gap-3 mb-2">
+                <span className="text-xs font-bold text-purple-400 bg-purple-950 border border-purple-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">{num}</span>
                 <span className="text-lg">{emoji}</span>
                 <div className="text-sm font-bold text-white">{label}</div>
                 <span className="text-xs bg-purple-900 text-purple-300 px-2 py-0.5 rounded-full ml-auto">{status}</span>
               </div>
-              <p className="text-xs text-gray-400">{desc}</p>
+              <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
+              <div className="flex justify-end mt-3">
+                <span className="text-xs font-bold text-purple-200 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 transition-colors">View {label} →</span>
+              </div>
             </a>
           ))}
 
         </div>
 
         {/* API Endpoints */}
-        <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">API Endpoints</div>
+        <div className="text-xs text-purple-400 uppercase tracking-wider mb-4 font-bold">API Endpoints</div>
         <div className="bg-gray-900 border border-purple-800 rounded-xl p-5 mb-6">
           <div className="space-y-3">
             {[
@@ -143,20 +157,31 @@ export default function DeveloperHub() {
           </div>
         </div>
 
-        {/* Coming Soon */}
-        <div className="bg-gray-900 border border-gray-700 rounded-xl p-4">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Coming Soon</div>
+        {/* API Status */}
+        <div className="bg-gray-900 border border-purple-800 rounded-xl p-4">
+          <div className="text-xs text-purple-400 uppercase tracking-wider mb-3 font-bold">Additional Endpoints</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {[
-              { path: '/api/latest', desc: 'Single call = complete GNI state' },
-              { path: '/api/status', desc: 'Pipeline health for external monitoring' },
-              { path: '/api/webhooks', desc: 'Subscribe to NEW_REPORT / CRITICAL events' },
-            ].map(({ path, desc }) => (
-              <div key={path} className="bg-gray-800 rounded-lg p-3">
-                <div className="font-mono text-xs text-yellow-400 mb-1">{path}</div>
-                <div className="text-xs text-gray-500">{desc}</div>
+            <div className="bg-purple-950 border border-purple-800 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="font-mono text-xs text-purple-300">/api/latest</div>
+                <span className="text-xs bg-green-900 text-green-300 px-1.5 py-0.5 rounded-full ml-auto">LIVE</span>
               </div>
-            ))}
+              <div className="text-xs text-gray-500">Single call = complete GNI state</div>
+            </div>
+            <div className="bg-purple-950 border border-purple-800 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="font-mono text-xs text-purple-300">/api/status</div>
+                <span className="text-xs bg-green-900 text-green-300 px-1.5 py-0.5 rounded-full ml-auto">LIVE</span>
+              </div>
+              <div className="text-xs text-gray-500">Pipeline health for external monitoring</div>
+            </div>
+            <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="font-mono text-xs text-yellow-400">/api/webhooks</div>
+                <span className="text-xs bg-yellow-900 text-yellow-300 px-1.5 py-0.5 rounded-full ml-auto">SOON</span>
+              </div>
+              <div className="text-xs text-gray-500">Subscribe to NEW_REPORT / CRITICAL events</div>
+            </div>
           </div>
         </div>
 

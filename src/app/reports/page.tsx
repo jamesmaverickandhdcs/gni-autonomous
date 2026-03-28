@@ -60,17 +60,27 @@ export default function ReportsHub() {
 
       <main className="max-w-6xl mx-auto px-6 py-8">
 
+        {/* Intro */}
+        <div className="bg-amber-950 border border-amber-700 border-l-4 border-l-amber-400 rounded-xl p-5 mb-6">
+          <p className="text-sm text-gray-100 leading-relaxed">
+            Feedback Loop is GNI&apos;s reality validation hub -- the place where predictions meet outcomes and where GNI learns from what actually happened in the world.
+            Every MAD debate produces directional predictions (BULLISH or BEARISH) with a specific verify date, allowing GNI to score its own accuracy objectively using the GPVS standard.
+            The GPVS (GNI Prediction Validation Standard) tracks each agent&apos;s directional accuracy across three time horizons: 7-day, 30-day, and 180-day predictions.
+            As predictions verify over time, source trust weights are automatically adjusted -- sources whose articles led to accurate predictions gain higher weight in future pipeline runs.
+            This self-correcting feedback mechanism is what elevates GNI beyond a static intelligence system into a continuously learning autonomous platform.
+          </p>
+        </div>
         {/* GPVS Status */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-gray-900 border border-amber-800 rounded-xl p-4 text-center">
+          <div className="bg-amber-950 border border-amber-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-amber-300">{predictions.length}</div>
             <div className="text-xs text-gray-500 mt-1">Total Predictions</div>
           </div>
-          <div className="bg-gray-900 border border-amber-800 rounded-xl p-4 text-center">
+          <div className="bg-amber-950 border border-amber-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-amber-300">{pending.length}</div>
             <div className="text-xs text-gray-500 mt-1">Pending Verification</div>
           </div>
-          <div className="bg-gray-900 border border-amber-800 rounded-xl p-4 text-center">
+          <div className="bg-amber-950 border border-amber-700 rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-amber-300">{verified.length}</div>
             <div className="text-xs text-gray-500 mt-1">Verified by GPVS</div>
           </div>
@@ -95,23 +105,27 @@ export default function ReportsHub() {
         )}
 
         {/* Predictions Page Link */}
-        <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Active Reports</div>
-        <a href="/predictions" className="block bg-gray-900 border border-amber-700 hover:border-amber-500 rounded-xl p-5 mb-4 transition-colors">
+        <div className="text-xs text-amber-400 uppercase tracking-wider mb-4 font-bold">Active Reports</div>
+       <a href="/predictions" className="block bg-amber-950 border border-amber-700 hover:border-amber-500 hover:bg-amber-900 rounded-xl p-5 mb-4 transition-colors">
           <div className="flex items-center gap-3 mb-2">
+            <span className="text-xs font-bold text-amber-400 bg-amber-950 border border-amber-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">01</span>
             <span className="text-xl">🎯</span>
             <div className="text-sm font-bold text-white">Predictions</div>
             <span className="text-xs bg-amber-900 text-amber-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
           </div>
-          <p className="text-xs text-gray-400">All MAD predictions with verify dates, confidence levels, and accuracy scores. Active insight shown when predictions verify.</p>
-          <div className="mt-3 flex gap-4 text-xs">
-            <span className="text-amber-400">{pending.length} pending</span>
-            <span className="text-green-400">{verified.length} verified</span>
-            <span className="text-gray-500">Earliest verification: April 10, 2026</span>
+          <p className="text-xs text-gray-300 leading-relaxed mb-3">All MAD agent predictions with verify dates, confidence levels, and GPVS accuracy scores -- the complete prediction ledger. Each prediction is tagged with the agent that made it (Bull, Bear, Black Swan, or Ostrich) and the specific time horizon for verification. Active insights are surfaced automatically when predictions reach their verify date and reality confirms or contradicts GNI&apos;s forecast.</p>
+          <div className="flex items-center justify-between">
+            <div className="flex gap-4 text-xs">
+              <span className="text-amber-400">{pending.length} pending</span>
+              <span className="text-green-400">{verified.length} verified</span>
+              <span className="text-gray-500">Earliest: April 10, 2026</span>
+            </div>
+            <span className="text-xs font-bold text-amber-200 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 transition-colors">View Predictions →</span>
           </div>
         </a>
 
         {/* Future Pages */}
-        <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Passive Reports -- Coming as GPVS Accumulates</div>
+        <div className="text-xs text-amber-400 uppercase tracking-wider mb-4 font-bold">Passive Reports -- Coming as GPVS Accumulates</div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             { label: 'Validation Log', when: 'April 10, 2026+', desc: 'When predictions verify accurately -- which agent was right and what to watch next.' },
