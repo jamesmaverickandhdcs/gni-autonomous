@@ -147,6 +147,20 @@ export default function DeveloperHub() {
             </div>
           </a>
 
+          {/* Self-Check System */}
+          <a href="/self-check" className="bg-gray-900 border border-gray-700 hover:border-purple-500 hover:bg-purple-950 rounded-xl p-4 transition-colors group">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-purple-400 bg-purple-950 border border-purple-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">09</span>
+              <span className="text-lg">🛡️</span>
+              <div className="text-sm font-bold text-white">Self-Check System</div>
+              <span className="text-xs bg-purple-900 text-purple-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
+            </div>
+            <p className="text-xs text-gray-400 leading-relaxed">Autonomous web-layer health monitoring that runs every 30 minutes. Checks Supabase connection, report freshness, Groq quota, source health, and pipeline recency. Sends Telegram alerts automatically when issues are detected and saves all results to Supabase for historical analysis.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-purple-200 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 transition-colors">View Self-Check →</span>
+            </div>
+          </a>
+
         </div>
 
         {/* API Endpoints */}
