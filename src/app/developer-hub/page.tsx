@@ -133,6 +133,20 @@ export default function DeveloperHub() {
             </a>
           ))}
 
+          {/* Dataset Export API */}
+          <a href="/developer" className="bg-gray-900 border border-gray-700 hover:border-purple-500 hover:bg-purple-950 rounded-xl p-4 transition-colors group">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-xs font-bold text-purple-400 bg-purple-950 border border-purple-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">08</span>
+              <span className="text-lg">📥</span>
+              <div className="text-sm font-bold text-white">Dataset Export API</div>
+              <span className="text-xs bg-purple-900 text-purple-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
+            </div>
+            <p className="text-xs text-gray-400 leading-relaxed">Three REST endpoints allow programmatic access to GNI&apos;s complete dataset: reports, predictions, and pipeline articles -- all exportable as CSV or JSON. No authentication required -- all data is publicly accessible. Essential for IEEE paper replication, external analysis, and building applications on top of GNI intelligence.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-purple-200 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 transition-colors">View Export API →</span>
+            </div>
+          </a>
+
         </div>
 
         {/* API Endpoints */}

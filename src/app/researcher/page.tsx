@@ -179,19 +179,7 @@ export default function ResearcherHub() {
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Methodology →</span>
             </div>
           </a>
-          {/* Dataset Export API */}
-          <a href="/developer" className="bg-gray-900 border border-gray-700 hover:border-green-500 hover:bg-green-950 rounded-xl p-4 transition-colors group">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-xs font-bold text-green-400 bg-green-950 border border-green-700 rounded-full w-6 h-6 flex items-center justify-center shrink-0">06</span>
-              <span className="text-lg">📥</span>
-              <div className="text-sm font-bold text-white">Dataset Export API</div>
-              <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
-            </div>
-            <p className="text-xs text-gray-400">Download the complete GNI dataset as CSV for external analysis and IEEE paper replication. Three endpoints are available: reports, predictions, and pipeline articles. All data is publicly accessible with no authentication required.</p>
-            <div className="flex justify-end mt-3">
-              <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View API →</span>
-            </div>
-          </a>
+          
 
           
 
