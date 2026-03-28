@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
@@ -7,14 +8,15 @@ const supabase = createClient(
 )
 
 export async function GET() {
-  const { data, error } = await supabase
-    .from('watchlist')
-    .select('*')
-    .order('ticker', { ascending: true })
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  try {
+    const { data, error } = await supabase
+      .from('watchlist')
+      .select('*')
+      .order('ticker', { ascending: true })
+    if (error) throw error
+    return NextResponse.json({ watchlist: data || [] })
+  } catch (err) {
+    console.error('Watchlist error:', err)
+    return NextResponse.json({ error: 'Failed to fetch watchlist' }, { status: 500 })
   }
-
-  return NextResponse.json({ watchlist: data })
 }

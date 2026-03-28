@@ -198,16 +198,14 @@ print(f"Quota used: {status['quota']['percent_used']}%")`}</pre>
 // Download last 30 days of reports as CSV
 const res = await fetch(\`\${BASE}/api/export/reports?format=csv&days=30\`);
 const csv = await res.text();
-console.log(csv.split("\n").length + " rows exported");
+.length + " rows exported");
 
 // Get all predictions as JSON
 const preds = await fetch(\`\${BASE}/api/export/predictions\`).then(r => r.json());
-console.log(\`\${preds.count} predictions total\`);
 
 // Monitor GNI status
 const status = await fetch(\`\${BASE}/api/status\`).then(r => r.json());
 if (status.quota.status === "safe") {
-  console.log("GNI is healthy, quota safe");
 }`}</pre>
             </div>
 
