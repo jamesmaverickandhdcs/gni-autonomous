@@ -57,6 +57,12 @@ export default function ResearcherHub() {
 
       <main className="max-w-6xl mx-auto px-6 py-8">
 
+        {/* Intro */}
+        <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
+          <p className="text-sm text-gray-300 leading-relaxed">
+            Long-term analysis of GNI intelligence patterns. Track escalation trends across pipeline runs, validate prediction accuracy via GPVS, and understand how confidence intervals and source weights evolve over time. Built for researchers, analysts, and IEEE paper replication.
+          </p>
+        </div>
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-gray-900 border border-green-800 rounded-xl p-4 text-center">
@@ -108,6 +114,9 @@ export default function ResearcherHub() {
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
             <p className="text-xs text-gray-400">{reports.length} pipeline runs available. Scroll back to find escalation patterns over time.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View History →</span>
+            </div>
           </a>
 
           {/* Research */}
@@ -118,6 +127,9 @@ export default function ResearcherHub() {
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
             <p className="text-xs text-gray-400">Escalation trend charts, CI width over time, per-agent accuracy. Full research workspace.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Research →</span>
+            </div>
           </a>
 
           {/* Correlations */}
@@ -128,6 +140,9 @@ export default function ResearcherHub() {
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
             <p className="text-xs text-gray-400">3-horizon CFA (7d/30d/180d). Per-agent accuracy. CI width analysis. Statistical proof layer.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Correlations →</span>
+            </div>
           </a>
 
           {/* Weekly Digest */}
@@ -138,6 +153,9 @@ export default function ResearcherHub() {
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
             <p className="text-xs text-gray-400">Sunday digests as a time series. Week-over-week escalation delta = structural trend signal.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Digest →</span>
+            </div>
           </a>
 
           {/* Methodology */}
@@ -148,17 +166,12 @@ export default function ResearcherHub() {
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
             <p className="text-xs text-gray-400">CI formula (t=4.303, n=3). MAD agent design. GPVS standard. CFA horizon justification. IEEE-citable.</p>
+            <div className="flex justify-end mt-3">
+              <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Methodology →</span>
+            </div>
           </a>
 
-          {/* About */}
-          <a href="/about" className="bg-gray-900 border border-gray-700 hover:border-green-600 rounded-xl p-4 transition-colors">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-lg">🌟</span>
-              <div className="text-sm font-bold text-white">About GNI</div>
-              <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
-            </div>
-            <p className="text-xs text-gray-400">$0.00 cost proof. Bloomberg comparison. L4 to L7 journey. SUM affiliation. Research context.</p>
-          </a>
+          
 
         </div>
 
@@ -167,7 +180,7 @@ export default function ResearcherHub() {
           <div className="flex items-center gap-3 mb-2">
             <span className="text-lg">📥</span>
             <div className="text-sm font-bold text-white">Dataset Export API</div>
-            <span className="text-xs bg-yellow-900 text-yellow-300 px-2 py-0.5 rounded-full ml-auto">COMING SOON</span>
+            <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
           </div>
           <p className="text-xs text-gray-400 mb-3">Download full GNI dataset for external analysis and IEEE paper replication.</p>
           <div className="space-y-1">
