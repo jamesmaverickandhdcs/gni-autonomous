@@ -47,3 +47,8 @@ __pycache__/
 fix_*.py
 write_*.py
 check.py
+
+# Audit and test scripts
+audit_*.py
+read_*.py
+test_*.py
