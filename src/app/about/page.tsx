@@ -17,7 +17,7 @@ export default function AboutPage() {
 
   const stats = [
     { label: 'Pipeline runs',     value: '30+' },
-    { label: 'Articles analysed', value: '7,000+' },
+    { label: 'Articles analysed', value: '2,500+' },
     { label: 'Reports generated', value: '30+' },
     { label: 'GPVS accuracy',     value: '100%' },
     { label: 'Injection patterns',value: '66' },

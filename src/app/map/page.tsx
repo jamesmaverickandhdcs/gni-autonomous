@@ -104,7 +104,7 @@ export default function MapPage() {
       </div>
       <footer className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-3 text-center text-xs text-gray-600">
-          GNI Geopolitical Event Map | {events.length} articles plotted | Data updates 2x daily
+          GNI Autonomous | Geopolitical Event Map | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

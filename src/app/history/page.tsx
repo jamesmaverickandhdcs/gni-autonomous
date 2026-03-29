@@ -489,7 +489,7 @@ export default function HistoryPage() {
       </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI — Global Nexus Insights (Autonomous) | Intelligence History | Pipeline runs 2x daily via GitHub Actions
+          GNI Autonomous | Intelligence History | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

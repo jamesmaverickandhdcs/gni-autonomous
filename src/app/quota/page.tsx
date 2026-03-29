@@ -210,7 +210,7 @@ export default function QuotaPage() {
       </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI Token Quota Monitor | Groq free tier | $0.00/month | Team Geeks | SUM
+          GNI Autonomous | Token Quota Monitor | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

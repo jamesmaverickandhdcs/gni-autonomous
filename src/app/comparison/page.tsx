@@ -432,7 +432,7 @@ export default function ComparisonPage() {
       </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI &mdash; Global Nexus Insights | Comparison Engine | Team Geeks | Spring University Myanmar (SUM)
+          GNI Autonomous | Report vs Debate Comparison | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

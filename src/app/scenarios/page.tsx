@@ -339,7 +339,7 @@ export default function ScenariosPage() {
       </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI — Global Nexus Insights | Scenario Planning | Team Geeks | Spring University Myanmar (SUM)
+          GNI Autonomous | Scenario Planning | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

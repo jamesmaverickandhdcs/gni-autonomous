@@ -168,7 +168,7 @@ export default function AdaptiveLogPage() {
       </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI Adaptive Pipeline Log | Self-healing L3.5 | Team Geeks | SUM
+          GNI Autonomous | Adaptive Pipeline Log | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>
