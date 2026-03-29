@@ -1,20 +1,18 @@
-name: GNI Mission Control
-
+﻿name: GNI Mission Control
 on:
   schedule:
     - cron: '*/30 * * * *'  # Every 30 minutes
   workflow_dispatch:  # Allow manual trigger
-
 jobs:
   mission_control:
     runs-on: ubuntu-latest
     steps:
       - name: Run GNI Mission Control
         run: |
-          curl -s -X GET \
+          RESPONSE=$(curl -s -X GET \
             -H "X-Internal-Key: ${{ secrets.SELF_CHECK_INTERNAL_KEY }}" \
-            "${{ secrets.GNI_APP_URL }}/api/mission-control" \
-            | python3 -c "
+            "${{ secrets.GNI_APP_URL }}/api/mission-control")
+          echo "$RESPONSE" | python3 - <<'PYEOF'
 import sys, json
 data = json.load(sys.stdin)
 status = data.get('overall_status', 'UNKNOWN')
@@ -28,4 +26,4 @@ elif status == 'WARNING':
     print('WARNING issues detected -- monitor closely')
 else:
     print('All systems healthy')
-"
+PYEOF
