@@ -444,7 +444,7 @@ export default function Home() {
               🧠 Dev Console
             </a>
             <a href="/reports" className="flex items-center gap-2 bg-amber-900 hover:bg-amber-700 border border-amber-700 hover:border-amber-500 rounded-lg px-4 py-2 text-sm font-bold text-amber-200 transition-colors">
-              🎯 Feedback Loop
+              🔄 Feedback Loop
             </a>
             <a href="/about" className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-gray-400 rounded-lg px-4 py-2 text-sm font-bold text-gray-200 transition-colors">
               🌟 About

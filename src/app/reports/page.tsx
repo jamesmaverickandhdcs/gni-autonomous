@@ -37,7 +37,7 @@ export default function ReportsHub() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-xl font-bold text-amber-300">🎯 Feedback Loop</h1>
+              <h1 className="text-xl font-bold text-amber-300">🔄 Feedback Loop</h1>
               <p className="text-xs text-gray-400">What did reality confirm or surprise, and what does GNI do next?</p>
             </div>
             
