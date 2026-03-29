@@ -25,7 +25,7 @@ export function validateApiKey(request: NextRequest): NextResponse | null {
     )
   }
 
-  if (VALID_KEYS.length > 0 && !VALID_KEYS.includes(key)) {
+  if (!VALID_KEYS.includes(key)) {
     return NextResponse.json(
       { error: 'Invalid API key.' },
       { status: 401 }
