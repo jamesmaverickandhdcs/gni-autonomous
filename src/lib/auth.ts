@@ -11,11 +11,10 @@ export function validateApiKey(request: NextRequest): NextResponse | null {
   // Allow same-origin requests (from GNI_Autonomous web pages)
   const origin = request.headers.get('origin') || ''
   const referer = request.headers.get('referer') || ''
-  const host = request.headers.get('host') || ''
   if (
     origin.includes('gni-autonomous.vercel.app') ||
     referer.includes('gni-autonomous.vercel.app') ||
-    origin === '' // server-side calls have no origin
+    origin === ''
   ) return null
 
   // Check X-GNI-Key
