@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 import {
@@ -141,7 +142,7 @@ export default function StocksPage() {
         if (completed === tickers.length) setLoadingCategory(false)
         return
       }
-      fetch(`/api/stocks?ticker=${encodeURIComponent(ticker)}&range=7d`)
+      fetch(`/api/stocks?ticker=${encodeURIComponent(ticker)}&range=7d`, { headers: { 'X-GNI-Key': GNI_KEY } })
         .then(r => r.json())
         .then(data => {
           if (!data.error) {
@@ -163,7 +164,7 @@ export default function StocksPage() {
   useEffect(() => {
     setLoading(true)
     setError('')
-    fetch(`/api/stocks?ticker=${encodeURIComponent(selectedTicker)}&range=${selectedRange}`)
+    fetch(`/api/stocks?ticker=${encodeURIComponent(selectedTicker)}&range=${selectedRange}`, { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         if (data.error) setError(data.error)
@@ -184,7 +185,7 @@ export default function StocksPage() {
     setAiLoading(true)
     const cached = priceCache[selectedTicker]
     const change = cached?.changePercent || '0'
-    fetch(`/api/stock-context?ticker=${encodeURIComponent(selectedTicker)}&change=${change}`)
+    fetch(`/api/stock-context?ticker=${encodeURIComponent(selectedTicker)}&change=${change}`, { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setAiContext(data.context || ''))
       .catch(() => setAiContext('AI context temporarily unavailable.'))

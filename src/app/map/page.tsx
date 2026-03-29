@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
@@ -27,7 +28,7 @@ export default function MapPage() {
   const [daysFilter, setDaysFilter] = useState(7)
 
   useEffect(() => {
-    fetch(`/api/article-events?days=${daysFilter}`)
+    fetch(`/api/article-events?days=${daysFilter}`, { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setEvents(data.events || []))
       .catch(() => setError('Failed to load map data.'))
