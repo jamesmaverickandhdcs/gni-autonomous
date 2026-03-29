@@ -441,9 +441,7 @@ export default function HistoryPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">Intelligence History</h1>
-            <p className="text-sm text-gray-400">
-              {runs.length} pipeline runs - each with consolidated report + top articles
-            </p>
+            <p className="text-sm text-gray-400">Intelligence History archives every GNI pipeline run with its full context -- escalation score, sentiment, MAD verdict, confidence interval, and the top articles that drove the analysis. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
           </div>
 </div>
           </div>

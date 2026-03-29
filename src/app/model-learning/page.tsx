@@ -9,7 +9,7 @@ export default function ModelLearningPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">🧠 Model Learning</h1>
-              <p className="text-xs text-gray-400">How GNI recalibrates from surprise outcomes</p>
+              <p className="text-xs text-gray-400">Model Learning documents every time GNI was surprised -- when a prediction was confidently wrong and reality forced a recalibration. Each surprise event triggers source weight adjustments via Exponential Moving Average, so future pipeline runs rely less on sources that misled the model. This is how GNI gets smarter over time without any human intervention.</p>
             </div>
             <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: Q3 2026</span>
           </div>

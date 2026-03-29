@@ -32,10 +32,8 @@ export default function BriefPage() {
   const [brief, setBrief] = useState<BriefData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [now, setNow] = useState('')
 
   useEffect(() => {
-    setNow(new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }))
     fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
@@ -60,7 +58,7 @@ export default function BriefPage() {
             <div>
               
               <h1 className="text-lg font-bold text-white mt-1">30-Second Executive Brief</h1>
-              <p className="text-xs text-gray-400">GNI Autonomous — {now}</p>
+              <p className="text-xs text-gray-400">The 30-Second Executive Brief distills the latest GNI intelligence into a mobile-first summary designed to be read in under 30 seconds. It combines the latest report, MAD verdict, blind spot warning, and market implications into one unified view. Auto-generated after every pipeline run -- no login required, always current.</p>
             </div>
             <div className="text-right text-xs text-gray-500">
               <div>Auto-generated</div>

@@ -9,7 +9,7 @@ export default function ValidationLogPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">📋 Validation Log</h1>
-              <p className="text-xs text-gray-400">Agent accuracy revealed as predictions verify</p>
+              <p className="text-xs text-gray-400">Validation Log shows the accuracy record of every MAD agent prediction once the verify date passes and real market data is measured. Each prediction is scored against actual SPY market movement -- correct predictions increase source trust weights, wrong predictions reduce them. This is the evidence layer that makes GNI a self-improving system rather than a static intelligence tool.</p>
             </div>
             <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: April 10, 2026+</span>
           </div>

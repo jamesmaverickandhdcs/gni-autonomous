@@ -41,9 +41,7 @@ export default function MapPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">🌍 Geopolitical Event Map</h1>
-            <p className="text-sm text-gray-400">
-              {events.length} events from {daysFilter} days — each pin = 1 news article
-            </p>
+            <p className="text-sm text-gray-400">The Geopolitical Event Map plots every news article GNI has collected onto a world map, with each pin colored by sentiment -- red for bearish, yellow for neutral, green for bullish. Click any pin to read the article summary and source link directly. Use the time filter to see how geopolitical hotspots have shifted over the last 1, 3, 7, or 14 days.</p>
           </div>
           <div className="flex items-center gap-4">
             {/* Days filter */}

@@ -9,7 +9,7 @@ export default function PatternLibraryPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">📚 Pattern Library</h1>
-              <p className="text-xs text-gray-400">Historical sequences that predict what comes next</p>
+              <p className="text-xs text-gray-400">Pattern Library identifies when current geopolitical escalation sequences match historical validated patterns from GNI&apos;s prediction archive. When a match is found, GNI surfaces the historical outcome as a predictive signal for what is likely to happen next. This is GNI&apos;s most advanced predictive capability -- pattern recognition across time rather than single-point analysis.</p>
             </div>
             <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: Q4 2026</span>
           </div>
