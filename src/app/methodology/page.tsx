@@ -127,6 +127,11 @@ export default function MethodologyPage() {
 
       </main>
 
+      
+      {/* DISCLAIMER */}
+      <div className="max-w-6xl mx-auto px-6 pb-2 text-center">
+        <p className="text-xs text-gray-600">⚠️ GNI data is for informational purposes only. Not financial advice.</p>
+      </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
           GNI Methodology | Team Geeks | Higher Diploma in Computer Science | Spring University Myanmar (SUM)

@@ -93,6 +93,15 @@ export default function MapPage() {
         <MapView events={events} />
       )}
 
+      
+      {/* DISCLAIMER */}
+      <div className="max-w-6xl mx-auto px-6 pb-4">
+        <div className="bg-yellow-950 border border-yellow-800 rounded-xl p-3">
+          <p className="text-xs text-yellow-300">
+            ⚠️ <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
+          </p>
+        </div>
+      </div>
       <footer className="border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-6 py-3 text-center text-xs text-gray-600">
           GNI Geopolitical Event Map | {events.length} articles plotted | Data updates 2x daily

@@ -253,6 +253,11 @@ print(f"Mean escalation: {sum(scores)/len(scores):.2f}")`}</pre>
 
       </div>
 
+      
+      {/* DISCLAIMER */}
+      <div className="max-w-6xl mx-auto px-6 pb-2 text-center">
+        <p className="text-xs text-gray-600">⚠️ GNI data is for informational purposes only. Not financial advice.</p>
+      </div>
       <footer className="border-t border-gray-800 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-4 text-center text-xs text-gray-600">
           GNI Autonomous | Developer Portal | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
