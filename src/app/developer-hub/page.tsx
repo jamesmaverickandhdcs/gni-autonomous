@@ -78,7 +78,7 @@ export default function DeveloperHub() {
             Every component of the autonomous pipeline is observable here -- from the 66-pattern injection security filter to the A/B prompt quality system and the self-healing adaptive engine.
             The API reference documents all 21 endpoints with method, path, and description, making it straightforward to integrate GNI intelligence into external systems.
             Source health monitoring tracks all 25 RSS feeds in real time, showing which sources are healthy, degraded, or down and how their trust weights are adjusted dynamically.
-            The quota monitor ensures GNI never exceeds its free-tier token budget, with a safe ceiling at 85K tokens and a hard limit at 100K per day -- the foundation of the /bin/sh.00/month architecture.
+            The quota monitor ensures GNI never exceeds its free-tier token budget, with a safe ceiling at 85K tokens and a hard limit at 100K per day -- the foundation of the $0.00/month architecture.
           </p>
         </div>
         {/* System Status Row */}
@@ -118,7 +118,7 @@ export default function DeveloperHub() {
             { href: '/security',     emoji: '🛡️', num: '04', label: 'Security', desc: '66 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. Full pentest results and security audit trail available. GNI’s security layer ensures all 25 RSS sources are validated before any content reaches the AI analysis stage.', status: 'LIVE' },
             { href: '/source-health',emoji: '📡', num: '05', label: 'Source Health',desc: 'Live status of all 25 RSS sources: healthy, degraded, or down. Dynamic trust weights adjusted by GPVS prediction accuracy are shown per source. Mini sparkline charts reveal each source’s reliability trend over the last 7 days.', status: 'LIVE' },
             { href: '/adaptive-log', emoji: '⚡',     num: '06', label: 'Adaptive Log', desc: 'The self-healing log showing every time GNI’s heartbeat triggered the adaptive pipeline -- including the reason (escalation delta), tokens consumed, and analysis result. This is GNI’s L3.5 self-healing evidence, demonstrating autonomous response to geopolitical threat changes.', status: 'LIVE' },
-            { href: '/quota',        emoji: '💰', num: '07', label: 'Quota',        desc: 'Live Groq token budget showing usage per pipeline type vs the 85K safe ceiling vs the 100K hard limit. Historical usage trends and per-pipeline breakdown available. This page is the proof behind GNI’s /bin/sh.00/month architecture claim for the IEEE paper.', status: 'LIVE' },
+            { href: '/quota',        emoji: '💰', num: '07', label: 'Quota',        desc: 'Live Groq token budget showing usage per pipeline type vs the 85K safe ceiling vs the 100K hard limit. Historical usage trends and per-pipeline breakdown available. This page is the proof behind GNI’s $0.00/month architecture claim for the IEEE paper.', status: 'LIVE' },
           ].map(({ href, emoji, num, label, desc, status }) => (
             <a key={href} href={href} className="bg-gray-900 border border-gray-700 hover:border-purple-500 hover:bg-purple-950 rounded-xl p-4 transition-colors group">
               <div className="flex items-center gap-3 mb-2">

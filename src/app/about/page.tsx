@@ -1,6 +1,6 @@
 export default function AboutPage() {
   const infra = [
-    { name: 'Ollama (Llama 3)', role: 'Local AI — runs on laptop, no API cost', cost: '$0.00' },
+    { name: 'Groq API (Llama 3)', role: 'Cloud AI — free tier, 100K tokens/day', cost: '$0.00' },
     { name: 'Groq API', role: 'Cloud AI fallback — free tier (public repo)', cost: '$0.00' },
     { name: 'Supabase', role: 'Database — free tier (500MB)', cost: '$0.00' },
     { name: 'Vercel', role: 'Web hosting — free tier (100GB bandwidth)', cost: '$0.00' },

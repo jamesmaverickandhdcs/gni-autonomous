@@ -315,7 +315,7 @@ export default function HealthPage() {
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Infrastructure</div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {[{ label: 'Supabase', status: 'Connected' }, { label: 'Groq API', status: 'Active' }, { label: 'Ollama', status: 'Active' }, { label: 'Telegram', status: 'Live' }].map(item => (
+                {[{ label: 'Supabase', status: 'Connected' }, { label: 'Groq API', status: 'Active' }, { label: 'Groq API', status: 'Active' }, { label: 'Telegram', status: 'Live' }].map(item => (
                   <div key={item.label} className="bg-gray-800 rounded-lg p-3 text-center">
                     <div className="text-xs text-gray-500 mb-1">{item.label}</div>
                     <div className="text-sm font-bold text-green-400">{item.status}</div>
