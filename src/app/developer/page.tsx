@@ -61,23 +61,6 @@ export default function DeveloperPage() {
               <h1 className="text-xl font-bold text-white">🧠 Developer Portal</h1>
               <p className="text-xs text-gray-400">GNI_Autonomous API Reference | Build on top of GNI | Fork guide | $0.00/month architecture</p>
             </div>
-            <a href="/" className="text-xs text-blue-400 border border-blue-800 hover:border-blue-500 rounded px-3 py-1 transition-colors">
-              ← Quantum Strategist
-            </a>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <a href="/researcher" className="flex items-center gap-1.5 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 text-xs font-bold text-green-200 transition-colors">
-              📊 Pattern Intelligence
-            </a>
-            <a href="/developer-hub" className="flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 text-xs font-bold text-purple-200 transition-colors">
-              🧠 Dev Console
-            </a>
-            <a href="/reports" className="flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 text-xs font-bold text-amber-200 transition-colors">
-              🔄 Feedback Loop
-            </a>
-            <a href="/about" className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 rounded-lg px-3 py-1.5 text-xs font-bold text-gray-200 transition-colors">
-              🌟 About
-            </a>
           </div>
         </div>
       </header>
