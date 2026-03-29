@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
+import { validateApiKey } from '@/lib/auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,6 +9,9 @@ const supabase = createClient(
 )
 
 export async function GET(request: NextRequest) {
+
+  const authError = validateApiKey(request)
+  if (authError) return authError
   const { searchParams } = new URL(request.url)
   const format = searchParams.get('format') || 'json'
   const days = parseInt(searchParams.get('days') || '30')

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { validateApiKey } from '@/lib/auth'
 
 const VALID_RANGES = ['3d', '7d', '1m', '1y', '10y'] as const
 
@@ -32,6 +33,9 @@ async function fetchYahoo(ticker: string, period: string, interval: string) {
 }
 
 export async function GET(request: NextRequest) {
+
+  const authError = validateApiKey(request)
+  if (authError) return authError
   const { searchParams } = new URL(request.url)
   const parsed = QuerySchema.safeParse({
     ticker: searchParams.get('ticker') ?? undefined,
