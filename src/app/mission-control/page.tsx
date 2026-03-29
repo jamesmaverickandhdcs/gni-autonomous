@@ -62,7 +62,7 @@ export default function SelfCheckPage() {
 
   const loadHistory = async () => {
     try {
-      const res = await fetch('/api/self-check-history')
+      const res = await fetch('/api/mission-control-history')
       const json = await res.json()
       setHistory(json.history || [])
     } catch (e) { console.error(e) }
@@ -72,7 +72,8 @@ export default function SelfCheckPage() {
   const runCheck = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/self-check')
+      // Public call -- returns last cached result from DB (no new check triggered)
+      const res = await fetch('/api/mission-control')
       const json = await res.json()
       setData(json)
       setLastRun(new Date().toLocaleTimeString())
@@ -84,7 +85,7 @@ export default function SelfCheckPage() {
   useEffect(() => {
     loadHistory()
     runCheck()
-    const interval = setInterval(runCheck, 30 * 60 * 1000)
+    const interval = setInterval(runCheck, 5 * 60 * 1000)
     return () => clearInterval(interval)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -95,8 +96,8 @@ export default function SelfCheckPage() {
           <a href="/developer-hub" className="inline-flex items-center gap-1.5 bg-purple-900 hover:bg-purple-700 border border-purple-700 text-purple-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Dev Console</a>
           <div className="flex items-center justify-between mt-2">
             <div>
-              <h1 className="text-xl font-bold text-purple-300">🛡️ Self-Check System</h1>
-              <p className="text-xs text-gray-400">Autonomous health monitoring | Auto-runs every 30 minutes | Alerts via Telegram</p>
+              <h1 className="text-xl font-bold text-purple-300">🛡️ Mission Control System</h1>
+              <p className="text-xs text-gray-400">GNI Operations Monitor | Aggregates all system health | Admin Telegram alerts</p>
             </div>
             <div className="flex items-center gap-3">
               {lastRun && <span className="text-xs text-gray-500">Last run: {lastRun}</span>}
@@ -196,7 +197,7 @@ export default function SelfCheckPage() {
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">How This Works</div>
           <p className="text-xs text-gray-400 leading-relaxed">
             Auto-runs every 30 minutes. Checks: Supabase connection, latest report age, Groq quota, source health, pipeline recency, MAD debate recency.
-            CRITICAL or WARNING issues trigger automatic Telegram alert to admin. All results saved to self_check_log table.
+            CRITICAL or WARNING issues trigger automatic Telegram alert to admin. All results saved to mission_control_log table.
             This is GNI&apos;s web-layer self-monitoring -- part of the L8 autonomy roadmap.
           </p>
         </div>
@@ -205,7 +206,7 @@ export default function SelfCheckPage() {
 
       <footer className="border-t border-gray-800 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | Self-Check System | Higher Diploma in Computer Science | SUM
+          GNI Autonomous | Mission Control System | Higher Diploma in Computer Science | SUM
         </div>
       </footer>
     </div>

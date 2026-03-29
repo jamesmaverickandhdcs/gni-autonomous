@@ -1,0 +1,31 @@
+name: GNI Mission Control
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  mission_control:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run GNI Mission Control
+        run: |
+          curl -s -X GET \
+            -H "X-Internal-Key: ${{ secrets.SELF_CHECK_INTERNAL_KEY }}" \
+            "${{ secrets.GNI_APP_URL }}/api/mission-control" \
+            | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+status = data.get('overall_status', 'UNKNOWN')
+issues = data.get('issues_found', 0)
+print(f'Mission Control Status: {status}')
+print(f'Issues Found: {issues}')
+if status == 'CRITICAL':
+    print('CRITICAL issues detected -- check Telegram for details')
+    sys.exit(1)
+elif status == 'WARNING':
+    print('WARNING issues detected -- monitor closely')
+else:
+    print('All systems healthy')
+"

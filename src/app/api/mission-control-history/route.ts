@@ -10,7 +10,7 @@ const supabase = createClient(
 export async function GET() {
   try {
     const { data, error } = await supabase
-      .from('self_check_log')
+      .from('mission_control_log')
       .select('id, checked_at, overall_status, issues_found, auto_healed, telegram_sent')
       .order('checked_at', { ascending: false })
       .limit(50)
