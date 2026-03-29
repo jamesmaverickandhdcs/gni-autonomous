@@ -8,6 +8,16 @@ export function validateApiKey(request: NextRequest): NextResponse | null {
   const internalKey = request.headers.get('X-Internal-Key')
   if (internalKey && internalKey === INTERNAL_KEY) return null
 
+  // Allow same-origin requests (from GNI_Autonomous web pages)
+  const origin = request.headers.get('origin') || ''
+  const referer = request.headers.get('referer') || ''
+  const host = request.headers.get('host') || ''
+  if (
+    origin.includes('gni-autonomous.vercel.app') ||
+    referer.includes('gni-autonomous.vercel.app') ||
+    origin === '' // server-side calls have no origin
+  ) return null
+
   // Check X-GNI-Key
   const key = request.headers.get('X-GNI-Key')
   if (!key) {
@@ -17,13 +27,12 @@ export function validateApiKey(request: NextRequest): NextResponse | null {
     )
   }
 
-  if (!VALID_KEYS.includes(key)) {
+  if (VALID_KEYS.length > 0 && !VALID_KEYS.includes(key)) {
     return NextResponse.json(
       { error: 'Invalid API key.' },
       { status: 401 }
     )
   }
 
-  // Key is valid
   return null
 }
