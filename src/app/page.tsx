@@ -577,7 +577,7 @@ export default function Home() {
                         )}
                       </div>
                     </div>
-                    <a href="/stocks" className="text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 rounded-lg px-3 py-1.5 transition-colors">25 Charts →</a>
+                    <a href="/stocks" className="text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 rounded-lg px-3 py-1.5 transition-colors">Markets →</a>
                   </div>
                   <div style={{ height: "220px", width: "100%", padding: "8px" }}>
                     {btcChartData.length > 0 ? (
