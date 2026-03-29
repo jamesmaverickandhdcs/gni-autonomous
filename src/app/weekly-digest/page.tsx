@@ -28,6 +28,7 @@ export default function WeeklyDigestPage() {
   const [pillars, setPillars] = useState<PillarReport[]>([])
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -36,7 +37,7 @@ export default function WeeklyDigestPage() {
     ]).then(([pd, rd]) => {
       setPillars(pd.reports || [])
       setReports(rd.reports || [])
-    }).catch(() => {}).finally(() => setLoading(false))
+    }).catch(() => setError('Failed to load data.')).finally(() => setLoading(false))
   }, [])
 
   const geo  = pillars.find(p => p.pillar === 'geo')
@@ -73,6 +74,13 @@ export default function WeeklyDigestPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading digest...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && (
           <>
             <section className="mb-8">

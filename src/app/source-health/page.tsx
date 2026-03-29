@@ -58,13 +58,14 @@ function MiniChart({ runs }: { runs: SourceRun[] }) {
 export default function SourceHealthPage() {
   const [sources, setSources] = useState<SourceStat[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [pillarFilter, setPillarFilter] = useState('all')
 
   useEffect(() => {
     fetch('/api/source-health', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setSources(data.sources || []))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -128,6 +129,13 @@ export default function SourceHealthPage() {
 
         {loading && <div className="text-center py-20 text-gray-400">Loading source health...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && sources.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">📡</div>

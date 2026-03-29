@@ -56,6 +56,7 @@ export default function TransparencyPage() {
   const [selectedRun, setSelectedRun] = useState<PipelineRun | null>(null)
   const [articles, setArticles] = useState<Article[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [loadingArticles, setLoadingArticles] = useState(false)
   const [stageFilter, setStageFilter] = useState<number>(0)
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -69,7 +70,7 @@ export default function TransparencyPage() {
           setSelectedRun(data.runs[0])
         }
       })
-      .finally(() => setLoading(false))
+      .catch(() => setError('Failed to load data.')).finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export default function TransparencyPage() {
     fetch('/api/pipeline-articles?run_id=' + selectedRun.id, { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setArticles(data.articles || []))
-      .finally(() => setLoadingArticles(false))
+      .catch(() => setError('Failed to load data.')).finally(() => setLoadingArticles(false))
   }, [selectedRun])
 
   const filteredArticles = articles.filter(a => {
@@ -124,6 +125,13 @@ export default function TransparencyPage() {
           </div>
         )}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {loading === false && (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 

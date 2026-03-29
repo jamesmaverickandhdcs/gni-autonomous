@@ -18,13 +18,14 @@ interface Prediction {
 export default function PredictionsPage() {
   const [predictions, setPredictions] = useState<Prediction[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [filter, setFilter] = useState<'all' | 'pending' | 'verified'>('all')
 
   useEffect(() => {
     fetch('/api/predictions-list', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setPredictions(data.predictions || []))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -81,6 +82,13 @@ export default function PredictionsPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading predictions...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && (
           <>
             <div className="flex gap-2 mb-6">

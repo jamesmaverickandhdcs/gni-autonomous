@@ -21,6 +21,7 @@ export default function AlertsPage() {
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [usage, setUsage] = useState<Usage[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/alerts', { headers: { 'X-GNI-Key': GNI_KEY } })
@@ -29,7 +30,7 @@ export default function AlertsPage() {
         setAlerts(data.alerts || [])
         setUsage(data.usage || [])
       })
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -79,6 +80,13 @@ export default function AlertsPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading alerts...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && alerts.length === 0 && usage.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">&#x1F6A8;</div>

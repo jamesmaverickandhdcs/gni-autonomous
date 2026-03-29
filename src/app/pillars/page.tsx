@@ -47,6 +47,7 @@ const sentimentColor = (s: string) => {
 export default function PillarsPage() {
   const [reports, setReports] = useState<PillarReport[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState<'latest' | 'history'>('latest')
   const [activePillar, setActivePillar] = useState<'all' | 'geo' | 'tech' | 'fin'>('all')
 
@@ -54,7 +55,7 @@ export default function PillarsPage() {
     fetch('/api/pillars', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setReports(data.reports || []))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -107,6 +108,13 @@ export default function PillarsPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading pillar reports...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && (
           <>
             {/* How it works */}

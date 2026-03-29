@@ -88,12 +88,13 @@ function credColor(score: number) {
 export default function HealthPage() {
   const [health, setHealth] = useState<HealthData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/health', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setHealth(data))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -115,6 +116,13 @@ export default function HealthPage() {
 
         {loading && <div className="text-center py-20 text-gray-400">Loading health data...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && health && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

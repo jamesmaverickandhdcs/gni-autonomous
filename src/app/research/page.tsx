@@ -16,12 +16,13 @@ interface Report {
 export default function ResearchPage() {
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setReports(data.reports || []))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -52,7 +53,15 @@ export default function ResearchPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
 
         {/* Key Stats for IEEE paper */}
-        <section className="mb-8">
+        
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
+
+<section className="mb-8">
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Key Research Metrics — IEEE Paper Evidence</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[

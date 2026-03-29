@@ -409,6 +409,7 @@ export default function HistoryPage() {
   const [runs, setRuns] = useState<PipelineRun[]>([])
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [timeline, setTimeline] = useState<GpvsTimelineEntry[]>([])
 
   useEffect(() => {
@@ -420,7 +421,7 @@ export default function HistoryPage() {
       setRuns(runsData.runs || [])
       setReports(reportsData.reports || [])
       setTimeline(outcomesData.timeline || [])
-    }).finally(() => setLoading(false))
+    }).catch(() => setError('Failed to load history.')).finally(() => setLoading(false))
   }, [])
 
   const grouped: Record<string, PipelineRun[]> = {}
@@ -455,6 +456,13 @@ export default function HistoryPage() {
           </div>
         )}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {loading === false && runs.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <p>No pipeline runs yet.</p>

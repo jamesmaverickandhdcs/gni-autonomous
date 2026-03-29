@@ -64,13 +64,14 @@ export default function CorrelationsPage() {
   const [correlations, setCorrelations] = useState<Correlation[]>([])
   const [patterns, setPatterns] = useState<Pattern[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState<'escalation' | 'agents' | 'patterns'>('escalation')
 
   useEffect(() => {
     fetch('/api/correlations', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => { setCorrelations(data.correlations || []); setPatterns(data.patterns || []) })
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -131,6 +132,13 @@ export default function CorrelationsPage() {
 
         {loading && <div className="text-center py-20 text-gray-400">Loading correlation data...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && correlations.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">📊</div>

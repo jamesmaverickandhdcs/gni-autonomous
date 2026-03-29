@@ -23,13 +23,14 @@ interface ArticleEvent {
 export default function MapPage() {
   const [events, setEvents] = useState<ArticleEvent[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [daysFilter, setDaysFilter] = useState(7)
 
   useEffect(() => {
     fetch(`/api/article-events?days=${daysFilter}`)
       .then(r => r.json())
       .then(data => setEvents(data.events || []))
-      .catch(console.error)
+      .catch(() => setError('Failed to load map data.'))
       .finally(() => setLoading(false))
   }, [daysFilter])
 
@@ -89,6 +90,13 @@ export default function MapPage() {
         </div>
       )}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
       {!loading && (
         <MapView events={events} />
       )}

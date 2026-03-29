@@ -23,6 +23,7 @@ export default function AdaptiveLogPage() {
   const [runs, setRuns] = useState<AdaptiveRun[]>([])
   const [reports, setReports] = useState<AdaptiveReport[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/adaptive-log', { headers: { 'X-GNI-Key': GNI_KEY } })
@@ -31,7 +32,7 @@ export default function AdaptiveLogPage() {
         setRuns(data.runs || [])
         setReports(data.reports || [])
       })
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -68,6 +69,13 @@ export default function AdaptiveLogPage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading adaptive log...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && runs.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">&#x26A1;</div>

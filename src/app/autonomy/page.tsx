@@ -47,12 +47,13 @@ function scoreToLevel(score: number): string {
 export default function AutonomyPage() {
   const [health, setHealth] = useState<HealthData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/health', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setHealth(data))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -101,6 +102,13 @@ export default function AutonomyPage() {
 
         {loading && <div className="text-center py-20 text-gray-400">Loading autonomy data...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {health && (
           <>
             {/* Current Frequency Status */}

@@ -105,6 +105,7 @@ export default function DebatePage() {
   const [reports, setReports] = useState<Report[]>([])
   const [selected, setSelected] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState<'transcript' | 'verdict' | 'predictions'>('verdict')
 
   useEffect(() => {
@@ -115,7 +116,7 @@ export default function DebatePage() {
         setReports(rpts)
         if (rpts.length > 0) setSelected(rpts[0])
       })
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -170,6 +171,13 @@ export default function DebatePage() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         {loading && <div className="text-center py-20 text-gray-400">Loading debates...</div>}
 
+
+        {error && (
+          <div className="text-center py-20 text-red-400">
+            <div className="text-4xl mb-4">&#9888;&#65039;</div>
+            <p>{error}</p>
+          </div>
+        )}
         {!loading && reports.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">🐂🐻🦢🦦</div>
