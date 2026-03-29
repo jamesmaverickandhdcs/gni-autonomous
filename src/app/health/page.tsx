@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 
@@ -89,7 +90,7 @@ export default function HealthPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/health')
+    fetch('/api/health', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setHealth(data))
       .catch(() => {})

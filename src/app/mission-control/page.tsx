@@ -1,4 +1,5 @@
 ﻿'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface CheckResult {
@@ -62,7 +63,7 @@ export default function SelfCheckPage() {
 
   const loadHistory = async () => {
     try {
-      const res = await fetch('/api/mission-control-history')
+      const res = await fetch('/api/mission-control-history', { headers: { 'X-GNI-Key': GNI_KEY } })
       const json = await res.json()
       setHistory(json.history || [])
     } catch (e) { console.error(e) }
@@ -73,7 +74,7 @@ export default function SelfCheckPage() {
     setLoading(true)
     try {
       // Public call -- returns last cached result from DB (no new check triggered)
-      const res = await fetch('/api/mission-control')
+      const res = await fetch('/api/mission-control', { headers: { 'X-GNI-Key': GNI_KEY } })
       const json = await res.json()
       setData(json)
       setLastRun(new Date().toLocaleTimeString())

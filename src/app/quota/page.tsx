@@ -1,4 +1,5 @@
 ﻿'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface Usage {
@@ -28,7 +29,7 @@ export default function QuotaPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/quota')
+    fetch('/api/quota', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setUsage(data.usage || []))
       .catch(() => {})

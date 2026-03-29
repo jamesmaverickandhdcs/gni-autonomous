@@ -1,4 +1,5 @@
 ﻿'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface AdaptiveRun {
@@ -24,7 +25,7 @@ export default function AdaptiveLogPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/adaptive-log')
+    fetch('/api/adaptive-log', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         setRuns(data.runs || [])

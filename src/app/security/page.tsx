@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 
@@ -26,12 +27,12 @@ export default function SecurityPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/pipeline-runs').then(r => r.json()),
+      fetch('/api/pipeline-runs', { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json()),
     ]).then(([runsData]) => {
       const r = runsData.runs || []
       // runs loaded
       if (r.length > 0) {
-        fetch('/api/pipeline-articles?run_id=' + r[0].id)
+        fetch('/api/pipeline-articles?run_id=' + r[0].id, { headers: { 'X-GNI-Key': GNI_KEY } })
           .then(res => res.json())
           .then(data => {
             const arts: Article[] = data.articles || []
@@ -42,7 +43,7 @@ export default function SecurityPage() {
       }
     }).finally(() => {})
 
-    fetch('/api/audit-trail')
+    fetch('/api/audit-trail', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setAuditTrail(data.entries || []))
       .catch(() => {})

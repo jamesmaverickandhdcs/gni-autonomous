@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface QuotaData {
@@ -13,7 +14,7 @@ export default function DeveloperHub() {
   const [reportCount, setReportCount] = useState(0)
 
   useEffect(() => {
-    fetch('/api/quota')
+    fetch('/api/quota', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         if (data.used_today !== undefined) {
@@ -22,7 +23,7 @@ export default function DeveloperHub() {
       })
       .catch(() => {})
 
-    fetch('/api/source-health')
+    fetch('/api/source-health', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         const sources = data.sources || []
@@ -31,7 +32,7 @@ export default function DeveloperHub() {
       })
       .catch(() => {})
 
-    fetch('/api/reports')
+    fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setReportCount((data.reports || []).length))
       .catch(() => {})

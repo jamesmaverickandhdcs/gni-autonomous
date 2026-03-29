@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface Correlation {
@@ -66,7 +67,7 @@ export default function CorrelationsPage() {
   const [activeTab, setActiveTab] = useState<'escalation' | 'agents' | 'patterns'>('escalation')
 
   useEffect(() => {
-    fetch('/api/correlations')
+    fetch('/api/correlations', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => { setCorrelations(data.correlations || []); setPatterns(data.patterns || []) })
       .catch(() => {})

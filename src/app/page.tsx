@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
@@ -291,7 +292,7 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch('/api/reports')
+      fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
         .then(r => r.json())
         .then(data => {
           if (data.reports && data.reports.length > 0) {
@@ -304,7 +305,7 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    fetch('/api/reports')
+    fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         if (data.error) setError(data.error)
@@ -316,23 +317,23 @@ export default function Home() {
       .catch(() => setError('Failed to load reports'))
       .finally(() => setLoading(false))
 
-    fetch('/api/pillar-reports')
+    fetch('/api/pillar-reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setPillarReports(data.reports || []))
       .catch(() => {})
 
-    fetch('/api/prediction-outcomes')
+    fetch('/api/prediction-outcomes', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setPredictionSummary(data.summary || null))
       .catch(() => {})
 
-    fetch('/api/source-weights')
+    fetch('/api/source-weights', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setSourceWeights(data.weights || []))
       .catch(() => {})
 
     // Live map events widget
-    fetch('/api/article-events?days=1')
+    fetch('/api/article-events?days=1', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         const events = data.events || []
@@ -345,7 +346,7 @@ export default function Home() {
 
 
     // BTC 10Y chart for mini widget
-    fetch('/api/stocks?ticker=BTC-USD&range=10y')
+    fetch('/api/stocks?ticker=BTC-USD&range=10y', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         if (data.chartData) {
@@ -357,13 +358,13 @@ export default function Home() {
         }
       }).catch(() => {})
 
-    fetch('/api/pipeline-runs')
+    fetch('/api/pipeline-runs', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         const runs = data.runs || []
         if (runs.length > 0) {
           setLatestRun(runs[0])
-          fetch(`/api/pipeline-articles?run_id=${runs[0].id}`)
+          fetch(`/api/pipeline-articles?run_id=${runs[0].id}`, { headers: { 'X-GNI-Key': GNI_KEY } })
             .then(r => r.json())
             .then(d => {
               const selected = (d.articles || []).filter((a: PipelineArticle) => a.stage4_selected === true)

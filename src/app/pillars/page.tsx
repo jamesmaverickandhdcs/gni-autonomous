@@ -1,4 +1,5 @@
 ﻿'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface PillarReport {
@@ -50,7 +51,7 @@ export default function PillarsPage() {
   const [activePillar, setActivePillar] = useState<'all' | 'geo' | 'tech' | 'fin'>('all')
 
   useEffect(() => {
-    fetch('/api/pillars')
+    fetch('/api/pillars', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setReports(data.reports || []))
       .catch(() => {})

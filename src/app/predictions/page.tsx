@@ -1,4 +1,5 @@
 ﻿'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface Prediction {
@@ -20,7 +21,7 @@ export default function PredictionsPage() {
   const [filter, setFilter] = useState<'all' | 'pending' | 'verified'>('all')
 
   useEffect(() => {
-    fetch('/api/predictions-list')
+    fetch('/api/predictions-list', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setPredictions(data.predictions || []))
       .catch(() => {})

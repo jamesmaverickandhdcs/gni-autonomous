@@ -1,4 +1,5 @@
 ﻿'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 
@@ -165,7 +166,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
   const handleExpand = () => {
     if (expanded === false && articles.length === 0) {
       setLoadingArticles(true)
-      fetch('/api/pipeline-articles?run_id=' + run.id)
+      fetch('/api/pipeline-articles?run_id=' + run.id, { headers: { 'X-GNI-Key': GNI_KEY } })
         .then(r => r.json())
         .then(data => {
           const selected = (data.articles || []).filter((a: Article) => a.stage4_selected === true)
@@ -176,7 +177,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
 
       // Fetch GPVS outcome for this report
       if (run.report_id) {
-        fetch('/api/prediction-outcomes')
+        fetch('/api/prediction-outcomes', { headers: { 'X-GNI-Key': GNI_KEY } })
           .then(r => r.json())
           .then(data => {
             const match = (data.outcomes || []).find((o: PredictionOutcome & {report_id: string}) => o.report_id === run.report_id)
@@ -412,9 +413,9 @@ export default function HistoryPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/pipeline-runs').then(r => r.json()),
-      fetch('/api/reports').then(r => r.json()),
-      fetch('/api/prediction-outcomes').then(r => r.json()),
+      fetch('/api/pipeline-runs', { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json()),
+      fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json()),
+      fetch('/api/prediction-outcomes', { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json()),
     ]).then(([runsData, reportsData, outcomesData]) => {
       setRuns(runsData.runs || [])
       setReports(reportsData.reports || [])

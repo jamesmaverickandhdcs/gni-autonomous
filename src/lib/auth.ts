@@ -13,8 +13,7 @@ export function validateApiKey(request: NextRequest): NextResponse | null {
   const referer = request.headers.get('referer') || ''
   if (
     origin.includes('gni-autonomous.vercel.app') ||
-    referer.includes('gni-autonomous.vercel.app') ||
-    origin === ''
+    referer.includes('gni-autonomous.vercel.app')
   ) return null
 
   // Check X-GNI-Key

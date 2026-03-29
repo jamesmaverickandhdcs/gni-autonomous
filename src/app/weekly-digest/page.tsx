@@ -1,4 +1,5 @@
 ﻿'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface PillarReport {
@@ -30,8 +31,8 @@ export default function WeeklyDigestPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/pillar-reports').then(r => r.json()),
-      fetch('/api/reports').then(r => r.json()),
+      fetch('/api/pillar-reports', { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json()),
+      fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json()),
     ]).then(([pd, rd]) => {
       setPillars(pd.reports || [])
       setReports(rd.reports || [])

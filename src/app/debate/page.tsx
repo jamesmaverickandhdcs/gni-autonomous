@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 
@@ -107,7 +108,7 @@ export default function DebatePage() {
   const [activeTab, setActiveTab] = useState<'transcript' | 'verdict' | 'predictions'>('verdict')
 
   useEffect(() => {
-    fetch('/api/reports')
+    fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         const rpts = (data.reports || []).filter((r: Report) => r.mad_verdict)

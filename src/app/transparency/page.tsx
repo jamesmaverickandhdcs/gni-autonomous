@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 
@@ -60,7 +61,7 @@ export default function TransparencyPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/pipeline-runs')
+    fetch('/api/pipeline-runs', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
         setRuns(data.runs || [])
@@ -74,7 +75,7 @@ export default function TransparencyPage() {
   useEffect(() => {
     if (!selectedRun) return
     setLoadingArticles(true)
-    fetch('/api/pipeline-articles?run_id=' + selectedRun.id)
+    fetch('/api/pipeline-articles?run_id=' + selectedRun.id, { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setArticles(data.articles || []))
       .finally(() => setLoadingArticles(false))

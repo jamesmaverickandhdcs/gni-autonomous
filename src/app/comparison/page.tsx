@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 interface Report {
@@ -62,7 +63,7 @@ export default function ComparisonPage() {
   const [filter, setFilter] = useState<'all' | 'disagree'>('all')
 
   useEffect(() => {
-    fetch('/api/reports')
+    fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setReports(data.reports || []))
       .catch(() => {})

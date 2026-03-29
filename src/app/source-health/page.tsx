@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 
@@ -60,7 +61,7 @@ export default function SourceHealthPage() {
   const [pillarFilter, setPillarFilter] = useState('all')
 
   useEffect(() => {
-    fetch('/api/source-health')
+    fetch('/api/source-health', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setSources(data.sources || []))
       .catch(() => {})
