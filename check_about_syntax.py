@@ -2,6 +2,8 @@
     lines = f.readlines()
 
 print('Total lines:', len(lines))
+print()
+
+# Print all lines with line numbers
 for i, line in enumerate(lines, start=1):
-    safe = line.encode('ascii', errors='replace').decode('ascii')
-    print(str(i).rjust(3) + ': ' + safe, end='')
+    print(str(i).rjust(3) + ': ' + line, end='')

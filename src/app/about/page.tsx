@@ -8,12 +8,6 @@ export default function AboutPage() {
     { name: 'Telegram Bot API', role: 'CRITICAL alerts — free', cost: '$0.00' },
   ]
 
-  const timeline = [
-    { level: 'L4', day: 'Day 7',  label: 'Diploma baseline',  desc: '5 RSS sources · 92 articles · basic AI report · map · stocks · transparency' },
-    { level: 'L5', day: 'Day 10', label: 'GPVS + Quality',    desc: 'Prediction validation · quality scoring · source weights · escalation · 13 RSS sources · 242 articles' },
-    { level: 'L6', day: 'Day 13', label: 'Self-improving',    desc: 'Prompt A/B testing · source credibility learning · historical correlation · weekly digest' },
-    { level: 'L7', day: 'Day 17', label: 'Fully autonomous',  desc: 'MAD Protocol · deception detection · frequency controller · health agent · audit trail · self-healing' },
-  ]
 
   const stats = [
     { label: 'Pipeline runs',     value: '30+' },
@@ -156,27 +150,6 @@ export default function AboutPage() {
               <p className="text-xs text-gray-400 leading-relaxed">How GNI runs itself. All 4 GitHub Actions pipelines, the self-healing heartbeat, the 66-pattern security layer, and live token quota data proving .00/month L7 autonomous operation.</p>
               <div className="mt-3 text-xs text-purple-500 font-bold">View Architecture --&gt;</div>
             </a>
-          </div>
-        </div>
-
-        {/* L4 to L7 Journey */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">
-            The Journey — L4 → L7 in 17 Days
-          </div>
-          <div className="space-y-3">
-            {timeline.map(item => (
-              <div key={item.level} className="flex items-start gap-4 bg-gray-800 rounded-lg p-4">
-                <div className="bg-blue-900 border border-blue-700 rounded-lg px-3 py-2 text-center shrink-0">
-                  <div className="text-lg font-bold text-blue-400">{item.level}</div>
-                  <div className="text-xs text-gray-500">{item.day}</div>
-                </div>
-                <div>
-                  <div className="text-sm font-bold text-white mb-1">{item.label}</div>
-                  <div className="text-xs text-gray-400">{item.desc}</div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
