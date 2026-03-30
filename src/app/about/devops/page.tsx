@@ -126,8 +126,8 @@ export default function AboutDevopsPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Architecture Layers -- L1 to L5</div>
           <div className="space-y-3">
             {architecture.map(item => (
-              <div key={item.layer} className="flex gap-4 bg-gray-800 rounded-lg p-4">
-                <div className="bg-purple-900 border border-purple-700 rounded-lg px-3 py-2 shrink-0 text-center min-w-16">
+              <div key={item.layer} className="flex gap-4 bg-gray-800 rounded-lg p-4 min-h-20">
+                <div className="bg-purple-900 border border-purple-700 rounded-lg px-3 py-2 shrink-0 text-center w-24 flex items-center justify-center">
                   <div className="text-xs font-bold text-purple-400">{item.layer}</div>
                 </div>
                 <div>
