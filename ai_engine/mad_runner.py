@@ -260,6 +260,31 @@ def run_mad_pipeline():
         print('\n?? Step 6: Sending MAD Telegram...')
         _send_mad_telegram(report, mad_result)
 
+    # Step 7: Trigger Myanmar pipeline via GitHub repository_dispatch
+    if success and os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true':
+        try:
+            import requests as _req
+            pat = os.getenv('MYANMAR_DISPATCH_PAT', '')
+            if pat:
+                resp = _req.post(
+                    'https://api.github.com/repos/johnwickiscodingforyou/gni-myanmar/dispatches',
+                    headers={
+                        'Authorization': f'token {pat}',
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json',
+                    },
+                    json={'event_type': 'mad-pipeline-complete'},
+                    timeout=15
+                )
+                if resp.status_code == 204:
+                    print('  OK: Myanmar pipeline dispatch triggered')
+                else:
+                    print(f'  WARNING: Dispatch returned {resp.status_code}')
+            else:
+                print('  WARNING: MYANMAR_DISPATCH_PAT not set -- skipping dispatch')
+        except Exception as _e:
+            print(f'  WARNING: Dispatch failed: {str(_e)[:60]}')
+
     # Log Groq usage (GNI-R-124)
     if os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true':
         try:
