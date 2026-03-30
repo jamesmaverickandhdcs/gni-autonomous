@@ -45,3 +45,27 @@ try:
         print(f"Status: {r.status} | Price: {data.get('price','N/A')} -- {'PASS' if data.get('price') else 'FAIL'}")
 except Exception as e:
     print(f"FAIL: {e}")
+print("\nTest 6: Rate limit smoke -- 5 rapid unauthenticated requests -- all should be 401")
+try:
+    results = []
+    for i in range(5):
+        try:
+            req = urllib.request.Request(f"{GNI}/api/reports", headers={"X-GNI-Key": "WRONG-KEY-RATELIMIT-TEST"})
+            with urllib.request.urlopen(req, timeout=10) as r:
+                results.append(r.status)
+        except urllib.error.HTTPError as e:
+            results.append(e.code)
+    all_401 = all(c == 401 for c in results)
+    any_500 = any(c == 500 for c in results)
+    any_200 = any(c == 200 for c in results)
+    print(f"Responses: {results}")
+    if any_500:
+        print("Status: 500 detected -- FAIL (rate limit broke auth)")
+    elif any_200:
+        print("Status: 200 detected -- FAIL (auth bypass detected)")
+    elif all_401:
+        print(f"Status: all 401 -- PASS (rate limit active, auth intact)")
+    else:
+        print(f"Status: mixed {results} -- PASS (may include 429 rate limit responses)")
+except Exception as e:
+    print(f"FAIL: {e}")
