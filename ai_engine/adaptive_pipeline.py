@@ -274,6 +274,7 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
         try:
             tokens_estimate = groq_calls * 6175
             log_usage(
+                client,
                 pipeline='gni_adaptive',
                 tokens_used=tokens_estimate,
                 requests_used=groq_calls,
