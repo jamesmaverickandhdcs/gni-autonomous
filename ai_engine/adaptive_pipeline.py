@@ -172,6 +172,48 @@ def run_standard_mode(client, report: dict, reason: str) -> dict:
         return {'mode': 'standard', 'groq_calls': 0}
 
 
+
+def check_mission_control_flag(client) -> str:
+    """
+    GNI-R-158: Read latest mission_control_log row.
+    If overall_status is CRITICAL or WARNING and row is < 35 min old,
+    return a trigger reason string. Otherwise return empty string.
+    Mission Control never triggers directly -- adaptive reads and decides.
+    GNI-R-157: Mission Control is monitor-only. This is the DB flag pattern.
+    """
+    try:
+        result = client.table('mission_control_log') \
+            .select('overall_status,checked_at,issues_found') \
+            .order('checked_at', desc=True) \
+            .limit(1) \
+            .execute()
+        if not result.data:
+            print('  Mission Control flag: no log rows found')
+            return ''
+        row = result.data[0]
+        status = row.get('overall_status', '')
+        checked_at_raw = row.get('checked_at', '')
+        issues = row.get('issues_found', 0) or 0
+        if status not in ('CRITICAL', 'WARNING'):
+            print('  Mission Control flag: status=' + status + ' -- no trigger')
+            return ''
+        # Parse checked_at
+        checked_at = datetime.fromisoformat(checked_at_raw.replace('Z', '+00:00'))
+        age_min = (datetime.now(timezone.utc) - checked_at).total_seconds() / 60
+        if age_min > 35:
+            print('  Mission Control flag: status=' + status + ' but ' + str(round(age_min, 1)) + 'min old -- stale, no trigger')
+            return ''
+        reason = (
+            'Mission Control flag: ' + status +
+            ' (' + str(issues) + ' issues) -- ' +
+            str(round(age_min, 1)) + 'min ago (GNI-R-158)'
+        )
+        print('  Mission Control flag: ' + reason)
+        return reason
+    except Exception as e:
+        print('  WARNING: Cannot read mission_control_flag: ' + str(e)[:60])
+        return ''
+
 def run_adaptive_pipeline(reason: str = 'scheduled'):
     now = datetime.now(timezone.utc)
     print('=' * 60)
@@ -194,6 +236,12 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
     if not client:
         print('ERROR: Cannot connect to Supabase')
         return False
+
+    # -- Mission Control DB flag check (GNI-R-158)
+    print('\nChecking Mission Control flag (GNI-R-158)...')
+    mc_reason = check_mission_control_flag(client)
+    if mc_reason and not reason.startswith('Mission Control'):
+        reason = mc_reason
 
     # -- Get current escalation level
     score, level = get_latest_escalation_score(client)
