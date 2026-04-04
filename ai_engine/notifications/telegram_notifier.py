@@ -3,14 +3,15 @@ import requests
 from datetime import datetime
 
 # ============================================================
-# GNI Telegram Notifier — Day 6
-# Sends full intelligence report to @GNI_Alerts channel
-# Includes: consolidated report + 10 articles + AI thinking
+# GNI Telegram Notifier — Updated S21-2
+# Channel: Clean 11 article links + web app intro only
+# Admin: CRITICAL ALERT only (escalation >= 8)
+# HEARTBEAT/ADAPTIVE/STATUS → admin via monitoring_pipeline.py
 # ============================================================
 
 
 def send_telegram_message(text: str) -> bool:
-    """Send a message to the configured Telegram channel."""
+    """Send a message to the public Telegram channel."""
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
     TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
@@ -23,12 +24,12 @@ def send_telegram_message(text: str) -> bool:
         "chat_id": TELEGRAM_CHAT_ID,
         "text": text,
         "parse_mode": "HTML",
-        "disable_web_page_preview": True
+        "disable_web_page_preview": False
     }
     try:
         response = requests.post(url, json=payload, timeout=10)
         if response.status_code == 200:
-            print("  ✅ Telegram notification sent")
+            print("  ✅ Channel message sent")
             return True
         else:
             print(f"  ⚠️  Telegram error: {response.status_code} {response.text[:100]}")
@@ -38,185 +39,143 @@ def send_telegram_message(text: str) -> bool:
         return False
 
 
-def format_consolidated_message(report: dict) -> str:
-    """Format the consolidated intelligence report message."""
-    sentiment = report.get("sentiment", "Neutral")
-    sentiment_icon = "▼" if sentiment.lower() == "bearish" else "▲" if sentiment.lower() == "bullish" else "◆"
-    risk = report.get("risk_level", "Unknown").upper()
-    risk_icon = "🔴" if risk == "CRITICAL" else "🟠" if risk == "HIGH" else "🟡" if risk == "MEDIUM" else "🟢"
-    tickers = report.get("tickers_affected", [])
-    ticker_str = " ".join([f"#{t}" for t in tickers]) if tickers else "N/A"
-    location = report.get("location_name", "Global")
-    llm = "🧠 Llama 3 Local" if report.get("llm_source") == "ollama" else "☁️ Groq API"
-    timestamp = datetime.now().strftime("%b %d, %H:%M")
-    sentiment_score = report.get("sentiment_score", 0)
-    escalation_score = report.get("escalation_score", 0.0)
-    escalation_level = report.get("escalation_level", "")
-    if escalation_score >= 9:
-        escalation_icon = "🚨"
-    elif escalation_score >= 7:
-        escalation_icon = "🟥"
-    elif escalation_score >= 5:
-        escalation_icon = "🟧"
-    else:
-        escalation_icon = "🟢"
-    escalation_str = f"{escalation_icon} <b>Escalation:</b> {escalation_level} ({escalation_score}/10)" if escalation_level else ""
+def send_admin_message(text: str) -> bool:
+    """Send message to admin only — never to public channel."""
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    TELEGRAM_ADMIN_ID = os.getenv("TELEGRAM_ADMIN_ID") or os.getenv("TELEGRAM_CHAT_ID")
 
-    message = f"""🌐 <b>GNI — Global Nexus Insights</b>
-━━━━━━━━━━━━━━━━━━━━
-{risk_icon} <b>Risk Level:</b> {risk}
-{escalation_str}
-{sentiment_icon} <b>Sentiment:</b> {sentiment} ({sentiment_score:.2f})
-📍 <b>Location:</b> {location}
-{llm}
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_ADMIN_ID:
+        print("  ⚠️  Admin credentials not configured — skipping")
+        return False
 
-<b>{report.get('title', 'Intelligence Report')}</b>
-
-{report.get('summary', '')}
-
-📊 <b>Market Impact:</b>
-{report.get('market_impact', 'See dashboard for details.')}
-
-📈 <b>Tickers:</b> {ticker_str}
-🕐 {timestamp}
-━━━━━━━━━━━━━━━━━━━━
-🔍 <a href="https://gni-autonomous.vercel.app">Dashboard</a> | <a href="https://gni-autonomous.vercel.app/stocks">Stock Chart</a> | <a href="https://gni-autonomous.vercel.app/transparency">Transparency</a>
-━━━━━━━━━━━━━━━━━━━━
-<i>⚠️ DISCLAIMER: GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.</i>"""
-
-    return message
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": TELEGRAM_ADMIN_ID,
+        "text": text,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": True
+    }
+    try:
+        response = requests.post(url, json=payload, timeout=10)
+        if response.status_code == 200:
+            print("  ✅ Admin message sent")
+            return True
+        else:
+            print(f"  ⚠️  Admin Telegram error: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"  ⚠️  Admin Telegram exception: {e}")
+        return False
 
 
-def format_ai_thinking_message(report: dict, articles: list) -> str:
-    """Format AI thinking message — how 10 articles consolidated to 1 report."""
-    if not articles:
-        return ""
-
-    timestamp = datetime.now().strftime("%b %d, %H:%M")
+def format_channel_message(report: dict, articles: list) -> str:
+    """
+    Format clean user-facing channel message.
+    Shows: date/time + 11 article links + web app links + intro.
+    Nothing else. Simple. User-friendly.
+    """
+    timestamp = datetime.now().strftime("%B %d, %Y | %H:%M UTC")
     total = len(articles)
 
-    # Build article list
+    # Build article list with clickable links
     article_lines = ""
     for i, art in enumerate(articles, 1):
         source = art.get("source", "Unknown")
         title = art.get("title", "Untitled")
         score = art.get("stage3_score", 0)
         url = art.get("link") or art.get("url", "")
+
         # Truncate long titles
-        if len(title) > 80:
-            title = title[:77] + "..."
+        if len(title) > 75:
+            title = title[:72] + "..."
+
         if url:
-            article_lines += f"\n{i}. [{source}] <a href=\"{url}\">{title}</a> (Score: {score})"
+            article_lines += (
+                f"\n{i}. [{source}] "
+                f"<a href=\"{url}\">{title}</a> "
+                f"(Score: {score})"
+            )
         else:
             article_lines += f"\n{i}. [{source}] {title} (Score: {score})"
 
-    # Source distribution
-    source_counts = {}
-    for art in articles:
-        s = art.get("source", "Unknown")
-        source_counts[s] = source_counts.get(s, 0) + 1
-    source_dist = " | ".join([f"{s}: {c}" for s, c in source_counts.items()])
-
-    # Score range
-    scores = [art.get("stage3_score", 0) for art in articles]
-    max_score = max(scores) if scores else 0
-    min_score = min(scores) if scores else 0
-
-    message = f"""🧠 <b>GNI — AI Thinking Transparency</b>
-━━━━━━━━━━━━━━━━━━━━
-<b>How AI consolidated {total} articles → 1 report</b>
-
-<b>Step 1: Collection</b>
-{len(articles)} articles collected from 5 sources
-
-<b>Step 2: Intelligence Funnel</b>
-Stage 1 (Relevance): Removed non-geopolitical content
-Stage 1b (Injection): Scanned for adversarial content
-Stage 2 (Dedup): Removed duplicate stories
-Stage 3 (Score): Ranked by geopolitical significance
-Stage 4 (Diversity): Max 3 per source enforced
-
-<b>Step 3: Top {total} Articles Selected</b>
-Score range: {min_score} — {max_score}
-Source mix: {source_dist}
-{article_lines}
-
-<b>Step 4: LLM Analysis</b>
-Model: {report.get('llm_source', 'groq').upper()}
-All {total} articles fed to Llama 3 simultaneously
-LLM identified: main theme, sentiment, risk level,
-affected markets, primary location
-
-<b>Step 5: Result</b>
-→ Title: {report.get('title', '')}
-→ Sentiment: {report.get('sentiment', '')} ({report.get('sentiment_score', 0):.2f})
-→ Risk: {report.get('risk_level', '')}
-→ Location: {report.get('location_name', '')}
-
-🕐 {timestamp}
-━━━━━━━━━━━━━━━━━━━━
-🔍 <a href="https://gni-autonomous.vercel.app/transparency">Transparency Engine</a> | <a href="https://gni-autonomous.vercel.app/stocks">Stock Chart</a>
-<i>⚠️ For informational purposes only. Not financial advice.</i>"""
+    message = (
+        "🌐 <b>GNI — Global Nexus Insights</b>\n"
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        f"📅 {timestamp}\n\n"
+        f"Today's AI selected these {total} articles from 400+ "
+        f"global sources — ranked by geopolitical significance:"
+        f"{article_lines}\n\n"
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        "🗺️ <a href=\"https://gni-autonomous.vercel.app/map\">Event Map</a>"
+        " | 📈 <a href=\"https://gni-autonomous.vercel.app/stocks\">Stock Chart</a>"
+        " | 🔍 <a href=\"https://gni-autonomous.vercel.app\">Dashboard</a>\n"
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        "GNI turns 400+ daily articles into 1 intelligence report\n"
+        "— free, autonomous, always on. No login needed.\n"
+        "🌐 gni-autonomous.vercel.app"
+    )
 
     return message
 
 
 def send_critical_alert(report: dict) -> bool:
-    """Send CRITICAL ALERT when escalation_score > 8."""
+    """Send CRITICAL ALERT to admin only when escalation >= 8."""
     escalation_score = report.get("escalation_score", 0.0)
     escalation_level = report.get("escalation_level", "")
-    signals = report.get("escalation_signals", {})
 
-    alert_msg = f"""🚨🚨🚨 <b>CRITICAL ALERT — GNI_Autonomous</b> 🚨🚨🚨
-━━━━━━━━━━━━━━━━━━━━
-Escalation Score: <b>{escalation_score}/10 [{escalation_level}]</b>
+    alert_msg = (
+        "🚨🚨🚨 <b>CRITICAL ALERT — GNI_Autonomous</b> 🚨🚨🚨\n"
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        f"Escalation Score: <b>{escalation_score}/10 [{escalation_level}]</b>\n\n"
+        f"<b>Report:</b> {report.get('title', '')}\n"
+        f"<b>Sentiment:</b> {report.get('sentiment', '')}\n"
+        f"<b>Risk Level:</b> {report.get('risk_level', '')}\n"
+        f"<b>Location:</b> {report.get('location_name', '')}\n\n"
+        "⚠️ All three GNI intelligence pillars are active.\n"
+        "Immediate human review recommended.\n\n"
+        "📊 <a href=\"https://gni-autonomous.vercel.app\">View Dashboard</a>"
+        " | <a href=\"https://gni-autonomous.vercel.app/transparency\">Transparency</a>\n"
+        "━━━━━━━━━━━━━━━━━━━━\n"
+        "<i>⚠️ For informational purposes only. Not financial advice.</i>"
+    )
 
-<b>Report:</b> {report.get('title', '')}
-<b>Sentiment:</b> {report.get('sentiment', '')}
-<b>Risk Level:</b> {report.get('risk_level', '')}
-<b>Location:</b> {report.get('location_name', '')}
-
-⚠️ All three GNI intelligence pillars are active.
-Immediate human review recommended.
-
-📊 <a href="https://gni-autonomous.vercel.app">View Dashboard</a> | <a href="https://gni-autonomous.vercel.app/transparency">Transparency</a>
-━━━━━━━━━━━━━━━━━━━━
-<i>⚠️ For informational purposes only. Not financial advice.</i>"""
-
-    return send_telegram_message(alert_msg)
+    return send_admin_message(alert_msg)
 
 
 def notify_report(report: dict, articles: list = None) -> bool:
     """
-    Send full intelligence notification to Telegram.
-    Message 1: Consolidated report
-    Message 2: AI thinking + 10 articles
-    """
-    print("\n📱 Step 5: Sending Telegram Notification...")
+    Send Telegram notification after each pipeline run.
 
-    # Critical alert if escalation >= 8
+    Channel receives:
+    - Clean 11 article links + Event Map + Stock Chart + Dashboard
+    - Sweet intro about the web app
+
+    Admin receives:
+    - CRITICAL ALERT only (if escalation_score >= 8)
+
+    Everything else (HEARTBEAT / ADAPTIVE / STATUS) is handled
+    by monitoring_pipeline.py via _send_telegram() which already
+    routes to TELEGRAM_ADMIN_ID when set.
+    """
+    print("\n📱 Sending Telegram Notification...")
+
+    # CRITICAL ALERT → admin only
     escalation_score = report.get("escalation_score", 0.0)
     if escalation_score >= 8:
-        print(f"  🚨 CRITICAL ALERT triggered — escalation {escalation_score}/10")
+        print(f"  🚨 CRITICAL escalation {escalation_score}/10 → admin only")
         send_critical_alert(report)
 
-    # Message 1: Consolidated report
-    msg1 = format_consolidated_message(report)
-    success1 = send_telegram_message(msg1)
-
-    # Message 2: AI thinking (only if articles provided)
-    success2 = True
+    # Channel message → clean article list only
     if articles:
-        msg2 = format_ai_thinking_message(report, articles)
-        if msg2:
-            success2 = send_telegram_message(msg2)
+        msg = format_channel_message(report, articles)
+        return send_telegram_message(msg)
 
-    return success1 and success2
+    print("  ⚠️  No articles provided — skipping channel message")
+    return True
 
 
 if __name__ == "__main__":
     from dotenv import load_dotenv
-    import os
     dotenv_path = os.path.join(
         os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
         '.env'
@@ -225,21 +184,32 @@ if __name__ == "__main__":
 
     # Test with dummy data
     test_report = {
-        "title": "Escalating Middle East Tensions Drive Oil Price Surge",
-        "summary": "Iran-Israel conflict escalates with new missile strikes, driving oil prices up 4% and triggering safe-haven flows into gold.",
+        "title": "Strait of Hormuz Closure Threatens Global Energy",
         "sentiment": "Bearish",
-        "sentiment_score": -0.75,
+        "sentiment_score": -0.80,
         "risk_level": "High",
+        "escalation_score": 10.0,
+        "escalation_level": "CRITICAL",
         "location_name": "Iran",
-        "market_impact": "Oil prices may rise 5-10%. Gold and defence stocks likely to benefit. SPY may face short-term pressure.",
-        "tickers_affected": ["SPY", "GLD", "USO", "XOM", "LMT"],
-        "llm_source": "groq"
     }
     test_articles = [
-        {"source": "Al Jazeera", "title": "Iran launches missile strikes on Israel", "url": "https://aljazeera.com", "stage3_score": 18},
-        {"source": "BBC", "title": "Oil prices surge amid Middle East tensions", "url": "https://bbc.com", "stage3_score": 15},
-        {"source": "CNN", "title": "US warns of escalation risk in Iran conflict", "url": "https://cnn.com", "stage3_score": 13},
-        {"source": "Fox News", "title": "Israel responds to Iranian drone attack", "url": "https://foxnews.com", "stage3_score": 11},
-        {"source": "DW News", "title": "European markets fall on Middle East fears", "url": "https://dw.com", "stage3_score": 10},
+        {
+            "source": "Al Jazeera",
+            "title": "Iran launches missile strikes on Israel",
+            "url": "https://aljazeera.com",
+            "stage3_score": 18.8
+        },
+        {
+            "source": "BBC",
+            "title": "Oil prices surge amid Middle East tensions",
+            "url": "https://bbc.com",
+            "stage3_score": 17.5
+        },
+        {
+            "source": "USNI News",
+            "title": "IRGC Opens Tolled Passage for Merchant Ships",
+            "url": "https://news.usni.org",
+            "stage3_score": 16.9
+        },
     ]
     notify_report(test_report, test_articles)
