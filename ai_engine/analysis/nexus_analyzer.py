@@ -196,6 +196,9 @@ def _parse_json_response(raw: str) -> dict | None:
                     "tickers_affected": ["SPY"],
                     "market_impact": "",
                     "risk_level": "Medium",
+                    "weakness_identified": "",
+                    "threat_horizon": "",
+                    "dark_side_detected": "",
                 }
                 for k, v in defaults.items():
                     if k not in result:
@@ -297,6 +300,9 @@ def _extract_fields_regex(raw: str) -> dict | None:
         "tickers_affected":      ["SPY"],
         "market_impact":         get_str("market_impact") or "",
         "risk_level":            get_str("risk_level") or "Medium",
+        "weakness_identified":   get_str("weakness_identified") or "",
+        "threat_horizon":        get_str("threat_horizon") or "",
+        "dark_side_detected":    get_str("dark_side_detected") or "",
     }
 
 
