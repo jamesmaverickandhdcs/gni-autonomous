@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 const MiniMapView = dynamic(() => import('@/components/MapView'), { ssr: false })
+import LiveClock from '@/components/LiveClock'
 
 
 interface PillarReport {
@@ -385,9 +386,12 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-white">🌐 Global Nexus Insights (Autonomous)</h1>
-              <p className="text-sm text-gray-400">Technology + Geopolitics + Financial Impact</p>
-            </div>
+                <h1 className="text-2xl font-bold text-white">🌐 Global Nexus Insights (Autonomous)</h1>
+                <p className="text-sm text-gray-400">Technology + Geopolitics + Financial Impact</p>
+                <div className="mt-3">
+                  <LiveClock />
+                </div>
+              </div>
             <div className="text-right text-sm text-gray-400">
               <div>Pipeline: <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-green-400"></span><span className="text-green-400">Active</span></span></div>
               <div>Intelligence Reports: <span className="text-white font-bold">{reports.length}</span></div>
