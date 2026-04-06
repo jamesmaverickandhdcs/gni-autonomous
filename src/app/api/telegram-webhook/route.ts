@@ -9,14 +9,9 @@ import { NextRequest, NextResponse } from 'next/server'
 // Security: verifies X-Telegram-Bot-Api-Secret-Token header.
 // ============================================================
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-)
-
-const WEBHOOK_SECRET    = process.env.TELEGRAM_WEBHOOK_SECRET || ''
-const BOT_TOKEN         = process.env.TELEGRAM_BOT_TOKEN || ''
-const ADMIN_ID          = process.env.TELEGRAM_ADMIN_ID || ''
+const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || ''
+const BOT_TOKEN      = process.env.TELEGRAM_BOT_TOKEN || ''
+const ADMIN_ID       = process.env.TELEGRAM_ADMIN_ID || ''
 
 // Reserve sources — must match source_health_monitor.py exactly
 const GEO_RESERVES = [
@@ -44,14 +39,14 @@ function getReservesForPillar(pillar: string) {
   return GEO_RESERVES
 }
 
-async function sendAdminMessage(text: string): Promise<void> {
-  if (!BOT_TOKEN || !ADMIN_ID) return
+async function sendAdminMessage(botToken: string, adminId: string, text: string): Promise<void> {
+  if (!botToken || !adminId) return
   try {
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        chat_id: ADMIN_ID,
+        chat_id: adminId,
         text,
         parse_mode: 'HTML',
       }),
@@ -61,73 +56,23 @@ async function sendAdminMessage(text: string): Promise<void> {
   }
 }
 
-async function processReserveChoice(choice: number): Promise<string> {
-  // Find most recent pending/alerted reserve record
-  const { data: pending, error } = await supabase
-    .from('source_reserves')
-    .select('id, primary_source')
-    .in('status', ['pending', 'alerted'])
-    .order('last_alerted_at', { ascending: false })
-    .limit(1)
-
-  if (error || !pending || pending.length === 0) {
-    return '⚠️ No pending reserve selection found. Source may already be resolved.'
-  }
-
-  const record      = pending[0]
-  const recordId    = record.id
-  const primary     = record.primary_source
-
-  // Find pillar for this primary source
-  // We store pillar in source_reserves — fetch it
-  const { data: fullRecord } = await supabase
-    .from('source_reserves')
-    .select('pillar')
-    .eq('id', recordId)
-    .single()
-
-  const pillar   = fullRecord?.pillar || 'geo'
-  const reserves = getReservesForPillar(pillar)
-
-  if (choice < 1 || choice > reserves.length) {
-    return `❌ Invalid choice: ${choice}. Please reply with 1-${reserves.length}.`
-  }
-
-  const selected = reserves[choice - 1]
-  const now      = new Date().toISOString()
-
-  // Activate reserve in Supabase
-  const { error: updateError } = await supabase
-    .from('source_reserves')
-    .update({
-      reserve_source: selected.name,
-      status:         'active',
-      activated_at:   now,
-    })
-    .eq('id', recordId)
-
-  if (updateError) {
-    return '❌ Failed to activate reserve. Please try again.'
-  }
-
-  return (
-    `✅ <b>Reserve activated!</b>\n` +
-    `Primary: ${primary} (DOWN)\n` +
-    `Reserve: ${selected.name} (ACTIVE)\n` +
-    `Democracy score: ${selected.democracy_score}%\n` +
-    `Will be used in next pipeline run automatically.`
-  )
-}
+interface TelegramUpdate { message?: { from?: { id?: number }; text?: string } }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  // ── Security: verify Telegram secret token ──────────────
+
+  // ── Init Supabase inside handler — never at module level ──
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY!
+  )
+
+  // ── Security: verify Telegram secret token ────────────────
   const secretHeader = request.headers.get('x-telegram-bot-api-secret-token')
   if (!WEBHOOK_SECRET || secretHeader !== WEBHOOK_SECRET) {
     console.error('Webhook: Invalid or missing secret token')
     return NextResponse.json({ ok: false }, { status: 403 })
   }
 
-  interface TelegramUpdate { message?: { from?: { id?: number }; text?: string } }
   let body: TelegramUpdate
   try {
     body = await request.json()
@@ -138,12 +83,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // ── Extract message ───────────────────────────────────────
   const message = body?.message
   if (!message) {
-    // Callback query or other update — ignore
     return NextResponse.json({ ok: true })
   }
 
-  const fromId  = String(message?.from?.id || '')
-  const text    = (message?.text || '').trim()
+  const fromId = String(message?.from?.id || '')
+  const text   = (message?.text || '').trim()
 
   // ── Security: only process messages from admin ────────────
   if (!ADMIN_ID || fromId !== ADMIN_ID) {
@@ -155,14 +99,70 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const choice = parseInt(text, 10)
   if (!isNaN(choice) && choice >= 1 && choice <= 5) {
     console.log(`Webhook: Admin chose reserve ${choice}`)
-    const responseMsg = await processReserveChoice(choice)
-    await sendAdminMessage(responseMsg)
+
+    // Find most recent pending/alerted reserve record
+    const { data: pending, error } = await supabase
+      .from('source_reserves')
+      .select('id, primary_source')
+      .in('status', ['pending', 'alerted'])
+      .order('last_alerted_at', { ascending: false })
+      .limit(1)
+
+    if (error || !pending || pending.length === 0) {
+      await sendAdminMessage(BOT_TOKEN, ADMIN_ID, '⚠️ No pending reserve selection found. Source may already be resolved.')
+      return NextResponse.json({ ok: true })
+    }
+
+    const record   = pending[0]
+    const recordId = record.id
+    const primary  = record.primary_source
+
+    const { data: fullRecord } = await supabase
+      .from('source_reserves')
+      .select('pillar')
+      .eq('id', recordId)
+      .single()
+
+    const pillar   = fullRecord?.pillar || 'geo'
+    const reserves = getReservesForPillar(pillar)
+
+    if (choice < 1 || choice > reserves.length) {
+      await sendAdminMessage(BOT_TOKEN, ADMIN_ID, `❌ Invalid choice: ${choice}. Please reply with 1-${reserves.length}.`)
+      return NextResponse.json({ ok: true })
+    }
+
+    const selected = reserves[choice - 1]
+    const now      = new Date().toISOString()
+
+    const { error: updateError } = await supabase
+      .from('source_reserves')
+      .update({
+        reserve_source: selected.name,
+        status:         'active',
+        activated_at:   now,
+      })
+      .eq('id', recordId)
+
+    if (updateError) {
+      await sendAdminMessage(BOT_TOKEN, ADMIN_ID, '❌ Failed to activate reserve. Please try again.')
+      return NextResponse.json({ ok: true })
+    }
+
+    const responseMsg =
+      `✅ <b>Reserve activated!</b>\n` +
+      `Primary: ${primary} (DOWN)\n` +
+      `Reserve: ${selected.name} (ACTIVE)\n` +
+      `Democracy score: ${selected.democracy_score}%\n` +
+      `Will be used in next pipeline run automatically.`
+
+    await sendAdminMessage(BOT_TOKEN, ADMIN_ID, responseMsg)
     return NextResponse.json({ ok: true })
   }
 
   // ── Unknown message — guide admin ─────────────────────────
   if (text && !/^\s*$/.test(text)) {
     await sendAdminMessage(
+      BOT_TOKEN, ADMIN_ID,
       '⚠️ Unrecognised reply.\n' +
       'If a source is down, reply with a number (1-5) to select a reserve.\n' +
       'Wait for the next alert if you are unsure.'
