@@ -153,6 +153,38 @@ export async function GET(request: NextRequest) {
     checks['source_health'] = { status: 'WARNING', message: 'Could not reach /api/source-health: ' + (e instanceof Error ? e.message : String(e)) }
   }
 
+  // Check 7: Web app data freshness via direct REST (GNI-R-227)
+  // EXCLUDED from issuesFound -- does NOT trigger Adaptive pipeline
+  try {
+    const apiKey = process.env.GNI_API_KEYS?.split(',')[0] || ''
+    const res = await fetch(`${baseUrl}/api/reports`, {
+      headers: { 'X-GNI-Key': apiKey },
+      signal: AbortSignal.timeout(8000)
+    })
+    const data = await res.json()
+    const reports = Array.isArray(data) ? data : (data.reports || [])
+    if (!reports || reports.length === 0) {
+      checks['webapp_freshness'] = { status: 'WARNING', message: 'No reports returned from /api/reports REST endpoint' }
+    } else {
+      const hoursOld = Math.round((Date.now() - new Date(reports[0].created_at).getTime()) / 3600000)
+      if (hoursOld > 24) {
+        checks['webapp_freshness'] = { status: 'WARNING', message: `Web app serving stale data: ${hoursOld}h old -- Supabase JS client ordering bug suspected` }
+        const sixHoursAgo = new Date(Date.now() - 6 * 3600000).toISOString()
+        const { data: recentFresh } = await supabase.from('mission_control_log')
+          .select('id').gte('checked_at', sixHoursAgo).limit(1)
+        if (!recentFresh || recentFresh.length === 0) {
+          await sendTelegram(`⚠️ <b>GNI Web App Freshness Alert</b>\n/api/reports serving data ${hoursOld}h old\nSupabase JS client ordering bug may be back!\nTime: ${new Date().toISOString()}`)
+        }
+      } else {
+        checks['webapp_freshness'] = { status: 'OK', message: `Web app serving fresh data: ${hoursOld}h old` }
+      }
+    }
+  } catch (e) {
+    checks['webapp_freshness'] = { status: 'WARNING', message: 'Could not reach /api/reports: ' + (e instanceof Error ? e.message : String(e)) }
+  }
+  // NOTE: webapp_freshness intentionally excluded from issuesFound
+  // NEVER triggers Adaptive pipeline -- informational only (GNI-R-227)
+
   // Determine overall status
   const hasCritical = Object.values(checks).some(c => c.status === 'CRITICAL')
   const hasWarning = Object.values(checks).some(c => c.status === 'WARNING')
