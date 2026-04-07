@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
       .limit(10)
 
     if (error) throw error
+    console.log('FIRST_REPORT:', JSON.stringify({id: data?.[0]?.id, created_at: data?.[0]?.created_at, count: data?.length}))
 
     // Historical baseline: today's escalation score percentile
     let baseline = null
