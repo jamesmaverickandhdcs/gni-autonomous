@@ -6,6 +6,8 @@ import { validateApiKey } from '@/lib/auth'
 
 
 export async function GET(request: NextRequest) {
+  const debugUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'MISSING'
+  console.log('SUPABASE_URL_IN_USE:', debugUrl.substring(0, 30))
   const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
