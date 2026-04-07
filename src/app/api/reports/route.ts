@@ -1,37 +1,34 @@
 export const dynamic = 'force-dynamic'
-
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateApiKey } from '@/lib/auth'
 
-
 export async function GET(request: NextRequest) {
-  const debugUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'MISSING'
-  console.log('SUPABASE_URL_IN_USE:', debugUrl.substring(0, 30))
-  const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
   const authError = validateApiKey(request)
   if (authError) return authError
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+  const headers = {
+    apikey: supabaseKey,
+    Authorization: 'Bearer ' + supabaseKey,
+    Accept: 'application/json'
+  }
+
   try {
-    const { data, error } = await supabase
-      .from('reports')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(10)
+    const res = await fetch(
+      supabaseUrl + '/rest/v1/reports?select=*&order=created_at.desc&limit=10',
+      { headers, cache: 'no-store' }
+    )
+    const data = await res.json()
 
-    if (error) throw error
-    console.log('FIRST_REPORT:', JSON.stringify({id: data?.[0]?.id, created_at: data?.[0]?.created_at, count: data?.length}))
-
-    // Historical baseline: today's escalation score percentile
     let baseline = null
     if (data && data.length > 0) {
       const latestScore = data[0].escalation_score || 0
-      const { data: allScores } = await supabase
-        .from('reports')
-        .select('escalation_score')
-        .gt('escalation_score', 0)
+      const scoresRes = await fetch(
+        supabaseUrl + '/rest/v1/reports?select=escalation_score&escalation_score=gt.0',
+        { headers, cache: 'no-store' }
+      )
+      const allScores = await scoresRes.json()
       if (allScores && allScores.length > 0) {
         const total = allScores.length
         const below = allScores.filter((r: { escalation_score: number }) => r.escalation_score <= latestScore).length
@@ -39,11 +36,9 @@ export async function GET(request: NextRequest) {
         baseline = { score: latestScore, percentile, total_non_zero: total }
       }
     }
+
     return NextResponse.json({ reports: data, baseline }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
-    return NextResponse.json(
-      { error: 'Failed to fetch reports' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to fetch reports' }, { status: 500 })
   }
 }
