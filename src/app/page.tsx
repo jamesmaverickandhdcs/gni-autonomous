@@ -70,12 +70,7 @@ interface PredictionSummary {
   pending_review: number
 }
 
-interface SourceWeight {
-  source: string
-  weight: number
-  gpvs_contribution: number | null
-  last_updated: string
-}
+
 
 interface PipelineArticle {
   id: string
@@ -186,46 +181,7 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
   )
 }
 
-function SourceWeightsTable({ weights }: { weights: SourceWeight[] }) {
-  if (!weights || weights.length === 0) return null
-  return (
-    <section className="mb-8">
-      <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="text-lg">⚖️</span>
-          <div>
-            <div className="text-sm font-bold text-white">Dynamic Source Weights <span className="text-xs text-gray-400 font-normal">(Updated automatically based on GPVS prediction accuracy)</span></div>
-          </div>
-        </div>
-        <div className="space-y-2">
-          {weights.map(w => {
-            const pct = Math.min(100, Math.round((w.weight / 2.0) * 100))
-            const barColor = w.weight >= 1.3 ? "bg-green-500" : w.weight >= 1.0 ? "bg-blue-500" : "bg-red-500"
-            return (
-              <div key={w.source} className="flex items-center gap-3">
-                <div className="w-24 text-xs text-gray-300 font-mono capitalize shrink-0">{w.source}</div>
-                <div className="flex-1 bg-gray-800 rounded-full h-2">
-                  <div className={`h-2 rounded-full ${barColor}`} style={{ width: pct + "%" }} />
-                </div>
-                <div className="w-10 text-xs text-right font-bold text-white shrink-0">{w.weight.toFixed(2)}</div>
-                <div className="w-16 text-xs text-right text-gray-500 shrink-0">
-                  {w.gpvs_contribution != null ? `GPVS: ${Math.round(w.gpvs_contribution * 100)}%` : "baseline"}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-        <div className="mt-4 bg-gray-800 rounded-lg p-3 text-xs text-gray-400 leading-relaxed">
-          <span className="text-white font-bold">How Source Weights work: </span>
-          Every GNI prediction is tracked against real market outcomes via GPVS. Sources whose articles led to correct predictions earn higher trust weights (up to 2.0). Sources linked to wrong predictions are penalised (down to 0.5). Weights update automatically using an Exponential Moving Average (EMA) after each verified prediction, so the most accurate sources drive the intelligence over time.
-        </div>
-        <div className="mt-3 text-xs text-gray-600">
-          Weight: 0.5 (penalised) → 1.0 (neutral) → 2.0 (highly trusted) | Updates via EMA after each verified prediction
-        </div>
-      </div>
-    </section>
-  )
-}
+
 
 function EscalationSparkline({ reports }: { reports: { escalation_score: number; escalation_level: string; created_at: string }[] }) {
   const last7 = reports.slice(0, 7).reverse()
@@ -283,7 +239,6 @@ export default function Home() {
   const [latestArticles, setLatestArticles] = useState<PipelineArticle[]>([])
   const [showAIThinking, setShowAIThinking] = useState(false)
   const [predictionSummary, setPredictionSummary] = useState<PredictionSummary | null>(null)
-  const [sourceWeights, setSourceWeights] = useState<SourceWeight[]>([])
   const [latestRun, setLatestRun] = useState<PipelineRun | null>(null)
   const [showPreviousReports, setShowPreviousReports] = useState(false)
   const [mapEvents, setMapEvents] = useState<{id: string, source: string, bias: string, title: string, url: string, summary: string, stage3_score: number, stage4_rank: number, location_name: string, lat: number, lng: number, created_at: string}[]>([])
@@ -327,12 +282,7 @@ export default function Home() {
       .then(r => r.json())
       .then(data => setPredictionSummary(data.summary || null))
       .catch(() => {})
-
-    fetch('/api/source-weights', { headers: { 'X-GNI-Key': GNI_KEY } })
-      .then(r => r.json())
-      .then(data => setSourceWeights(data.weights || []))
-      .catch(() => {})
-
+    
     // Live map events widget
     fetch('/api/article-events?days=1', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
@@ -1026,7 +976,7 @@ export default function Home() {
             )}
 
             <PredictionScorecard summary={predictionSummary} />
-            <SourceWeightsTable weights={sourceWeights} />
+            
 
 
           </>
