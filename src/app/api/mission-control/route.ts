@@ -2,10 +2,6 @@ export const dynamic = 'force-dynamic'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 const INTERNAL_KEY = process.env.SELF_CHECK_INTERNAL_KEY || 'gni-internal-missioncontrol'
 
@@ -23,6 +19,10 @@ async function sendTelegram(message: string) {
 }
 
 async function wasTelegramSentRecently(): Promise<boolean> {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
   try {
     const twoHoursAgo = new Date(Date.now() - 2 * 3600000).toISOString()
     const { data } = await supabase.from('mission_control_log')
@@ -32,6 +32,10 @@ async function wasTelegramSentRecently(): Promise<boolean> {
 }
 
 export async function GET(request: NextRequest) {
+  const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
   const isInternal = request.headers.get('X-Internal-Key') === INTERNAL_KEY
 
   // Public access: return last cached result only

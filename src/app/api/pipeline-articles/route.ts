@@ -5,16 +5,16 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { validateApiKey } from '@/lib/auth'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 const QuerySchema = z.object({
   run_id: z.string().uuid({ message: 'run_id must be a valid UUID' }),
 })
 
 export async function GET(request: NextRequest) {
+  const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
   const authError = validateApiKey(request)
   if (authError) return authError

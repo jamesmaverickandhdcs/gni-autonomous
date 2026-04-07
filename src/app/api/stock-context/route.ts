@@ -4,10 +4,6 @@ import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
 import { validateApiKey } from '@/lib/auth'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 const contextCache: Record<string, { context: string, date: string }> = {}
 
@@ -17,6 +13,10 @@ const QuerySchema = z.object({
 })
 
 export async function GET(request: NextRequest) {
+  const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
   const authError = validateApiKey(request)
   if (authError) return authError

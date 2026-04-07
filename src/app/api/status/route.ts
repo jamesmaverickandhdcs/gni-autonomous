@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateApiKey } from '@/lib/auth'
 
-const supabase = createClient(
+
+export async function GET(request: NextRequest) {
+  const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
-
-export async function GET(request: NextRequest) {
   const authError = validateApiKey(request)
   if (authError) return authError
   try {
