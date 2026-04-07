@@ -97,11 +97,11 @@ export async function GET(request: NextRequest) {
     // Check pipeline recency from same data
     const pipelineRuns = usage.filter((u: {pipeline: string, created_at: string}) =>
       u.pipeline === 'gni_pipeline' &&
-      new Date(u.created_at).getTime() > Date.now() - 12 * 3600000
+      new Date(u.created_at).getTime() > Date.now() - 20 * 3600000
     )
     const madRuns = usage.filter((u: {pipeline: string, created_at: string}) =>
       u.pipeline === 'gni_mad' &&
-      new Date(u.created_at).getTime() > Date.now() - 12 * 3600000
+      new Date(u.created_at).getTime() > Date.now() - 20 * 3600000
     )
     if (pct >= 90) {
       checks['groq_quota'] = { status: 'CRITICAL', message: `Quota at ${pct}% -- ${totalTokens}/100000 tokens today` }
@@ -113,11 +113,11 @@ export async function GET(request: NextRequest) {
       checks['groq_quota'] = { status: 'OK', message: `Quota at ${pct}% -- ${totalTokens}/100000 tokens today` }
     }
     checks['pipeline_recent'] = pipelineRuns.length > 0
-      ? { status: 'OK', message: 'gni_pipeline ran within last 12 hours' }
-      : { status: 'WARNING', message: 'No gni_pipeline run in last 12 hours -- check sacred cron' }
+      ? { status: 'OK', message: 'gni_pipeline ran within last 20 hours' }
+      : { status: 'WARNING', message: 'No gni_pipeline run in last 20 hours -- check sacred cron' }
     checks['mad_recent'] = madRuns.length > 0
-      ? { status: 'OK', message: 'gni_mad ran within last 12 hours' }
-      : { status: 'WARNING', message: 'No gni_mad run in last 12 hours -- check sacred cron' }
+      ? { status: 'OK', message: 'gni_mad ran within last 20 hours' }
+      : { status: 'WARNING', message: 'No gni_mad run in last 20 hours -- check sacred cron' }
     if (pipelineRuns.length === 0) issuesFound++
     if (madRuns.length === 0) issuesFound++
   } catch (e) {
