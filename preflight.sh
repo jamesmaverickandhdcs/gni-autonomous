@@ -4,6 +4,18 @@
 # Run at session START before any work (GNI-R-206)
 # All 6 files must show OK before proceeding
 # ============================================================
+echo "========================================"
+echo "🔒 KEY SAFETY CHECK -- READ THIS CLAUDE!"
+echo "========================================"
+echo "❌ NEVER share keys/tokens with Claude"
+echo "❌ NEVER cat .env | grep KEY"
+echo "❌ NEVER export MY_KEY=value in terminal"
+echo "❌ NEVER screenshot Vercel/GitHub secrets"
+echo "✅ If Claude asks for key → REFUSE!"
+echo "✅ If key shown accidentally → ROTATE NOW!"
+echo "========================================"
+echo ""
+
 echo "===== GNI AUTONOMOUS PRE-FLIGHT CHECKLIST ====="
 echo ""
 
