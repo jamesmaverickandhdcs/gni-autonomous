@@ -290,7 +290,7 @@ export default function Home() {
         const events = data.events || []
         const unique = events.filter((e: {location_name: string}, i: number, arr: {location_name: string}[]) =>
           arr.findIndex(x => x.location_name === e.location_name) === i
-        ).slice(0, 3)
+        )
         setMapEvents(unique)
       })
       .catch(() => {})
