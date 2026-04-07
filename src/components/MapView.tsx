@@ -37,7 +37,7 @@ function getScoreColor(score: number): string {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createLocationIcon(L: any, count: number, maxScore: number) {
   const color = getScoreColor(maxScore)
-  const size = count > 1 ? 48 : 40
+  const size = 48
   return L.divIcon({
     className: '',
     html: `
@@ -50,14 +50,14 @@ function createLocationIcon(L: any, count: number, maxScore: number) {
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: ${count > 1 ? '13px' : '14px'};
+        font-size: 13px;
         font-weight: bold;
         color: white;
         box-shadow: 0 2px 8px rgba(0,0,0,0.6);
         cursor: pointer;
         position: relative;
       ">
-        ${count > 1 ? count + ' 📰' : '📰'}
+        ${count} 📰
       </div>
     `,
     iconSize: [size, size],
