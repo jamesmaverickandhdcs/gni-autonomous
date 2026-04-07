@@ -21,6 +21,9 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")  # L23: never hardcode model names
 GROQ_MODEL_FALLBACK = os.getenv("GROQ_MODEL_FALLBACK", "llama-3.1-8b-instant")  # automatic failover
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY", "")
+CEREBRAS_URL = "https://api.cerebras.ai/v1/chat/completions"
+CEREBRAS_MODEL = "llama3.1-8b"
 GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS", "false").lower() == "true"
 
 
@@ -124,6 +127,36 @@ def _call_groq(prompt: str, model: str = None) -> str | None:
         if attempt == 1:
             print(f"  🔄 Retrying with fallback model: {GROQ_MODEL_FALLBACK}")
 
+    return None
+
+
+def _call_cerebras(prompt: str) -> str | None:
+    """Call Cerebras API. OpenAI-compatible REST. Zero Groq quota impact."""
+    if not CEREBRAS_API_KEY:
+        print("  WARNING: No CEREBRAS_API_KEY found")
+        return None
+    try:
+        import requests as _req
+        response = _req.post(
+            CEREBRAS_URL,
+            headers={
+                "Authorization": f"Bearer {CEREBRAS_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": CEREBRAS_MODEL,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.3,
+                "max_tokens": 2000
+            },
+            timeout=30
+        )
+        if response.status_code == 200:
+            return response.json()["choices"][0]["message"]["content"]
+        else:
+            print(f"  WARNING: Cerebras error: {response.status_code} {response.text[:100]}")
+    except Exception as e:
+        print(f"  WARNING: Cerebras error: {e}")
     return None
 
 
@@ -506,7 +539,7 @@ def _build_plain_narrative(report: dict) -> str:
         return ""
 
 
-def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
+def analyze(articles: list[dict], prompt_override: str = None, provider: str = "groq") -> dict | None:
     """
     Analyze top articles using appropriate LLM.
     GitHub Actions → Groq API directly (no Ollama timeout waste)
@@ -521,10 +554,15 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     source_used = None
 
     if GITHUB_ACTIONS:
-        # Cloud mode — Groq directly, no Ollama attempt
-        print("  ☁️  GitHub Actions — using Groq API directly...")
-        raw = _call_groq(prompt)
-        source_used = "groq"
+        # Cloud mode — use provider param (groq default, cerebras for adaptive)
+        if provider == "cerebras":
+            print("  ☁️  GitHub Actions — using Cerebras API (zero Groq quota)...")
+            raw = _call_cerebras(prompt)
+            source_used = "cerebras"
+        else:
+            print("  ☁️  GitHub Actions — using Groq API directly...")
+            raw = _call_groq(prompt)
+            source_used = "groq"
     else:
         # Local mode — Ollama first, Groq fallback
         print("  🧠 Calling Ollama (Llama 3 8B local)...")
@@ -565,7 +603,7 @@ def analyze(articles: list[dict], prompt_override: str = None) -> dict | None:
     # 2 extra calls: temp 0.1 (lower bound) + temp 0.7 (upper bound)
     # sleep(30) before each CI call -- TPM protection after primary analysis
     base_score = report.get("sentiment_score", 0.0)
-    if GITHUB_ACTIONS:
+    if GITHUB_ACTIONS and provider != "cerebras":
         print("  Running confidence interval analysis (2 additional runs)...")
         scores = [base_score]
         for temp in [0.1, 0.7]:

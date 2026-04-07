@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # ============================================================
 # GNI Adaptive Pipeline -- adaptive_pipeline.py
 # Triggered by heartbeat when escalation delta >= 2.0
@@ -142,7 +142,7 @@ def run_standard_mode(client, report: dict, reason: str) -> dict:
 
         # Run analysis -- 1 Groq call
         print('  Running focused analysis (~1 Groq call)...')
-        adaptive_report = analyze(top_articles)
+        adaptive_report = analyze(top_articles, provider="cerebras")
         if not adaptive_report:
             print('  WARNING: Analysis returned no report')
             return {'mode': 'standard', 'groq_calls': 1}
