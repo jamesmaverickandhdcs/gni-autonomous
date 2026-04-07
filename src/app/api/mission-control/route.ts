@@ -7,7 +7,7 @@ const INTERNAL_KEY = process.env.SELF_CHECK_INTERNAL_KEY || 'gni-internal-missio
 
 async function sendTelegram(message: string) {
   const token = process.env.TELEGRAM_BOT_TOKEN
-  const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_CHAT_ID
+  const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID || process.env.TELEGRAM_QSChannel_ID
   if (!token || !chatId) return
   try {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
 
   // Check 4: Source health -- call existing /api/source-health (NO DUPLICATION)
   try {
-    const res = await fetch(`${baseUrl}/api/source-health`, { signal: AbortSignal.timeout(5000) })
+    const res = await fetch(`${baseUrl}/api/source-health`, { headers: { 'X-GNI-Key': process.env.GNI_API_KEYS?.split(',')[0] || '' }, signal: AbortSignal.timeout(5000) })
     const data = await res.json()
     const sources = data.sources || []
     const healthy = sources.filter((s: {status: string}) => s.status === 'healthy').length
