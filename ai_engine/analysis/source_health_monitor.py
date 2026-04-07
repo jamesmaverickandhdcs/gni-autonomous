@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_ADMIN_ID  = os.getenv("TELEGRAM_ADMIN_ID", "") or os.getenv("TELEGRAM_CHAT_ID", "")
+TELEGRAM_ADMIN_ID  = os.getenv("TELEGRAM_ADMIN_ID", "") or os.getenv("TELEGRAM_QSChannel_ID", "")
 
 MIN_EXPECTED         = 3
 ROLLING_WINDOW       = 7

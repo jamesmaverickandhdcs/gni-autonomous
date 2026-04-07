@@ -13,15 +13,15 @@ from datetime import datetime
 def send_telegram_message(text: str) -> bool:
     """Send a message to the public Telegram channel."""
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+    TELEGRAM_QSChannel_ID = os.getenv("TELEGRAM_QSChannel_ID")
 
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_QSChannel_ID:
         print("  ⚠️  Telegram credentials not configured — skipping")
         return False
 
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
+        "chat_id": TELEGRAM_QSChannel_ID,
         "text": text,
         "parse_mode": "HTML",
         "disable_web_page_preview": False
@@ -42,7 +42,7 @@ def send_telegram_message(text: str) -> bool:
 def send_admin_message(text: str) -> bool:
     """Send message to admin only — never to public channel."""
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-    TELEGRAM_ADMIN_ID = os.getenv("TELEGRAM_ADMIN_ID") or os.getenv("TELEGRAM_CHAT_ID")
+    TELEGRAM_ADMIN_ID = os.getenv("TELEGRAM_ADMIN_ID") or os.getenv("TELEGRAM_QSChannel_ID")
 
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_ADMIN_ID:
         print("  ⚠️  Admin credentials not configured — skipping")

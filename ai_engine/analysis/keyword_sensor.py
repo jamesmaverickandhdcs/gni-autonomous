@@ -22,7 +22,7 @@ GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
 GROQ_MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')
 GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
-TELEGRAM_ADMIN_CHAT_ID = os.getenv('TELEGRAM_ADMIN_CHAT_ID', '') or os.getenv('TELEGRAM_CHAT_ID', '')
+TELEGRAM_ADMIN_CHAT_ID = os.getenv('TELEGRAM_ADMIN_CHAT_ID', '') or os.getenv('TELEGRAM_QSChannel_ID', '')
 APP_URL = os.getenv('NEXT_PUBLIC_APP_URL', 'https://gni-autonomous.vercel.app')
 
 MIN_ARTICLE_FREQUENCY = 3

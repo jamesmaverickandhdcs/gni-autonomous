@@ -55,6 +55,6 @@ jobs:
           GROQ_MODEL: ${{ secrets.GROQ_MODEL }}
           GITHUB_ACTIONS: "true"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_QSChannel_ID: ${{ secrets.TELEGRAM_QSChannel_ID }}
           TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
           MYANMAR_DISPATCH_PAT: ${{ secrets.MYANMAR_DISPATCH_PAT }}

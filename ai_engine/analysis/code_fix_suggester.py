@@ -16,7 +16,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")  # public channel
+TELEGRAM_QSChannel_ID = os.getenv("TELEGRAM_QSChannel_ID", "")  # QS public channel
 TELEGRAM_ADMIN_CHAT_ID = os.getenv("TELEGRAM_ADMIN_CHAT_ID", "")  # private admin only
 
 # Bug classes that ALWAYS require admin action (L56)
@@ -116,7 +116,7 @@ STRIKE4_TELEGRAM = (
 
 def _send_telegram(message):
     # Send to ADMIN private chat only -- never to public channel
-    admin_chat = TELEGRAM_ADMIN_CHAT_ID or TELEGRAM_CHAT_ID
+    admin_chat = TELEGRAM_ADMIN_CHAT_ID or TELEGRAM_QSChannel_ID
     if not TELEGRAM_BOT_TOKEN or not admin_chat:
         return
     try:

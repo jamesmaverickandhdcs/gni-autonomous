@@ -62,7 +62,7 @@ def _get_supabase_client():
 
 def _send_telegram(message: str):
     token   = os.getenv('TELEGRAM_BOT_TOKEN', '')
-    chat_id = os.getenv('TELEGRAM_ADMIN_ID', os.getenv('TELEGRAM_CHAT_ID', ''))
+    chat_id = os.getenv('TELEGRAM_ADMIN_ID', os.getenv('TELEGRAM_QSChannel_ID', ''))
     if not token or not chat_id:
         return
     try:
