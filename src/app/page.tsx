@@ -452,7 +452,7 @@ export default function Home() {
                     <div className="text-sm text-gray-300 truncate">
                       {latest?.mad_action_recommendation
                         ? latest.mad_action_recommendation.slice(0, 120) + (latest.mad_action_recommendation.length > 120 ? '...' : '')
-                        : 'Executive brief loading...'}
+                        : 'MAD analysis pending — high escalation detected. See /brief for details.'}
                     </div>
                   </div>
                   <a href="/brief" className="text-xs text-white bg-blue-700 hover:bg-blue-600 rounded px-3 py-1.5 font-bold ml-3 shrink-0 transition-colors">

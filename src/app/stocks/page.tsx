@@ -122,14 +122,13 @@ function formatDate(dateStr: string, range: string) {
 export default function StocksPage() {
   const [selectedCategory, setSelectedCategory] = useState('Commodity')
   const [selectedTicker, setSelectedTicker] = useState('GC=F')
-  const [selectedRange, setSelectedRange] = useState('1y')
+  const [selectedRange, setSelectedRange] = useState('3d')
   const [stockData, setStockData] = useState<StockData | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [priceCache, setPriceCache] = useState<Record<string, { price: number; changePercent: string; change: string }>>({})
   const [loadingCategory, setLoadingCategory] = useState(false)
-  const [aiContext, setAiContext] = useState('')
-  const [aiLoading, setAiLoading] = useState(false)
+  
 
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
@@ -180,19 +179,27 @@ export default function StocksPage() {
       .finally(() => setLoading(false))
   }, [selectedTicker, selectedRange])
 
+  // Auto-refresh 3d every 5 min for selected ticker only (GNI stand-by architecture)
   useEffect(() => {
-    setAiContext('')
-    setAiLoading(true)
-    const cached = priceCache[selectedTicker]
-    const change = cached?.changePercent || '0'
-    fetch(`/api/stock-context?ticker=${encodeURIComponent(selectedTicker)}&change=${change}`, { headers: { 'X-GNI-Key': GNI_KEY } })
-      .then(r => r.json())
-      .then(data => setAiContext(data.context || ''))
-      .catch(() => setAiContext('AI context temporarily unavailable.'))
-      .finally(() => setAiLoading(false))
-  }, [selectedTicker])
-  /* eslint-enable react-hooks/exhaustive-deps */
+    if (selectedRange !== '3d') return
+    const interval = setInterval(() => {
+      fetch(`/api/stocks?ticker=${encodeURIComponent(selectedTicker)}&range=3d`, { headers: { 'X-GNI-Key': GNI_KEY } })
+        .then(r => r.json())
+        .then(data => {
+          if (!data.error) {
+            setStockData(data)
+            setPriceCache(prev => ({
+              ...prev,
+              [data.ticker]: { price: data.price, changePercent: data.changePercent, change: data.change }
+            }))
+          }
+        })
+        .catch(() => {})
+    }, 5 * 60 * 1000) // 5 minutes
+    return () => clearInterval(interval)
+  }, [selectedTicker, selectedRange])
 
+  /* eslint-enable react-hooks/exhaustive-deps */
   const isRangePositive = stockData ? parseFloat(stockData.rangeChangePercent || stockData.changePercent) >= 0 : true
   const chartColor = isRangePositive ? '#22c55e' : '#ef4444'
   const chartData = stockData?.chartData?.map(d => ({ ...d, date: formatDate(d.date, selectedRange) })) || []
@@ -371,20 +378,7 @@ export default function StocksPage() {
               </div>
             )}
 
-            {/* AI Context */}
-            <div className="mt-3 shrink-0 bg-blue-950 border border-blue-800 rounded-lg p-3">
-              <div className="text-xs text-blue-400 uppercase tracking-wider mb-1 flex items-center gap-2">
-                <span>🧠</span>
-                <span>GNI AI Context -- Why did {selectedTicker} move recently?</span>
-              </div>
-              {aiLoading && <p className="text-gray-400 text-xs">Analyzing geopolitical events...</p>}
-              {!aiLoading && aiContext && (
-                <div>
-                  <p className="text-blue-200 text-xs leading-relaxed mb-1">{aiContext}</p>
-                  <p className="text-yellow-400 text-xs">⚠️ For informational purposes only. Not financial advice.</p>
-                </div>
-              )}
-            </div>
+            
 
           </div>
         </div>

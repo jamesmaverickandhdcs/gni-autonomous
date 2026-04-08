@@ -25,7 +25,7 @@ async function fetchYahoo(ticker: string, period: string, interval: string) {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       'Accept': 'application/json',
     },
-    next: { revalidate: period === '5d' || period === '7d' ? 300 : 3600 }
+    next: { revalidate: 300 } // 5 min cache for all ranges -- stand-by architecture
   })
   if (!res.ok) throw new Error(`Yahoo Finance returned ${res.status}`)
   const data = await res.json()
