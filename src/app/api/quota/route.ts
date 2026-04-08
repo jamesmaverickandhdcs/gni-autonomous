@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       .from('groq_daily_usage')
       .select('pipeline, tokens_used, requests_used, created_at')
       .order('created_at', { ascending: false })
-      .limit(200)
+      .limit(500)
     if (error) throw error
     return NextResponse.json({ usage: data || [] }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
