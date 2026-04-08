@@ -74,7 +74,7 @@ def log_usage(client, pipeline: str, tokens_used: int,
 
 def _send_telegram_alert(message: str):
     token   = os.getenv('TELEGRAM_BOT_TOKEN', '')
-    chat_id = os.getenv('TELEGRAM_Admin_ID', os.getenv('TELEGRAM_QSChannel_ID', ''))
+    chat_id = os.getenv('TELEGRAM_ADMIN_ID', os.getenv('TELEGRAM_QSChannel_ID', ''))
     if not token or not chat_id:
         return
     try:
