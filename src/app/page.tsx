@@ -325,6 +325,62 @@ export default function Home() {
 
   const latest = reports[0]
 
+  const renderPillarBars = () => {
+    const geoR  = pillarReports.find(r => r.pillar === 'geo')
+    const techR = pillarReports.find(r => r.pillar === 'tech')
+    const finR  = pillarReports.find(r => r.pillar === 'fin')
+    const riskCol = (r: string) =>
+      r?.toLowerCase() === 'critical' ? 'text-red-400' :
+      r?.toLowerCase() === 'high'     ? 'text-orange-400' :
+      r?.toLowerCase() === 'medium'   ? 'text-yellow-400' : 'text-green-400'
+    return (
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
+          <span className="text-sm">🧬</span>
+          <div>
+            <div className="text-xs text-gray-500">Technology</div>
+            <div className={`text-xs font-bold ${riskCol(latest.risk_level)}`}>
+              {latest.risk_level?.toUpperCase() || 'MONITORING'}
+            </div>
+            {techR && (
+              <div className={`text-xs mt-0.5 ${riskCol(techR.risk_level)}`}>
+                Pillar: {techR.risk_level?.toUpperCase()}
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
+          <span className="text-sm">🌍</span>
+          <div>
+            <div className="text-xs text-gray-500">Geopolitics</div>
+            <div className={`text-xs font-bold ${riskCol(latest.risk_level)}`}>
+              {latest.risk_level?.toUpperCase() || 'MONITORING'}
+            </div>
+            {geoR && (
+              <div className={`text-xs mt-0.5 ${riskCol(geoR.risk_level)}`}>
+                Pillar: {geoR.risk_level?.toUpperCase()}
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
+          <span className="text-sm">💹</span>
+          <div>
+            <div className="text-xs text-gray-500">Financial</div>
+            <div className={`text-xs font-bold ${latest.sentiment?.toLowerCase() === 'bearish' ? 'text-red-400' : latest.sentiment?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'}`}>
+              {latest.sentiment?.toUpperCase() || 'NEUTRAL'}
+            </div>
+            {finR && (
+              <div className={`text-xs mt-0.5 ${finR.sentiment?.toLowerCase() === 'bearish' ? 'text-red-400' : finR.sentiment?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'}`}>
+                Pillar: {finR.sentiment?.toUpperCase()}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
 
@@ -354,37 +410,7 @@ export default function Home() {
             </div>
           </div>
 
-          {latest && (
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">🧬</span>
-                <div>
-                  <div className="text-xs text-gray-500">Technology</div>
-                  <div className={`text-xs font-bold ${latest.risk_level?.toLowerCase() === 'critical' ? 'text-red-400' : latest.risk_level?.toLowerCase() === 'high' ? 'text-orange-400' : 'text-yellow-400'}`}>
-                    {latest.risk_level?.toUpperCase() || 'MONITORING'}
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">🌍</span>
-                <div>
-                  <div className="text-xs text-gray-500">Geopolitics</div>
-                  <div className={`text-xs font-bold ${latest.risk_level?.toLowerCase() === 'critical' ? 'text-red-400' : latest.risk_level?.toLowerCase() === 'high' ? 'text-orange-400' : 'text-yellow-400'}`}>
-                    {latest.risk_level?.toUpperCase() || 'MONITORING'}
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-                <span className="text-sm">💹</span>
-                <div>
-                  <div className="text-xs text-gray-500">Financial</div>
-                  <div className={`text-xs font-bold ${latest.sentiment?.toLowerCase() === 'bearish' ? 'text-red-400' : latest.sentiment?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'}`}>
-                    {latest.sentiment?.toUpperCase() || 'NEUTRAL'}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {latest && renderPillarBars()}
 
                     {/* Cross-Navigation -- 4 buttons to other main pages (GNI-R-140) */}
           <div className="flex flex-wrap gap-2 mt-2">

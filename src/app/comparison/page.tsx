@@ -153,8 +153,8 @@ export default function ComparisonPage() {
                   )
                 })}
               </div>
-              <div className="mt-3 text-xs text-gray-600">
-                Divergence rate above 30% = systematic disagreement between report AI and MAD debate. Investigate prompt quality or source bias.
+              <div className="mt-3 text-xs text-gray-500 leading-relaxed">
+                Divergence during active geopolitical events is normal — MAD agents detecting risks the summary AI missed. This is the system working as designed, not a data quality issue.
               </div>
             </div>
           )}
@@ -199,6 +199,9 @@ export default function ComparisonPage() {
                       Report says <strong>{latest.sentiment?.toUpperCase()}</strong> but MAD debate says <strong>{latest.mad_verdict?.toUpperCase()}</strong>.
                       This divergence is the highest-value intelligence signal.
                     </div>
+                    <div className="text-red-300 text-xs mt-2 leading-relaxed opacity-80">
+                      The AI report analysed today&apos;s headlines and reached a {latest.sentiment?.toLowerCase()} conclusion. The MAD debate agents — debating future threats across 3 rounds — independently reached {latest.mad_verdict?.toLowerCase()}. When these two systems disagree, it means hidden risks exist that the summary AI did not surface. Trust the divergence signal — it is the system doing its job.
+                    </div>
                   </div>
                 </div>
               )}
@@ -209,6 +212,9 @@ export default function ComparisonPage() {
                   <div>
                     <div className="text-green-300 font-bold">AGREE &mdash; Report and Debate Aligned</div>
                     <div className="text-green-500 text-sm">Both signals point {latest.sentiment?.toUpperCase()}. High confidence.</div>
+                    <div className="text-green-300 text-xs mt-2 leading-relaxed opacity-80">
+                      The AI report and the MAD debate agents independently reached the same {latest.sentiment?.toLowerCase()} conclusion. When both systems agree, it means the directional signal is robust — the same story is visible from both a news-analysis perspective and a future-threat-modelling perspective. This is the highest-confidence signal GNI can produce.
+                    </div>
                   </div>
                 </div>
               )}
@@ -372,13 +378,19 @@ export default function ComparisonPage() {
                         </div>
                         <div className="col-span-2 text-center">
                           {disagree ? (
-                            <span className="bg-red-900 border border-red-600 text-red-300 px-2 py-0.5 rounded-full font-bold">
-                              &#x26A0; DISAGREE
-                            </span>
+                            <div>
+                              <span className="bg-red-900 border border-red-600 text-red-300 px-2 py-0.5 rounded-full font-bold">
+                                &#x26A0; DISAGREE
+                              </span>
+                              <div className="text-xs text-red-400 mt-1 opacity-70">MAD detected hidden risk</div>
+                            </div>
                           ) : (
-                            <span className="bg-green-950 border border-green-800 text-green-500 px-2 py-0.5 rounded-full">
-                              &#x2713; AGREE
-                            </span>
+                            <div>
+                              <span className="bg-green-950 border border-green-800 text-green-500 px-2 py-0.5 rounded-full">
+                                &#x2713; AGREE
+                              </span>
+                              <div className="text-xs text-green-600 mt-1 opacity-70">Both signals aligned</div>
+                            </div>
                           )}
                         </div>
                         <div className="col-span-1 text-center">

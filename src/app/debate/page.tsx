@@ -309,6 +309,7 @@ export default function DebatePage() {
                                 coaching={getArbFeedback(selected.mad_arb_feedbacks, 'round1', agent.key)} />
                             ))}
                           </div>
+                          {AGENTS.some(a => getArbFeedback(selected.mad_arb_feedbacks, 'round1', a.key)) && (
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-2">
                               <span className="text-lg">⚖️</span>
@@ -323,6 +324,7 @@ export default function DebatePage() {
                               ))}
                             </div>
                           </div>
+                          )}
                         </div>
 
                         {/* Round 2 */}
@@ -338,6 +340,7 @@ export default function DebatePage() {
                                 coaching={getArbFeedback(selected.mad_arb_feedbacks, 'round2', agent.key)} />
                             ))}
                           </div>
+                          {AGENTS.some(a => getArbFeedback(selected.mad_arb_feedbacks, 'round2', a.key)) && (
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-2">
                               <span className="text-lg">⚖️</span>
@@ -352,6 +355,7 @@ export default function DebatePage() {
                               ))}
                             </div>
                           </div>
+                          )}
                         </div>
 
                         {/* Round 3 */}

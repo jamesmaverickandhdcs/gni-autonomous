@@ -42,8 +42,8 @@ const confidenceColor = (c: number) => {
   return 'text-red-400'
 }
 
-function ScenarioCard({ report }: { report: Report }) {
-  const [expanded, setExpanded] = useState(false)
+function ScenarioCard({ report, defaultExpanded = false }: { report: Report, defaultExpanded?: boolean }) {
+  const [expanded, setExpanded] = useState(defaultExpanded)
 
   const scenarios = [
     {
@@ -117,7 +117,7 @@ function ScenarioCard({ report }: { report: Report }) {
             </div>
             <h3 className="text-white font-semibold text-sm">{report.title}</h3>
           </div>
-          <span className="text-gray-600 text-xs shrink-0">{expanded ? 'Hide' : 'Show'}</span>
+          <span className="text-gray-500 text-xs shrink-0 font-medium">{expanded ? '▲ Collapse' : '▼ Expand'}</span>
         </div>
       </button>
 
@@ -236,7 +236,7 @@ export default function ScenariosPage() {
           <a href="/" className="inline-flex items-center gap-1.5 bg-blue-900 hover:bg-blue-700 border border-blue-700 text-blue-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Quantum Strategist</a>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-white">📊 Scenario Planning</h1>
+              <h1 className="text-2xl font-bold text-white">🔮 Scenario Planning</h1>
               <p className="text-sm text-gray-400">Base / Upside / Downside scenarios from Quadratic MAD debate</p>
               <p className="text-xs text-gray-600 mt-1">Reliability improves as GPVS correlation data accumulates.</p>
             </div>
@@ -329,8 +329,8 @@ export default function ScenariosPage() {
               </div>
             </div>
 
-            {filtered.map(report => (
-              <ScenarioCard key={report.id} report={report} />
+            {filtered.map((report, index) => (
+              <ScenarioCard key={report.id} report={report} defaultExpanded={index === 0} />
             ))}
           </>
         )}
