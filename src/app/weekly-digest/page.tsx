@@ -64,7 +64,7 @@ export default function WeeklyDigestPage() {
             <div>
               <h1 className="text-2xl font-bold text-white">Weekly Intelligence Digest</h1>
               <p className="text-sm text-gray-400">
-                Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. Week-over-week escalation delta is one of GNI&apos;s most reliable structural signals -- consistent increases indicate sustained threat buildup invisible in single pipeline runs. Use the digest time series to identify multi-week escalation cycles and long-term geopolitical momentum.
+                Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. Week-over-week escalation delta is one of GNI&apos;s most reliable structural signals — consistent increases indicate sustained threat buildup invisible in single pipeline runs. Use the digest time series to identify multi-week escalation cycles and long-term geopolitical momentum.
               </p>
             </div>
           </div>

@@ -233,6 +233,7 @@ export default function CorrelationsPage() {
             </div>
             <div className="mt-4 text-xs text-gray-600">
               Black Swan and Ostrich accuracy requires Quadratic MAD reports (from March 23, 2026).
+              Bull accuracy populates only from Bullish verdict runs — shows N/A when all recent verdicts are Bearish.
               Medium and Long horizon agent accuracy will populate as predictions mature.
             </div>
           </div>

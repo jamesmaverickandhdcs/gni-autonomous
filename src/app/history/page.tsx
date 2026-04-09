@@ -235,7 +235,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 )}
               </div>
             ) : (
-              <div className="text-xs text-gray-600">No report linked to this run</div>
+              <div className="text-xs text-gray-600">Adaptive scan — escalation monitoring only, no report generated</div>
             )}
           </div>
           <span className="text-gray-600 text-xs shrink-0">
@@ -442,7 +442,7 @@ export default function HistoryPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">Intelligence History</h1>
-            <p className="text-sm text-gray-400">Intelligence History archives every GNI pipeline run with its full context -- escalation score, sentiment, MAD verdict, confidence interval, and the top articles that drove the analysis. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
+            <p className="text-sm text-gray-400">Intelligence History archives every GNI pipeline run with its full context — escalation score, sentiment, MAD verdict, confidence interval, and the top articles that drove the analysis. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
           </div>
 </div>
           </div>

@@ -144,6 +144,9 @@ export default function ResearchPage() {
                 </div>
               ))}
             </div>
+            <div className="mt-2 text-xs text-gray-600 leading-relaxed">
+              Quality score requires 3 independent pipeline runs for CI analysis (t-distribution, n=3). Single-run reports show N/A until re-analysed.
+            </div>
           </section>
         )}
 
