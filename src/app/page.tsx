@@ -347,7 +347,7 @@ export default function Home() {
           </div>
           <div className="text-right">
             <div className={`text-xs font-bold ${riskCol(latest.risk_level)}`}>
-              {latest.risk_level?.toUpperCase() || 'MONITORING'}<span className="text-gray-600 font-normal"> · from Main report</span>
+              {latest.risk_level?.toUpperCase() || 'MONITORING'}<span className="text-gray-600 font-normal"> · from Main report 📊</span>
             </div>
             {techR && (
               <div className={`text-xs mt-0.5 ${riskCol(techR.risk_level)}`}>
@@ -365,7 +365,7 @@ export default function Home() {
           </div>
           <div className="text-right">
             <div className={`text-xs font-bold ${riskCol(latest.risk_level)}`}>
-              {latest.risk_level?.toUpperCase() || 'MONITORING'}<span className="text-gray-600 font-normal"> · from Main report</span>
+              {latest.risk_level?.toUpperCase() || 'MONITORING'}<span className="text-gray-600 font-normal"> · from Main report 📊</span>
             </div>
             {geoR && (
               <div className={`text-xs mt-0.5 ${riskCol(geoR.risk_level)}`}>
@@ -383,7 +383,7 @@ export default function Home() {
           </div>
           <div className="text-right">
             <div className={`text-xs font-bold ${sentCol(latest.sentiment)}`}>
-              {latest.sentiment?.toUpperCase() || 'NEUTRAL'}<span className="text-gray-600 font-normal"> · from Main report</span>
+              {latest.sentiment?.toUpperCase() || 'NEUTRAL'}<span className="text-gray-600 font-normal"> · from Main report 📊</span>
             </div>
             {finR && (
               <div className={`text-xs mt-0.5 ${sentCol(finR.sentiment)}`}>
