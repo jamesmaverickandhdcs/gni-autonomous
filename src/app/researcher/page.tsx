@@ -60,6 +60,7 @@ export default function ResearcherHub() {
 
         {/* Intro */}
         <div className="bg-green-950 border border-green-700 border-l-4 border-l-green-400 rounded-xl p-5 mb-6">
+          <div className="text-xs font-bold text-white uppercase tracking-wider mb-3">What is Pattern Intelligence?</div>
           <p className="text-sm text-gray-100 leading-relaxed">
             Pattern Intelligence is GNI&apos;s long-term research hub, designed for analysts and researchers who want to go beyond the latest report and understand how global intelligence evolves over time.
             Every pipeline run produces structured data -- escalation scores, sentiment scores, MAD verdicts, and confidence intervals -- all of which are tracked, stored, and available for deep analysis here.
