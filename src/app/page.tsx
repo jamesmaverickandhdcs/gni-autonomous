@@ -333,50 +333,66 @@ export default function Home() {
       r?.toLowerCase() === 'critical' ? 'text-red-400' :
       r?.toLowerCase() === 'high'     ? 'text-orange-400' :
       r?.toLowerCase() === 'medium'   ? 'text-yellow-400' : 'text-green-400'
+    const sentCol = (s: string) =>
+      s?.toLowerCase() === 'bearish' ? 'text-red-400' :
+      s?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'
     return (
       <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-          <span className="text-sm">🧬</span>
-          <div>
+
+        {/* Technology */}
+        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-end justify-between gap-2 min-h-[52px]">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="text-sm">🧬</span>
             <div className="text-xs text-gray-500">Technology</div>
+          </div>
+          <div className="text-right">
             <div className={`text-xs font-bold ${riskCol(latest.risk_level)}`}>
-              {latest.risk_level?.toUpperCase() || 'MONITORING'}
+              {latest.risk_level?.toUpperCase() || 'MONITORING'}<span className="text-gray-600 font-normal"> · from Main report</span>
             </div>
             {techR && (
               <div className={`text-xs mt-0.5 ${riskCol(techR.risk_level)}`}>
-                Pillar: {techR.risk_level?.toUpperCase()}
+                {techR.risk_level?.toUpperCase()}<span className="text-gray-600 font-normal"> · from Tech pillar 💻</span>
               </div>
             )}
           </div>
         </div>
-        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-          <span className="text-sm">🌍</span>
-          <div>
+
+        {/* Geopolitics */}
+        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-end justify-between gap-2 min-h-[52px]">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="text-sm">🌍</span>
             <div className="text-xs text-gray-500">Geopolitics</div>
+          </div>
+          <div className="text-right">
             <div className={`text-xs font-bold ${riskCol(latest.risk_level)}`}>
-              {latest.risk_level?.toUpperCase() || 'MONITORING'}
+              {latest.risk_level?.toUpperCase() || 'MONITORING'}<span className="text-gray-600 font-normal"> · from Main report</span>
             </div>
             {geoR && (
               <div className={`text-xs mt-0.5 ${riskCol(geoR.risk_level)}`}>
-                Pillar: {geoR.risk_level?.toUpperCase()}
+                {geoR.risk_level?.toUpperCase()}<span className="text-gray-600 font-normal"> · from Geo pillar 🌐</span>
               </div>
             )}
           </div>
         </div>
-        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-center gap-2">
-          <span className="text-sm">💹</span>
-          <div>
+
+        {/* Financial */}
+        <div className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 flex items-end justify-between gap-2 min-h-[52px]">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="text-sm">💹</span>
             <div className="text-xs text-gray-500">Financial</div>
-            <div className={`text-xs font-bold ${latest.sentiment?.toLowerCase() === 'bearish' ? 'text-red-400' : latest.sentiment?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'}`}>
-              {latest.sentiment?.toUpperCase() || 'NEUTRAL'}
+          </div>
+          <div className="text-right">
+            <div className={`text-xs font-bold ${sentCol(latest.sentiment)}`}>
+              {latest.sentiment?.toUpperCase() || 'NEUTRAL'}<span className="text-gray-600 font-normal"> · from Main report</span>
             </div>
             {finR && (
-              <div className={`text-xs mt-0.5 ${finR.sentiment?.toLowerCase() === 'bearish' ? 'text-red-400' : finR.sentiment?.toLowerCase() === 'bullish' ? 'text-green-400' : 'text-gray-400'}`}>
-                Pillar: {finR.sentiment?.toUpperCase()}
+              <div className={`text-xs mt-0.5 ${sentCol(finR.sentiment)}`}>
+                {finR.sentiment?.toUpperCase()}<span className="text-gray-600 font-normal"> · from Fin pillar 💰</span>
               </div>
             )}
           </div>
         </div>
+
       </div>
     )
   }
