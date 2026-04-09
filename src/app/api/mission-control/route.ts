@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     } else {
       const hoursOld = Math.round((Date.now() - new Date(data[0].created_at).getTime()) / 3600000)
       if (hoursOld > 24) {
-        checks['latest_report'] = { status: 'WARNING', message: `Latest report is ${hoursOld} hours old -- pipeline may have missed a run` }
+        checks['latest_report'] = { status: 'WARNING', message: `Latest report is ${hoursOld} hours old — pipeline may have missed a run` }
         issuesFound++
       } else {
         checks['latest_report'] = { status: 'OK', message: `Latest report is ${hoursOld} hours old` }
@@ -108,20 +108,20 @@ export async function GET(request: NextRequest) {
       new Date(u.created_at).getTime() > Date.now() - 20 * 3600000
     )
     if (pct >= 90) {
-      checks['groq_quota'] = { status: 'CRITICAL', message: `Quota at ${pct}% -- ${totalTokens}/100000 tokens today` }
+      checks['groq_quota'] = { status: 'CRITICAL', message: `Quota at ${pct}% — ${totalTokens}/100000 tokens today` }
       issuesFound++
     } else if (pct >= 70) {
-      checks['groq_quota'] = { status: 'WARNING', message: `Quota at ${pct}% -- monitor closely` }
+      checks['groq_quota'] = { status: 'WARNING', message: `Quota at ${pct}% — monitor closely` }
       issuesFound++
     } else {
-      checks['groq_quota'] = { status: 'OK', message: `Quota at ${pct}% -- ${totalTokens}/100000 tokens today` }
+      checks['groq_quota'] = { status: 'OK', message: `Quota at ${pct}% — ${totalTokens}/100000 tokens today` }
     }
     checks['pipeline_recent'] = pipelineRuns.length > 0
       ? { status: 'OK', message: 'gni_pipeline ran within last 20 hours' }
-      : { status: 'WARNING', message: 'No gni_pipeline run in last 20 hours -- check sacred cron' }
+      : { status: 'WARNING', message: 'No gni_pipeline run in last 20 hours — check sacred cron' }
     checks['mad_recent'] = madRuns.length > 0
       ? { status: 'OK', message: 'gni_mad ran within last 20 hours' }
-      : { status: 'WARNING', message: 'No gni_mad run in last 20 hours -- check sacred cron' }
+      : { status: 'WARNING', message: 'No gni_mad run in last 20 hours — check sacred cron' }
     if (pipelineRuns.length === 0) issuesFound++
     if (madRuns.length === 0) issuesFound++
   } catch (e) {
@@ -144,7 +144,7 @@ export async function GET(request: NextRequest) {
       checks['source_health'] = { status: 'CRITICAL', message: `Only ${healthy}/${total} sources healthy` }
       issuesFound++
     } else if (healthy < total * 0.8) {
-      checks['source_health'] = { status: 'WARNING', message: `${healthy}/${total} sources healthy -- some degraded` }
+      checks['source_health'] = { status: 'WARNING', message: `${healthy}/${total} sources healthy — some degraded` }
       issuesFound++
     } else {
       checks['source_health'] = { status: 'OK', message: `${healthy}/${total} sources healthy` }
@@ -168,7 +168,7 @@ export async function GET(request: NextRequest) {
     } else {
       const hoursOld = Math.round((Date.now() - new Date(reports[0].created_at).getTime()) / 3600000)
       if (hoursOld > 24) {
-        checks['webapp_freshness'] = { status: 'WARNING', message: `Web app serving stale data: ${hoursOld}h old -- Supabase JS client ordering bug suspected` }
+        checks['webapp_freshness'] = { status: 'WARNING', message: `Web app serving stale data: ${hoursOld}h old — Supabase JS client ordering bug suspected` }
         const sixHoursAgo = new Date(Date.now() - 6 * 3600000).toISOString()
         const { data: recentFresh } = await supabase.from('mission_control_log')
           .select('id').gte('checked_at', sixHoursAgo).limit(1)

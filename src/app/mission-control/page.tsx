@@ -100,12 +100,10 @@ export default function SelfCheckPage() {
               <h1 className="text-xl font-bold text-purple-300">🛡️ Mission Control System</h1>
               <p className="text-xs text-gray-400">GNI Operations Monitor | Aggregates all system health | Admin Telegram alerts</p>
             </div>
-            <div className="flex items-center gap-3">
-              {lastRun && <span className="text-xs text-gray-500">Last run: {lastRun}</span>}
-              <button onClick={runCheck} disabled={loading}
-                className="text-xs font-bold bg-purple-700 hover:bg-purple-600 text-white rounded-lg px-4 py-2 transition-colors disabled:opacity-50">
-                {loading ? 'Checking...' : '▶ Run Check Now'}
-              </button>
+            <div className="flex items-center gap-3 text-xs text-gray-500">
+              {lastRun && <span>Last refreshed: {lastRun}</span>}
+              <span className="text-gray-700">·</span>
+              <span>Auto-refreshes every 5 min</span>
             </div>
           </div>
         </div>
