@@ -206,7 +206,7 @@ export default function SelfCheckPage() {
       </div>
       <footer className="border-t border-gray-800 mt-8">
         <div className="max-w-6xl mx-auto px-4 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | Mission Control System | Higher Diploma in Computer Science | SUM
+          GNI Autonomous | Mission Control System | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

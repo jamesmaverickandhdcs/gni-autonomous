@@ -241,11 +241,11 @@ print(f"Mean escalation: {sum(scores)/len(scores):.2f}")`}</pre>
             <div className="bg-yellow-950 border border-yellow-800 rounded-xl p-4">
               <div className="text-xs text-yellow-400 font-bold mb-2">⚠️ Important Notes</div>
               <ul className="text-xs text-gray-400 space-y-1 leading-relaxed">
-                <li>-- Use a SEPARATE Groq account if running multiple projects (quota isolation)</li>
-                <li>-- Sacred crons (02:00+10:00 UTC) may fire 2-3 hours late on free tier -- this is normal</li>
-                <li>-- requirements.txt is DELETED -- all pipelines use inline pip install</li>
-                <li>-- Monthly cost is $0.00 using Groq free tier + Supabase free + Vercel free + GitHub free</li>
-                <li>-- Author anonymous -- Team Geeks only. Do not add individual names to commits or code.</li>
+                <li>— Use a SEPARATE Groq account if running multiple projects (quota isolation)</li>
+                <li>— Sacred crons (02:00+10:00 UTC) may fire 2-3 hours late on free tier — this is normal</li>
+                <li>— requirements.txt is DELETED — all pipelines use inline pip install</li>
+                <li>— Monthly cost is $0.00 using Groq free tier + Supabase free + Vercel free + GitHub free</li>
+                <li>— Author anonymous — Team Geeks only. Do not add individual names to commits or code.</li>
               </ul>
             </div>
           </div>

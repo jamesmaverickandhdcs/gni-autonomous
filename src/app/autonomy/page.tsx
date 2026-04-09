@@ -160,7 +160,7 @@ export default function AutonomyPage() {
             {/* Escalation Evidence -- GNI-R-117 */}
             {health.latest_escalation && (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Escalation Evidence -- Score Breakdown (GNI-R-117)</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Escalation Evidence — Score Breakdown (GNI-R-117)</div>
                 <div className="mb-3">
                   <div className="text-xs text-gray-500 mb-1">Latest Report</div>
                   <div className="text-sm text-gray-300">{health.latest_escalation.title}</div>
@@ -271,7 +271,7 @@ export default function AutonomyPage() {
       </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI — Global Nexus Insights (Autonomous) | Autonomy Engine | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
+          GNI Autonomous | Autonomy Engine | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>
