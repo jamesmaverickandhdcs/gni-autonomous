@@ -166,6 +166,9 @@ export default function TransparencyPage() {
                       <div className="text-gray-500 mt-1">
                         {run.llm_source} - {run.duration_seconds}s
                       </div>
+                      {run.total_collected > 0 && run.total_collected < 200 && (
+                        <div className="text-xs text-yellow-500 mt-1">⭐ GNI Classic</div>
+                      )}
                       {run.total_collected === 0 && run.llm_source === 'adaptive' && (
                         <div className="text-xs text-blue-400 mt-1">Monitoring only</div>
                       )}
