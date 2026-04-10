@@ -182,9 +182,10 @@ export default function StocksPage() {
 
   // Auto-refresh 3d every 5 min for selected ticker only (GNI stand-by architecture)
   useEffect(() => {
-    if (selectedRange !== '3d') return
+    // refresh all ranges -- 3d every 5min, others every 60min
+    const refreshMs = selectedRange === '3d' ? 5 * 60 * 1000 : 60 * 60 * 1000
     const interval = setInterval(() => {
-      fetch(`/api/stocks?ticker=${encodeURIComponent(selectedTicker)}&range=3d`, { headers: { 'X-GNI-Key': GNI_KEY } })
+      fetch(`/api/stocks?ticker=${encodeURIComponent(selectedTicker)}&range=${selectedRange}`, { headers: { 'X-GNI-Key': GNI_KEY } })
         .then(r => r.json())
         .then(data => {
           if (!data.error) {
@@ -196,7 +197,7 @@ export default function StocksPage() {
           }
         })
         .catch(() => {})
-    }, 5 * 60 * 1000) // 5 minutes
+    }, refreshMs)
     return () => clearInterval(interval)
   }, [selectedTicker, selectedRange])
 
