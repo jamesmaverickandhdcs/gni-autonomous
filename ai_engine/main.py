@@ -287,6 +287,24 @@ def run_pipeline():
             duration_seconds=total_seconds_so_far,
         )
 
+        # S27-3: Update gni_stats table with live counters
+        try:
+            from supabase import create_client as _sc
+            _sb2 = _sc(os.getenv('SUPABASE_URL',''), os.getenv('SUPABASE_SERVICE_KEY',''))
+            # Read current stats
+            _cur = _sb2.table('gni_stats').select('pipeline_runs,articles_analysed,reports_generated').eq('id', 1).execute()
+            _row = (_cur.data or [{}])[0]
+            _sb2.table('gni_stats').upsert({
+                'id': 1,
+                'pipeline_runs':     _row.get('pipeline_runs', 0) + 1,
+                'articles_analysed': _row.get('articles_analysed', 0) + articles_collected,
+                'reports_generated': _row.get('reports_generated', 0) + reports_saved,
+                'updated_at': datetime.now(timezone.utc).isoformat(),
+            }).execute()
+            print('  OK gni_stats updated')
+        except Exception as _se:
+            print('  WARNING: gni_stats update failed: ' + str(_se)[:60])
+
         if run_id and trace:
             save_pipeline_articles(run_id, trace)
             save_article_events(run_id, report_id, trace)

@@ -1,4 +1,19 @@
+'use client'
+import { useEffect, useState } from 'react'
+
 export default function AboutPage() {
+  const [liveStats, setLiveStats] = useState<{
+    pipeline_runs: number
+    articles_analysed: number
+    reports_generated: number
+  } | null>(null)
+
+  useEffect(() => {
+    fetch('/api/about-stats')
+      .then(r => r.json())
+      .then(d => setLiveStats(d))
+      .catch(() => {})
+  }, [])
   const infra = [
     { name: 'Groq API (Llama 3)', role: 'Cloud AI — free tier, 100K tokens/day', cost: '$0.00' },
     { name: 'Groq API', role: 'Cloud AI fallback — free tier (public repo)', cost: '$0.00' },
@@ -10,9 +25,9 @@ export default function AboutPage() {
 
 
   const stats = [
-    { label: 'Pipeline runs',     value: '30+' },
-    { label: 'Articles analysed', value: '2,500+' },
-    { label: 'Reports generated', value: '30+' },
+    { label: 'Pipeline runs',     value: liveStats ? liveStats.pipeline_runs.toLocaleString() : '...' },
+    { label: 'Articles analysed', value: liveStats ? liveStats.articles_analysed.toLocaleString() + '+' : '...' },
+    { label: 'Reports generated', value: liveStats ? liveStats.reports_generated.toLocaleString() : '...' },
     { label: 'GPVS accuracy',     value: '100%' },
     { label: 'Injection patterns',value: '66' },
     { label: 'Sprint days',       value: '17' },
