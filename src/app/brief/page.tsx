@@ -105,7 +105,7 @@ export default function BriefPage() {
             <section className="mb-4 bg-gray-900 border border-blue-800 rounded-xl p-4">
               <div className="text-xs text-blue-400 font-bold uppercase tracking-wider mb-2">🎯 Action Recommendation</div>
               <p className="text-sm text-white leading-relaxed font-medium">
-                {brief.mad_action_recommendation || 'Awaiting MAD arbitrator verdict.'}
+                {brief.mad_action_recommendation || 'MAD arbitrator synthesis pending — check back after next pipeline run (02:00 or 10:00 UTC).'}
               </p>
             </section>
 
