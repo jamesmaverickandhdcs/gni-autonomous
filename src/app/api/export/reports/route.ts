@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateApiKey } from '@/lib/auth'
+import { checkRateLimit } from '@/lib/rateLimit'
 
 
 export async function GET(request: NextRequest) {
@@ -12,6 +13,17 @@ export async function GET(request: NextRequest) {
 
   const authError = validateApiKey(request)
   if (authError) return authError
+
+  // SEC-2: Rate limiting — 10 requests per minute per API key
+  const apiKey = request.headers.get('X-GNI-Key') || 'anonymous'
+  const rl = checkRateLimit(apiKey, 10, 60000)
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded — max 10 export requests per minute' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    )
+  }
+
   const { searchParams } = new URL(request.url)
   const format = searchParams.get('format') || 'json'
   const days = parseInt(searchParams.get('days') || '30')
