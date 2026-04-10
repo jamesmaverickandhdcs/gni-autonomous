@@ -93,7 +93,7 @@ function AgentCard({ agent, text, coaching, round }: {
       <p className="text-sm text-gray-300 leading-relaxed">{text || <span className="italic text-gray-600">No position recorded</span>}</p>
       {coaching && (
         <div className="mt-3 pt-3 border-t border-gray-700">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">⚖️ Arbitrator feedback</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">💼 Personal Consultant</div>
           <p className="text-xs text-gray-400 italic leading-relaxed">{coaching}</p>
         </div>
       )}
@@ -139,7 +139,7 @@ export default function DebatePage() {
               <p className="text-sm text-gray-400">Bull → Bear → Black Swan → Ostrich → Arbitrator — 3 Live Rounds on Future Threats</p>
               <p className="text-xs text-gray-500 mt-1 max-w-6xl">
                 Four agents debate future threats across two axes: Known/Unknown × Proactive/Ignored.
-                Arbitrator coaches each agent after every round. Based on all relevant intelligence articles.
+                Personal consultants push each agent harder after Round 1 and Round 2. Real Arbitrator delivers final verdict after Round 3 only. Based on all relevant intelligence articles.
                 Short Focus (7-30 days) and Long Shoots (3-24 months) tracked for real-world validation.
               </p>
             </div>
@@ -312,13 +312,13 @@ export default function DebatePage() {
                           {AGENTS.some(a => getArbFeedback(selected.mad_arb_feedbacks, 'round1', a.key)) && (
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="text-lg">⚖️</span>
-                              <div className="text-sm font-bold text-blue-400">Arbitrator Coaching — After Round 1</div>
+                              <span className="text-lg">💼</span>
+                              <div className="text-sm font-bold text-purple-400">Personal Consultants — After Round 1</div>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                               {AGENTS.map(agent => (
                                 <div key={agent.key} className="bg-gray-800 rounded-lg p-2">
-                                  <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} To {agent.label}</div>
+                                  <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} {agent.label}'s Consultant</div>
                                   <p className="text-gray-400 italic">{getArbFeedback(selected.mad_arb_feedbacks, 'round1', agent.key) || 'No coaching recorded'}</p>
                                 </div>
                               ))}
@@ -331,7 +331,7 @@ export default function DebatePage() {
                         <div>
                           <div className="flex items-center gap-3 mb-3">
                             <div className="bg-blue-900 text-blue-200 text-xs font-bold px-3 py-1 rounded-full">ROUND 2</div>
-                            <div className="text-sm text-gray-400">Refined positions after Arbitrator coaching</div>
+                            <div className="text-sm text-gray-400">Refined positions after personal consultant push</div>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {AGENTS.map(agent => (
@@ -343,8 +343,8 @@ export default function DebatePage() {
                           {AGENTS.some(a => getArbFeedback(selected.mad_arb_feedbacks, 'round2', a.key)) && (
                           <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
                             <div className="flex items-center gap-2 mb-2">
-                              <span className="text-lg">⚖️</span>
-                              <div className="text-sm font-bold text-blue-400">Arbitrator Coaching — After Round 2</div>
+                              <span className="text-lg">💼</span>
+                              <div className="text-sm font-bold text-purple-400">Personal Consultants — After Round 2</div>
                             </div>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                               {AGENTS.map(agent => (
