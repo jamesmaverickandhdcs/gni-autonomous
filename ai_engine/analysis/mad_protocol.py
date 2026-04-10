@@ -15,6 +15,7 @@ import re
 import time
 from datetime import datetime, timezone, timedelta
 from groq import Groq
+from groq_guardian import validate_response  # GNI-R-234
 
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')  # L23
@@ -22,7 +23,7 @@ MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')  # L23
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
 
-def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> str:
+def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, expect_json: bool = False) -> str:
     # GNI-R-107: Rate-limit-aware Groq call with 429 retry
     # Attempt 1: normal call
     # If 429 detected: sleep 20s then retry once
@@ -38,7 +39,13 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> 
                 max_tokens=max_tokens,
                 temperature=0.7,
             )
-            return response.choices[0].message.content.strip()
+            raw = response.choices[0].message.content.strip()
+            # GNI-R-234: validate ALL Groq responses before processing
+            validation = validate_response(raw, expect_json=expect_json)
+            if not validation['valid']:
+                print(f'  WARNING: groq_guardian rejected response: {validation["rejection_reason"]}')
+                return '[Agent error: ' + validation['rejection_reason'] + ']'
+            return validation['sanitized']
         except Exception as e:
             err = str(e)
             is_rate_limit = '429' in err or 'rate_limit' in err.lower() or 'rate limit' in err.lower()
@@ -311,7 +318,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     print('   Arbitrator coaching Round 1...')
     c1_user = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
                '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\nProvide targeted coaching.')
-    arb_c1 = _parse_coaching(_call_agent(ARB_COACH, c1_user, 600))
+    arb_c1 = _parse_coaching(_call_agent(ARB_COACH, c1_user, 600, expect_json=True))
 
     # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
     # Round 1 used 5 calls. Sleep lets the rate limit window breathe.
@@ -336,7 +343,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     c2_user = (news_ctx + '\n\nROUND 2:\nBull: ' + bull_r2 + '\nBear: ' + bear_r2 +
                '\nBlack Swan: ' + swan_r2 + '\nOstrich: ' + ost_r2 +
                '\n\nR1 coaching: ' + json.dumps(arb_c1) + '\n\nPush to final positions.')
-    arb_c2 = _parse_coaching(_call_agent(ARB_COACH, c2_user, 600))
+    arb_c2 = _parse_coaching(_call_agent(ARB_COACH, c2_user, 600, expect_json=True))
 
     # GNI-R-107: Sleep between rounds
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
@@ -378,7 +385,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
         + 'PILLAR WEIGHTING: ' + pillar_instruction + '\n\n'
         + 'Deliver final synthesis as JSON only.'
     )
-    arb_final_raw = _call_agent(ARB_FINAL, arb_final_user, 600)
+    arb_final_raw = _call_agent(ARB_FINAL, arb_final_user, 600, expect_json=True)
 
     # Parse final verdict
     mad_verdict = 'neutral'
