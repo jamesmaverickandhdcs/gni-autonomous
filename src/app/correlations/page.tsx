@@ -315,7 +315,7 @@ export default function CorrelationsPage() {
       <div className="max-w-6xl mx-auto px-6 pb-4">
         <div className="bg-yellow-950 border border-yellow-800 rounded-xl p-3">
           <p className="text-xs text-yellow-300">
-            ⚠️ <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
+            ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
           </p>
         </div>
       </div>
