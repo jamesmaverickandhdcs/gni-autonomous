@@ -9,7 +9,7 @@ export default function ModelLearningPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">🧠 Model Learning</h1>
-              <p className="text-xs text-gray-400">Model Learning documents every time GNI was surprised -- when a prediction was confidently wrong and reality forced a recalibration. Each surprise event triggers source weight adjustments via Exponential Moving Average, so future pipeline runs rely less on sources that misled the model. This is how GNI gets smarter over time without any human intervention.</p>
+              <p className="text-xs text-gray-400">Model Learning documents every time GNI was surprised — when a prediction was confidently wrong and reality forced a recalibration. Each surprise event triggers source weight adjustments via Exponential Moving Average, so future pipeline runs rely less on sources that misled the model. This is how GNI gets smarter over time without any human intervention.</p>
             </div>
             <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: Q3 2026</span>
           </div>
@@ -23,7 +23,7 @@ export default function ModelLearningPage() {
           <div className="text-5xl mb-4">🧠</div>
           <h2 className="text-xl font-bold text-amber-300 mb-2">Model Learning</h2>
           <p className="text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4">
-            Model Learning tracks every event where reality surprised GNI&apos;s predictions -- and how the system responded. When a Black Swan event occurs, source weights are recalibrated, prompt templates are adjusted in the A/B system, and the adaptive pipeline modifies its escalation thresholds. This page will document GNI&apos;s learning trajectory, showing measurable improvement in prediction accuracy over time.
+            Model Learning tracks every event where reality surprised GNI&apos;s predictions — and how the system responded. When a Black Swan event occurs, source weights are recalibrated, prompt templates are adjusted in the A/B system, and the adaptive pipeline modifies its escalation thresholds. This page will document GNI&apos;s learning trajectory, showing measurable improvement in prediction accuracy over time.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
             <span className="text-xs text-amber-300">⏰ Available: <span className="font-bold text-white">Q3 2026</span></span>
@@ -34,7 +34,7 @@ export default function ModelLearningPage() {
         <div className="bg-gray-900 border border-amber-800 rounded-xl p-5 mb-6">
           <div className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-4">What This Page Will Show</div>
           <ul className="space-y-2">
-              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Surprise outcome registry -- events that defied all 4 agents</li>
+              <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Surprise outcome registry — events that defied all 4 agents</li>
               <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Source bias corrections triggered by systematic errors</li>
               <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>A/B prompt template evolution history</li>
               <li className="flex items-start gap-2 text-xs text-gray-400"><span className="text-amber-400 mt-0.5">•</span>Escalation threshold recalibration log</li>
@@ -46,7 +46,7 @@ export default function ModelLearningPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Why This Requires GPVS Accumulation</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed -- GNI&apos;s autonomous pipeline handles verification and scoring automatically.
+            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed — GNI&apos;s autonomous pipeline handles verification and scoring automatically.
           </p>
         </div>
 

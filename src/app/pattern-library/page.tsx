@@ -9,7 +9,7 @@ export default function PatternLibraryPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">📚 Pattern Library</h1>
-              <p className="text-xs text-gray-400">Pattern Library identifies when current geopolitical escalation sequences match historical validated patterns from GNI&apos;s prediction archive. When a match is found, GNI surfaces the historical outcome as a predictive signal for what is likely to happen next. This is GNI&apos;s most advanced predictive capability -- pattern recognition across time rather than single-point analysis.</p>
+              <p className="text-xs text-gray-400">Pattern Library identifies when current geopolitical escalation sequences match historical validated patterns from GNI&apos;s prediction archive. When a match is found, GNI surfaces the historical outcome as a predictive signal for what is likely to happen next. This is GNI&apos;s most advanced predictive capability — pattern recognition across time rather than single-point analysis.</p>
             </div>
             <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: Q4 2026</span>
           </div>
@@ -23,7 +23,7 @@ export default function PatternLibraryPage() {
           <div className="text-5xl mb-4">📚</div>
           <h2 className="text-xl font-bold text-amber-300 mb-2">Pattern Library</h2>
           <p className="text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4">
-            The Pattern Library is GNI&apos;s most advanced future capability -- a database of validated escalation sequences that have historically preceded specific geopolitical outcomes. When current escalation scores match a historical validated sequence, GNI will proactively predict what comes next based on prior evidence. This transforms GNI from a reactive intelligence system into a predictive pattern-matching platform.
+            The Pattern Library is GNI&apos;s most advanced future capability — a database of validated escalation sequences that have historically preceded specific geopolitical outcomes. When current escalation scores match a historical validated sequence, GNI will proactively predict what comes next based on prior evidence. This transforms GNI from a reactive intelligence system into a predictive pattern-matching platform.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
             <span className="text-xs text-amber-300">⏰ Available: <span className="font-bold text-white">Q4 2026</span></span>
@@ -46,7 +46,7 @@ export default function PatternLibraryPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Why This Requires GPVS Accumulation</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed -- GNI&apos;s autonomous pipeline handles verification and scoring automatically.
+            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed — GNI&apos;s autonomous pipeline handles verification and scoring automatically.
           </p>
         </div>
 
