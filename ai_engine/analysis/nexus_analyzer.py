@@ -41,7 +41,11 @@ Tokens: {min(len(a['title'][:100]) + len(a['summary'][:500]), 600)} chars
 
     if prompt_override:
         n = len(articles)
-        return prompt_override.format(n=n, articles=articles_text)
+        # P5 fix: escape { } in article text before .format()
+        # TECH articles contain CVE IDs, code snippets, JSON with { } braces
+        # that crash Python .format() as unknown placeholders → KeyError
+        safe_articles = articles_text.replace('{', '{{').replace('}', '}}')
+        return prompt_override.format(n=n, articles=safe_articles)
     return f"""You are GNI — Global Nexus Insights, an expert geopolitical and macroeconomic analyst.
 
 Analyze the following {len(articles)} news articles and produce a structured JSON report.
