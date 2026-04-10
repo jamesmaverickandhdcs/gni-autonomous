@@ -63,7 +63,7 @@ export default function ResearcherHub() {
           <div className="text-xs font-bold text-white uppercase tracking-wider mb-3">What is Pattern Intelligence?</div>
           <p className="text-sm text-gray-100 leading-relaxed">
             Pattern Intelligence is GNI&apos;s long-term research hub, designed for analysts and researchers who want to go beyond the latest report and understand how global intelligence evolves over time.
-            Every pipeline run produces structured data -- escalation scores, sentiment scores, MAD verdicts, and confidence intervals -- all of which are tracked, stored, and available for deep analysis here.
+            Every pipeline run produces structured data — escalation scores, sentiment scores, MAD verdicts, and confidence intervals — all of which are tracked, stored, and available for deep analysis here.
             The GPVS (GNI Prediction Validation Standard) system continuously scores each agent&apos;s directional predictions against reality, building an evidence-based accuracy record over multiple horizons (7d, 30d, 180d).
             Confidence interval analysis using the t-distribution (t=4.303, n=3, alpha=0.05) provides statistical rigor to every sentiment score, making GNI&apos;s outputs IEEE paper-citable.
             All datasets are available for download via the Export API, enabling full replication of GNI&apos;s methodology for academic research and external validation.
@@ -88,7 +88,7 @@ export default function ResearcherHub() {
         {/* Escalation Trend Sparkline */}
         {last7.length >= 2 && (
           <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Escalation Trend -- Last 7 Runs</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Escalation Trend — Last 7 Runs</div>
             <svg width="100%" height="60" viewBox="0 0 400 60" preserveAspectRatio="none">
               <polyline
                 points={last7.map((r, i) => {
@@ -148,7 +148,7 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">Correlations</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">Cross-horizon Forecast Analysis (CFA) tracks GNI prediction accuracy across three time horizons: 7-day, 30-day, and 180-day. Per-agent accuracy scores reveal which MAD agents perform best under different market conditions. This is the statistical proof layer for GNI&apos;s GPVS standard -- essential for IEEE paper validation.</p>
+            <p className="text-xs text-gray-400">Cross-horizon Forecast Analysis (CFA) tracks GNI prediction accuracy across three time horizons: 7-day, 30-day, and 180-day. Per-agent accuracy scores reveal which MAD agents perform best under different market conditions. This is the statistical proof layer for GNI&apos;s GPVS standard — essential for IEEE paper validation.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Correlations →</span>
             </div>
@@ -162,7 +162,7 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">Weekly Digest</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. Week-over-week escalation delta is one of GNI&apos;s most reliable structural trend signals -- consistent increases indicate sustained threat buildup. Use the digest time series to identify multi-week escalation cycles that single pipeline runs might miss.</p>
+            <p className="text-xs text-gray-400">Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. Week-over-week escalation delta is one of GNI&apos;s most reliable structural trend signals — consistent increases indicate sustained threat buildup. Use the digest time series to identify multi-week escalation cycles that single pipeline runs might miss.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View Digest →</span>
             </div>

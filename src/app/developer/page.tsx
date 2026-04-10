@@ -156,7 +156,7 @@ export default function DeveloperPage() {
         {activeTab === 'examples' && (
           <div className="space-y-6">
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-              <div className="text-sm font-bold text-white mb-3">🐍 Python -- Get Latest GNI State</div>
+              <div className="text-sm font-bold text-white mb-3">🐍 Python — Get Latest GNI State</div>
               <pre className="bg-gray-800 rounded-lg p-4 text-xs text-green-300 overflow-x-auto leading-relaxed">{`import requests
 
 BASE = "https://gni-autonomous.vercel.app"
@@ -175,7 +175,7 @@ print(f"Quota used: {status['quota']['percent_used']}%")`}</pre>
             </div>
 
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-              <div className="text-sm font-bold text-white mb-3">💻 JavaScript -- Download Dataset</div>
+              <div className="text-sm font-bold text-white mb-3">💻 JavaScript — Download Dataset</div>
               <pre className="bg-gray-800 rounded-lg p-4 text-xs text-blue-300 overflow-x-auto leading-relaxed">{`const BASE = "https://gni-autonomous.vercel.app";
 
 // Download last 30 days of reports as CSV
@@ -193,7 +193,7 @@ if (status.quota.status === "safe") {
             </div>
 
             <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
-              <div className="text-sm font-bold text-white mb-3">📊 Python -- IEEE Paper Data Export</div>
+              <div className="text-sm font-bold text-white mb-3">📊 Python — IEEE Paper Data Export</div>
               <pre className="bg-gray-800 rounded-lg p-4 text-xs text-yellow-300 overflow-x-auto leading-relaxed">{`import requests, csv, io
 
 BASE = "https://gni-autonomous.vercel.app"
@@ -221,11 +221,11 @@ print(f"Mean escalation: {sum(scores)/len(scores):.2f}")`}</pre>
               <div className="text-sm font-bold text-white mb-4">🍴 Fork GNI_Autonomous in 5 Steps</div>
               <div className="space-y-3">
                 {[
-                  { step: '1', title: 'Fork the repo', desc: 'github.com/jamesmaverickandhdcs/gni-autonomous -- click Fork. It is PUBLIC.' },
+                  { step: '1', title: 'Fork the repo', desc: 'github.com/jamesmaverickandhdcs/gni-autonomous — click Fork. It is PUBLIC.' },
                   { step: '2', title: 'Create Supabase project', desc: 'Free tier. Create tables: reports, debate_predictions, pillar_reports, groq_daily_usage, pipeline_articles, source_health, source_weights. See /developer schema tab for columns.' },
-                  { step: '3', title: 'Get a Groq API key', desc: 'console.groq.com -- free tier gives 100K tokens/day. Add as GROQ_API_KEY in GitHub repo secrets.' },
+                  { step: '3', title: 'Get a Groq API key', desc: 'console.groq.com — free tier gives 100K tokens/day. Add as GROQ_API_KEY in GitHub repo secrets.' },
                   { step: '4', title: 'Add environment variables', desc: 'In GitHub repo Settings > Secrets: GROQ_API_KEY, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, TELEGRAM_BOT_TOKEN (optional).' },
-                  { step: '5', title: 'Deploy to Vercel', desc: 'Connect your forked repo to Vercel. Add same env vars in Vercel dashboard. Deploy. Done -- $0.00/month.' },
+                  { step: '5', title: 'Deploy to Vercel', desc: 'Connect your forked repo to Vercel. Add same env vars in Vercel dashboard. Deploy. Done — $0.00/month.' },
                 ].map(({ step, title, desc }) => (
                   <div key={step} className="flex gap-4 bg-gray-800 rounded-lg p-4">
                     <div className="text-2xl font-bold text-blue-400 shrink-0 w-8">{step}</div>

@@ -181,7 +181,7 @@ export default function SelfCheckPage() {
               </div>
             ))}
             {history.length === 0 && !histLoading && (
-              <div className="px-4 py-4 text-xs text-gray-600">No history yet -- run first check above</div>
+              <div className="px-4 py-4 text-xs text-gray-600">No history yet — run first check above</div>
             )}
           </div>
         </section>
@@ -191,7 +191,7 @@ export default function SelfCheckPage() {
           <p className="text-xs text-gray-400 leading-relaxed">
             Auto-runs every 30 minutes. Checks: Supabase connection, latest report age, Groq quota, source health, pipeline recency, MAD debate recency.
             CRITICAL or WARNING issues trigger automatic Telegram alert to admin. All results saved to mission_control_log table.
-            This is GNI&apos;s web-layer self-monitoring -- part of the L8 autonomy roadmap.
+            This is GNI&apos;s web-layer self-monitoring — part of the L8 autonomy roadmap.
           </p>
         </div>
 

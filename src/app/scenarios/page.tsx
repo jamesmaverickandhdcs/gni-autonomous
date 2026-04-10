@@ -54,7 +54,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
       accent: 'text-gray-300',
       header: 'bg-gray-700',
       content: report.mad_bear_case,
-      note: 'Known risks playing out -- most likely path',
+      note: 'Known risks playing out — most likely path',
     },
     {
       label: 'Upside Case',
@@ -64,7 +64,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
       accent: 'text-green-300',
       header: 'bg-green-900',
       content: report.mad_bull_case,
-      note: 'Opportunity cost -- what happens if we act on known positives',
+      note: 'Opportunity cost — what happens if we act on known positives',
     },
     {
       label: 'Downside Case',
@@ -74,7 +74,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
       accent: 'text-red-300',
       header: 'bg-red-900',
       content: report.mad_black_swan_case || report.mad_ostrich_case || '',
-      note: 'Black Swan + Ostrich combined -- unknown and ignored threats',
+      note: 'Black Swan + Ostrich combined — unknown and ignored threats',
     },
   ]
 
@@ -125,7 +125,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
         <div className="border-t border-gray-800 px-6 py-4 space-y-4">
 
           <div className="bg-yellow-950 border border-yellow-800 rounded-lg p-3 text-xs text-yellow-300">
-            ⚠️ <strong>Indicative only</strong> -- Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications).
+            ⚠️ <strong>Indicative only</strong> — Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications).
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -185,9 +185,9 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
                 <span>MAD Confidence</span>
                 <span className={confidenceColor(report.mad_confidence)}>
                   {Math.round(report.mad_confidence * 100)}%
-                  {report.mad_confidence >= 0.7 ? ' -- Strong consensus' :
-                   report.mad_confidence >= 0.5 ? ' -- Moderate consensus' :
-                   ' -- Contested'}
+                  {report.mad_confidence >= 0.7 ? ' — Strong consensus' :
+                   report.mad_confidence >= 0.5 ? ' — Moderate consensus' :
+                   ' — Contested'}
                 </span>
               </div>
               <div className="h-1.5 bg-gray-800 rounded-full">
@@ -316,15 +316,15 @@ export default function ScenariosPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-400">
                 <div>
                   <div className="text-gray-300 font-bold mb-1">⚖️ Base Case</div>
-                  <p>Bear agent -- known risks playing out. Most likely path.</p>
+                  <p>Bear agent — known risks playing out. Most likely path.</p>
                 </div>
                 <div>
                   <div className="text-green-400 font-bold mb-1">🐂 Upside Case</div>
-                  <p>Bull agent -- opportunity cost of inaction on known positives.</p>
+                  <p>Bull agent — opportunity cost of inaction on known positives.</p>
                 </div>
                 <div>
                   <div className="text-red-400 font-bold mb-1">🦢 Downside Case</div>
-                  <p>Black Swan -- unknown threats nobody is modelling.</p>
+                  <p>Black Swan — unknown threats nobody is modelling.</p>
                 </div>
               </div>
             </div>
