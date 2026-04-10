@@ -42,8 +42,8 @@ export default function AboutQuantumPage() {
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
-          <h1 className="text-2xl font-bold text-blue-400">Quantum Strategist -- Outcomes</h1>
-          <p className="text-sm text-gray-400">What GNI decides, why it decides it, and what it means for global markets. This page shows the Quantum Strategist perspective -- actionable intelligence outcomes from the MAD Protocol, real-time threat verdicts, and market implications from 25 global news sources running 2x daily.</p>
+          <h1 className="text-2xl font-bold text-blue-400">Quantum Strategist — Outcomes</h1>
+          <p className="text-sm text-gray-400">What GNI decides, why it decides it, and what it means for global markets. This page shows the Quantum Strategist perspective — actionable intelligence outcomes from the MAD Protocol, real-time threat verdicts, and market implications from 25 global news sources running 2x daily.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
@@ -53,7 +53,7 @@ export default function AboutQuantumPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               { title: 'Speed over Perfection', desc: 'GNI delivers actionable intelligence within minutes of pipeline completion. In geopolitical risk, timeliness beats completeness. A verdict with 80% confidence delivered now beats a perfect analysis delivered tomorrow.' },
-              { title: 'Multi-Agent Consensus', desc: 'No single AI perspective is trusted. Four agents -- Bull, Bear, Black Swan, Ostrich -- debate every scenario across the Johari Window framework. Only consensus after 3 coached rounds becomes a verdict.' },
+              { title: 'Multi-Agent Consensus', desc: 'No single AI perspective is trusted. Four agents — Bull, Bear, Black Swan, Ostrich — debate every scenario across the Johari Window framework. Only consensus after 3 coached rounds becomes a verdict.' },
               { title: 'Market-Linked Intelligence', desc: 'Every report connects geopolitical events to specific market instruments (SPY, GLD, USO, DXY). Intelligence without market linkage is academic. GNI links threat verdicts directly to investment implications.' },
             ].map(item => (
               <div key={item.title} className="bg-blue-900 bg-opacity-40 rounded-lg p-4">
@@ -112,12 +112,12 @@ export default function AboutQuantumPage() {
         </div>
 
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Outcome Framework -- What QS Produces</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Outcome Framework — What QS Produces</div>
           <div className="space-y-3">
             {[
               { step: '01', title: 'Threat Verdict', desc: 'BEARISH / BULLISH / NEUTRAL with confidence score 0-100%. Derived from 3 rounds of 4-agent MAD debate using Johari Window framework. Each verdict includes Arbitrator reasoning and coaching notes.' },
               { step: '02', title: 'Action Recommendation', desc: 'Specific diplomatic, economic, or strategic action for the next 4-6 weeks. Geopolitical posture recommendation based on full threat assessment across all four agent perspectives.' },
-              { step: '03', title: 'Blind Spot Warning', desc: 'The Black Swan agent identifies one weak signal that all other agents are ignoring. This is the highest-value intelligence output -- the thing nobody else is watching but should be.' },
+              { step: '03', title: 'Blind Spot Warning', desc: 'The Black Swan agent identifies one weak signal that all other agents are ignoring. This is the highest-value intelligence output — the thing nobody else is watching but should be.' },
               { step: '04', title: 'Market Implications', desc: 'Specific tickers (SPY, GLD, USO, DXY) with directional bias. Links geopolitical threat directly to investable market instruments with sentiment scoring.' },
               { step: '05', title: 'Scenario Planning', desc: 'Base, Upside, and Downside scenarios with probability weights. Allows decision-makers to prepare for multiple futures simultaneously across 7-30 day and 3-24 month horizons.' },
             ].map(item => (
@@ -149,9 +149,9 @@ export default function AboutQuantumPage() {
         )}
 
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
-          <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution -- Novel Contribution 1</div>
+          <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — Novel Contribution 1</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">The Quantum Strategist represents Novel Contribution 1 in GNI&apos;s IEEE paper: the application of the Johari Window framework to AI-based geopolitical threat assessment. The four-quadrant Known/Unknown x Proactive/Ignored matrix provides a systematic way to ensure no threat dimension is overlooked.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">This approach goes beyond standard sentiment analysis by explicitly modeling what the system does not know (Black Swan) and what institutions are actively ignoring (Ostrich) -- dimensions absent from conventional intelligence platforms like Bloomberg Terminal or Stratfor.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">This approach goes beyond standard sentiment analysis by explicitly modeling what the system does not know (Black Swan) and what institutions are actively ignoring (Ostrich) — dimensions absent from conventional intelligence platforms like Bloomberg Terminal or Stratfor.</p>
         </div>
 
       </main>
@@ -162,7 +162,7 @@ export default function AboutQuantumPage() {
       </div>
       <footer className="border-t border-gray-800 mt-4">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | About -- Quantum Strategist | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
+          GNI Autonomous | About — Quantum Strategist | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

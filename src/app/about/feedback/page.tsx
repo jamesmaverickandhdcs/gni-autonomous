@@ -30,31 +30,31 @@ export default function AboutFeedbackPage() {
 
   const swot = {
     strengths: [
-      'Free-forever architecture -- .00/month with zero compromise on capability',
+      'Free-forever architecture — .00/month with zero compromise on capability',
       'Multi-agent MAD Protocol eliminates single-point-of-failure in threat assessment',
-      'GPVS creates an empirical accuracy record -- not theoretical claims',
-      'Self-improving source weights via EMA -- gets smarter every verified prediction',
-      '66-pattern injection detection layer -- adversarially robust pipeline',
-      'L7 autonomous operation -- zero human intervention required after deployment',
+      'GPVS creates an empirical accuracy record — not theoretical claims',
+      'Self-improving source weights via EMA — gets smarter every verified prediction',
+      '66-pattern injection detection layer — adversarially robust pipeline',
+      'L7 autonomous operation — zero human intervention required after deployment',
     ],
     weaknesses: [
       'Free-tier rate limits (100K tokens/day Groq) constrain analysis depth in high-escalation periods',
-      'GPVS verification requires real time to pass -- accuracy record still accumulating',
+      'GPVS verification requires real time to pass — accuracy record still accumulating',
       'Binary BULLISH/BEARISH prediction oversimplifies complex multi-directional market movements',
-      'English-language only -- misses non-English geopolitical signals from ASEAN and beyond',
-      'Prediction window limited to SPY as proxy -- does not verify commodity or FX predictions directly',
-      'Cold start problem -- source weights need time to diverge from neutral baseline of 1.0',
+      'English-language only — misses non-English geopolitical signals from ASEAN and beyond',
+      'Prediction window limited to SPY as proxy — does not verify commodity or FX predictions directly',
+      'Cold start problem — source weights need time to diverge from neutral baseline of 1.0',
     ],
     opportunities: [
       'Myanmar language integration (GNI_Myanmar) opens ASEAN-language intelligence gap',
-      'GPVS verification compounding -- accuracy advantage grows as predictions accumulate',
+      'GPVS verification compounding — accuracy advantage grows as predictions accumulate',
       'Pattern Library (Q4 2026) will enable predictive pattern matching across historical sequences',
       'Model Learning (Q3 2026) will enable autonomous recalibration from surprise outcomes',
       'API export layer enables third-party applications to build on GNI intelligence output',
       'L8 autonomy roadmap includes Mission Control-triggered pipeline response to breaking news',
     ],
     threats: [
-      'Groq API terms change could eliminate free-tier access -- single provider dependency',
+      'Groq API terms change could eliminate free-tier access — single provider dependency',
       'Geopolitical escalation exceeding Groq quota ceiling could cause analysis gaps during crises',
       'RSS feed quality degradation if news sources change their feed structure or paywall content',
       'Market regime change could break GPVS calibration (prolonged low-volatility environment)',
@@ -68,7 +68,7 @@ export default function AboutFeedbackPage() {
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
-          <h1 className="text-2xl font-bold text-amber-400">Feedback Loop -- Active/Passive SWOT Analysis</h1>
+          <h1 className="text-2xl font-bold text-amber-400">Feedback Loop — Active/Passive SWOT Analysis</h1>
           <p className="text-sm text-gray-400">A rigorous self-assessment of GNI through the Feedback Loop lens. Active SWOT examines internal capabilities and limitations. Passive SWOT maps external opportunities and threats. Combined with live prediction verification data, this provides the most honest and complete picture of where GNI stands and where it is going.</p>
         </div>
       </header>
@@ -93,7 +93,7 @@ export default function AboutFeedbackPage() {
         )}
 
         <div>
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3 text-center">Active SWOT -- Internal Assessment</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3 text-center">Active SWOT — Internal Assessment</div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-green-950 border border-green-800 rounded-xl p-5">
               <div className="text-sm font-bold text-green-400 mb-3">Strengths</div>
@@ -119,7 +119,7 @@ export default function AboutFeedbackPage() {
         </div>
 
         <div>
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3 text-center">Passive SWOT -- External Assessment</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3 text-center">Passive SWOT — External Assessment</div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-blue-950 border border-blue-800 rounded-xl p-5">
               <div className="text-sm font-bold text-blue-400 mb-3">Opportunities</div>
@@ -147,7 +147,7 @@ export default function AboutFeedbackPage() {
         <div className="bg-gray-900 border border-amber-800 rounded-xl p-6">
           <div className="text-xs text-amber-600 uppercase tracking-wider mb-3">The Feedback Loop Conclusion</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">GNI&apos;s greatest strength is also its greatest research contribution: the feedback loop itself. Most AI systems produce outputs and stop. GNI produces outputs, measures them against reality, and uses that measurement to improve future outputs. This self-correcting mechanism is what separates a static intelligence tool from a genuinely autonomous one.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">The weaknesses identified here are not failures -- they are the honest boundaries of what a .00/month system can achieve in Sprint 1. Each weakness maps directly to a Phase 2 improvement on the development roadmap.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">The weaknesses identified here are not failures — they are the honest boundaries of what a .00/month system can achieve in Sprint 1. Each weakness maps directly to a Phase 2 improvement on the development roadmap.</p>
         </div>
 
       </main>
@@ -158,7 +158,7 @@ export default function AboutFeedbackPage() {
       </div>
       <footer className="border-t border-gray-800 mt-4">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | About -- Feedback Loop | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
+          GNI Autonomous | About — Feedback Loop | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>

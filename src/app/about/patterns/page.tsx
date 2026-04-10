@@ -39,8 +39,8 @@ export default function AboutPatternsPage() {
       <header className="border-b border-gray-800 bg-gray-900">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
-          <h1 className="text-2xl font-bold text-green-400">Pattern Intelligence -- Long-Term Research</h1>
-          <p className="text-sm text-gray-400">How GNI builds a self-improving evidence base over time. Pattern Intelligence is the research backbone of GNI -- tracking prediction accuracy across time horizons, validating source credibility through real market outcomes, and providing IEEE-citable statistical evidence for every intelligence claim made by the system.</p>
+          <h1 className="text-2xl font-bold text-green-400">Pattern Intelligence — Long-Term Research</h1>
+          <p className="text-sm text-gray-400">How GNI builds a self-improving evidence base over time. Pattern Intelligence is the research backbone of GNI — tracking prediction accuracy across time horizons, validating source credibility through real market outcomes, and providing IEEE-citable statistical evidence for every intelligence claim made by the system.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
@@ -50,7 +50,7 @@ export default function AboutPatternsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               { title: 'Evidence Over Opinion', desc: 'Every GNI claim is traceable to a specific pipeline run, specific articles, and a specific AI analysis chain. The Transparency Engine documents every algorithmic decision from 400 raw articles down to the final 3 selected for analysis.' },
-              { title: 'Self-Improving Accuracy', desc: 'GPVS scores every prediction against real SPY market movement after 3 and 7 days. Sources that led to correct predictions gain higher trust weights via Exponential Moving Average -- 1.1x for correct, 0.9x for wrong.' },
+              { title: 'Self-Improving Accuracy', desc: 'GPVS scores every prediction against real SPY market movement after 3 and 7 days. Sources that led to correct predictions gain higher trust weights via Exponential Moving Average — 1.1x for correct, 0.9x for wrong.' },
               { title: 'Statistical Rigor', desc: 'Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for every sentiment score. This is Novel Contribution 3 in the academic paper.' },
             ].map(item => (
               <div key={item.title} className="bg-green-900 bg-opacity-30 rounded-lg p-4">
@@ -103,13 +103,13 @@ export default function AboutPatternsPage() {
         )}
 
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Research Methodology -- The GPVS Standard</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Research Methodology — The GPVS Standard</div>
           <div className="space-y-4">
             {[
               { phase: 'Phase 1', title: 'Prediction Generation', desc: 'Every MAD debate produces a directional prediction (BULLISH or BEARISH) with a specific verify date at 3-day and 7-day horizons. The prediction is tied to exact articles and sources that drove the analysis.' },
-              { phase: 'Phase 2', title: 'Market Measurement', desc: 'After 3 and 7 days, actual SPY market movement is measured against the prediction. Binary outcome measurement -- correct or wrong -- eliminates ambiguity and enables statistical analysis.' },
+              { phase: 'Phase 2', title: 'Market Measurement', desc: 'After 3 and 7 days, actual SPY market movement is measured against the prediction. Binary outcome measurement — correct or wrong — eliminates ambiguity and enables statistical analysis.' },
               { phase: 'Phase 3', title: 'Weight Adjustment', desc: 'Sources whose articles led to correct predictions have their trust weight multiplied by 1.1 via EMA. Wrong predictions multiply by 0.9. Weights are bounded between 0.5 (penalised) and 2.0 (highly trusted).' },
-              { phase: 'Phase 4', title: 'Evidence Accumulation', desc: 'As predictions accumulate, statistical confidence of accuracy claims increases. The GPVS Prediction Scorecard provides real-time evidence for every accuracy claim in the IEEE paper -- not theoretical, empirical.' },
+              { phase: 'Phase 4', title: 'Evidence Accumulation', desc: 'As predictions accumulate, statistical confidence of accuracy claims increases. The GPVS Prediction Scorecard provides real-time evidence for every accuracy claim in the IEEE paper — not theoretical, empirical.' },
             ].map(item => (
               <div key={item.phase} className="flex gap-4 bg-gray-800 rounded-lg p-4">
                 <div className="bg-green-900 border border-green-700 rounded-lg px-3 py-2 shrink-0 text-center min-w-16">
@@ -126,7 +126,7 @@ export default function AboutPatternsPage() {
 
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
           <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Long-Term Research Value</div>
-          <p className="text-sm text-gray-300 leading-relaxed mb-3">Pattern Intelligence becomes more valuable over time. As GNI accumulates verified predictions, the statistical confidence of its source weights increases and the GPVS Scorecard becomes a genuine empirical accuracy record -- not a theoretical claim.</p>
+          <p className="text-sm text-gray-300 leading-relaxed mb-3">Pattern Intelligence becomes more valuable over time. As GNI accumulates verified predictions, the statistical confidence of its source weights increases and the GPVS Scorecard becomes a genuine empirical accuracy record — not a theoretical claim.</p>
           <p className="text-sm text-gray-400 leading-relaxed">By April 2026, the first GPVS verifications complete. By Q3 2026, Model Learning begins recalibrating from surprise outcomes. By Q4 2026, the Pattern Library identifies historical escalation sequences that predict future geopolitical events with statistically significant accuracy.</p>
         </div>
 
@@ -138,7 +138,7 @@ export default function AboutPatternsPage() {
       </div>
       <footer className="border-t border-gray-800 mt-4">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | About -- Pattern Intelligence | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
+          GNI Autonomous | About — Pattern Intelligence | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>
