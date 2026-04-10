@@ -327,6 +327,7 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
                 tokens_used=tokens_estimate,
                 requests_used=groq_calls,
                 run_id=None,
+                reason=reason,
             )
             print('  OK Usage logged: gni_adaptive +' + str(tokens_estimate) + ' tokens, +' + str(groq_calls) + ' requests')
         except Exception as _e2:

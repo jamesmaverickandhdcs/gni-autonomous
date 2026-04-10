@@ -54,7 +54,8 @@ def get_today_usage(client) -> int:
 
 
 def log_usage(client, pipeline: str, tokens_used: int,
-              requests_used: int, run_id: str = None) -> bool:
+              requests_used: int, run_id: str = None,
+              reason: str = '') -> bool:
     today = datetime.now(timezone.utc).date().isoformat()
     try:
         client.table('groq_daily_usage').insert({
@@ -63,6 +64,7 @@ def log_usage(client, pipeline: str, tokens_used: int,
             'tokens_used':   tokens_used,
             'requests_used': requests_used,
             'run_id':        run_id or '',
+            'reason':        reason or '',
         }).execute()
         print('  OK Usage logged: ' + pipeline + ' +' +
               str(tokens_used) + ' tokens, +' + str(requests_used) + ' requests')

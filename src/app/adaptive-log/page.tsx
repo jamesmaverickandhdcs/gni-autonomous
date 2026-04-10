@@ -9,6 +9,7 @@ interface AdaptiveRun {
   requests_used: number
   run_id: string
   created_at: string
+  reason: string
 }
 
 interface AdaptiveReport {
@@ -117,15 +118,17 @@ export default function AdaptiveLogPage() {
             <section className="mb-8">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Adaptive Run Log</div>
               <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
-                <div className="grid grid-cols-4 gap-2 px-4 py-2 border-b border-gray-800 text-xs text-gray-500 uppercase">
+                <div className="grid grid-cols-5 gap-2 px-4 py-2 border-b border-gray-800 text-xs text-gray-500 uppercase">
                   <div>Run</div>
+                  <div>Reason</div>
                   <div className="text-right">Tokens</div>
                   <div className="text-right">Requests</div>
                   <div className="text-right">Time</div>
                 </div>
                 {runs.map((run, i) => (
-                  <div key={run.id} className="grid grid-cols-4 gap-2 px-4 py-3 border-b border-gray-800 text-sm hover:bg-gray-800">
+                  <div key={run.id} className="grid grid-cols-5 gap-2 px-4 py-3 border-b border-gray-800 text-sm hover:bg-gray-800">
                     <div className="text-blue-400 font-bold text-xs">#{runs.length - i}</div>
+                    <div className="text-xs text-gray-300 truncate" title={run.reason || ''}>{run.reason || <span className="text-gray-600">—</span>}</div>
                     <div className="text-right text-orange-400 font-bold text-xs">{(run.tokens_used || 0).toLocaleString()}</div>
                     <div className="text-right text-gray-400 text-xs">{run.requests_used || 0}</div>
                     <div className="text-right text-gray-500 text-xs">
