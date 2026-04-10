@@ -43,7 +43,7 @@ export default function MapPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">🌍 Geopolitical Event Map</h1>
-            <p className="text-sm text-gray-400">The Geopolitical Event Map plots every news article GNI has collected onto a world map, with each pin colored by sentiment -- red for bearish, yellow for neutral, green for bullish. Click any pin to read the article summary and source link directly. Use the time filter to see how geopolitical hotspots have shifted over the last 1, 3, 7, or 14 days.</p>
+            <p className="text-sm text-gray-400">The Geopolitical Event Map plots every news article GNI has collected onto a world map, with each pin colored by sentiment — red for bearish, yellow for neutral, green for bullish. Click any pin to read the article summary and source link directly. Use the time filter to see how geopolitical hotspots have shifted over the last 1, 3, 7, or 14 days.</p>
           </div>
           <div className="flex items-center gap-4">
             {/* Days filter */}
@@ -99,7 +99,7 @@ export default function MapPage() {
           </div>
         )}
       {!loading && (
-        <MapView events={events} />
+        <MapView events={events} height="calc(100vh - 200px)" />
       )}
 
       
@@ -107,7 +107,7 @@ export default function MapPage() {
       <div className="max-w-6xl mx-auto px-6 pb-4">
         <div className="bg-yellow-950 border border-yellow-800 rounded-xl p-3">
           <p className="text-xs text-yellow-300">
-            ⚠️ <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
+            ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
           </p>
         </div>
       </div>
