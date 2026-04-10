@@ -43,8 +43,8 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400) -> 
             err = str(e)
             is_rate_limit = '429' in err or 'rate_limit' in err.lower() or 'rate limit' in err.lower()
             if is_rate_limit and attempt == 0:
-                print('  WARNING: Groq 429 rate limit -- sleeping 20s before retry...')
-                time.sleep(20)
+                print('  WARNING: Groq 429 rate limit -- sleeping 40s before retry...')
+                time.sleep(40)
                 continue
             return '[Agent error: ' + err[:100] + ']'
     return '[Agent error: max retries exceeded]'
@@ -299,8 +299,8 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
     # Round 1 used 5 calls. Sleep lets the rate limit window breathe.
-    print('  Waiting 20s between rounds (Groq rate limit protection)...')
-    time.sleep(20)
+    print('  Waiting 45s between rounds (Groq rate limit protection)...')
+    time.sleep(45)
 
     # Round 2
     print('   Round 2: Refined positions...')
@@ -320,8 +320,8 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     arb_c2 = _parse_coaching(_call_agent(ARB_COACH, c2_user, 600))
 
     # GNI-R-107: Sleep between rounds
-    print('  Waiting 20s between rounds (Groq rate limit protection)...')
-    time.sleep(20)
+    print('  Waiting 45s between rounds (Groq rate limit protection)...')
+    time.sleep(45)
 
     # Round 3
     print('   Round 3: Final positions...')
@@ -337,8 +337,8 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
 
     # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
-    print('  Waiting 30s before arbitrator synthesis (Groq rate limit protection)...')
-    time.sleep(30)
+    print('  Waiting 60s before arbitrator synthesis (Groq rate limit protection)...')
+    time.sleep(60)
 
     # Arbitrator final synthesis
     print('   Arbitrator final synthesis...')
