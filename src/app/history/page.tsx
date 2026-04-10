@@ -411,6 +411,7 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [timeline, setTimeline] = useState<GpvsTimelineEntry[]>([])
+  const [hideAdaptive, setHideAdaptive] = useState(true)
 
   useEffect(() => {
     Promise.all([
@@ -424,8 +425,9 @@ export default function HistoryPage() {
     }).catch(() => setError('Failed to load history.')).finally(() => setLoading(false))
   }, [])
 
+  const visibleRuns = hideAdaptive ? runs.filter(r => r.report_id) : runs
   const grouped: Record<string, PipelineRun[]> = {}
-  runs.forEach(run => {
+  visibleRuns.forEach(run => {
     const date = new Date(run.run_at).toLocaleDateString('en-US', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     })
@@ -443,6 +445,21 @@ export default function HistoryPage() {
           <div>
             <h1 className="text-2xl font-bold text-white">Intelligence History</h1>
             <p className="text-sm text-gray-400">Intelligence History archives every GNI pipeline run with its full context — escalation score, sentiment, MAD verdict, confidence interval, and the top articles that drove the analysis. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
+          </div>
+          <div className="mt-3 flex items-center gap-3">
+            <button
+              onClick={() => setHideAdaptive(!hideAdaptive)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border ${
+                hideAdaptive
+                  ? 'bg-blue-900 border-blue-700 text-blue-300'
+                  : 'bg-gray-800 border-gray-600 text-gray-400'
+              }`}
+            >
+              {hideAdaptive ? '🔍 Showing intelligence runs only' : '📋 Showing all runs'}
+            </button>
+            <span className="text-xs text-gray-600">
+              {hideAdaptive ? 'Adaptive monitoring scans hidden' : 'Including adaptive monitoring scans'}
+            </span>
           </div>
 </div>
           </div>
@@ -491,7 +508,7 @@ export default function HistoryPage() {
       <div className="max-w-6xl mx-auto px-6 pb-4">
         <div className="bg-yellow-950 border border-yellow-800 rounded-xl p-3">
           <p className="text-xs text-yellow-300">
-            ⚠️ <strong>Disclaimer:</strong> GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
+            ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. Always conduct your own research before making investment decisions.
           </p>
         </div>
       </div>
