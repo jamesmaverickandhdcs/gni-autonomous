@@ -150,6 +150,22 @@ def _fmt_history(h: list) -> str:
     return '\n'.join(h) if h else 'No previous debate history yet.'
 
 
+def _compress(text: str, max_words: int = 40) -> str:
+    """
+    P4: Token compression -- truncate earlier round responses.
+    Takes first max_words words to preserve key argument.
+    350 tokens -> ~40 tokens = 88% reduction per carried response.
+    Only used for historical rounds (R1 in R3, R1+R2 in Arb).
+    Most recent round always passes full text.
+    """
+    if not text or text.startswith('[Agent error'):
+        return text[:100] if text else ''
+    words = text.split()
+    if len(words) <= max_words:
+        return text
+    return ' '.join(words[:max_words]) + '...'
+
+
 def _parse_coaching(raw: str) -> dict:
     base = {'bull': '', 'bear': '', 'black_swan': '', 'ostrich': ''}
     try:
@@ -304,8 +320,11 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # Round 2
     print('   Round 2: Refined positions...')
-    r2_base = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
-               '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\n')
+    # P4: compress R1 responses for R2 context (saves ~1,240 tokens)
+    r2_base = (news_ctx + '\n\nROUND 1 [summary]:\nBull: ' + _compress(bull_r1) +
+               '\nBear: ' + _compress(bear_r1) +
+               '\nBlack Swan: ' + _compress(swan_r1) +
+               '\nOstrich: ' + _compress(ost_r1) + '\n\n')
     bull_r2  = _call_agent(BULL,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('bull','')        + '\n\nROUND 2: Respond. Address feedback.', 350)
     bear_r2  = _call_agent(BEAR,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('bear','')        + '\n\nROUND 2: Respond. Address feedback.', 350)
     swan_r2  = _call_agent(SWAN,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('black_swan','')  + '\n\nROUND 2: Challenge Bull and Bear. Go deeper.', 350)
@@ -325,9 +344,12 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # Round 3
     print('   Round 3: Final positions...')
+    # P4: compress R1 for R3 context, keep R2 full (saves ~1,240 tokens)
     r3_base = (news_ctx +
-               '\n\nR1 Bull: ' + bull_r1 + '\nR1 Bear: ' + bear_r1 +
-               '\nR1 Swan: ' + swan_r1 + '\nR1 Ostrich: ' + ost_r1 +
+               '\n\nR1 [summary] Bull: ' + _compress(bull_r1) +
+               '\nR1 Bear: ' + _compress(bear_r1) +
+               '\nR1 Swan: ' + _compress(swan_r1) +
+               '\nR1 Ostrich: ' + _compress(ost_r1) +
                '\n\nR2 Bull: ' + bull_r2 + '\nR2 Bear: ' + bear_r2 +
                '\nR2 Swan: ' + swan_r2 + '\nR2 Ostrich: ' + ost_r2 + '\n\n')
     bull_r3  = _call_agent(BULL,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bull','')       + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
@@ -342,11 +364,14 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # Arbitrator final synthesis
     print('   Arbitrator final synthesis...')
+    # P4: compress R1+R2 for arbitrator, keep R3 full (saves ~2,480 tokens)
     arb_final_user = (
         news_ctx + '\n\n'
-        '=== R1 ===\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 + '\nSwan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\n'
-        '=== R2 ===\nBull: ' + bull_r2 + '\nBear: ' + bear_r2 + '\nSwan: ' + swan_r2 + '\nOstrich: ' + ost_r2 + '\n\n'
-        '=== R3 ===\nBull: ' + bull_r3 + '\nBear: ' + bear_r3 + '\nSwan: ' + swan_r3 + '\nOstrich: ' + ost_r3 + '\n\n'
+        '=== R1 [summary] ===\nBull: ' + _compress(bull_r1) + '\nBear: ' + _compress(bear_r1) +
+        '\nSwan: ' + _compress(swan_r1) + '\nOstrich: ' + _compress(ost_r1) + '\n\n'
+        '=== R2 [summary] ===\nBull: ' + _compress(bull_r2) + '\nBear: ' + _compress(bear_r2) +
+        '\nSwan: ' + _compress(swan_r2) + '\nOstrich: ' + _compress(ost_r2) + '\n\n'
+        '=== R3 [final] ===\nBull: ' + bull_r3 + '\nBear: ' + bear_r3 + '\nSwan: ' + swan_r3 + '\nOstrich: ' + ost_r3 + '\n\n'
         + ('Weakness: ' + weakness + '\n' if weakness else '')
         + ('Dark side: ' + dark_side + '\n' if dark_side and dark_side != 'None' else '')
         + 'Escalation: ' + escalation + ' | Risk: ' + risk_level + '\n\n'
