@@ -11,7 +11,7 @@ export default function ValidationLogPage() {
               <h1 className="text-xl font-bold text-amber-300">📋 Validation Log</h1>
               <p className="text-xs text-gray-400">Validation Log shows the accuracy record of every MAD agent prediction once the verify date passes and real market data is measured. Each prediction is scored against actual SPY market movement — correct predictions increase source trust weights, wrong predictions reduce them. This is the evidence layer that makes GNI a self-improving system rather than a static intelligence tool.</p>
             </div>
-            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: April 10, 2026+</span>
+            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: April 14, 2026+</span>
           </div>
         </div>
       </header>
@@ -26,7 +26,7 @@ export default function ValidationLogPage() {
             When MAD predictions reach their verify date, GNI automatically scores each agent&apos;s directional accuracy against real-world outcomes. The Validation Log will surface which agents (Bull, Bear, Black Swan, Ostrich) were right, which were wrong, and what patterns emerge in their accuracy over time. This is the foundation of the GPVS feedback loop — transforming past predictions into future intelligence improvements.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
-            <span className="text-xs text-amber-300">⏰ Available: <span className="font-bold text-white">April 10, 2026+</span></span>
+            <span className="text-xs text-amber-300">⏰ Available: <span className="font-bold text-white">April 14, 2026+</span></span>
           </div>
         </div>
 
@@ -46,7 +46,7 @@ export default function ValidationLogPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Why This Requires GPVS Accumulation</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed — GNI&apos;s autonomous pipeline handles verification and scoring automatically.
+            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 14, 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed — GNI&apos;s autonomous pipeline handles verification and scoring automatically.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default function ValidationLogPage() {
               <div className="text-xs text-gray-500">First Verification</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-amber-300">April 10, 2026+</div>
+              <div className="text-xl font-bold text-amber-300">April 14, 2026+</div>
               <div className="text-xs text-gray-500">Page Available</div>
             </div>
           </div>
