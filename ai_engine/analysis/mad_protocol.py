@@ -1,7 +1,7 @@
 # ============================================================
 # GNI MAD Protocol v2 -- Quadratic Debate Framework
 # Bull -> Bear -> Black Swan -> Ostrich -> Arbitrator
-# 3 full rounds with Arbitrator coaching after each round
+# Personal consultants coach R1+R2 (GNI-R-235). Arbitrator final R3 only.
 # Grounded in ALL relevant articles not just top 5
 # Short Focus (7-30 days) + Long Shoots (3-24 months)
 # Predictions saved to debate_predictions table
@@ -173,17 +173,6 @@ def _compress(text: str, max_words: int = 40) -> str:
     return ' '.join(words[:max_words]) + '...'
 
 
-def _parse_coaching(raw: str) -> dict:
-    base = {'bull': '', 'bear': '', 'black_swan': '', 'ostrich': ''}
-    try:
-        clean = raw.replace('```json', '').replace('```', '').strip()
-        parsed = json.loads(clean)
-        for k in base:
-            base[k] = parsed.get(k, '')
-        return base
-    except (json.JSONDecodeError, ValueError):
-        return base
-
 
 def _save_predictions(report_id: str, short: str, long_s: str,
                       short_days: int, long_days: int, round3: dict) -> None:
@@ -278,13 +267,34 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                'Name the SPECIFIC threat they are ignoring and cost of inaction. '
                '3-4 sentences. Name names. Cite evidence.')
 
-    ARB_COACH = ('You are the Arbitrator -- debate coach not judge. '
-                 'Give 4 separate targeted feedbacks: (1) what they got right '
-                 '(2) their specific gap (3) direct instruction for next round. '
-                 'Push for specificity, mechanism, timeline, named actors. '
-                 'Respond ONLY with JSON: '
-                 '{"bull": "coaching", "bear": "coaching", '
-                 '"black_swan": "coaching", "ostrich": "coaching"}')
+    # GNI-R-235: Personal consultants -- 100% loyal to their agent
+    # Push agents to maximum strength. No balance. No praise. Only push.
+    BULL_CONS = ('You are Bull\'s personal strategist. Your ONLY loyalty is Bull. '
+                 'Mission: make Bull MORE bullish, sharper, bolder. '
+                 'Find every positive signal Bull missed or understated. '
+                 'Expose every weak point and replace with a stronger bullish argument. '
+                 'Demand specific actors, timelines, mechanisms Bull has not yet named. '
+                 'Be aggressive. No praise. 3-4 sentences. Make Bull UNSTOPPABLE.')
+
+    BEAR_CONS = ('You are Bear\'s personal strategist. Your ONLY loyalty is Bear. '
+                 'Mission: make Bear MORE bearish, darker, more devastating. '
+                 'Find every threat Bear understated or missed entirely. '
+                 'Push Bear to name specific systems that will break, exact mechanisms, exact timelines. '
+                 'Be merciless. No praise. 3-4 sentences. Make Bear UNDENIABLE.')
+
+    SWAN_CONS = ('You are Black Swan\'s personal strategist. Your ONLY loyalty is Black Swan. '
+                 'Mission: push Swan deeper into the unknown. '
+                 'Find weaker signals even Swan missed. More extreme tail risks. '
+                 'Push Swan further from consensus -- Bull and Bear are too obvious. '
+                 'Demand Swan name the specific cascade mechanism with more precision. '
+                 'No praise. 3-4 sentences. Push Swan into the unknown.')
+
+    OSTRICH_CONS = ('You are Ostrich\'s personal strategist. Your ONLY loyalty is Ostrich. '
+                    'Mission: make Ostrich MORE stubborn, MORE specific in denial. '
+                    'Find every reason the status quo holds that Ostrich has not yet named. '
+                    'Push Ostrich to name specific institutions, denial patterns, costs of inaction. '
+                    'Make the inertia argument so strong it cannot be dismissed. '
+                    'No praise. 3-4 sentences. Push Ostrich harder.')
 
     ARB_FINAL = ('You are the Arbitrator -- Strategic Synthesiser. '
                  'After 3 rounds identify: '
@@ -314,11 +324,15 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     ost_r1   = _call_agent(OSTRICH, r1_base + _fmt_history(history['ostrich'])     + '\n\nROUND 1: Name the specific threat being ignored.', 350)
     round1 = {'bull': bull_r1, 'bear': bear_r1, 'black_swan': swan_r1, 'ostrich': ost_r1}
 
-    # Arbitrator coaching Round 1
-    print('   Arbitrator coaching Round 1...')
-    c1_user = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
-               '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1 + '\n\nProvide targeted coaching.')
-    arb_c1 = _parse_coaching(_call_agent(ARB_COACH, c1_user, 600, expect_json=True))
+    # GNI-R-235: Personal consultant coaching Round 1 -- 4 separate calls
+    print('   Personal consultants coaching Round 1...')
+    r1_ctx = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
+              '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1)
+    c1_bull = _call_agent(BULL_CONS,   r1_ctx + '\n\nCoach Bull. Push harder for Round 2.', 200)
+    c1_bear = _call_agent(BEAR_CONS,   r1_ctx + '\n\nCoach Bear. Push darker for Round 2.', 200)
+    c1_swan = _call_agent(SWAN_CONS,   r1_ctx + '\n\nCoach Black Swan. Push deeper for Round 2.', 200)
+    c1_ost  = _call_agent(OSTRICH_CONS, r1_ctx + '\n\nCoach Ostrich. Push more stubborn for Round 2.', 200)
+    arb_c1 = {'bull': c1_bull, 'bear': c1_bear, 'black_swan': c1_swan, 'ostrich': c1_ost}
 
     # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
     # Round 1 used 5 calls. Sleep lets the rate limit window breathe.
@@ -338,12 +352,15 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     ost_r2   = _call_agent(OSTRICH, r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('ostrich','')     + '\n\nROUND 2: Name who is in denial and the cost.', 350)
     round2 = {'bull': bull_r2, 'bear': bear_r2, 'black_swan': swan_r2, 'ostrich': ost_r2}
 
-    # Arbitrator coaching Round 2
-    print('   Arbitrator coaching Round 2...')
-    c2_user = (news_ctx + '\n\nROUND 2:\nBull: ' + bull_r2 + '\nBear: ' + bear_r2 +
-               '\nBlack Swan: ' + swan_r2 + '\nOstrich: ' + ost_r2 +
-               '\n\nR1 coaching: ' + json.dumps(arb_c1) + '\n\nPush to final positions.')
-    arb_c2 = _parse_coaching(_call_agent(ARB_COACH, c2_user, 600, expect_json=True))
+    # GNI-R-235: Personal consultant coaching Round 2 -- 4 separate calls
+    print('   Personal consultants coaching Round 2...')
+    r2_ctx = (news_ctx + '\n\nROUND 2:\nBull: ' + bull_r2 + '\nBear: ' + bear_r2 +
+              '\nBlack Swan: ' + swan_r2 + '\nOstrich: ' + ost_r2)
+    c2_bull = _call_agent(BULL_CONS,   r2_ctx + '\n\nPush Bull to absolute maximum for Round 3 final.', 200)
+    c2_bear = _call_agent(BEAR_CONS,   r2_ctx + '\n\nPush Bear to absolute maximum for Round 3 final.', 200)
+    c2_swan = _call_agent(SWAN_CONS,   r2_ctx + '\n\nPush Black Swan to absolute maximum for Round 3 final.', 200)
+    c2_ost  = _call_agent(OSTRICH_CONS, r2_ctx + '\n\nPush Ostrich to absolute maximum for Round 3 final.', 200)
+    arb_c2 = {'bull': c2_bull, 'bear': c2_bear, 'black_swan': c2_swan, 'ostrich': c2_ost}
 
     # GNI-R-107: Sleep between rounds
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
