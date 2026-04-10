@@ -318,7 +318,7 @@ export default function DebatePage() {
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                               {AGENTS.map(agent => (
                                 <div key={agent.key} className="bg-gray-800 rounded-lg p-2">
-                                  <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} {agent.label}'s Consultant</div>
+                                  <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} {agent.label}{"'"}s Consultant</div>
                                   <p className="text-gray-400 italic">{getArbFeedback(selected.mad_arb_feedbacks, 'round1', agent.key) || 'No coaching recorded'}</p>
                                 </div>
                               ))}
