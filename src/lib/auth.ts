@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// SEC-3: NEXT_PUBLIC_GNI_API_KEY browser exposure -- monitored, accepted risk (GNI-R-SEC-3)
+// Intentionally browser-exposed (Next.js NEXT_PUBLIC_ prefix by design).
+// Leaked key grants: READ-ONLY access to public GNI data only.
+// Leaked key cannot: write to DB, access Groq/Supabase/Telegram secrets.
+// Export endpoints rate-limited 10 req/min (SEC-2). Real secrets are server-side only.
+
+
 const VALID_KEYS = (process.env.GNI_API_KEYS || '').split(',').map((k: string) => k.trim()).filter(Boolean)
 const INTERNAL_KEY = process.env.SELF_CHECK_INTERNAL_KEY || ''
 
