@@ -398,7 +398,7 @@ def run_mad_pipeline():
                 os.getenv('SUPABASE_URL', ''),
                 os.getenv('SUPABASE_SERVICE_KEY', '')
             )
-            log_usage(_sb, 'gni_mad', 12393, 15, report_id or '')
+            log_usage(_sb, 'gni_mad', 7433, 15, report_id or '')
         except Exception as _e:
             print('  WARNING: Could not log usage: ' + str(_e)[:60])
 
