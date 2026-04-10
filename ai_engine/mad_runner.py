@@ -119,6 +119,10 @@ def _update_report_with_mad(client, report_id, mad_result):
         'mad_round3_positions':      mad_result.get('mad_round3_positions', {}),
         'mad_arb_feedbacks':         mad_result.get('mad_arb_feedbacks', {}),
         'mad_historian_case':        mad_result.get('mad_historian_case', ''),
+        'debate_summary':            mad_result.get('debate_summary', ''),
+        'agent_positions':           mad_result.get('agent_positions', {}),
+        'key_disagreements':         mad_result.get('key_disagreements', ''),
+        'consensus_path':            mad_result.get('consensus_path', ''),
         'mad_risk_case':             mad_result.get('mad_risk_case', ''),
     }
     try:
@@ -184,6 +188,103 @@ def _send_mad_telegram(report, mad_result):
         print('  Warning: Telegram failed: ' + str(e)[:60])
 
 
+def _build_debate_summary(mad_result: dict) -> dict:
+    """
+    F4: Build 4 derived debate summary fields from mad_result.
+    Zero Groq calls — pure Python transformation of existing data.
+
+    Returns dict with:
+      debate_summary    — 2-3 sentence plain English debate summary
+      agent_positions   — each agent final stance (from round3)
+      key_disagreements — what agents disagreed on most
+      consensus_path    — how debate moved across 3 rounds
+    """
+    verdict = mad_result.get('mad_verdict', 'neutral').upper()
+    confidence = int(mad_result.get('mad_confidence', 0.5) * 100)
+    reasoning = mad_result.get('mad_reasoning', '')[:200]
+    action = mad_result.get('mad_action_recommendation', '')[:150]
+    blind_spot = mad_result.get('mad_blind_spot', '')[:100]
+
+    # debate_summary — plain English synthesis
+    if verdict in ('BULLISH', 'BEARISH'):
+        debate_summary = (
+            f'The 4-agent MAD debate reached a {verdict} verdict '
+            f'with {confidence}% confidence after 3 coached rounds. '
+        )
+    else:
+        debate_summary = (
+            f'The 4-agent MAD debate concluded NEUTRAL ({confidence}% confidence) '
+            f'after 3 coached rounds, indicating balanced risk signals. '
+        )
+    if action:
+        debate_summary += f'Recommended action: {action[:100]}.'
+    elif reasoning:
+        debate_summary += reasoning[:100] + '.'
+
+    # agent_positions — round 3 final stances (truncated for readability)
+    round3 = mad_result.get('mad_round3_positions', {})
+    agent_positions = {}
+    for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
+        pos = round3.get(agent, '')
+        if pos and not pos.startswith('[Agent error'):
+            # First sentence only
+            first = pos.split('.')[0].strip()
+            agent_positions[agent] = first[:200] if first else pos[:200]
+        else:
+            agent_positions[agent] = ''
+
+    # key_disagreements — compare round1 vs round3
+    round1 = mad_result.get('mad_round1_positions', {})
+    disagreements = []
+    for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
+        r1 = round1.get(agent, '')
+        r3 = round3.get(agent, '')
+        # If both have content and they differ substantially → disagreement noted
+        if r1 and r3 and not r3.startswith('[Agent error'):
+            disagreements.append(agent.replace('_', ' ').title())
+    if len(disagreements) >= 3:
+        key_disagreements = (
+            f'Significant debate across all agents: '
+            f'{", ".join(disagreements)}. '
+            f'Blind spot flagged: {blind_spot[:80]}.' if blind_spot else
+            f'Significant debate across all agents: {", ".join(disagreements)}.'
+        )
+    elif len(disagreements) >= 1:
+        key_disagreements = (
+            f'Primary tension between {" and ".join(disagreements)} perspectives.'
+        )
+    else:
+        key_disagreements = 'Debate inconclusive — agents returned fallback positions.'
+
+    # consensus_path — how rounds progressed
+    r1_valid = sum(1 for a in ['bull', 'bear', 'black_swan', 'ostrich']
+                   if round1.get(a) and not round1.get(a, '').startswith('['))
+    r3_valid = sum(1 for a in ['bull', 'bear', 'black_swan', 'ostrich']
+                   if round3.get(a) and not round3.get(a, '').startswith('['))
+
+    if r1_valid >= 4 and r3_valid >= 4:
+        consensus_path = (
+            f'Round 1: {r1_valid}/4 agents positioned '
+            f'→ Round 2: Arbitrator coaching applied '
+            f'→ Round 3: {r3_valid}/4 agents refined '
+            f'→ Verdict: {verdict} ({confidence}%)'
+        )
+    elif r3_valid >= 2:
+        consensus_path = (
+            f'Partial debate: {r3_valid}/4 agents reached final position '
+            f'→ Verdict: {verdict} ({confidence}%)'
+        )
+    else:
+        consensus_path = f'Debate incomplete → Fallback verdict: {verdict}'
+
+    return {
+        'debate_summary':    debate_summary.strip(),
+        'agent_positions':   agent_positions,
+        'key_disagreements': key_disagreements.strip(),
+        'consensus_path':    consensus_path.strip(),
+    }
+
+
 def run_mad_pipeline():
     start = datetime.now(timezone.utc)
     print('=' * 60)
@@ -245,6 +346,10 @@ def run_mad_pipeline():
     if not mad_succeeded:
         print('  WARNING: MAD returned fallback defaults -- arbitrator likely failed')
         print('  Report will be updated but debate content may be empty')
+
+    # F4: Build debate summary fields (zero Groq calls — derived)
+    debate_fields = _build_debate_summary(mad_result)
+    mad_result.update(debate_fields)
 
     # Update report with MAD fields
     print('\n?? Step 4: Updating report with MAD fields...')
