@@ -1,7 +1,0 @@
-﻿with open('src/app/about/page.tsx', 'r', encoding='utf-8') as f:
-    lines = f.readlines()
-
-print('Total lines:', len(lines))
-for i, line in enumerate(lines, start=1):
-    safe = line.encode('ascii', errors='replace').decode('ascii')
-    print(str(i).rjust(3) + ': ' + safe, end='')
