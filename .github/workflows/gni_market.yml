@@ -1,0 +1,51 @@
+name: GNI Market Pipeline
+# P4 Stock Standby Architecture
+# Fetches Yahoo Finance prices during NYSE hours
+# Upserts to stock_prices Supabase table
+# stocks page always shows data even when Yahoo is slow/down
+#
+# NYSE hours: 14:30-21:00 UTC Monday-Friday
+# This runs every hour from 14:00-21:00 UTC weekdays
+# Gives 7 fetch attempts per trading day per ticker
+
+on:
+  schedule:
+    - cron: '0 14 * * 1-5'
+    - cron: '0 15 * * 1-5'
+    - cron: '0 16 * * 1-5'
+    - cron: '0 17 * * 1-5'
+    - cron: '0 18 * * 1-5'
+    - cron: '0 19 * * 1-5'
+    - cron: '0 20 * * 1-5'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  fetch-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install \
+            supabase \
+            python-dotenv \
+            requests
+
+      - name: Fetch stock prices
+        run: python ai_engine/fetch_prices.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GITHUB_ACTIONS: "true"

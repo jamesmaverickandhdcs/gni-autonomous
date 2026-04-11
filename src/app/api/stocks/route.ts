@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { validateApiKey } from '@/lib/auth'
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+
 const VALID_RANGES = ['3d', '7d', '1m', '1y', '10y'] as const
 
 const QuerySchema = z.object({
@@ -17,6 +20,40 @@ const rangeMap: Record<string, string> = {
 }
 
 export const dynamic = 'force-dynamic'
+
+async function fetchFromSupabase(ticker: string, range: string) {
+  // P4 Stock Standby -- read cached prices from Supabase when Yahoo fails
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/stock_prices?ticker=eq.${ticker}&range=eq.${range}&select=*&limit=1`
+    const res = await fetch(url, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+      },
+      next: { revalidate: 300 }
+    })
+    if (!res.ok) return null
+    const rows = await res.json()
+    if (!rows || rows.length === 0) return null
+    const row = rows[0]
+    return {
+      ticker: row.ticker,
+      name: row.name,
+      price: row.current_price,
+      change: row.day_change?.toFixed(4) ?? '0',
+      changePercent: row.day_change_percent?.toFixed(2) ?? '0',
+      rangeChange: row.range_change?.toFixed(4) ?? '0',
+      rangeChangePercent: row.range_change_percent?.toFixed(2) ?? '0',
+      currency: row.currency || 'USD',
+      chartData: typeof row.chart_data === 'string' ? JSON.parse(row.chart_data) : row.chart_data,
+      cached: true,
+      cachedAt: row.fetched_at,
+    }
+  } catch {
+    return null
+  }
+}
 
 async function fetchYahoo(ticker: string, period: string, interval: string) {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=${interval}&range=${period}`
@@ -102,7 +139,13 @@ export async function GET(request: NextRequest) {
     }, { headers: { 'Cache-Control': 'no-store' } })
 
   } catch (err) {
-    console.error('Stock API error:', err)
+    console.error('Stock API error -- trying Supabase standby:', err)
+    // P4 Stock Standby -- fallback to cached Supabase data
+    const cached = await fetchFromSupabase(ticker, range)
+    if (cached) {
+      console.log(`Stock API: serving cached data for ${ticker} ${range}`)
+      return NextResponse.json(cached, { headers: { 'Cache-Control': 'no-store' } })
+    }
     return NextResponse.json({ error: 'Failed to fetch stock data' }, { status: 500 })
   }
 }
