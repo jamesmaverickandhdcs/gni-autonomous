@@ -19,6 +19,19 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true'
 
+# GNI-R-239: Run preflight check before MAD (local only -- GitHub Actions skips)
+# Prevents rushing into MAD without fresh report, proper gap, sufficient quota
+if not GITHUB_ACTIONS:
+    try:
+        from mad_preflight import run_preflight
+        if not run_preflight():
+            print('Pre-flight FAILED -- MAD pipeline aborted.')
+            print('Fix the issues above then re-run mad_preflight.py')
+            sys.exit(0)
+    except ImportError:
+        print('  WARNING: mad_preflight.py not found -- skipping preflight check')
+        print('  Copy mad_preflight.py to ai_engine/ folder for safety checks')
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from quota_guard import check_quota, log_usage
 
