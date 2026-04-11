@@ -105,26 +105,27 @@ def _get_pillar_arb_instruction(pillar: str) -> str:
     if pillar == 'tech':
         return (
             'PILLAR WEIGHTING -- TECHNOLOGY DOMINANT: '
-            'Give extra weight to the Black Swan agent position. '
-            'Technology threats are often unknown unknowns -- '
+            'BLACK SWAN DOMINATES this analysis. '
+            'Technology threats are unknown unknowns -- '
             'zero-day exploits, AI capability jumps, chip supply shocks. '
-            'The Bear agent downside is important but Black Swan is highest value here. '
+            'Discount Bull and Bear. Black Swan tail risk is the decisive factor here. '
         )
     elif pillar == 'fin':
         return (
             'PILLAR WEIGHTING -- FINANCIAL DOMINANT: '
-            'Give extra weight to the Bear agent position. '
-            'Financial threats are typically known risks playing out -- '
+            'BEAR DOMINATES this analysis. '
+            'Financial threats are known risks playing out -- '
             'rate shocks, sovereign defaults, currency crises, contagion. '
-            'The Bear agent systematic risk analysis is highest value here. '
+            'Discount Bull optimism. Bear systematic risk analysis is the decisive factor here. '
         )
     else:
         return (
             'PILLAR WEIGHTING -- GEOPOLITICAL DOMINANT: '
-            'Balanced weighting across all 4 agents. '
-            'Geopolitical threats span all quadrants equally -- '
+            'ALL FOUR AGENTS carry equal decisive weight. '
+            'Geopolitical threats span all quadrants simultaneously -- '
             'known conflicts (Bear), missed opportunities (Bull), '
-            'ignored realities (Ostrich), and unknown escalations (Black Swan). '
+            'ignored realities (Ostrich), unknown escalations (Black Swan). '
+            'No single agent dominates. The blind spot quadrant is critical to identify. '
         )
 
 
