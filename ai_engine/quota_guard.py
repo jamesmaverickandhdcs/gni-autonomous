@@ -25,7 +25,7 @@ PIPELINE_COSTS = {
     'gni_mad':      7433,   # P4: reduced from 12393 after token compression
     'gni_verify':   0,
     'gni_heartbeat':0,
-    'gni_adaptive': 7433,   # P4: matches MAD compressed cost
+    'gni_adaptive': 0,      # GNI-R-223: Cerebras ONLY -- zero Groq cost
 }
 
 # P6: Soft quota reservations per pipeline (C2 portioning)
