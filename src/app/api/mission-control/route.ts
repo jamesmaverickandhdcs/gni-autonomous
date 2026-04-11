@@ -173,7 +173,7 @@ export async function GET(request: NextRequest) {
         const { data: recentFresh } = await supabase.from('mission_control_log')
           .select('id').gte('checked_at', sixHoursAgo).limit(1)
         if (!recentFresh || recentFresh.length === 0) {
-          await sendTelegram(`⚠️ <b>GNI Web App Freshness Alert</b>\n/api/reports serving data ${hoursOld}h old\nSupabase JS client ordering bug may be back!\nTime: ${new Date().toISOString()}`)
+          await sendTelegram(`⚠️ <b>GNI Web App Freshness Alert</b>\n/api/reports serving data ${hoursOld}h old\nPipeline overdue -- check GitHub Actions sacred cron.\nTime: ${new Date().toISOString()}`)
         }
       } else {
         checks['webapp_freshness'] = { status: 'OK', message: `Web app serving fresh data: ${hoursOld}h old` }
