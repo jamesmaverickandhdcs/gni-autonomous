@@ -275,13 +275,13 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  'Find every positive signal Bull missed or understated. '
                  'Expose every weak point and replace with a stronger bullish argument. '
                  'Demand specific actors, timelines, mechanisms Bull has not yet named. '
-                 'Be aggressive. No praise. 3-4 sentences. Make Bull UNSTOPPABLE.')
+                 'Be direct and uncompromising. No praise. 3-4 sentences. Make Bull as strong as possible.')
 
     BEAR_CONS = ('You are Bear\'s personal strategist. Your ONLY loyalty is Bear. '
-                 'Mission: make Bear MORE bearish, darker, more devastating. '
+                 'Mission: make Bear MORE bearish, more specific, more evidence-based. '
                  'Find every threat Bear understated or missed entirely. '
                  'Push Bear to name specific systems that will break, exact mechanisms, exact timelines. '
-                 'Be merciless. No praise. 3-4 sentences. Make Bear UNDENIABLE.')
+                 'Be precise and relentless. No praise. 3-4 sentences. Make Bear as compelling as possible.')
 
     SWAN_CONS = ('You are Black Swan\'s personal strategist. Your ONLY loyalty is Black Swan. '
                  'Mission: push Swan deeper into the unknown. '
@@ -384,7 +384,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
 
     # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
-    print('  Waiting 60s before arbitrator synthesis (Groq rate limit protection)...')
+    print('  Waiting 90s before arbitrator synthesis (Groq rate limit protection)...')
     time.sleep(90)  # GNI-R-237: 90s for gpt-oss-120b TPM recovery
 
     # Arbitrator final synthesis
