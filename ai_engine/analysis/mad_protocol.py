@@ -6,7 +6,7 @@
 # Short Focus (7-30 days) + Long Shoots (3-24 months)
 # Predictions saved to debate_predictions table
 # 21 Groq calls per run
-# L23: Model name via GROQ_MODEL env var -- never hardcoded
+# GNI-R-237: GROQ_MAD_MODEL=gpt-oss-120b (all 21 calls). GROQ_MODEL fallback.
 # ============================================================
 
 import os
@@ -18,7 +18,8 @@ from groq import Groq
 from groq_guardian import validate_response  # GNI-R-234
 
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
-MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')  # L23
+MODEL = os.getenv('GROQ_MAD_MODEL',
+        os.getenv('GROQ_MODEL', 'openai/gpt-oss-120b'))  # GNI-R-237: MAD uses gpt-oss-120b
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
@@ -384,7 +385,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
     print('  Waiting 60s before arbitrator synthesis (Groq rate limit protection)...')
-    time.sleep(60)
+    time.sleep(90)  # GNI-R-237: 90s for gpt-oss-120b TPM recovery
 
     # Arbitrator final synthesis
     print('   Arbitrator final synthesis...')
