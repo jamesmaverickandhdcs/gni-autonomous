@@ -19,7 +19,7 @@ from groq_guardian import validate_response  # GNI-R-234
 
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 MODEL = os.getenv('GROQ_MAD_MODEL',
-        os.getenv('GROQ_MODEL', 'openai/gpt-oss-120b'))  # GNI-R-237: MAD uses gpt-oss-120b
+        os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile'))  # GNI-R-237: MAD uses gpt-oss-120b
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
@@ -327,13 +327,24 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     round1 = {'bull': bull_r1, 'bear': bear_r1, 'black_swan': swan_r1, 'ostrich': ost_r1}
 
     # GNI-R-235: Personal consultant coaching Round 1 -- 4 separate calls
+    # S28-13: lean context only -- news_ctx caused empty responses (5400 tokens)
+    # S28-14: 15s sleep -- 8 back-to-back calls exceed Groq TPM soft limit
+    print('  Waiting 15s before consultant calls (TPM soft limit protection)...')
+    time.sleep(15)
     print('   Personal consultants coaching Round 1...')
-    r1_ctx = (news_ctx + '\n\nROUND 1:\nBull: ' + bull_r1 + '\nBear: ' + bear_r1 +
-              '\nBlack Swan: ' + swan_r1 + '\nOstrich: ' + ost_r1)
-    c1_bull = _call_agent(BULL_CONS,   r1_ctx + '\n\nCoach Bull. Push harder for Round 2.', 200)
-    c1_bear = _call_agent(BEAR_CONS,   r1_ctx + '\n\nCoach Bear. Push darker for Round 2.', 200)
-    c1_swan = _call_agent(SWAN_CONS,   r1_ctx + '\n\nCoach Black Swan. Push deeper for Round 2.', 200)
-    c1_ost  = _call_agent(OSTRICH_CONS, r1_ctx + '\n\nCoach Ostrich. Push more stubborn for Round 2.', 200)
+    r1_cons_ctx = (
+        'REPORT: ' + report.get('title', '') + '\n'
+        'ESCALATION: ' + report.get('escalation_level', '') + '\n\n'
+        'ROUND 1 POSITIONS (compressed):\n'
+        'Bull: '        + _compress(bull_r1, 60) + '\n'
+        'Bear: '        + _compress(bear_r1, 60) + '\n'
+        'Black Swan: '  + _compress(swan_r1, 60) + '\n'
+        'Ostrich: '     + _compress(ost_r1, 60) + '\n'
+    )
+    c1_bull = _call_agent(BULL_CONS,    r1_cons_ctx + '\n\nCoach Bull. Push harder for Round 2.', 250)
+    c1_bear = _call_agent(BEAR_CONS,    r1_cons_ctx + '\n\nCoach Bear. Push harder for Round 2.', 250)
+    c1_swan = _call_agent(SWAN_CONS,    r1_cons_ctx + '\n\nCoach Black Swan. Push deeper for Round 2.', 250)
+    c1_ost  = _call_agent(OSTRICH_CONS, r1_cons_ctx + '\n\nCoach Ostrich. Push harder for Round 2.', 250)
     arb_c1 = {'bull': c1_bull, 'bear': c1_bear, 'black_swan': c1_swan, 'ostrich': c1_ost}
 
     # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
@@ -355,13 +366,24 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     round2 = {'bull': bull_r2, 'bear': bear_r2, 'black_swan': swan_r2, 'ostrich': ost_r2}
 
     # GNI-R-235: Personal consultant coaching Round 2 -- 4 separate calls
+    # S28-13: lean context only -- news_ctx caused empty responses (5400 tokens)
+    # S28-14: 15s sleep -- 8 back-to-back calls exceed Groq TPM soft limit
+    print('  Waiting 15s before consultant calls (TPM soft limit protection)...')
+    time.sleep(15)
     print('   Personal consultants coaching Round 2...')
-    r2_ctx = (news_ctx + '\n\nROUND 2:\nBull: ' + bull_r2 + '\nBear: ' + bear_r2 +
-              '\nBlack Swan: ' + swan_r2 + '\nOstrich: ' + ost_r2)
-    c2_bull = _call_agent(BULL_CONS,   r2_ctx + '\n\nPush Bull to absolute maximum for Round 3 final.', 200)
-    c2_bear = _call_agent(BEAR_CONS,   r2_ctx + '\n\nPush Bear to absolute maximum for Round 3 final.', 200)
-    c2_swan = _call_agent(SWAN_CONS,   r2_ctx + '\n\nPush Black Swan to absolute maximum for Round 3 final.', 200)
-    c2_ost  = _call_agent(OSTRICH_CONS, r2_ctx + '\n\nPush Ostrich to absolute maximum for Round 3 final.', 200)
+    r2_cons_ctx = (
+        'REPORT: ' + report.get('title', '') + '\n'
+        'ESCALATION: ' + report.get('escalation_level', '') + '\n\n'
+        'ROUND 2 POSITIONS (compressed):\n'
+        'Bull: '        + _compress(bull_r2, 60) + '\n'
+        'Bear: '        + _compress(bear_r2, 60) + '\n'
+        'Black Swan: '  + _compress(swan_r2, 60) + '\n'
+        'Ostrich: '     + _compress(ost_r2, 60) + '\n'
+    )
+    c2_bull = _call_agent(BULL_CONS,    r2_cons_ctx + '\n\nPush Bull to maximum for Round 3 final.', 250)
+    c2_bear = _call_agent(BEAR_CONS,    r2_cons_ctx + '\n\nPush Bear to maximum for Round 3 final.', 250)
+    c2_swan = _call_agent(SWAN_CONS,    r2_cons_ctx + '\n\nPush Black Swan to maximum for Round 3 final.', 250)
+    c2_ost  = _call_agent(OSTRICH_CONS, r2_cons_ctx + '\n\nPush Ostrich to maximum for Round 3 final.', 250)
     arb_c2 = {'bull': c2_bull, 'bear': c2_bear, 'black_swan': c2_swan, 'ostrich': c2_ost}
 
     # GNI-R-107: Sleep between rounds
