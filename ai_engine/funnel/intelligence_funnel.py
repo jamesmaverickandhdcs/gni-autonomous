@@ -431,45 +431,49 @@ _STOP_WORDS = {
 }
 
 def _event_deduplicate(articles: list) -> list:
-    """Within a pillar group, remove articles that are about the same event.
+    """Deduplicate events within a pillar and apply trending multiplier.
 
     Two articles = same event if they share 4+ significant words (5+ chars).
-    Keep highest-scored article per event cluster.
-    GNI S29 W-11 fix: prevents BBC + DW + France24 all selecting same Iran story.
-    """
-    seen_events: list = []  # list of (keyword_set, score)
-    unique: list = []
+    Keeps highest-scored article per cluster (deduplication).
+    Boosts winner score based on how many sources covered the same event (trending).
 
+    trending_multiplier = min(2.0, 1.0 + 0.15 * peer_count)
+    Example: Iran covered by 4 sources -> winner score x1.45
+    GNI S29: dedup + trending working together correctly.
+    """
+    # Pass 1: cluster all articles by event
+    clusters = []  # each: {kws, best_art, peer_count}
     for art in articles:
         text = f"{art.get('title','')} {art.get('summary','')}".lower()
-        words = {
-            w for w in re.findall(r'[a-z]{5,}', text)
-            if w not in _STOP_WORDS
-        }
-
-        is_dup = False
-        for event_kws, event_score in seen_events:
-            overlap = len(words & event_kws)
-            if overlap >= 4:
-                is_dup = True
-                # Replace if this article scores higher
-                if art.get("stage3_score", 0) > event_score:
-                    idx = seen_events.index((event_kws, event_score))
-                    seen_events[idx] = (words | event_kws, art.get("stage3_score", 0))
-                    # Find and replace in unique list
-                    for i, u in enumerate(unique):
-                        u_text = f"{u.get('title','')} {u.get('summary','')}".lower()
-                        u_words = {w for w in re.findall(r'[a-z]{5,}', u_text) if w not in _STOP_WORDS}
-                        if len(u_words & event_kws) >= 4:
-                            u['stage4_reason'] = 'Replaced by higher-scored same-event article'
-                            unique[i] = art
-                            break
+        words = {w for w in re.findall(r'[a-z]{5,}', text) if w not in _STOP_WORDS}
+        matched = None
+        for cluster in clusters:
+            if len(words & cluster['kws']) >= 4:
+                matched = cluster
                 break
+        if matched is None:
+            clusters.append({'kws': words, 'best_art': art, 'peer_count': 1})
+        else:
+            matched['peer_count'] += 1
+            matched['kws'] |= words
+            if art.get('stage3_score', 0) > matched['best_art'].get('stage3_score', 0):
+                matched['best_art'] = art
 
-        if not is_dup:
-            seen_events.append((words, art.get("stage3_score", 0)))
-            unique.append(art)
+    # Pass 2: apply trending multiplier to each cluster winner
+    unique = []
+    for cluster in clusters:
+        art = cluster['best_art']
+        peers = cluster['peer_count']
+        if peers > 1:
+            mult = min(2.0, 1.0 + 0.15 * (peers - 1))
+            orig = art.get('stage3_score', 0)
+            art['stage3_score'] = round(orig * mult, 2)
+            art['trending_peer_count'] = peers
+            art['trending_multiplier'] = round(mult, 2)
+            art['trending_original_score'] = orig
+        unique.append(art)
 
+    unique.sort(key=lambda a: a.get('stage3_score', 0), reverse=True)
     return unique
 
 def run_funnel(
