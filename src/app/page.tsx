@@ -412,7 +412,16 @@ export default function Home() {
                 </div>
               </div>
             <div className="text-right text-sm text-gray-400">
-              <div>Pipeline: <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full bg-green-400"></span><span className="text-green-400">Active</span></span></div>
+              {/* W-12: Dynamic pipeline status based on last run timestamp GNI-S29 */}
+              <div>Pipeline: <span className="inline-flex items-center gap-1">
+                {(() => {
+                  if (!latestRun?.run_at) return <><span className="inline-block w-2 h-2 rounded-full bg-gray-500"></span><span className="text-gray-400">Unknown</span></>;
+                  const hoursAgo = (Date.now() - new Date(latestRun.run_at).getTime()) / 3600000;
+                  if (hoursAgo < 14) return <><span className="inline-block w-2 h-2 rounded-full bg-green-400"></span><span className="text-green-400">Active</span></>;
+                  if (hoursAgo < 26) return <><span className="inline-block w-2 h-2 rounded-full bg-yellow-400"></span><span className="text-yellow-400">Delayed</span></>;
+                  return <><span className="inline-block w-2 h-2 rounded-full bg-red-400"></span><span className="text-red-400">Offline</span></>;
+                })()}
+              </span></div>
               <div>Intelligence Reports: <span className="text-white font-bold">{reports.length}</span></div>
               {baseline && baseline.score > 0 && (
                 <div className="text-xs mt-1">

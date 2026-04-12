@@ -416,6 +416,35 @@ def _score_article(article: dict) -> tuple[float, str]:
         if fin_matches:
             reasons.append(f"FIN pillar bonus ({fin_score}pts): {', '.join(fin_matches[:3])}")
 
+    # ── Recency bonus (W-15 fix GNI S29) ─────────────────────────────────
+    # published_at is set by rss_collector for every article
+    # Breaking news (<6h) gets +5pts. Older than 48h gets nothing.
+    # Additive (not multiplier) — avoids compounding with trending multiplier
+    published_at = article.get('published_at', '')
+    if published_at:
+        try:
+            from datetime import timezone as _tz
+            from datetime import datetime as _dt
+            pub = _dt.fromisoformat(published_at.replace('Z', '+00:00'))
+            hours_old = (_dt.now(_tz.utc) - pub).total_seconds() / 3600
+            if hours_old < 6:
+                rec_bonus = 5
+            elif hours_old < 12:
+                rec_bonus = 4
+            elif hours_old < 24:
+                rec_bonus = 3
+            elif hours_old < 36:
+                rec_bonus = 2
+            elif hours_old < 48:
+                rec_bonus = 1
+            else:
+                rec_bonus = 0
+            if rec_bonus > 0:
+                score += rec_bonus
+                reasons.append(f"Recency (+{rec_bonus}pts): {round(hours_old, 1)}h old")
+        except Exception:
+            pass  # never let recency calc break scoring
+
     reason_str = " | ".join(reasons) if reasons else "Base score only"
     return round(score, 2), reason_str
 
