@@ -155,6 +155,53 @@ def calculate_accuracy_score(
         return 0.0
 
 
+
+def calculate_magnitude_score(
+    predicted_sentiment: str,
+    spy_change_3d: float | None,
+    spy_change_7d: float | None,
+) -> float:
+    """
+    GPVS magnitude score — continuous 0.0 to 1.0.
+    W-14 fix GNI S29: captures HOW RIGHT or HOW WRONG a prediction was.
+    Does NOT replace accuracy_score — stored alongside it.
+    Future: wire into EMA when 100+ samples reached.
+
+    Correct direction:
+      >3% move  = 1.00  strongly confirmed
+      >2% move  = 0.85
+      >1% move  = 0.70
+      >0.5% move = 0.55
+      <=0.5% move = 0.35  technically correct, barely
+    Wrong direction:
+      <0.5% wrong = 0.20  near miss
+      <1.0% wrong = 0.10
+      >=1.0% wrong = 0.00  clearly wrong
+    """
+    if predicted_sentiment is None:
+        return 0.0
+    is_bearish = predicted_sentiment.lower() == 'bearish'
+    is_bullish = predicted_sentiment.lower() == 'bullish'
+
+    # Use 7d as primary, fall back to 3d
+    change = spy_change_7d if spy_change_7d is not None else spy_change_3d
+    if change is None:
+        return 0.0
+
+    correct_direction = (is_bearish and change < 0) or (is_bullish and change > 0)
+    magnitude = abs(change)
+
+    if correct_direction:
+        if magnitude > 3.0: return 1.00
+        if magnitude > 2.0: return 0.85
+        if magnitude > 1.0: return 0.70
+        if magnitude > 0.5: return 0.55
+        return 0.35
+    else:
+        if magnitude < 0.5: return 0.20
+        if magnitude < 1.0: return 0.10
+        return 0.00
+
 def check_human_review_needed(
     predicted_sentiment: str,
     spy_change_3d: float | None,
@@ -346,6 +393,8 @@ def verify_pending_outcomes():
             'tlt_change_7d': tlt_7d,
             'financial_event_category': fin_category,
             'escalation_accurate': escalation_accurate,
+            'gpvs_magnitude_score': calculate_magnitude_score(sentiment, spy_3d, spy_7d),
+            'spy_magnitude_3d': round(abs(spy_3d), 2) if spy_3d is not None else None,
         }
 
         client.table('prediction_outcomes').insert(record).execute()
