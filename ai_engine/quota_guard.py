@@ -36,7 +36,7 @@ PIPELINE_COSTS = {
 PIPELINE_RESERVATIONS = {
     'gni_pipeline': 10000,  # sacred -- always runs (GNI-R-121)
     'gni_mad':      10000,  # sacred -- guaranteed window after pipeline
-    'gni_adaptive': 15000,  # non-sacred -- only if sufficient headroom
+    'gni_adaptive': 0,       # S29: gni_adaptive uses Cerebras (GNI-R-223) -- zero Groq reservation
 }
 
 

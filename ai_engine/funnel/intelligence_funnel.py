@@ -151,13 +151,66 @@ def _check_relevance(article: dict) -> tuple[bool, str]:
     return False, "No geopolitical keywords found"
 
 
-def _check_injection(article: dict) -> tuple[bool, str]:
-    """Stage 1b: Check for prompt injection attacks."""
+# Stage 1b extension: PHI-002 bias attacks (GNI S29 — from Lens protection upgrade)
+_PHI002_PATTERNS = [re.compile(p, re.IGNORECASE | re.DOTALL) for p in [
+    r'(ethnic|religious|cultural)\s+(traditions?|identity)\s+must\s+(supersede|override|come\s+before)\s+(individual|human)\s+rights',
+    r'(group|collective|national|ethnic)\s+rights\s+(outweigh|are\s+more\s+important\s+than|supersede)\s+individual',
+    r'(sovereignty|stability|order|security)\s+(requires|demands|necessitates)\s+(limiting|restricting|suspending)\s+(rights|freedoms|democracy)',
+    r'democracy\s+(is|was)\s+(a|the)\s+western\s+(invention|concept|imposition|idea)',
+    r'(human\s+rights|individual\s+rights)\s+(are|is)\s+(a|the)\s+(western|colonial|imperialist)\s+(concept|invention|tool)',
+]]
+
+_SECTARIAN_PATTERNS = [re.compile(p, re.IGNORECASE | re.DOTALL) for p in [
+    r'(unnamed|anonymous|unverified|secret)\s+sources?\s+(say|report|claim|allege)\s+(that\s+)?(muslims?|christians?|buddhists?|hindus?|jews?)',
+    r'(sources?|insiders?|informants?)\s+(confirm|reveal|expose)\s+(ethnic|religious|minority)\s+(plot|plan|attack|conspiracy)',
+    r'(the|this)\s+(ethnic|religious|minority|indigenous)\s+group\s+(is|are)\s+(planning|behind|responsible\s+for)',
+    r'(foreign|outside|external)\s+(agents?|forces?|powers?)\s+(are\s+)?(using|funding|arming)\s+(ethnic|religious|minority)',
+    r'(ethnic|religious|cultural|sectarian)\s+(cleansing|war|conflict|tension)\s+(is|has)\s+(begun|started|erupted|inevitable)',
+]]
+
+_STUFFING_KW = [
+    "sanctions", "dark money", "shell company", "money laundering",
+    "oligarch", "corruption", "energy security", "critical minerals",
+    "food security", "military alliance", "coup", "sovereignty",
+    "debt trap", "financial warfare", "cyber attack", "surveillance",
+    "disinformation", "propaganda", "sectarian", "ethnic cleansing",
+]
+
+
+def _check_injection(article: dict) -> tuple[str, str]:
+    """Stage 1b: Check for adversarial content.
+
+    Returns (action, reason):
+      REMOVE — direct prompt injection → drop article entirely
+      FLAG   — Lens-style bias/sectarian attack → include with warning tag
+      PASS   — clean article
+    GNI S29: upgraded from (bool, str) to (str, str) for FLAG support.
+    """
     text = f"{article.get('title', '')} {article.get('summary', '')}".lower()
+
+    # Check direct injection patterns (REMOVE)
     for pattern in INJECTION_PATTERNS:
         if re.search(pattern, text, re.IGNORECASE):
-            return False, f"Injection pattern detected: {pattern[:40]}"
-    return True, "Clean â€” no injection patterns"
+            return "REMOVE", f"Injection pattern: {pattern[:40]}"
+
+    # Check PHI-002 bias attacks (FLAG — attack is intelligence signal)
+    for pattern in _PHI002_PATTERNS:
+        if pattern.search(text):
+            return "FLAG", "PHI-002 bias attack detected — included with warning"
+
+    # Check sectarian trap content (FLAG — manufactured division is signal)
+    for pattern in _SECTARIAN_PATTERNS:
+        if pattern.search(text):
+            return "FLAG", "Sectarian trap content — unsourced ethnic/religious claim"
+
+    # Check indicator stuffing (short article, too many indicator keywords)
+    word_count = len(text.split())
+    if word_count < 150:
+        hits = sum(1 for kw in _STUFFING_KW if kw in text)
+        if hits >= 8:
+            return "FLAG", f"Indicator stuffing: {hits} keywords in {word_count}-word article"
+
+    return "PASS", "Clean — no injection patterns"
 
 
 def _get_dedup_key(article: dict) -> str:
@@ -367,6 +420,58 @@ def _score_article(article: dict) -> tuple[float, str]:
     return round(score, 2), reason_str
 
 
+
+_STOP_WORDS = {
+    "a","an","the","and","or","but","in","on","at","to","for","of","with",
+    "by","from","is","are","was","were","be","been","has","have","had",
+    "will","would","could","should","this","that","these","those","it",
+    "its","as","up","out","into","about","over","after","says","said",
+    "also","more","than","which","when","where","after","while","their",
+    "during","since","before","between","news","report","reuters","press",
+}
+
+def _event_deduplicate(articles: list) -> list:
+    """Within a pillar group, remove articles that are about the same event.
+
+    Two articles = same event if they share 4+ significant words (5+ chars).
+    Keep highest-scored article per event cluster.
+    GNI S29 W-11 fix: prevents BBC + DW + France24 all selecting same Iran story.
+    """
+    seen_events: list = []  # list of (keyword_set, score)
+    unique: list = []
+
+    for art in articles:
+        text = f"{art.get('title','')} {art.get('summary','')}".lower()
+        words = {
+            w for w in re.findall(r'[a-z]{5,}', text)
+            if w not in _STOP_WORDS
+        }
+
+        is_dup = False
+        for event_kws, event_score in seen_events:
+            overlap = len(words & event_kws)
+            if overlap >= 4:
+                is_dup = True
+                # Replace if this article scores higher
+                if art.get("stage3_score", 0) > event_score:
+                    idx = seen_events.index((event_kws, event_score))
+                    seen_events[idx] = (words | event_kws, art.get("stage3_score", 0))
+                    # Find and replace in unique list
+                    for i, u in enumerate(unique):
+                        u_text = f"{u.get('title','')} {u.get('summary','')}".lower()
+                        u_words = {w for w in re.findall(r'[a-z]{5,}', u_text) if w not in _STOP_WORDS}
+                        if len(u_words & event_kws) >= 4:
+                            u['stage4_reason'] = 'Replaced by higher-scored same-event article'
+                            unique[i] = art
+                            break
+                break
+
+        if not is_dup:
+            seen_events.append((words, art.get("stage3_score", 0)))
+            unique.append(art)
+
+    return unique
+
 def run_funnel(
     articles: list[dict],
     top_n: int = 11,  # 5 geo + 3 tech + 3 fin
@@ -411,9 +516,10 @@ def run_funnel(
     # â”€â”€ Stage 1b: Injection Detection â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage1b_pass = []
     for art in stage1_pass:
-        passed, reason = _check_injection(art)
-        art['stage1b_passed'] = passed
+        action, reason = _check_injection(art)
+        art['stage1b_action'] = action
         art['stage1b_reason'] = reason
+        art['stage1b_passed'] = (action != 'REMOVE')  # backwards compat
         art['stage2_passed'] = True
         art['stage2_reason'] = 'Not evaluated (failed Stage 1b)'
         art['stage3_score'] = 0.0
@@ -483,6 +589,10 @@ def run_funnel(
     source_counts = {}
 
     # Fill quota per pillar -- highest score first, max_per_source respected
+    # GNI S29 W-11: event deduplication applied per pillar before selection
+    for pillar in by_pillar:
+        by_pillar[pillar] = _event_deduplicate(by_pillar[pillar])
+
     for pillar, quota in PILLAR_QUOTA.items():
         filled = 0
         for art in by_pillar[pillar]:

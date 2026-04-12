@@ -62,6 +62,22 @@ SOURCES = [
      "url": "https://www.crisisgroup.org/rss.xml",
      "pillar": "geo", "bias": "Research", "democracy_score": 92},
 
+
+    {"name": "Reuters via Google News",
+     "url": "https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com&ceid=US:en&hl=en-US&gl=US",
+     "pillar": "geo", "bias": "Wire Service", "democracy_score": 85},
+
+    {"name": "AP News via Google News",
+     "url": "https://news.google.com/rss/search?q=when:24h+allinurl:apnews.com&ceid=US:en&hl=en-US&gl=US",
+     "pillar": "geo", "bias": "Wire Service", "democracy_score": 82},
+
+    {"name": "Africa Is A Country",
+     "url": "https://africasacountry.com/feed",
+     "pillar": "geo", "bias": "Post-Colonial Analysis", "democracy_score": 75},
+
+    {"name": "The Africa Report",
+     "url": "https://www.theafricareport.com/feed/",
+     "pillar": "geo", "bias": "African Business/Political", "democracy_score": 72},
     # ── FINANCIAL PILLAR (5 sources) ──────────────────────────
     {"name": "Financial Times",
      "url": "https://www.ft.com/?format=rss",
