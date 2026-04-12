@@ -85,6 +85,7 @@ interface PipelineArticle {
 
 interface PipelineRun {
   id: string
+  run_at: string
   total_collected: number
   total_relevant: number
   total_deduped: number
