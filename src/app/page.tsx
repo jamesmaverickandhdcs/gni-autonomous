@@ -400,6 +400,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
+      {/* W-13: CRITICAL escalation banner GNI-S29 */}
+      {latest?.escalation_level?.toLowerCase() === 'critical' && (
+        <div className="w-full bg-red-600 text-white px-4 py-2 flex items-center justify-between animate-pulse">
+          <div className="flex items-center gap-3">
+            <span className="text-lg font-black">&#9888; CRITICAL ESCALATION DETECTED</span>
+            <span className="text-sm font-medium opacity-90">
+              {latest.escalation_score ? latest.escalation_score.toFixed(1) + '/10' : ''} -- {latest.title || 'High-risk geopolitical signal active'}
+            </span>
+          </div>
+          <a href="/brief" className="text-xs font-black bg-white text-red-700 rounded px-3 py-1 shrink-0 hover:bg-red-100 transition-colors">VIEW BRIEF</a>
+        </div>
+      )}
 
       {/* Header */}
       <header className="border-b border-gray-800 bg-gray-900">
