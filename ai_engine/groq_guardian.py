@@ -68,6 +68,22 @@ JSON_CLOSE_CHAR = '}'
 
 # ── Core Validation Functions ────────────────────────────────
 
+
+def _tg_guardian_alert(reason: str) -> None:
+    """Send Telegram alert when groq_guardian rejects. GNI S28 FIX."""
+    try:
+        import requests as _rq, os as _os
+        tok = _os.environ.get('TELEGRAM_BOT_TOKEN', '')
+        cid = _os.environ.get('TELEGRAM_ADMIN_CHAT_ID', '')
+        if tok and cid and reason not in ('rate limit error (429)', 'empty response'):
+            _rq.post(
+                f'https://api.telegram.org/bot{tok}/sendMessage',
+                json={'chat_id': cid, 'text': f'[GNI GUARDIAN] Silent rejection: {reason}'},
+                timeout=5
+            )
+    except Exception:
+        pass  # Never let Telegram break the guardian
+
 def is_rate_limit_error(raw: str) -> bool:
     """
     Return True if the raw response indicates a Groq rate limit (429).
@@ -175,6 +191,7 @@ def validate_response(raw: str, expect_json: bool = True) -> dict:
     }
 
     if not raw:
+        _tg_guardian_alert('empty response')
         return {
             'valid': False,
             'sanitized': '',
@@ -192,6 +209,7 @@ def validate_response(raw: str, expect_json: bool = True) -> dict:
 
     # Determine rejection reason
     if checks['is_rate_limit']:
+        _tg_guardian_alert('rate limit error (429)')
         return {
             'valid': False,
             'sanitized': sanitized,
@@ -208,6 +226,7 @@ def validate_response(raw: str, expect_json: bool = True) -> dict:
             reason = f'response too long ({len(sanitized.strip())} chars)'
         else:
             reason = 'quality check failed'
+        _tg_guardian_alert(reason)
         return {
             'valid': False,
             'sanitized': sanitized,
@@ -216,6 +235,7 @@ def validate_response(raw: str, expect_json: bool = True) -> dict:
         }
 
     if checks['is_refusal']:
+        _tg_guardian_alert('model refusal detected')
         return {
             'valid': False,
             'sanitized': sanitized,
@@ -224,6 +244,7 @@ def validate_response(raw: str, expect_json: bool = True) -> dict:
         }
 
     if checks['is_injection']:
+        _tg_guardian_alert('injection attempt detected in response')
         return {
             'valid': False,
             'sanitized': sanitized,
