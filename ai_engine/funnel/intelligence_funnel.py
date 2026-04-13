@@ -221,6 +221,48 @@ def _get_dedup_key(article: dict) -> str:
     return hashlib.md5(' '.join(words).encode()).hexdigest()
 
 
+# ── Source Tier System (from LENS experience) ────────────────────────────────
+# Tier-based baseline bonus independent of GPVS EMA weights.
+# EMA weights take months to become reliable (~100+ observations).
+# Tiers give correct relative trust from day one.
+# STATE: wire services (highest factual accuracy, institutional trust)
+# TIER1: deep editorial standards, specialist expertise
+# TIER2: solid reporting, regional or thematic strength
+# TIER3: specialist/niche — valuable content, lower editorial baseline
+SOURCE_TIERS = {
+    # STATE — Wire services
+    'Reuters via Google News': 'STATE',
+    'AP News via Google News': 'STATE',
+    # TIER1 — Highest credibility
+    'BBC': 'TIER1',
+    'The Economist': 'TIER1',
+    'Human Rights Watch': 'TIER1',
+    'Bellingcat': 'TIER1',
+    'EFF Deeplinks': 'TIER1',
+    'Foreign Policy': 'TIER1',
+    'The Diplomat': 'TIER1',
+    'DW News': 'TIER1',
+    'France 24': 'TIER1',
+    'The Conversation': 'TIER1',
+    # TIER2 — Solid credibility
+    'Project Syndicate': 'TIER2',
+    'Financial Times': 'TIER2',
+    'Al Jazeera': 'TIER2',
+    'MIT Technology Review': 'TIER2',
+    'Krebs on Security': 'TIER2',
+    'Rest of World': 'TIER2',
+    'Washington Post': 'TIER2',   # reserve source
+    'AllAfrica': 'TIER2',          # reserve source
+    'Mail and Guardian': 'TIER2',  # reserve source
+    'The Independent': 'TIER2',    # reserve source
+    'Radio Free Europe': 'TIER2',  # reserve source
+    'New York Times': 'TIER2',     # reserve source
+    # TIER3 — Specialist / regional (good content, lower editorial baseline)
+    # All unlisted sources default to TIER3 (0 pts)
+}
+TIER_BONUS = {'STATE': 5, 'TIER1': 3, 'TIER2': 1, 'TIER3': 0}
+
+
 def _score_article(article: dict) -> tuple[float, str]:
     """Stage 3: Score article by significance."""
     score = 0.0
@@ -272,6 +314,14 @@ def _score_article(article: dict) -> tuple[float, str]:
     if weight_bonus != 0:
         score += weight_bonus
         reasons.append(f"Source weight ({weight:.2f} = {weight_bonus:+.1f}pts): {article.get('source')}")
+
+    # Source tier bonus (independent of EMA — active from day one)
+    source_name = article.get('source', '')
+    tier = SOURCE_TIERS.get(source_name, 'TIER3')
+    tier_pts = TIER_BONUS.get(tier, 0)
+    if tier_pts > 0:
+        score += tier_pts
+        reasons.append(f"Source tier {tier} (+{tier_pts}pts): {source_name}")
 
     # ── THREAT keywords (+4 each, max 20) ─────────────────────────────
     # Direct aggression, attacks, hostile actions -- global perspective
@@ -442,6 +492,14 @@ def _score_article(article: dict) -> tuple[float, str]:
             if rec_bonus > 0:
                 score += rec_bonus
                 reasons.append(f"Recency (+{rec_bonus}pts): {round(hours_old, 1)}h old")
+
+            # Velocity bonus: breaking story signal (fresh + high impact)
+            # rec_bonus >= 4 = <12h old | hi_score >= 6 = 2+ high-impact matches
+            if rec_bonus >= 4 and hi_score >= 6:
+                vel_bonus = 2
+                score += vel_bonus
+                reasons.append(f"Velocity (+{vel_bonus}pts): breaking story signal")
+
         except Exception:
             pass  # never let recency calc break scoring
 
