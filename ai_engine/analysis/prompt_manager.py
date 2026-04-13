@@ -324,7 +324,11 @@ def update_prompt_score(version: int, quality_score: float) -> None:
 
 
 def _check_promotion(client) -> None:
-    """Check if one variant should be promoted as primary."""
+    """Check if one variant should be promoted as primary.
+    Dynamically compares all active variants — not hardcoded to v1/v2.
+    Deactivates the lowest-scoring variant when gap >= 0.3 threshold
+    and both have accumulated >= 10 runs.
+    """
     try:
         result = client.table("prompt_variants")             .select("version, avg_quality_score, run_count")             .eq("active", True)             .execute()
 
@@ -332,26 +336,25 @@ def _check_promotion(client) -> None:
         if not variants or len(variants) < 2:
             return
 
-        v1 = next((v for v in variants if v["version"] == 1), None)
-        v2 = next((v for v in variants if v["version"] == 2), None)
-
-        if not v1 or not v2:
-            return
-        if v1["run_count"] < 10 or v2["run_count"] < 10:
+        # Filter: only variants with enough runs to evaluate
+        eligible = [v for v in variants if v["run_count"] >= 10]
+        if len(eligible) < 2:
             return
 
-        winner = v1 if v1["avg_quality_score"] >= v2["avg_quality_score"] else v2
-        loser  = v2 if winner["version"] == 1 else v1
+        # Find best and worst among eligible
+        best  = max(eligible, key=lambda v: v["avg_quality_score"])
+        worst = min(eligible, key=lambda v: v["avg_quality_score"])
 
-        diff = abs(v1["avg_quality_score"] - v2["avg_quality_score"])
+        diff = abs(best["avg_quality_score"] - worst["avg_quality_score"])
 
         if diff >= 0.3:
-            print(f"  🏆 AUTO-PROMOTE: v{winner['version']} wins ({winner['avg_quality_score']:.2f} vs {loser['avg_quality_score']:.2f})")
-            print(f"     v{winner['version']} will be used for all future runs")
-            # Log to runtime (promotion decision)
-            client.table("prompt_variants")                 .update({"active": False})                 .eq("version", loser["version"])                 .execute()
+            print(f"  🏆 AUTO-PROMOTE: v{best['version']} wins "
+                  f"({best['avg_quality_score']:.2f} vs {worst['avg_quality_score']:.2f}, "
+                  f"gap={diff:.2f})")
+            print(f"     Deactivating v{worst['version']} — v{best['version']} is now primary")
+            client.table("prompt_variants")                 .update({"active": False})                 .eq("version", worst["version"])                 .execute()
         else:
-            print(f"  🤝 No promotion: difference {diff:.2f} < 0.3 threshold — continuing A/B test")
+            print(f"  🤝 No promotion: best gap {diff:.2f} < 0.3 — continuing A/B test")
 
     except Exception as e:
         print(f"  ⚠️  Promotion check failed: {e}")
