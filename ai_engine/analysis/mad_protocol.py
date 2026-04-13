@@ -18,6 +18,8 @@ from groq import Groq
 from groq_guardian import validate_response  # GNI-R-234
 
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+_key2 = os.getenv('GROQ_API_KEY_2', '')
+client2 = Groq(api_key=_key2) if _key2 else None  # W-01: fallback key
 MODEL = os.getenv('GROQ_MAD_MODEL',
         os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile'))  # GNI-R-237: MAD uses gpt-oss-120b
 
@@ -26,9 +28,11 @@ VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, expect_json: bool = False) -> str:
     # GNI-R-107: Rate-limit-aware Groq call with 429 retry
-    # Attempt 1: normal call
-    # If 429 detected: sleep 20s then retry once
-    # If still fails: return error string (pipeline continues)
+    # W-01: GROQ_API_KEY_2 fallback if primary key exhausted
+    # Attempt 1: primary client (GROQ_API_KEY)
+    # If 429:   sleep 40s → Attempt 2: primary client
+    # If fails: Attempt 3: client2 (GROQ_API_KEY_2) if available
+    # If fails: return error string (pipeline continues)
     for attempt in range(2):
         try:
             response = client.chat.completions.create(
@@ -54,6 +58,28 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
                 print('  WARNING: Groq 429 rate limit -- sleeping 40s before retry...')
                 time.sleep(40)
                 continue
+            # Primary key exhausted -- try fallback key (W-01)
+            if client2 is not None:
+                print('  WARNING: Primary Groq key failed -- trying GROQ_API_KEY_2 fallback...')
+                try:
+                    response2 = client2.chat.completions.create(
+                        model=MODEL,
+                        messages=[
+                            {'role': 'system', 'content': system_prompt},
+                            {'role': 'user', 'content': user_prompt},
+                        ],
+                        max_tokens=max_tokens,
+                        temperature=0.7,
+                    )
+                    raw2 = response2.choices[0].message.content.strip()
+                    validation2 = validate_response(raw2, expect_json=expect_json)
+                    if not validation2['valid']:
+                        print(f'  WARNING: groq_guardian rejected fallback response: {validation2["rejection_reason"]}')
+                        return '[Agent error: ' + validation2['rejection_reason'] + ']'
+                    print('  OK: GROQ_API_KEY_2 fallback succeeded')
+                    return validation2['sanitized']
+                except Exception as e2:
+                    print('  WARNING: Fallback key also failed: ' + str(e2)[:80])
             return '[Agent error: ' + err[:100] + ']'
     return '[Agent error: max retries exceeded]'
 
