@@ -247,6 +247,17 @@ def detect_rss_failures(sources: list) -> list:
 
             rows = result.data or []
             if len(rows) < 2:
+                # New source with no history yet -- if it just returned 0,
+                # flag it immediately rather than silently skipping.
+                if rows and rows[0]["article_count"] == 0:
+                    failed.append({
+                        "name":    name,
+                        "pillar":  source.get("pillar", "geo"),
+                        "current": 0,
+                        "avg":     0.0,
+                        "url":     source.get("url", ""),
+                        "run_at":  rows[0]["run_at"],
+                    })
                 continue
 
             current    = rows[0]["article_count"]
