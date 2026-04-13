@@ -26,6 +26,9 @@ GEO_RESERVES = [
     {"name": "Radio Free Europe", "url": "https://www.rferl.org/api/epiqq",                         "pillar": "geo", "bias": "Pro-Democracy",   "democracy_score": 85},
     {"name": "New York Times",    "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",  "pillar": "geo", "bias": "Western Liberal", "democracy_score": 81},
     {"name": "Washington Post",   "url": "https://feeds.washingtonpost.com/rss/world",              "pillar": "geo", "bias": "Western Liberal", "democracy_score": 79},
+    # Africa-specific reserves — for The Africa Report / Africa Is A Country
+    {"name": "AllAfrica",          "url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf", "pillar": "geo", "bias": "Pan-African",      "democracy_score": 74},
+    {"name": "Mail and Guardian",  "url": "https://mg.co.za/feed/",                                        "pillar": "geo", "bias": "African Independent", "democracy_score": 80},
 ]
 
 FIN_RESERVES = [
