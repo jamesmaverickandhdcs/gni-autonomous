@@ -21,7 +21,8 @@ client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 _key2 = os.getenv('GROQ_API_KEY_2', '')
 client2 = Groq(api_key=_key2) if _key2 else None  # W-01: fallback key
 MODEL = os.getenv('GROQ_MAD_MODEL',
-        os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile'))  # GNI-R-237: MAD uses gpt-oss-120b
+        os.getenv('GROQ_MODEL',
+        os.getenv('GROQ_MODEL_FALLBACK', 'llama-3.3-70b-versatile')))  # GNI-R-237: gpt-oss-120b → scout → fallback
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
