@@ -84,6 +84,24 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
     return '[Agent error: max retries exceeded]'
 
 
+def _call_arbitrator(system_prompt: str, user_prompt: str, max_tokens: int = 600, expect_json: bool = True) -> str:
+    """W-02: TPM-aware arbitrator call with one extra retry.
+    Arbitrator is the most critical call -- gets 3 total attempts vs 2 for agents.
+    If _call_agent returns a 429/rate-limit error, waits 60s and retries once more.
+    """
+    result = _call_agent(system_prompt, user_prompt, max_tokens, expect_json)
+    if (result.startswith('[Agent error') and
+            ('429' in result or 'rate_limit' in result.lower() or 'rate limit' in result.lower())):
+        print('  WARNING: Arbitrator 429 -- W-02 TPM wait 60s before final retry...')
+        time.sleep(60)
+        result = _call_agent(system_prompt, user_prompt, max_tokens, expect_json)
+        if result.startswith('[Agent error'):
+            print('  WARNING: Arbitrator final retry also failed -- using safe defaults')
+        else:
+            print('  OK: Arbitrator W-02 retry succeeded')
+    return result
+
+
 def _build_news_context(report: dict, all_articles: list) -> str:
     title = report.get('title', 'No title')
     summary = report.get('summary', '')[:400]
@@ -452,7 +470,7 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
         + 'PILLAR WEIGHTING: ' + pillar_instruction + '\n\n'
         + 'Deliver final synthesis as JSON only.'
     )
-    arb_final_raw = _call_agent(ARB_FINAL, arb_final_user, 600, expect_json=True)
+    arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)  # W-02
 
     # Parse final verdict
     mad_verdict = 'neutral'
