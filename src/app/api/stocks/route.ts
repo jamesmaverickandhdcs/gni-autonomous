@@ -31,7 +31,7 @@ async function fetchFromSupabase(ticker: string, range: string) {
         'apikey': SUPABASE_KEY,
         'Authorization': `Bearer ${SUPABASE_KEY}`,
       },
-      next: { revalidate: 300 }
+      next: { revalidate: 60 }
     })
     if (!res.ok) return null
     const rows = await res.json()
@@ -62,7 +62,7 @@ async function fetchYahoo(ticker: string, period: string, interval: string) {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
       'Accept': 'application/json',
     },
-    next: { revalidate: 300 } // 5 min cache for all ranges -- stand-by architecture
+    next: { revalidate: 60 }  // S30: 1 min cache for active monitoring
   })
   if (!res.ok) throw new Error(`Yahoo Finance returned ${res.status}`)
   const data = await res.json()
