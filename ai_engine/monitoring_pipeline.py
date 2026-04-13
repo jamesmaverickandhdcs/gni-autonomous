@@ -384,7 +384,27 @@ def run_monitoring_pipeline():
     else:
         print('  Only one report -- no delta calculation')
 
-    # -- Current hour context
+    # -- Rising signal alert: fire ONCE when crossing 7.0 threshold (item 5)
+    # Only fires when previous < 7.0 and current >= 7.0 -- anti-spam by design
+    if len(reports) >= 2:
+        prev_score_rs = float(reports[1].get('escalation_score', 0))
+        if latest_score >= 7.0 and prev_score_rs < 7.0:
+            icon = '[!!!]' if latest_score >= 9.0 else '[!!]'
+            rs_msg = (
+                icon + ' [GNI RISING SIGNAL] Escalation crossing HIGH threshold\n'
+                'Previous: ' + str(round(prev_score_rs, 1)) + '/10 -> Now: ' +
+                str(round(latest_score, 1)) + '/10\n'
+                'Topic: ' + latest_title + '\n'
+                'Warning: approaching CRITICAL -- monitor closely'
+            )
+            _send_telegram(rs_msg)
+            print('  RISING SIGNAL alert sent: ' + str(prev_score_rs) + ' -> ' + str(latest_score))
+        elif latest_score >= 7.0:
+            print('  Escalation HIGH (' + str(round(latest_score, 1)) + '/10) -- threshold already crossed, no repeat alert')
+        else:
+            print('  Escalation below rising signal threshold (' + str(round(latest_score, 1)) + '/10)')
+
+        # -- Current hour context
     nyse_status  = 'OPEN' if is_nyse_hours(now) else 'CLOSED'
     usgov_status = 'OPEN' if is_usgov_hours(now) else 'CLOSED'
     high_alert   = is_high_alert_hours(now)

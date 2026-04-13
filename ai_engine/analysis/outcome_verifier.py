@@ -256,6 +256,26 @@ def check_escalation_accuracy(predicted_level: str, actual_spy_change: float | N
     elif predicted_level == 'LOW':
         return abs_move < 1.0
     return None
+def _get_primary_instrument(tickers_affected) -> tuple:
+    """
+    Select best verification instrument based on report tickers.
+    Returns (instrument_name, change_3d_key, change_7d_key)
+    Energy/oil stories: USO. Gold/safe haven: GLD. Default: SPY.
+    """
+    if isinstance(tickers_affected, str):
+        try:
+            import json as _json
+            tickers_affected = _json.loads(tickers_affected)
+        except Exception:
+            tickers_affected = []
+    tickers = [t.upper() for t in (tickers_affected or [])]
+    if 'USO' in tickers or 'XOM' in tickers:
+        return 'USO', 'uso_3d', 'uso_7d'
+    if 'GLD' in tickers:
+        return 'GLD', 'gld_3d', 'gld_7d'
+    return 'SPY', 'spy_3d', 'spy_7d'
+
+
 def verify_pending_outcomes():
     """
     Fetch reports that need outcome verification and measure them.
@@ -347,8 +367,14 @@ def verify_pending_outcomes():
                 return change > 0
             return None
 
-        direction_3d   = direction(spy_3d, sentiment)
-        direction_7d   = direction(spy_7d, sentiment)
+        # item 6: use primary instrument for direction (not always SPY)
+        _primary_inst, _, _ = _get_primary_instrument(report.get('tickers_affected', []))
+        _p3d = {'SPY': spy_3d, 'GLD': gld_3d, 'USO': uso_3d}.get(_primary_inst, spy_3d)
+        _p7d = {'SPY': spy_7d, 'GLD': gld_7d, 'USO': uso_7d}.get(_primary_inst, spy_7d)
+        if _primary_inst != 'SPY':
+            print(f'  Primary instrument: {_primary_inst} (3d={_p3d}% / 7d={_p7d}%)')
+        direction_3d   = direction(_p3d, sentiment)
+        direction_7d   = direction(_p7d, sentiment)
         direction_30d  = direction(spy_30d, sentiment)
         direction_180d = direction(spy_180d, sentiment)
 

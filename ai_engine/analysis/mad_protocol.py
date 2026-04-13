@@ -50,6 +50,7 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
             validation = validate_response(raw, expect_json=expect_json)
             if not validation['valid']:
                 print(f'  WARNING: groq_guardian rejected response: {validation["rejection_reason"]}')
+                _log_safety_event('guardian_rejection', validation['rejection_reason'])  # item 4
                 return '[Agent error: ' + validation['rejection_reason'] + ']'
             return validation['sanitized']
         except Exception as e:
@@ -78,6 +79,7 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
                         print(f'  WARNING: groq_guardian rejected fallback response: {validation2["rejection_reason"]}')
                         return '[Agent error: ' + validation2['rejection_reason'] + ']'
                     print('  OK: GROQ_API_KEY_2 fallback succeeded')
+                    _log_safety_event('key2_fallback_success', 'Primary Groq key failed — KEY_2 saved the call')  # item 4
                     return validation2['sanitized']
                 except Exception as e2:
                     print('  WARNING: Fallback key also failed: ' + str(e2)[:80])
@@ -98,9 +100,31 @@ def _call_arbitrator(system_prompt: str, user_prompt: str, max_tokens: int = 600
         result = _call_agent(system_prompt, user_prompt, max_tokens, expect_json)
         if result.startswith('[Agent error'):
             print('  WARNING: Arbitrator final retry also failed -- using safe defaults')
+            _log_safety_event('w02_retry_failed', 'W-02 retry also failed — MAD will use neutral fallback')  # item 4
         else:
             print('  OK: Arbitrator W-02 retry succeeded')
+            _log_safety_event('w02_retry_success', 'Arbitrator W-02 extra retry fired and succeeded')  # item 4
     return result
+
+
+def _log_safety_event(event_type: str, detail: str) -> None:
+    """Log safety net activation to runtime_logs. Silent — never breaks pipeline."""
+    try:
+        from supabase import create_client
+        sb = create_client(
+            os.getenv('SUPABASE_URL', ''),
+            os.getenv('SUPABASE_SERVICE_KEY', '')
+        )
+        sb.table('runtime_logs').insert({
+            'status':               event_type,
+            'error_message':        detail,
+            'articles_collected':   0,
+            'articles_after_funnel': 0,
+            'reports_saved':        0,
+            'step_timings':         '{}',
+        }).execute()
+    except Exception:
+        pass  # Safety logging must NEVER break the pipeline
 
 
 def _build_news_context(report: dict, all_articles: list) -> str:
