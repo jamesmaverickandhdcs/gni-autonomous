@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase
       .from('pipeline_runs')
       .select('*')
+      .eq('pipeline_type', 'main')
       .order('run_at', { ascending: false })
       .limit(30)
     if (error) throw error

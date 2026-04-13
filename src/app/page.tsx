@@ -261,6 +261,21 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [])
 
+  // Auto-refresh pipeline status every 5 min (same as reports — S30 fix)
+  useEffect(() => {
+    const refreshPipeline = () => {
+      fetch('/api/pipeline-runs', { headers: { 'X-GNI-Key': GNI_KEY } })
+        .then(r => r.json())
+        .then(data => {
+          const runs = data.runs || []
+          if (runs.length > 0) setLatestRun(runs[0])
+        })
+        .catch(() => {})
+    }
+    const interval = setInterval(refreshPipeline, 300000)
+    return () => clearInterval(interval)
+  }, [])
+
   useEffect(() => {
     fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
@@ -987,7 +1002,7 @@ export default function Home() {
 
                   <div className="px-6 pt-2 pb-3 text-xs text-gray-400 leading-relaxed">
                     <span className="text-white font-bold">How AI Thinking works: </span>
-                    GNI collects articles from 25 RSS sources, then passes them through a 4-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 66 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
+                    GNI collects articles from 29 RSS sources, then passes them through a 4-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 69 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
                   </div>
 
                   {showAIThinking && (
