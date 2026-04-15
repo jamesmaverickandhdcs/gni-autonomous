@@ -97,7 +97,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // ── Process numeric reply (1-5) ───────────────────────────
   const choice = parseInt(text, 10)
-  if (!isNaN(choice) && choice >= 1 && choice <= 5) {
+  if (!isNaN(choice) && choice >= 1 && choice <= 7) {
     console.log(`Webhook: Admin chose reserve ${choice}`)
 
     // Find most recent pending/alerted reserve record
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     await sendAdminMessage(
       BOT_TOKEN, ADMIN_ID,
       '⚠️ Unrecognised reply.\n' +
-      'If a source is down, reply with a number (1-5) to select a reserve.\n' +
+      'If a source is down, reply with a number (1-7) to select a reserve.\n' +
       'Wait for the next alert if you are unsure.'
     )
   }
