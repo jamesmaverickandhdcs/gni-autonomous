@@ -616,7 +616,7 @@ def run_funnel(
         art['stage3_score'] = 0.0
         art['stage3_reason'] = 'Not evaluated (failed Stage 1b)'
 
-        if passed:
+        if action != 'REMOVE':
             stage1b_pass.append(art)
         else:
             trace.append(art)
