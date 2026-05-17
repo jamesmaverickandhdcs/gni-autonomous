@@ -492,6 +492,21 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
         + 'PILLAR WEIGHTING: ' + pillar_instruction + '\n\n'
         + 'Deliver final synthesis as JSON only.'
     )
+    # NN-5: Hard correction channel -- Black Swan + Ostrich enforced at code level
+    # Fixes Gap 3 (Johari Half-Implemented). High/Critical escalation only.
+    # LLMs cannot be reliably instructed via prompts alone -- prepend as hard facts.
+    _hard_constraints = []
+    _high_escalation = risk_level.upper() in ('HIGH', 'CRITICAL') or 'CRITICAL' in escalation.upper() or 'HIGH' in escalation.upper()
+    if _high_escalation:
+        if swan_r3 and not swan_r3.startswith('[Agent error'):
+            _hard_constraints.append('BLACK SWAN MANDATORY CONSTRAINT (unknown danger -- cannot be dismissed): ' + _compress(swan_r3, 60))
+        if ost_r3 and not ost_r3.startswith('[Agent error'):
+            _hard_constraints.append('OSTRICH MANDATORY CONSTRAINT (ignored reality -- cannot be dismissed): ' + _compress(ost_r3, 60))
+    if _hard_constraints:
+        constraint_block = 'HARD CONSTRAINTS -- YOU MUST ADDRESS THESE IN YOUR VERDICT:\n' + '\n'.join(_hard_constraints) + '\n\n'
+        arb_final_user = constraint_block + arb_final_user
+        print(f'  NN-5: {len(_hard_constraints)} hard constraint(s) prepended to Arbitrator prompt')
+
     arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)  # W-02
 
     # Parse final verdict
