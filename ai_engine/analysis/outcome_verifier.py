@@ -10,6 +10,7 @@ load_dotenv(dotenv_path)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from analysis.supabase_saver import get_client
+from analysis.source_weights import update_source_weight
 from collectors.alpha_vantage import fetch_price_change_with_fallback
 
 # ============================================================
@@ -300,7 +301,7 @@ def verify_pending_outcomes():
     verified_ids = {r['report_id'] for r in (already_verified.data or [])}
 
     reports_result = client.table('reports') \
-        .select('id, title, sentiment, risk_level, tickers_affected, created_at') \
+        .select('id, title, sentiment, risk_level, tickers_affected, created_at, sources') \
         .lte('created_at', cutoff) \
         .order('created_at', desc=True) \
         .limit(20) \
@@ -418,12 +419,29 @@ def verify_pending_outcomes():
             'xom_change_7d': xom_7d,
             'tlt_change_7d': tlt_7d,
             'financial_event_category': fin_category,
+            'sources_used': report.get('sources', '[]'),
             'escalation_accurate': escalation_accurate,
             'gpvs_magnitude_score': calculate_magnitude_score(sentiment, spy_3d, spy_7d),
             'spy_magnitude_3d': round(abs(spy_3d), 2) if spy_3d is not None else None,
         }
 
         client.table('prediction_outcomes').insert(record).execute()
+        # W-14: Update source weights based on this prediction's accuracy
+        try:
+            import json as _json
+            raw_sources = report.get('sources', '[]')
+            sources_list = _json.loads(raw_sources) if isinstance(raw_sources, str) else (raw_sources or [])
+            magnitude = record.get('gpvs_magnitude_score') or accuracy
+            for src in sources_list:
+                if src and isinstance(src, str):
+                    update_source_weight(src.lower().strip(), magnitude)
+            if sources_list:
+                print(f"  📊 W-14: Updated weights for {len(sources_list)} sources (magnitude={magnitude:.3f})")
+            else:
+                print(f"  ⚠️  W-14: No sources found in report — weight update skipped")
+        except Exception as w14_err:
+            print(f"  ⚠️  W-14 weight update failed: {w14_err}")
+
         verified_count += 1
         print(f"  ✅ Saved outcome record")
 
