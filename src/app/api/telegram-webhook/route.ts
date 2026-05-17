@@ -95,7 +95,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ ok: true })
   }
 
-  // ── Process numeric reply (1-5) ───────────────────────────
+  // ── Process numeric reply (1-7) ───────────────────────────
   const choice = parseInt(text, 10)
   if (!isNaN(choice) && choice >= 1 && choice <= 7) {
     console.log(`Webhook: Admin chose reserve ${choice}`)
