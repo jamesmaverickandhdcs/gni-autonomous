@@ -185,6 +185,7 @@ def _get_debate_history() -> dict:
         result = sb.table('reports') \
             .select('mad_bull_case,mad_bear_case,mad_black_swan_case,mad_ostrich_case,short_focus_threats,long_shoot_threats,mad_verdict,mad_confidence,created_at') \
             .not_.is_('mad_black_swan_case', 'null') \
+            .neq('mad_verdict', 'pending') \
             .order('created_at', desc=True) \
             .limit(7) \
             .execute()
