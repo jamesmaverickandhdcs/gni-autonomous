@@ -173,7 +173,8 @@ def _get_pillar_arb_instruction(pillar: str) -> str:
 
 
 def _get_debate_history() -> dict:
-    history = {'bull': [], 'bear': [], 'black_swan': [], 'ostrich': []}
+    # NP-4: verdict_trend fixes Gap 6 (Zero Cross-Run Memory) + Pattern Match Bias
+    history = {'bull': [], 'bear': [], 'black_swan': [], 'ostrich': [], 'verdict_trend': ''}
     try:
         from supabase import create_client
         url = os.getenv('SUPABASE_URL', '')
@@ -182,12 +183,30 @@ def _get_debate_history() -> dict:
             return history
         sb = create_client(url, key)
         result = sb.table('reports') \
-            .select('mad_bull_case,mad_bear_case,mad_black_swan_case,mad_ostrich_case,short_focus_threats,long_shoot_threats,created_at') \
+            .select('mad_bull_case,mad_bear_case,mad_black_swan_case,mad_ostrich_case,short_focus_threats,long_shoot_threats,mad_verdict,mad_confidence,created_at') \
             .not_.is_('mad_black_swan_case', 'null') \
             .order('created_at', desc=True) \
-            .limit(3) \
+            .limit(7) \
             .execute()
-        for row in (result.data or []):
+        rows = result.data or []
+        # Build verdict trend from last 7 runs (newest first)
+        trend_parts = []
+        for row in rows:
+            v = row.get('mad_verdict', '')
+            c = row.get('mad_confidence')
+            d = row.get('created_at', '')[:10]
+            if v:
+                conf_str = f'{round(float(c), 2)}' if c is not None else '?'
+                trend_parts.append(f'{d}:{v}({conf_str})')
+        if trend_parts:
+            verdicts_only = [p.split(':')[1].split('(')[0] for p in trend_parts]
+            if len(set(verdicts_only)) == 1:
+                streak_note = f' [WARNING: {len(verdicts_only)}-run {verdicts_only[0].upper()} streak -- check for Pattern Match Bias]'
+            else:
+                streak_note = ''
+            history['verdict_trend'] = 'Last ' + str(len(trend_parts)) + ' verdicts: ' + ' | '.join(trend_parts) + streak_note
+        # Agent history -- last 3 only (token budget)
+        for row in rows[:3]:
             d = row.get('created_at', '')[:10]
             for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
                 key_name = 'mad_' + agent + '_case'
@@ -361,8 +380,12 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  '"long_verify_days": 180}')
 
     # Round 1
+    # NP-4: Inject cross-run verdict trend to prevent Pattern Match Bias
+    verdict_trend = history.get('verdict_trend', '')
+    if verdict_trend:
+        print(f'  Verdict trend: {verdict_trend[:100]}')
     print('   Round 1: Opening positions...')
-    r1_base = news_ctx + '\n\nDEBATE HISTORY:\n'
+    r1_base = news_ctx + '\n\nDEBATE HISTORY:\n' + (verdict_trend + '\n\n' if verdict_trend else '')
     bull_r1  = _call_agent(BULL,    r1_base + _fmt_history(history['bull'])        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
     bear_r1  = _call_agent(BEAR,    r1_base + _fmt_history(history['bear'])        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
     swan_r1  = _call_agent(SWAN,    r1_base + _fmt_history(history['black_swan'])  + '\n\nROUND 1: Focus on LOW-SCORING articles others ignore.', 350)
