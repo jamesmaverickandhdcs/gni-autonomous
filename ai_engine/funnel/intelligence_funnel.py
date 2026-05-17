@@ -563,6 +563,70 @@ def _event_deduplicate(articles: list) -> list:
     unique.sort(key=lambda a: a.get('stage3_score', 0), reverse=True)
     return unique
 
+
+# ============================================================
+# Stage 1b Extension: Language Sanitization (NN-6 / Gap 2)
+# Strips emotionally loaded vocabulary before articles reach MAD.
+# Replaced phrases logged as sanitization evidence on each article.
+# ============================================================
+SANITIZE_VOCAB = [
+    ('catastrophic', 'significant'), ('catastrophically', 'significantly'),
+    ('devastating', 'damaging'), ('devastation', 'damage'),
+    ('apocalyptic', 'severe'), ('existential threat', 'serious risk'),
+    ('unprecedented crisis', 'major crisis'), ('unprecedented', 'notable'),
+    ('shocking', 'notable'), ('alarming', 'concerning'),
+    ('terrifying', 'serious'), ('horrifying', 'serious'),
+    ('explosive growth', 'rapid growth'), ('explosive', 'rapid'),
+    ('skyrocketing', 'rising sharply'), ('plummeting', 'falling sharply'),
+    ('crashing', 'declining'), ('collapsing', 'declining sharply'),
+    ('breaking news', 'recent report'), ('breaking:', 'report:'),
+    ('urgent:', 'update:'), ('emergency alert', 'alert'),
+    ('imminent threat', 'potential threat'), ('imminent danger', 'potential risk'),
+    ('time is running out', 'deadline approaches'),
+    ('act now', 'action needed'), ('must act immediately', 'action advised'),
+    ('puppet government', 'allied government'), ('regime', 'government'),
+    ('invasion', 'military operation'), ('occupation', 'military presence'),
+    ('terror attack', 'attack'), ('terrorist', 'armed group'),
+    ('aggressor', 'initiating party'), ('war criminal', 'accused official'),
+    ('western aggression', 'western action'), ('nato aggression', 'nato action'),
+    ('us imperialism', 'us policy'), ('imperialist', 'foreign'),
+    ('puppet state', 'allied state'), ('proxy war', 'indirect conflict'),
+    ('hegemon', 'dominant power'), ('hegemony', 'dominance'),
+    ('definitely will', 'may'), ('certainly will', 'may'),
+    ('guaranteed to', 'likely to'), ('inevitable', 'probable'),
+    ('without doubt', 'likely'), ('undeniably', 'arguably'),
+    ('everyone knows', 'it is reported'), ('clearly shows', 'suggests'),
+]
+
+
+def _sanitize_article(art: dict) -> dict:
+    """Strip emotionally loaded vocabulary from title + summary.
+    Replaced terms logged in art['sanitized_terms'] as injection evidence.
+    Never removes articles. Silent on failure. NN-6 / Gap 2.
+    """
+    try:
+        import re as _re
+        replaced = []
+        for field in ['title', 'summary']:
+            text = art.get(field, '')
+            if not text:
+                continue
+            for loaded, neutral in SANITIZE_VOCAB:
+                text, n = _re.subn(_re.escape(loaded), neutral, text, flags=_re.IGNORECASE)
+                if n > 0:
+                    replaced.append(loaded)
+            art[field] = text
+        art['sanitized_terms'] = replaced
+        art['sanitization_flag'] = len(replaced) > 0
+        if replaced:
+            existing = art.get('stage1b_reason', '')
+            art['stage1b_reason'] = existing + f' | Sanitized: {replaced[:3]}'
+    except Exception:
+        art['sanitized_terms'] = []
+        art['sanitization_flag'] = False
+    return art
+
+
 def run_funnel(
     articles: list[dict],
     top_n: int = 11,  # 5 geo + 3 tech + 3 fin
@@ -631,6 +695,15 @@ def run_funnel(
             art['token_truncated'] = True
         else:
             art['token_truncated'] = False
+
+    # NN-6: Language sanitization -- strip emotional amplification before MAD
+    sanitized_count = 0
+    for art in stage1b_pass:
+        _sanitize_article(art)
+        if art.get('sanitization_flag'):
+            sanitized_count += 1
+    if sanitized_count > 0:
+        print(f"  Stage 1b (Sanitize):       {sanitized_count}/{len(stage1b_pass)} articles had emotional language stripped")
 
     # â”€â”€ Stage 2: Deduplication â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage2_pass = []
