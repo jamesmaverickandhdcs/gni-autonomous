@@ -40,12 +40,6 @@ export default function PredictionsPage() {
   const verified = predictions.filter(p => !!p.verified_at).length
   const correct = predictions.filter(p => p.verified_at && p.accurate === true).length
 
-  const directionColor = (d: string) => {
-    if (d?.toLowerCase() === 'bearish') return 'text-red-400'
-    if (d?.toLowerCase() === 'bullish') return 'text-green-400'
-    return 'text-gray-400'
-  }
-
   const horizonColor = (h: string) => {
     if (h === 'short') return 'bg-blue-900 text-blue-300'
     if (h === 'medium') return 'bg-yellow-900 text-yellow-300'
