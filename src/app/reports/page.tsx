@@ -95,7 +95,7 @@ export default function ReportsHub() {
               <div className="text-3xl font-bold text-white">{daysToNext}d</div>
               <div>
                 <div className="text-sm text-gray-300">
-                  {nextVerify.direction?.toUpperCase()} prediction by {nextVerify.agent_name || 'MAD Agent'}
+                  {nextVerify.horizon?.toUpperCase()} prediction by {nextVerify.agent || 'MAD Agent'}
                 </div>
                 <div className="text-xs text-gray-500">
                   Verify by: {new Date(nextVerify.verify_by).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
