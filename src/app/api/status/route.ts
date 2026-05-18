@@ -39,16 +39,16 @@ export async function GET(request: NextRequest) {
     // Pipeline last runs
     const { data: pipelines } = await supabase
       .from('groq_daily_usage')
-      .select('pipeline_type,created_at,tokens_used')
+      .select('pipeline,created_at,tokens_used')
       .order('created_at', { ascending: false })
       .limit(20)
 
     const pipelineStatus: Record<string, string> = {}
     const seen = new Set()
     for (const p of (pipelines || [])) {
-      if (!seen.has(p.pipeline_type)) {
-        seen.add(p.pipeline_type)
-        pipelineStatus[p.pipeline_type] = p.created_at
+      if (!seen.has(p.pipeline)) {
+        seen.add(p.pipeline)
+        pipelineStatus[p.pipeline] = p.created_at
       }
     }
 
