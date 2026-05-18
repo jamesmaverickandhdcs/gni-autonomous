@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       .from('audit_trail')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(20)
+      .limit(500)
     return NextResponse.json({ entries: data || [] })
   } catch {
     return NextResponse.json({ entries: [] })
