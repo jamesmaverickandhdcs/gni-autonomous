@@ -18,8 +18,8 @@ export async function GET(request: NextRequest) {
       supabase.from('groq_daily_usage').select('*')
         .eq('pipeline', 'gni-adaptive')
         .order('created_at', { ascending: false }).limit(50),
-      supabase.from('reports').select('id,title,escalation_score,escalation_level,created_at,pipeline_type')
-        .eq('pipeline_type', 'gni_adaptive')
+      supabase.from('reports').select('id,title,escalation_score,escalation_level,created_at')
+        .order('created_at', { ascending: false }).limit(20)
         .order('created_at', { ascending: false }).limit(20),
     ])
     // Combine results from both column name attempts

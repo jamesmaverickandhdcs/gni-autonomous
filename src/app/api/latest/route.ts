@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     // Quota
     const { data: quota } = await supabase
       .from('groq_daily_usage')
-      .select('tokens_used,pipeline_type,created_at')
+      .select('tokens_used,pipeline,created_at')
       .order('created_at', { ascending: false })
       .limit(10)
 
