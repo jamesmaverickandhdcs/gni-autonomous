@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       .from('debate_predictions')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(100)
+      .limit(1000)
     if (error) throw error
     return NextResponse.json({ predictions: data || [] }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
