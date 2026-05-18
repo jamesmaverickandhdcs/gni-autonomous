@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
 
   // Check 3: Quota status -- call existing /api/quota (NO DUPLICATION)
   try {
-    const res = await fetch(`${baseUrl}/api/quota`, { signal: AbortSignal.timeout(5000) })
+    const res = await fetch(`${baseUrl}/api/quota`, { signal: AbortSignal.timeout(5000), headers: { 'X-Internal-Key': INTERNAL_KEY } })
     const data = await res.json()
     const usage = data.usage || []
     const today = new Date().toISOString().split('T')[0]
