@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 
 interface Prediction {
   id: string
-  direction: string
-  confidence: number
-  verify_date: string
-  accuracy_score: number | null
-  agent_name: string
+  agent: string
+  horizon: string
+  verify_by: string
+  accurate: boolean | null
+  verified_at: string | null
   created_at: string
 }
 
@@ -22,13 +22,13 @@ export default function ReportsHub() {
       .catch(() => {})
   }, [])
 
-  const pending = predictions.filter(p => p.accuracy_score === null)
-  const verified = predictions.filter(p => p.accuracy_score !== null)
+  const pending = predictions.filter(p => !p.verified_at)
+  const verified = predictions.filter(p => !!p.verified_at)
   const nextVerify = pending.length > 0
-    ? pending.sort((a, b) => new Date(a.verify_date).getTime() - new Date(b.verify_date).getTime())[0]
+    ? pending.sort((a, b) => new Date(a.verify_by).getTime() - new Date(b.verify_by).getTime())[0]
     : null
   const daysToNext = nextVerify
-    ? Math.max(0, Math.ceil((new Date(nextVerify.verify_date).getTime() - Date.now()) / 86400000))
+    ? Math.max(0, Math.ceil((new Date(nextVerify.verify_by).getTime() - Date.now()) / 86400000))
     : null
 
   return (
@@ -98,7 +98,7 @@ export default function ReportsHub() {
                   {nextVerify.direction?.toUpperCase()} prediction by {nextVerify.agent_name || 'MAD Agent'}
                 </div>
                 <div className="text-xs text-gray-500">
-                  Verify date: {new Date(nextVerify.verify_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  Verify by: {new Date(nextVerify.verify_by).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </div>
               </div>
             </div>

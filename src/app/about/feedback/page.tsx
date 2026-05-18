@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 
 interface Prediction {
   id: string
-  verify_date: string
+  verify_by: string
   horizon: string
-  direction: string
-  verified: boolean
-  correct: boolean | null
+  agent: string
+  verified_at: string | null
+  accurate: boolean | null
 }
 
 export default function AboutFeedbackPage() {
@@ -24,9 +24,9 @@ export default function AboutFeedbackPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  const pending = predictions.filter(p => !p.verified).length
-  const verified = predictions.filter(p => p.verified).length
-  const correct = predictions.filter(p => p.correct === true).length
+  const pending = predictions.filter(p => !p.verified_at).length
+  const verified = predictions.filter(p => !!p.verified_at).length
+  const correct = predictions.filter(p => p.accurate === true).length
 
   const swot = {
     strengths: [
