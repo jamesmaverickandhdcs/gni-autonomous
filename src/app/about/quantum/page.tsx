@@ -15,7 +15,7 @@ interface Report {
   created_at: string
   risk_level: string
 }
-interface SourceWeight { source: string; weight: number; gpvs_score: number }
+interface SourceWeight { source: string; weight: number; last_updated: string | null }
 
 export default function AboutQuantumPage() {
   const [report, setReport] = useState<Report | null>(null)
@@ -140,7 +140,7 @@ export default function AboutQuantumPage() {
                 <div key={w.source} className="flex items-center gap-3 bg-gray-800 rounded-lg px-4 py-3">
                   <div className="text-sm font-bold text-gray-500 w-6">{i + 1}</div>
                   <div className="flex-1 text-sm font-bold text-white">{w.source}</div>
-                  <div className="text-xs text-gray-400">GPVS: {w.gpvs_score ? (w.gpvs_score * 100).toFixed(0) + '%' : 'N/A'}</div>
+                  <div className="text-xs text-gray-400">Updated: {w.last_updated ? new Date(w.last_updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A'}</div>
                   <div className="text-sm font-bold text-green-400">Weight: {w.weight?.toFixed(2)}</div>
                 </div>
               ))}
