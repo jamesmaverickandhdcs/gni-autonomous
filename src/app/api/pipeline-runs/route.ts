@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       .select('*')
       .eq('pipeline_type', 'main')
       .order('run_at', { ascending: false })
-      .limit(30)
+      .limit(200)
     if (error) throw error
     return NextResponse.json({ runs: data }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
