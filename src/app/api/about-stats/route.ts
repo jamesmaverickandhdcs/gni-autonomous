@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    const key = process.env.SUPABASE_SERVICE_KEY
     if (!url || !key) {
       return NextResponse.json({ error: 'Missing env vars' }, { status: 500 })
     }
