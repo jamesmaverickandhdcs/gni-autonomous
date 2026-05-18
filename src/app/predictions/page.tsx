@@ -5,13 +5,14 @@ import { useEffect, useState } from 'react'
 interface Prediction {
   id: string
   report_id: string
+  agent: string
   horizon: string
-  prediction_text: string
-  direction: string
-  confidence: number
-  verify_date: string
-  accuracy_score: number | null
-  verified: boolean
+  prediction: string
+  verify_by: string
+  outcome: string | null
+  accurate: boolean | null
+  verified_at: string | null
+  verified_by: string
   created_at: string
 }
 
@@ -30,14 +31,14 @@ export default function PredictionsPage() {
   }, [])
 
   const filtered = predictions.filter(p => {
-    if (filter === 'pending') return !p.verified
-    if (filter === 'verified') return p.verified
+    if (filter === 'pending') return !p.verified_at
+    if (filter === 'verified') return !!p.verified_at
     return true
   })
 
-  const pending = predictions.filter(p => !p.verified).length
-  const verified = predictions.filter(p => p.verified).length
-  const correct = predictions.filter(p => p.verified && p.accuracy_score && p.accuracy_score >= 70).length
+  const pending = predictions.filter(p => !p.verified_at).length
+  const verified = predictions.filter(p => !!p.verified_at).length
+  const correct = predictions.filter(p => p.verified_at && p.accurate === true).length
 
   const directionColor = (d: string) => {
     if (d?.toLowerCase() === 'bearish') return 'text-red-400'
@@ -111,27 +112,26 @@ export default function PredictionsPage() {
 
             <div className="space-y-3">
               {filtered.map(p => (
-                <div key={p.id} className={`bg-gray-900 border rounded-xl p-4 ${p.verified ? 'border-green-800' : 'border-gray-700'}`}>
+                <div key={p.id} className={`bg-gray-900 border rounded-xl p-4 ${p.verified_at ? 'border-green-800' : 'border-gray-700'}`}>
                   <div className="flex items-start justify-between gap-4 mb-2">
-                    <p className="text-sm text-gray-200 leading-relaxed flex-1">{p.prediction_text}</p>
+                    <p className="text-sm text-gray-200 leading-relaxed flex-1">{p.prediction}</p>
                     <div className="flex flex-col items-end gap-1 shrink-0">
                       <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${horizonColor(p.horizon)}`}>
                         {p.horizon}
                       </span>
-                      <span className={`text-sm font-bold ${directionColor(p.direction)}`}>
-                        {p.direction?.toUpperCase()}
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-300 font-bold">
+                        {p.agent?.toUpperCase()}
                       </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
-                    <span>Confidence: <span className="text-white font-bold">{p.confidence ? Math.round(p.confidence * 100) + '%' : 'N/A'}</span></span>
-                    <span>Verify by: <span className="text-yellow-400">{p.verify_date ? new Date(p.verify_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD'}</span></span>
-                    {p.verified && p.accuracy_score !== null && (
-                      <span className={`font-bold ${p.accuracy_score >= 70 ? 'text-green-400' : 'text-red-400'}`}>
-                        Score: {p.accuracy_score}%
+                    <span>Verify by: <span className="text-yellow-400">{p.verify_by ? new Date(p.verify_by).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD'}</span></span>
+                    {p.verified_at && p.accurate !== null && (
+                      <span className={`font-bold ${p.accurate === true ? 'text-green-400' : 'text-red-400'}`}>
+                        {p.accurate === true ? '✅ ACCURATE' : '❌ INACCURATE'}
                       </span>
                     )}
-                    {!p.verified && (
+                    {!p.verified_at && (
                       <span className="text-yellow-600 font-bold">PENDING</span>
                     )}
                   </div>
