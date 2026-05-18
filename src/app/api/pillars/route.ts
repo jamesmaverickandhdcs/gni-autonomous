@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       .from('pillar_reports')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(30)
+      .limit(500)
     if (error) throw error
     return NextResponse.json({ reports: data || [] }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
