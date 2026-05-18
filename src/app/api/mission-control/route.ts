@@ -21,7 +21,7 @@ async function sendTelegram(message: string) {
 async function wasTelegramSentRecently(): Promise<boolean> {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.SUPABASE_SERVICE_KEY!
   )
   try {
     const twoHoursAgo = new Date(Date.now() - 2 * 3600000).toISOString()
@@ -34,7 +34,7 @@ async function wasTelegramSentRecently(): Promise<boolean> {
 export async function GET(request: NextRequest) {
   const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_KEY!
 )
   const isInternal = request.headers.get('X-Internal-Key') === INTERNAL_KEY
 
