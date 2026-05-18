@@ -254,6 +254,35 @@ def run_pipeline():
             report['historical_context'] = hist_context
             print(f"   ?? {hist_context}")
         print(f"   ? Escalation: {escalation['escalation_level']} ({escalation['escalation_score']}/10) ? {escalation['active_pillars']}/3 pillars active")
+
+        # NP-2: Coverage gap detection -- absence is intelligence
+        # If CRITICAL escalation but top articles don't cover the escalating region
+        # that absence is a signal worth flagging to admin
+        if escalation['escalation_level'] == 'CRITICAL':
+            geo_signals = escalation.get('signals_found', {}).get('geopolitical', [])
+            if geo_signals:
+                combined_top = ' '.join([
+                    f"{a.get('title','')} {a.get('summary','')}".lower()
+                    for a in top_articles
+                ])
+                covered = [sig for sig in geo_signals if sig in combined_top]
+                if not covered:
+                    gap_msg = (
+                        f"?? [GNI COVERAGE GAP] CRITICAL escalation detected\n"
+                        f"Escalation signals: {', '.join(geo_signals[:5])}\n"
+                        f"But NONE of these appear in the top {len(top_articles)} selected articles.\n"
+                        f"Absence may indicate: source gap, filter bias, or narrative blind spot.\n"
+                        f"Time: {datetime.now(timezone.utc).isoformat()}"
+                    )
+                    print(f"  ?? COVERAGE GAP: CRITICAL escalation signals not in top articles")
+                    print(f"     Signals: {geo_signals[:5]}")
+                    from notifications.telegram_notifier import send_admin_message
+                    try:
+                        send_admin_message(gap_msg)
+                        print(f"  ?? Coverage gap alert sent to admin")
+                    except Exception as _cg_err:
+                        print(f"  Warning: Coverage gap alert failed: {str(_cg_err)[:60]}")
+
         step_timings["mad"] = round(time.time() - t0, 2)
         print("   ? MAD pending -- mad_runner.py will run in 5 minutes")
 
