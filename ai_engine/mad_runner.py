@@ -58,6 +58,7 @@ def _fetch_fresh_report(client):
         result = client.table('reports') \
             .select('*') \
             .gte('created_at', cutoff) \
+            .eq('mad_verdict', 'pending') \
             .order('created_at', desc=True) \
             .limit(1) \
             .execute()
