@@ -53,7 +53,7 @@ def _fetch_fresh_report(client):
     the main pipeline that just ran -- never old reports.
     """
     # 45 min window -- covers 30 min gap + up to 15 min main pipeline runtime
-    cutoff = (datetime.now(timezone.utc) - timedelta(minutes=45)).isoformat()
+    cutoff = (datetime.now(timezone.utc) - timedelta(minutes=90)).isoformat()  # GNI-R-240: extended from 45 to 90 min (handshake can wait up to 25 min + Intelligence worst case 45 min)
     try:
         result = client.table('reports') \
             .select('*') \
