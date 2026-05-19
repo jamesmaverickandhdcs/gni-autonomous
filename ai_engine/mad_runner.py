@@ -48,11 +48,12 @@ def _get_client():
 
 def _fetch_fresh_report(client):
     """
-    Fetch most recent report created in last 30 minutes.
-    30 min window ensures we only process the report from
-    the main pipeline that just ran -- never old reports.
+    Fetch most recent pending report created in last 90 minutes.
+    90 min window covers GNI-R-240 worst case:
+    Intelligence runtime (~45 min) + handshake wait (~25 min) = ~70 min.
+    Only returns reports with mad_verdict=pending -- prevents duplicate debates.
     """
-    # 45 min window -- covers 30 min gap + up to 15 min main pipeline runtime
+    # 90 min window -- GNI-R-240: extended to cover handshake worst case
     cutoff = (datetime.now(timezone.utc) - timedelta(minutes=90)).isoformat()  # GNI-R-240: extended from 45 to 90 min (handshake can wait up to 25 min + Intelligence worst case 45 min)
     try:
         result = client.table('reports') \
@@ -64,7 +65,7 @@ def _fetch_fresh_report(client):
             .execute()
 
         if not result.data:
-            print('  No fresh reports found in last 30 minutes -- nothing to do')
+            print('  No pending reports found in last 90 minutes -- nothing to do')
             return None
 
         report = result.data[0]
