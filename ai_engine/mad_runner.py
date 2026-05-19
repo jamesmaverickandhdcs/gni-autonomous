@@ -298,6 +298,55 @@ def _build_debate_summary(mad_result: dict) -> dict:
     }
 
 
+
+def _wait_for_pipeline_complete(client, report_id, max_attempts=25, poll_interval=60):
+    """
+    GNI-R-240: Handshake gate -- verify Intelligence completed before MAD runs.
+    Polls every 60s for up to 25 minutes (25 attempts).
+    Guarantees 2x/day MAD without separate Groq accounts or time-gap dependency.
+    Returns (should_proceed, reason).
+    """
+    db_errors = 0
+    for attempt in range(max_attempts):
+        try:
+            ok = client.table('pipeline_runs').select('status').eq('report_id', report_id).eq('status', 'success').limit(1).execute()
+            if ok.data:
+                print(f'  OK Handshake confirmed (attempt {attempt+1}/{max_attempts})')
+                return True, 'confirmed'
+            fail = client.table('pipeline_runs').select('status').eq('report_id', report_id).eq('status', 'failed').limit(1).execute()
+            if fail.data:
+                print('  Intelligence pipeline FAILED -- skipping MAD cleanly')
+                return False, 'failed'
+            remaining = max_attempts - attempt - 1
+            print(f'  Handshake: Intelligence still running ({attempt+1}/{max_attempts}) -- {remaining} min remaining')
+            if attempt < max_attempts - 1:
+                time.sleep(poll_interval)
+        except Exception as e:
+            db_errors += 1
+            print(f'  Warning: handshake DB error ({attempt+1}): {str(e)[:60]}')
+            if attempt < max_attempts - 1:
+                time.sleep(poll_interval)
+    if db_errors >= max_attempts:
+        print('  Supabase unavailable on all attempts -- skipping MAD')
+        return False, 'db_error'
+    if db_errors > 0:
+        print('  Partial DB errors -- skipping MAD (safe default)')
+        return False, 'db_error'
+    try:
+        rc = client.table('reports').select('created_at').eq('id', report_id).limit(1).execute()
+        if rc.data:
+            from datetime import datetime as _dt, timezone as _tz
+            created = _dt.fromisoformat(rc.data[0]['created_at'].replace('Z', '+00:00'))
+            age_min = (_dt.now(_tz.utc) - created).total_seconds() / 60
+            if age_min > 15:
+                print(f'  Report is {age_min:.0f}min old, no pipeline_runs row -- proceeding')
+                return True, 'no_record'
+    except Exception:
+        pass
+    print('  Intelligence still running after 25 min -- exiting cleanly')
+    print('  Next MAD cycle (10:30 UTC) will pick this up')
+    return False, 'timeout'
+
 def run_mad_pipeline():
     start = datetime.now(timezone.utc)
     print('=' * 60)
@@ -321,6 +370,14 @@ def run_mad_pipeline():
         return True
 
     report_id = report['id']
+
+    # GNI-R-240: Handshake gate -- wait for Intelligence to complete
+    print('\n  Handshake: Verifying Intelligence pipeline complete...')
+    should_proceed, reason = _wait_for_pipeline_complete(client, report_id)
+    if not should_proceed:
+        print(f'  Handshake exit: {reason} -- MAD skipped cleanly')
+        print('  Total time: ' + str(round((datetime.now(timezone.utc) - start).total_seconds(), 2)) + 's')
+        return True
 
     # GNI-R-112: Check quota before MAD runs
     # sacred=False -- MAD will be blocked if quota too low
