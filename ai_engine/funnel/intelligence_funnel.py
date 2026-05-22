@@ -130,6 +130,25 @@ INJECTION_PATTERNS = [
     # NOT blocking all external URLs -- legitimate articles routinely cite sources
     # Only flag: send/forward/exfiltrate + URL pattern (true data exfiltration)
     r'(send|forward|post|submit|exfiltrate).{0,50}https?://',
+    # Category 11: PHI-003 manipulation techniques (GNI S35)
+    # Peer pressure — consensus without evidence
+    r'everyone\s+(agrees|knows|understands|accepts)',
+    r'any\s+reasonable\s+(person|analyst|observer)',
+    r'no\s+serious\s+(analyst|expert|observer|person)',
+    r'obviously\s+(this|the|it|we)',
+    r'it\s+is\s+obvious\s+that',
+    r'common\s+sense\s+(tells|shows|dictates)',
+    # Passive extreme normalization — making extreme acts seem inevitable
+    r'(was|is|seems?|appears?)\s+(necessary|inevitable|understandable|justified)\s+(given|considering|in light of)',
+    r'what\s+(other\s+)?choice\s+(did|do|does)\s+(they|he|she|it)\s+have',
+    r'forced\s+(them|him|her|the)\s+to\s+(attack|strike|retaliate|respond)',
+    r'left\s+(with\s+)?no\s+(other\s+)?choice\s+but\s+to',
+    # Butterfly Effect — worst-case chain without probability
+    r'this\s+could\s+(easily\s+)?lead\s+to\s+.{5,50}(collapse|war|catastrophe|crisis)',
+    r'if\s+.{5,50}then\s+.{5,50}(will|must|shall)\s+(collapse|fail|fall|end)',
+    r'(domino|cascade|spiral|chain)\s+(effect|reaction|of\s+events)',
+    r'(trigger|spark|ignite)\s+(a\s+)?(global|regional|wider|full)',
+
     r'https?://[^\s]{5,}.{0,30}(api.key|password|token|secret)',
 ]
 
