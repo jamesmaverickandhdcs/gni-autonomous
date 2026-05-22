@@ -63,7 +63,10 @@ Respond ONLY with a valid JSON object in this exact format:
   "location_name": "Single country name only — pick the MOST affected country (e.g. Iran, Ukraine, China). Never use regions like 'Middle East' or multiple countries.",
   "tickers_affected": ["SPY", "GLD"],
   "market_impact": "3-4 sentences explaining WHY this affects markets. Use causal language: because, therefore, as a result, driven by, consequently, leading to, due to. Explain the chain of causation from event to market outcome in detail.",
-  "risk_level": "Low or Medium or High or Critical"
+  "risk_level": "Low or Medium or High or Critical",
+  "fff_what_is_happening": "1-2 sentences of pure facts only — what happened, where, who. No interpretation.",
+  "fff_honest_analysis": "2-3 sentences on cause, effect, and mechanism. What caused this? What does it lead to? Be direct and honest.",
+  "fff_human_path": "1-2 sentences on what humans can understand, do, or advocate for. Always required — never leave empty."
 }}
 
 Rules:
@@ -71,6 +74,9 @@ Rules:
 - source_consensus_score: 0.0 to 1.0 (how much sources agree)
 - tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
 - Do NOT include myanmar_summary field
+- fff_what_is_happening: facts only, no spin, no interpretation
+- fff_honest_analysis: honest cause+effect, no manipulation language
+- fff_human_path: always provide a constructive path — what readers can understand, do, or advocate for
 - Respond with JSON only — no extra text, no markdown, no explanation
 """
 
