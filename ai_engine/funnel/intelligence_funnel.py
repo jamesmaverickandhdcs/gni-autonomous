@@ -646,6 +646,102 @@ def _sanitize_article(art: dict) -> dict:
     return art
 
 
+
+# ============================================================
+# Option F Content Type Classifier (GNI S35 — PHI-003 U-4)
+# 4-layer hybrid classifier: source → URL → heuristic → LLM
+# Output: news | news_with_review | review_only
+# ============================================================
+
+# Layer 1: Known review-only sources (state media / adversarial)
+_REVIEW_ONLY_SOURCES = {
+    'rt', 'russia today', 'cgtn', 'press tv', 'presstv',
+    'al-mayadeen', 'al mayadeen', 'telesur', 'global times',
+}
+
+# Layer 2: URL patterns indicating opinion/analysis content
+_REVIEW_URL_PATTERNS = [
+    r'/opinion/', r'/opinions/', r'/commentary/', r'/comment/',
+    r'/analysis/', r'/analyse/', r'/editorial/', r'/editorials/',
+    r'/perspective/', r'/perspectives/', r'/column/', r'/columns/',
+    r'/blog/', r'/blogs/', r'/letters/', r'/forum/',
+    r'\?.*type=opinion', r'\?.*section=opinion',
+]
+
+# Layer 3: Structural heuristics — review/opinion language signals
+_REVIEW_HEURISTIC_PATTERNS = [
+    # First person authorial voice
+    r'\bi\s+(think|believe|argue|contend|submit|hold|maintain)\b',
+    r'\bin\s+my\s+(view|opinion|assessment|judgment)\b',
+    r'\bmy\s+(argument|thesis|point|contention|view)\b',
+    # Prescriptive/normative language
+    r'\b(should|must|ought\s+to|needs?\s+to)\s+\w+\s+(its?|their|the|a)\b',
+    r'\bwe\s+(should|must|need\s+to|ought\s+to)\b',
+    r'\bthe\s+\w+\s+(must|should|needs?\s+to)\b',
+    # Explicit opinion markers
+    r'\b(in\s+my|from\s+my)\s+(view|perspective|experience|reading)\b',
+    r'\bthe\s+author\s+(argues?|contends?|believes?|suggests?)\b',
+    r'\bthis\s+(essay|column|commentary|analysis|piece)\s+(argues?|examines?|explores?)\b',
+]
+
+_REVIEW_URL_RE = [__import__("re").compile(p, __import__("re").IGNORECASE) for p in _REVIEW_URL_PATTERNS]
+_REVIEW_HEU_RE = [__import__("re").compile(p, __import__("re").IGNORECASE) for p in _REVIEW_HEURISTIC_PATTERNS]
+
+
+def _classify_content_type(article: dict) -> dict:
+    """Option F: 4-layer content type classifier.
+    Sets article['content_type'] to: news | news_with_review | review_only
+    Sets article['content_type_signals'] with layer evidence.
+    Layer 4 (LLM) fires only when Layers 1-3 disagree (ambiguous ~20-30%).
+    """
+    signals = []
+    review_votes = 0
+
+    # Layer 1: Source pre-classification
+    source = article.get("source", "").lower().strip()
+    source_ct = article.get("content_type", "news")  # from rss_collector
+    if source_ct == "review_only" or source in _REVIEW_ONLY_SOURCES:
+        review_votes += 1
+        signals.append("L1:source=review_only")
+    else:
+        signals.append(f"L1:source=news({source_ct})")
+
+    # Layer 2: URL pattern matching
+    url = article.get("link", "").lower()
+    url_review = any(p.search(url) for p in _REVIEW_URL_RE)
+    if url_review:
+        review_votes += 1
+        signals.append("L2:url=review_signal")
+    else:
+        signals.append("L2:url=news")
+
+    # Layer 3: Structural heuristics
+    text = f"{article.get('title', '')} {article.get('summary', '')}".lower()
+    heu_hits = sum(1 for p in _REVIEW_HEU_RE if p.search(text))
+    if heu_hits >= 2:
+        review_votes += 1
+        signals.append(f"L3:heuristic=review({heu_hits} hits)")
+    else:
+        signals.append(f"L3:heuristic=news({heu_hits} hits)")
+
+    # Decision: 2+ votes = review confirmed, skip Layer 4
+    # 0-1 votes but ambiguous = Layer 4 (LLM) — stubbed for now
+    if review_votes >= 2:
+        ct = "review_only" if review_votes == 3 else "news_with_review"
+        signals.append(f"L4:skipped(consensus={review_votes}/3)")
+    elif review_votes == 1:
+        # Ambiguous — Layer 4 LLM spot-check (stub: treat as news for now)
+        ct = "news"
+        signals.append("L4:stub(ambiguous→news pending LLM wiring)")
+    else:
+        ct = "news"
+        signals.append("L4:skipped(clear_news)")
+
+    article["content_type"] = ct
+    article["content_type_signals"] = " | ".join(signals)
+    article["content_type_review_votes"] = review_votes
+    return article
+
 def run_funnel(
     articles: list[dict],
     top_n: int = 11,  # 5 geo + 3 tech + 3 fin
@@ -723,6 +819,12 @@ def run_funnel(
             sanitized_count += 1
     if sanitized_count > 0:
         print(f"  Stage 1b (Sanitize):       {sanitized_count}/{len(stage1b_pass)} articles had emotional language stripped")
+
+    # -- Option F: Content Type Classification (U-4) --
+    for art in stage1b_pass:
+        _classify_content_type(art)
+    review_arts = [a for a in stage1b_pass if a.get("content_type") in ("review_only", "news_with_review")]
+    print(f"  Stage 1b (Classifier):     {len(stage1b_pass)} articles classified — {len(review_arts)} review-type detected")
 
     # â”€â”€ Stage 2: Deduplication â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage2_pass = []
