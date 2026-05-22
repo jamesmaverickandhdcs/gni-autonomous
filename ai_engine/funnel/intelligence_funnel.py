@@ -826,6 +826,49 @@ def run_funnel(
     review_arts = [a for a in stage1b_pass if a.get("content_type") in ("review_only", "news_with_review")]
     print(f"  Stage 1b (Classifier):     {len(stage1b_pass)} articles classified — {len(review_arts)} review-type detected")
 
+
+    # -- U-5: Review Acceptance Gate (PHI-003) --
+    # review_only / news_with_review must pass BOTH: cause+effect AND fff_path
+    # Either missing -> reject (logged). news articles pass unconditionally.
+    _CAUSE_EFFECT = re.compile(
+        r"\b(because|therefore|as\s+a\s+result|which\s+leads?\s+to|"
+        r"consequently|due\s+to|caused\s+by|resulting\s+in|"
+        r"this\s+means|leading\s+to|driven\s+by)\b",
+        re.IGNORECASE
+    )
+    _FFF_PATH = re.compile(
+        r"\b(can|could|should|advocate|understand|protect|demand|"
+        r"empower|transparency|accountability|rights|freedom|"
+        r"awareness|action|reform|resist|challenge|hold\s+accountable)\b",
+        re.IGNORECASE
+    )
+    review_gate_pass = []
+    review_gate_reject = 0
+    for art in stage1b_pass:
+        ct = art.get("content_type", "news")
+        if ct not in ("review_only", "news_with_review"):
+            review_gate_pass.append(art)
+            art["review_gate"] = "skipped(news)"
+            continue
+        text = (art.get("title", "") + " " + art.get("summary", "")).lower()
+        has_cause = bool(_CAUSE_EFFECT.search(text))
+        has_fff = bool(_FFF_PATH.search(text))
+        if has_cause and has_fff:
+            review_gate_pass.append(art)
+            art["review_gate"] = "passed(cause+fff)"
+        else:
+            missing = []
+            if not has_cause: missing.append("cause+effect")
+            if not has_fff: missing.append("fff_path")
+            art["review_gate"] = "rejected(missing: " + ", ".join(missing) + ")"
+            art["stage1b_passed"] = False
+            art["stage1b_reason"] = art.get("stage1b_reason", "") + " | Review gate: missing " + ", ".join(missing)
+            review_gate_reject += 1
+            trace.append(art)
+    stage1b_pass = review_gate_pass
+    if review_gate_reject > 0:
+        print(f"  Stage 1b (Review Gate):    {review_gate_reject} review articles rejected")
+
     # â”€â”€ Stage 2: Deduplication â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     stage2_pass = []
     for art in stage1b_pass:
