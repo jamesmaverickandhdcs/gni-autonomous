@@ -87,7 +87,7 @@ def _fetch_relevant_articles(client, run_id):
         result = client.table('pipeline_articles') \
             .select('*') \
             .eq('run_id', run_id) \
-            .eq('stage1_passed', True) \
+            .eq('stage1b_passed', True) \
             .execute()
         articles = result.data or []
         print('  Fetched ' + str(len(articles)) + ' relevant articles for MAD context')
