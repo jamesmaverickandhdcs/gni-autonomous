@@ -848,9 +848,55 @@ def _classify_content_type(article: dict) -> dict:
         ct = "review_only" if review_votes == 3 else "news_with_review"
         signals.append(f"L4:skipped(consensus={review_votes}/3)")
     elif review_votes == 1:
-        # Ambiguous — Layer 4 LLM spot-check (stub: treat as news for now)
-        ct = "news"
-        signals.append("L4:stub(ambiguous→news pending LLM wiring)")
+        # Layer 3b: Enhanced heuristics before LLM
+        title_lower = article.get("title", "").lower()
+        url_lower = article.get("link", "").lower()
+        l3b_review = (
+            title_lower.startswith(("opinion:", "analysis:", "commentary:", "column:", "perspective:"))
+            or "/opinion/" in url_lower or "/analysis/" in url_lower
+            or "by " + title_lower[:3] in title_lower
+            or sum(1 for w in ["i think", "i believe", "in my view", "we must", "we should"]
+                  if w in (article.get("title","") + " " + article.get("summary","")).lower()) >= 1
+        )
+        if l3b_review:
+            ct = "news_with_review"
+            signals.append("L3b:enhanced_heuristic=review")
+            signals.append("L4:skipped(L3b_resolved)")
+        else:
+            # Layer 4: LLM spot-check — hard cap 5 calls per run via module-level counter
+            import os as _os
+            _l4_used = int(_os.environ.get("_GNI_L4_CALLS", "0"))
+            _l4_cap = 5
+            if _l4_used < _l4_cap:
+                try:
+                    import requests as _req
+                    _groq_key = _os.getenv("GROQ_API_KEY", "")
+                    _groq_url = "https://api.groq.com/openai/v1/chat/completions"
+                    _l4_prompt = (
+                        f"Is this article primarily opinion/analysis/review, or factual news reporting?\n"
+                        f"Title: {article.get('title','')}\n"
+                        f"Summary: {article.get('summary','')[:200]}\n"
+                        f"Answer with one word only: OPINION or NEWS"
+                    )
+                    _resp = _req.post(_groq_url,
+                        headers={"Authorization": f"Bearer {_groq_key}", "Content-Type": "application/json"},
+                        json={"model": "llama-3.1-8b-instant", "messages": [{"role": "user", "content": _l4_prompt}],
+                              "max_tokens": 5, "temperature": 0},
+                        timeout=10)
+                    if _resp.status_code == 200:
+                        _l4_ans = _resp.json()["choices"][0]["message"]["content"].strip().upper()
+                        ct = "news_with_review" if "OPINION" in _l4_ans else "news"
+                        _os.environ["_GNI_L4_CALLS"] = str(_l4_used + 1)
+                        signals.append(f"L4:llm={_l4_ans}(call {_l4_used+1}/{_l4_cap})")
+                    else:
+                        ct = "news"
+                        signals.append("L4:llm_error→news")
+                except Exception:
+                    ct = "news"
+                    signals.append("L4:llm_exception→news")
+            else:
+                ct = "news"
+                signals.append(f"L4:cap_reached({_l4_cap})→news")
     else:
         ct = "news"
         signals.append("L4:skipped(clear_news)")
