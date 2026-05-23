@@ -63,9 +63,9 @@ SOURCES = [
      "content_type": "news", "pillar": "geo", "bias": "Research", "democracy_score": 92},
 
 
-    {"name": "Reuters via Google News",
-     "url": "https://news.google.com/rss/search?q=when:24h+allinurl:reuters.com&ceid=US:en&hl=en-US&gl=US",
-     "content_type": "news", "pillar": "geo", "bias": "Wire Service", "democracy_score": 85},
+    {"name": "NPR World News",
+     "url": "https://feeds.npr.org/1004/rss.xml",
+     "content_type": "news", "pillar": "geo", "bias": "Wire Service", "democracy_score": 82},
 
     {"name": "AP News via Google News",
      "url": "https://news.google.com/rss/search?q=when:24h+allinurl:apnews.com&ceid=US:en&hl=en-US&gl=US",

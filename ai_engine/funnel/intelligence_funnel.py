@@ -250,7 +250,7 @@ def _get_dedup_key(article: dict) -> str:
 # TIER3: specialist/niche — valuable content, lower editorial baseline
 SOURCE_TIERS = {
     # STATE — Wire services
-    'Reuters via Google News': 'STATE',
+    'NPR World News': 'TIER2',  # replaced Reuters (RSS dead)
     'AP News via Google News': 'STATE',
     # TIER1 — Highest credibility
     'BBC': 'TIER1',
