@@ -115,6 +115,22 @@ def format_channel_message(report: dict, articles: list) -> str:
         "🌐 gni-autonomous.vercel.app"
     )
 
+    # PHI-003 Freedom from Fear section
+    fff_what = report.get("fff_what_is_happening", "")
+    fff_analysis = report.get("fff_honest_analysis", "")
+    fff_path = report.get("fff_human_path", "")
+    if fff_what or fff_analysis or fff_path:
+        fff_block = "\n\n🕊️ <b>Freedom from Fear Intelligence</b>\n"
+        fff_block += "━━━━━━━━━━━━━━━━━━━━\n"
+        if fff_what:
+            fff_block += f"<b>What is happening:</b>\n{fff_what}\n\n"
+        if fff_analysis:
+            fff_block += f"<b>Honest analysis:</b>\n{fff_analysis}\n\n"
+        if fff_path:
+            fff_block += f"<b>What you can do:</b>\n{fff_path}\n"
+        fff_block += "━━━━━━━━━━━━━━━━━━━━"
+        message += fff_block
+
     return message
 
 
