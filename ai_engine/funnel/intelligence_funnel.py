@@ -553,6 +553,30 @@ def _score_article(article: dict) -> tuple[float, str]:
             reasons.append(f"FIN pillar bonus ({fin_score}pts): {', '.join(fin_matches[:3])}")
 
 
+
+    # -- BM25 RELEVANCE SCORING (+2 each, max 10) -- Commit 3
+    # Dynamic relevance vs geopolitical reference corpus
+    # Scores higher when article terms match reference query
+    # significantly more than other articles in today's pool
+    try:
+        from rank_bm25 import BM25Okapi as _BM25
+        _bm25_query = [
+            'geopolitical', 'conflict', 'trade', 'sanction', 'military',
+            'diplomatic', 'nuclear', 'economic', 'security', 'intelligence',
+            'semiconductor', 'energy', 'alliance', 'crisis', 'escalation',
+        ]
+        _bm25_doc = text.split()
+        _bm25_corpus = [_bm25_doc, _bm25_query]
+        _bm25 = _BM25(_bm25_corpus)
+        _bm25_scores = _bm25.get_scores(_bm25_query)
+        _bm25_val = float(_bm25_scores[0]) if len(_bm25_scores) > 0 else 0.0
+        _bm25_pts = min(int(_bm25_val / 2), 10)
+        if _bm25_pts > 0:
+            score += _bm25_pts
+            reasons.append('BM25 relevance (+' + str(_bm25_pts) + 'pts): score=' + str(round(_bm25_val, 2)))
+    except ImportError:
+        pass
+
     # -- YAKE KEYWORD EXTRACTION (+2 each, max 10) -- Commit 2
     # Unsupervised extraction -- catches terms static lists miss
     try:

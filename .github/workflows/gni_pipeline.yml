@@ -29,7 +29,8 @@ jobs:
             python-dotenv \
             groq \
             requests \
-            yake
+            yake \
+            rank_bm25
       - name: Run GNI Pipeline
         run: python ai_engine/main.py
         env:
