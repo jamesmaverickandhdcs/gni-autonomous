@@ -121,7 +121,7 @@ def _call_groq(prompt: str, model: str = None) -> str | None:
                     "model": model_name,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.3,
-                    "max_tokens": 2000
+                    "max_tokens": 3000
                 },
                 timeout=30
             )
@@ -157,7 +157,7 @@ def _call_cerebras(prompt: str) -> str | None:
                 "model": CEREBRAS_MODEL,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.3,
-                "max_tokens": 2000
+                "max_tokens": 3000
             },
             timeout=30
         )
@@ -346,6 +346,9 @@ def _extract_fields_regex(raw: str) -> dict | None:
         "weakness_identified":   get_str("weakness_identified") or "",
         "threat_horizon":        get_str("threat_horizon") or "",
         "dark_side_detected":    get_str("dark_side_detected") or "",
+        "fff_what_is_happening":  get_str("fff_what_is_happening") or "",
+        "fff_honest_analysis":    get_str("fff_honest_analysis") or "",
+        "fff_human_path":         get_str("fff_human_path") or "",
     }
 
 
@@ -440,7 +443,7 @@ def _run_with_temperature(prompt: str, temperature: float) -> dict | None:
                 "model": GROQ_MODEL,
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": temperature,
-                "max_tokens": 2000
+                "max_tokens": 3000
             },
             timeout=30
         )
