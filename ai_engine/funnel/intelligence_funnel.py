@@ -552,6 +552,29 @@ def _score_article(article: dict) -> tuple[float, str]:
         if fin_matches:
             reasons.append(f"FIN pillar bonus ({fin_score}pts): {', '.join(fin_matches[:3])}")
 
+
+    # -- YAKE KEYWORD EXTRACTION (+2 each, max 10) -- Commit 2
+    # Unsupervised extraction -- catches terms static lists miss
+    try:
+        import yake as _yake
+        _yake_ext = _yake.KeywordExtractor(lan='en', n=2, dedupLim=0.7, top=10, features=None)
+        _yake_kws = [kw.lower() for kw, sc in _yake_ext.extract_keywords(
+            article.get('title','') + ' ' + article.get('summary',''))]
+        _geo_domain = [
+            'united states', 'european union', 'middle east', 'south china',
+            'north korea', 'iran nuclear', 'ukraine war', 'trade war',
+            'supply chain', 'interest rate', 'federal reserve', 'oil price',
+            'cyber attack', 'artificial intelligence', 'semiconductor chip',
+            'climate change', 'human rights', 'united nations', 'nato alliance',
+        ]
+        _yake_hits = sum(1 for kw in _yake_kws if any(d in kw for d in _geo_domain))
+        _yake_score = min(_yake_hits * 2, 10)
+        if _yake_score > 0:
+            score += _yake_score
+            reasons.append('YAKE signal (' + str(_yake_score) + 'pts): ' + str(_yake_kws[:3]))
+    except ImportError:
+        pass
+
     # ── Recency bonus (W-15 fix GNI S29) ─────────────────────────────────
     # published_at is set by rss_collector for every article
     # Breaking news (<6h) gets +5pts. Older than 48h gets nothing.

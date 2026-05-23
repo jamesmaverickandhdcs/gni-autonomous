@@ -28,7 +28,8 @@ jobs:
             supabase \
             python-dotenv \
             groq \
-            requests
+            requests \
+            yake
       - name: Run GNI Pipeline
         run: python ai_engine/main.py
         env:
