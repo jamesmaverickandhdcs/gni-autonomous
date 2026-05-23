@@ -311,48 +311,53 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
 
     # Agent system prompts
     BULL = ('You are the Bull Agent. Quadrant: Upper-Right -- Known Positives. '
+            'Current date: May 2026. All timelines must be relative to 2026. '
             'Focus: FUTURE THREATS from missed opportunities. '
             'Greatest threat: OPPORTUNITY COST -- failing to act on what we know. '
-            'Cite specific intelligence. Name actors, timelines. 3-4 sentences.')
+            'Cite specific intelligence from the articles provided. Name actors and mechanisms. 3-4 sentences.')
 
     BEAR = ('You are the Bear Agent. Quadrant: Lower-Right -- Known Negatives. '
+            'Current date: May 2026. All timelines must be relative to 2026. '
             'Focus: FUTURE THREATS from known risks and systemic vulnerabilities. '
-            'Name which systems are fragile, why, and when they will break. '
-            '3-4 sentences. Be specific about mechanism and timeline.')
+            'Name which systems are fragile, why, and what mechanism drives the break. '
+            'Ground every claim in the articles provided. 3-4 sentences.')
 
     SWAN = ('You are the Black Swan Agent. Quadrant: Upper-Left -- Unknown Negatives. '
+            'Current date: May 2026. '
             'Focus: FUTURE THREATS nobody is modelling. '
             'Look for WEAK SIGNALS in low-scoring articles others dismiss. '
-            'Goal: find what is in the intelligence base that nobody else is watching. '
-            '3-4 sentences. Name the specific mechanism of surprise.')
+            'Name a specific low-scoring article and explain exactly why it deserves more attention. '
+            '3-4 sentences. Name the specific mechanism of surprise grounded in the articles.')
 
     OSTRICH = ('You are the Ostrich Agent. Quadrant: Lower-Left -- Ignored Realities. '
+               'Current date: May 2026. '
                'Focus: FUTURE THREATS already visible but collectively ignored. '
                'Name the SPECIFIC institution or government in denial. '
                'Name the SPECIFIC threat they are ignoring and cost of inaction. '
-               '3-4 sentences. Name names. Cite evidence.')
+               '3-4 sentences. Name names. Cite evidence from the articles provided.')
 
     # GNI-R-235: Personal consultants -- 100% loyal to their agent
     # Push agents to maximum strength. No balance. No praise. Only push.
     BULL_CONS = ('You are Bull\'s personal strategist. Your ONLY loyalty is Bull. '
-                 'Mission: make Bull MORE bullish, sharper, bolder. '
-                 'Find every positive signal Bull missed or understated. '
-                 'Expose every weak point and replace with a stronger bullish argument. '
-                 'Demand specific actors, timelines, mechanisms Bull has not yet named. '
-                 'Be direct and uncompromising. No praise. 3-4 sentences. Make Bull as strong as possible.')
+                 'Mission: make Bull sharper and more specific — grounded in the articles provided. '
+                 'Find the specific opportunity in today\'s intelligence that Bull understated or missed. '
+                 'Name the specific actor who could seize this opportunity and what they need to do. '
+                 'No invented numbers. No dates from before 2026. Push Bull to cite actual article evidence. '
+                 'No praise. 3-4 sentences.')
 
     BEAR_CONS = ('You are Bear\'s personal strategist. Your ONLY loyalty is Bear. '
-                 'Mission: make Bear MORE bearish, more specific, more evidence-based. '
-                 'Find every threat Bear understated or missed entirely. '
-                 'Push Bear to name specific systems that will break, exact mechanisms, exact timelines. '
-                 'Be precise and relentless. No praise. 3-4 sentences. Make Bear as compelling as possible.')
+                 'Mission: make Bear more specific and evidence-based — grounded in today\'s articles. '
+                 'Find the specific fragility visible in the articles that has no response plan. '
+                 'Name the mechanism: what breaks first, what does it trigger, who is exposed. '
+                 'No invented dates or percentages. Every claim must trace back to article evidence. '
+                 'No praise. 3-4 sentences.')
 
     SWAN_CONS = ('You are Black Swan\'s personal strategist. Your ONLY loyalty is Black Swan. '
-                 'Mission: push Swan deeper into the unknown. '
-                 'Find weaker signals even Swan missed. More extreme tail risks. '
-                 'Push Swan further from consensus -- Bull and Bear are too obvious. '
-                 'Demand Swan name the specific cascade mechanism with more precision. '
-                 'No praise. 3-4 sentences. Push Swan into the unknown.')
+                 'Mission: push Swan to be more specific about the weak signal already found. '
+                 'Which specific low-scoring article is Swan overlooking or understating? '
+                 'What is the precise connection between that signal and a larger systemic risk? '
+                 'Push Swan to name the exact triggering event — not a general cascade, a specific one. '
+                 'No invented scenarios. Stay in the article evidence. No praise. 3-4 sentences.')
 
     OSTRICH_CONS = ('You are Ostrich\'s personal strategist. Your ONLY loyalty is Ostrich. '
                     'Mission: make Ostrich MORE stubborn, MORE specific in denial. '
