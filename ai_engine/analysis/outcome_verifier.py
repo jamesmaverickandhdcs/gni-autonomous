@@ -423,7 +423,33 @@ def verify_pending_outcomes():
             'escalation_accurate': escalation_accurate,
             'gpvs_magnitude_score': calculate_magnitude_score(sentiment, spy_3d, spy_7d),
             'spy_magnitude_3d': round(abs(spy_3d), 2) if spy_3d is not None else None,
+            'human_security_score': None,
+            'human_security_keywords_delta': None,
         }
+
+        # PHI-003 NN-PHI-1: Human Security Track
+        try:
+            from datetime import date, timedelta
+            _hs_kws = ['humanitarian','human rights','war crime','civilian','displacement','refugee']
+            _pd = report.get('created_at','')[:10]
+            if _pd:
+                _d = date.fromisoformat(_pd)
+                _b = client.table('gni_keyword_history').select('keyword,article_count') \
+                    .gte('run_date', _pd).lt('run_date', (_d + timedelta(days=2)).isoformat()).execute()
+                _a = client.table('gni_keyword_history').select('keyword,article_count') \
+                    .gte('run_date', (_d + timedelta(days=5)).isoformat()) \
+                    .lt('run_date', (_d + timedelta(days=8)).isoformat()).execute()
+                _bc = {r['keyword']: r['article_count'] for r in (_b.data or [])}
+                _ac = {r['keyword']: r['article_count'] for r in (_a.data or [])}
+                _delta = sum(_ac.get(k,0) - _bc.get(k,0) for k in _hs_kws)
+                _bear = sentiment.lower() == 'bearish'
+                _hs = 1.0 if (_delta > 3 and _bear) or (_delta <= 0 and not _bear) \
+                      else 0.5 if (_delta > 0 and _bear) else 0.0
+                record['human_security_score'] = _hs
+                record['human_security_keywords_delta'] = float(_delta)
+                print(f'  PHI-003 Human Security: {_hs} (delta={_delta:+d})')
+        except Exception as _he:
+            print(f'  Warning: HS scoring failed: {str(_he)[:60]}')
 
         client.table('prediction_outcomes').insert(record).execute()
         # W-14: Update source weights based on this prediction's accuracy
