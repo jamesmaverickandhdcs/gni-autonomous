@@ -126,6 +126,27 @@ def run_pipeline():
         if articles_collected < 10:
             raise Exception(f"Too few articles: {articles_collected}")
 
+        # -- NN-PHI-5: Absence Detection -------------------
+        try:
+            from analysis.absence_detector import run_absence_detection
+            _gaps = run_absence_detection(articles)
+            if _gaps:
+                _gap_msg = "  ⚠️  COVERAGE GAPS DETECTED:\n"
+                for _g in _gaps[:3]:
+                    _gap_msg += f"    [{_g['gap_severity']}] '{_g['keyword']}' — 7d_avg={_g['avg_7day']} today=0\n"
+                print(_gap_msg)
+                try:
+                    from notifications.telegram_notifier import send_admin_message
+                    _tg_gaps = "🚫 [GNI ABSENCE ALERT] Coverage gaps detected:\n"
+                    for _g in _gaps[:5]:
+                        _tg_gaps += f"[{_g['gap_severity']}] '{_g['keyword']}' — 7d avg {_g['avg_7day']} articles, today: {_g['today_count']}\n"
+                    _tg_gaps += "\nAbsence is intelligence (PHI-003 NN-PHI-5)"
+                    send_admin_message(_tg_gaps)
+                except Exception:
+                    pass
+        except Exception as _e:
+            print(f"  Warning: Absence detection failed: {str(_e)[:60]}")
+
         # -- Step 2: Intelligence Funnel ---------------------
         print("\n?? Step 2: Running Intelligence Funnel...")
         t0 = time.time()
