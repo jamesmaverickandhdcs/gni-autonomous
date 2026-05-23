@@ -154,7 +154,7 @@ def run_pipeline():
         top_articles, trace = run_funnel(
             articles,
             top_n=top_n,
-            max_per_source=3
+            max_per_source=2  # D1: source diversity (PHI-003)
         )
         step_timings["funnel"] = round(time.time() - t0, 2)
         articles_after_funnel = len(top_articles)
