@@ -143,6 +143,9 @@ def save_report(report: dict, articles: list[dict], quality_score: float = 0, qu
             "threat_horizon": report.get("threat_horizon", ""),
             "dark_side_detected": report.get("dark_side_detected", ""),
             "plain_narrative": report.get("plain_narrative", ""),
+            "fff_what_is_happening": report.get("fff_what_is_happening", ""),
+            "fff_honest_analysis": report.get("fff_honest_analysis", ""),
+            "fff_human_path": report.get("fff_human_path", ""),
         }
 
         result = client.table("reports").insert(record).execute()
