@@ -11,7 +11,7 @@
 | NN-PHI-2 | All news directions equal — good, bad, opportunity, threat | `intelligence_funnel.py` OPPORTUNITY keywords + balance signal | LIVE | May 24 2026 |
 | NN-PHI-3 | Manipulation techniques never in GNI output | `intelligence_funnel.py` INJECTION_PATTERNS Cat 1-11 + SANITIZE_VOCAB | LIVE | May 24 2026 |
 | NN-PHI-4 | Every threat must have a path — fff_human_path always required | `nexus_analyzer.py` + `prompt_manager.py` fff_human_path field | LIVE | May 24 2026 |
-| NN-PHI-5 | Absence is intelligence — coverage gaps reported | NOT IMPLEMENTED | OPEN | — |
+| NN-PHI-5 | Absence is intelligence — coverage gaps reported | `absence_detector.py` + `gni_keyword_history` + `gni_coverage_alerts` | LIVE | May 24 2026 |
 | NN-PHI-6 | Adversarial sources are signal not authority — review_only | `rss_collector.py` content_type + `intelligence_funnel.py` classifier | LIVE | May 23 2026 |
 | NN-PHI-7 | Data reset when philosophy resets | U-8 executed May 23 2026 | COMPLETE | May 23 2026 |
 
@@ -39,7 +39,7 @@
 
 | # | Item | Priority |
 |---|---|---|
-| NN-PHI-5 | Absence detection — coverage gap reporting | S37 |
+| NN-PHI-5 | Absence detection — coverage gap reporting | COMPLETE May 24 2026 |
 | GPVS | Human security track alongside SPY metric | S37 |
 | Layer 4 | LLM spot-check for ambiguous article classification | S37 |
 | About page | Update copy to reflect PHI-003 identity | S37 |

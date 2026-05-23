@@ -22,6 +22,7 @@ ABSENCE_WATCH_KEYWORDS = [
     "federal reserve", "oil price", "sanctions", "opec",
     # Humanitarian
     "humanitarian", "human rights", "war crime",
+    "civilian", "displacement", "refugee",
     # Strategic
     "nato", "security council", "united nations",
 ]
