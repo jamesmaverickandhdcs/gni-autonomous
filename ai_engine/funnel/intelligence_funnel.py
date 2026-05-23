@@ -427,6 +427,73 @@ def _score_article(article: dict) -> tuple[float, str]:
     if dark_matches:
         reasons.append("DARK SIDE signal (" + str(dark_score) + "pts): " + ", ".join(dark_matches[:3]))
 
+
+    # ── OPPORTUNITY/STRENGTH keywords (+3 each, max 15) — PHI-003 B ──────
+    # Positive-signal content — PHI-003 all-directions principle
+    # Rewards balanced reporting, not just threat detection
+    WT_OPPORTUNITY_KEYWORDS = [
+        # Diplomatic breakthroughs
+        'peace agreement', 'peace deal signed', 'ceasefire agreement',
+        'diplomatic breakthrough', 'diplomatic progress', 'peace talks progress',
+        'alliance strengthened', 'alliance formed', 'treaty signed',
+        'sanctions lifted', 'sanctions removed', 'embargo lifted',
+        'normalisation', 'normalization', 'diplomatic ties restored',
+        # Trade and economic progress
+        'trade agreement', 'trade deal', 'trade framework',
+        'tariff reduction', 'tariff cut', 'tariff eliminated',
+        'debt relief', 'debt forgiven', 'aid delivered',
+        'investment agreement', 'economic partnership',
+        # Humanitarian progress
+        'humanitarian corridor', 'aid corridor opened',
+        'food security improved', 'famine averted',
+        'refugee return', 'displaced persons return',
+        'reconstruction begins', 'rebuilding begins',
+        # Technology and governance advances
+        'technology transfer', 'technology cooperation',
+        'digital rights protected', 'press freedom restored',
+        'democratic election', 'election certified',
+        'accountability established', 'justice served',
+        'renewable energy', 'clean energy agreement',
+    ]
+    opp_matches = [kw for kw in WT_OPPORTUNITY_KEYWORDS if kw in text]
+    opp_score = min(len(opp_matches) * 3, 15)
+    score += opp_score
+    if opp_matches:
+        reasons.append("OPPORTUNITY signal (" + str(opp_score) + "pts): " + ", ".join(opp_matches[:3]))
+
+
+    # ── PHI-003 BALANCE SIGNAL (+3) — Change A ───────────────────────
+    # Rewards articles covering BOTH positive AND negative dimensions
+    # Encodes PHI-003 all-directions principle: balanced > pure fear
+    has_threat_signal = (threat_score > 0 or weakness_score > 0 or dark_score > 0)
+    has_opportunity_signal = (opp_score > 0)
+    if has_threat_signal and has_opportunity_signal:
+        score += 3
+        reasons.append("PHI-003 balance signal (+3pts): covers both threat and opportunity")
+
+
+    # ── CONTRADICTION DETECTION (+3) — PHI-003 contested stories ────
+    # Stories with contested claims need honest analysis more than settled ones
+    # Directly aligned with MAD protocol — perfect debate input
+    import re as _re_c
+    CONTRADICTION_PATTERNS = [
+        r'\b(denied|denies|deny)\b',
+        r'\b(rejected|rejects|reject)\b',
+        r'\b(disputed|disputes|dispute)\b',
+        r'\b(contradicts|contradicted|contradiction)\b',
+        r'\b(accused|accuses|accuse)\b.{0,50}\b(denied|denies)\b',
+        r'\bsays.{0,80}(but|however|while|whereas).{0,80}(says|claims|insists)\b',
+        r'\b(claims?|alleged?|reportedly).{0,50}\b(denied?|rejected?|disputed?)\b',
+        r'\bcontrovers(y|ial)\b',
+        r'\bdisagreement\b',
+        r'\bconflicting (reports?|accounts?|claims?)\b',
+    ]
+    contradiction_hits = sum(1 for p in CONTRADICTION_PATTERNS
+                            if _re_c.search(p, text, _re_c.IGNORECASE))
+    if contradiction_hits >= 2:
+        score += 3
+        reasons.append(f"Contradiction signal (+3pts): {contradiction_hits} contested claim patterns")
+
     # ── PILLAR-SPECIFIC BONUS SCORING (+2 each, max 10) ──────────────
     # Boosts articles that are highly relevant to their assigned pillar
     # so quota selection picks the best-fit article per pillar
@@ -508,6 +575,10 @@ def _score_article(article: dict) -> tuple[float, str]:
                 rec_bonus = 1
             else:
                 rec_bonus = 0
+            # Change C: cap recency bonus for thin content (PHI-003 depth over speed)
+            content_score = hi_score + med_score + threat_score + weakness_score + dark_score + opp_score
+            if content_score < 5 and rec_bonus > 2:
+                rec_bonus = 2
             if rec_bonus > 0:
                 score += rec_bonus
                 reasons.append(f"Recency (+{rec_bonus}pts): {round(hours_old, 1)}h old")
@@ -745,7 +816,7 @@ def _classify_content_type(article: dict) -> dict:
 def run_funnel(
     articles: list[dict],
     top_n: int = 11,  # 5 geo + 3 tech + 3 fin
-    max_per_source: int = 3
+    max_per_source: int = 2  # D1: reduced from 3 for source diversity (PHI-003)
 ) -> tuple[list[dict], list[dict]]:
     """
     Run the 4-stage Intelligence Funnel.
