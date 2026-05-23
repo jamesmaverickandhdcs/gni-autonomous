@@ -47,7 +47,7 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div>
             <h1 className="text-2xl font-bold text-white">🌐 About GNI</h1>
-            <p className="text-sm text-gray-400">Global Nexus Insights (Autonomous) — The $0.00/month intelligence platform</p>
+            <p className="text-sm text-gray-400">Global Nexus Insights (Autonomous) — Freedom from Fear Intelligence. Free forever.</p>
           </div>
           
         
