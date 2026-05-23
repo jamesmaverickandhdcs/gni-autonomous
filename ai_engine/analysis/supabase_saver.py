@@ -383,6 +383,9 @@ def save_pillar_report(report: dict, pillar: str, run_id: str | None, report_id:
             "dark_side_detected": report.get("dark_side_detected", ""),
             "quality_score": float(report.get("quality_score", 0.0)),
             "llm_source": report.get("llm_source", ""),
+            "fff_what_is_happening": report.get("fff_what_is_happening", ""),
+            "fff_honest_analysis": report.get("fff_honest_analysis", ""),
+            "fff_human_path": report.get("fff_human_path", ""),
         }
         result = client.table("pillar_reports").insert(record).execute()
         if result.data:
