@@ -17,6 +17,9 @@ interface BriefData {
   created_at: string
   mad_bear_case: string
   mad_bull_case: string
+  fff_what_is_happening: string
+  fff_honest_analysis: string
+  fff_human_path: string
 }
 
 const urgencyConfig = (level: string) => {
@@ -167,6 +170,17 @@ export default function BriefPage() {
                     {brief.sentiment} ({brief.sentiment_score?.toFixed(2)})
                   </span>
                 </p>
+              </section>
+            )}
+
+            {/* FFF SECTION */}
+            {(brief.fff_what_is_happening || brief.fff_honest_analysis || brief.fff_human_path) && (
+              <section className="mb-4 bg-blue-950 border border-blue-800 rounded-xl p-5">
+                <div className="text-xs text-blue-400 font-bold uppercase tracking-wider mb-4">Freedom from Fear Intelligence</div>
+                {brief.fff_what_is_happening && (<div className="mb-3"><div className="text-xs text-blue-300 font-bold mb-1">1. What is happening</div><p className="text-sm text-gray-200 leading-relaxed">{brief.fff_what_is_happening}</p></div>)}
+                {brief.fff_honest_analysis && (<div className="mb-3"><div className="text-xs text-blue-300 font-bold mb-1">2. Honest analysis</div><p className="text-sm text-gray-200 leading-relaxed">{brief.fff_honest_analysis}</p></div>)}
+                {brief.fff_human_path && (<div><div className="text-xs text-green-400 font-bold mb-1">3. What you can do</div><p className="text-sm text-gray-100 leading-relaxed font-medium">{brief.fff_human_path}</p></div>)}
+                <div className="mt-4 pt-3 border-t border-blue-900 text-xs text-blue-600">GNI exists so that any person can clearly understand what threatens their freedom, without manipulation.</div>
               </section>
             )}
 
