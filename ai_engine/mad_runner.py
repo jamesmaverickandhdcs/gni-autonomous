@@ -432,6 +432,15 @@ def run_mad_pipeline():
     print('\n?? Step 4: Updating report with MAD fields...')
     success = _update_report_with_mad(client, report_id, mad_result)
 
+    # Save MAD quality record (Option A -- S37)
+    if success and mad_succeeded:
+        try:
+            from analysis.mad_quality import calculate_mad_quality, save_mad_quality
+            quality_record = calculate_mad_quality(mad_result)
+            save_mad_quality(client, report_id, quality_record)
+        except Exception as _qe:
+            print(f'  Warning: MAD quality logging failed: {str(_qe)[:60]}')
+
     if success and mad_succeeded:
         print('\n?? Step 5: Saving predictions...')
         _save_mad_predictions(client, report_id, mad_result)
