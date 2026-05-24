@@ -28,9 +28,9 @@ export default function AboutPage() {
     { label: 'Pipeline runs',     value: liveStats ? liveStats.pipeline_runs.toLocaleString() : '...' },
     { label: 'Articles analysed', value: liveStats ? liveStats.articles_analysed.toLocaleString() + '+' : '...' },
     { label: 'Reports generated', value: liveStats ? liveStats.reports_generated.toLocaleString() : '...' },
-    { label: 'GPVS accuracy',     value: '100%' },
-    { label: 'Injection patterns',value: '66' },
-    { label: 'Sprint days',       value: '17' },
+    { label: 'GPVS accuracy',     value: '100%*' },
+    { label: 'Injection patterns',value: '45+' },
+    { label: 'Sprint days',       value: '37' },
   ]
 
   const comparisons = [
