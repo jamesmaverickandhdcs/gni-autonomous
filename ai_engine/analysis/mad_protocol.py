@@ -7,7 +7,17 @@
 # Predictions saved to debate_predictions table
 # 21 Groq calls per run
 # GNI-R-237: GROQ_MAD_MODEL=gpt-oss-120b (all 21 calls). GROQ_MODEL fallback.
-# GROQ_API_KEY_2 removed — same account = same pool, no isolation benefit.
+# GROQ_API_KEY_2 removed -- same account = same pool, no isolation benefit.
+# S37 PATCHES:
+#   BULL:       SYNTHESIS RULE (no copy-paste) + PRE-BUTTAL RULE
+#   BEAR:       QUANTIFY + SCOPE (beyond oil) + RISK PRICING
+#   SWAN:       CREDIBILITY ANCHOR + UAP RULE + FALLOUT CHAIN
+#   OSTRICH:    JURISDICTION RULE + INTER-AGENCY SILO-GAP primary frame
+#   ALL CONS:   FOUNDATION CHECK first + NO REPEAT RULE
+#   SWAN CONS:  GROUNDING CHECK (no fiction push)
+#   OSTRICH CONS: JURISDICTION CHECK + SILO-GAP frame push
+#   ARBITRATOR: SELF-CONSISTENCY + ACTION PRIORITY + SPECIFICITY + UAP RULE
+#   R2 CTX:     Consultant contextual memory -- R1 feedback injected into R2 ctx
 # ============================================================
 
 import os
@@ -21,7 +31,7 @@ from groq_guardian import validate_response  # GNI-R-234
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 MODEL = os.getenv('GROQ_MAD_MODEL',
         os.getenv('GROQ_MODEL',
-        os.getenv('GROQ_MODEL_FALLBACK', 'llama-3.3-70b-versatile')))  # GNI-R-237: gpt-oss-120b → scout → fallback
+        os.getenv('GROQ_MODEL_FALLBACK', 'llama-3.3-70b-versatile')))  # GNI-R-237: gpt-oss-120b -> scout -> fallback
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
@@ -29,7 +39,7 @@ VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, expect_json: bool = False) -> str:
     # GNI-R-107: Rate-limit-aware Groq call with 429 retry
     # Attempt 1: primary client (GROQ_API_KEY)
-    # If 429:   sleep 40s → Attempt 2: primary client
+    # If 429:   sleep 40s -> Attempt 2: primary client
     # If fails: return error string (pipeline continues)
     for attempt in range(2):
         try:
@@ -47,7 +57,7 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
             validation = validate_response(raw, expect_json=expect_json)
             if not validation['valid']:
                 print(f'  WARNING: groq_guardian rejected response: {validation["rejection_reason"]}')
-                _log_safety_event('guardian_rejection', validation['rejection_reason'])  # item 4
+                _log_safety_event('guardian_rejection', validation['rejection_reason'])
                 return '[Agent error: ' + validation['rejection_reason'] + ']'
             return validation['sanitized']
         except Exception as e:
@@ -74,15 +84,15 @@ def _call_arbitrator(system_prompt: str, user_prompt: str, max_tokens: int = 600
         result = _call_agent(system_prompt, user_prompt, max_tokens, expect_json)
         if result.startswith('[Agent error'):
             print('  WARNING: Arbitrator final retry also failed -- using safe defaults')
-            _log_safety_event('w02_retry_failed', 'W-02 retry also failed — MAD will use neutral fallback')  # item 4
+            _log_safety_event('w02_retry_failed', 'W-02 retry also failed -- MAD will use neutral fallback')
         else:
             print('  OK: Arbitrator W-02 retry succeeded')
-            _log_safety_event('w02_retry_success', 'Arbitrator W-02 extra retry fired and succeeded')  # item 4
+            _log_safety_event('w02_retry_success', 'Arbitrator W-02 extra retry fired and succeeded')
     return result
 
 
 def _log_safety_event(event_type: str, detail: str) -> None:
-    """Log safety net activation to runtime_logs. Silent — never breaks pipeline."""
+    """Log safety net activation to runtime_logs. Silent -- never breaks pipeline."""
     try:
         from supabase import create_client
         sb = create_client(
@@ -238,7 +248,6 @@ def _compress(text: str, max_words: int = 40) -> str:
     return ' '.join(words[:max_words]) + '...'
 
 
-
 def _save_predictions(report_id: str, short: str, long_s: str,
                       short_days: int, long_days: int, round3: dict) -> None:
     try:
@@ -309,63 +318,105 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     weakness = report.get('weakness_identified', '')
     dark_side = report.get('dark_side_detected', '')
 
-    # Agent system prompts
+    # ============================================================
+    # AGENT SYSTEM PROMPTS
+    # ============================================================
+
+    # PATCH 1: SYNTHESIS RULE + PRE-BUTTAL RULE
     BULL = ('You are the Bull Agent. Quadrant: Upper-Right -- Known Positives. '
             'Current date: May 2026. All timelines must be relative to 2026. '
             'Focus: FUTURE THREATS from missed opportunities. '
             'Greatest threat: OPPORTUNITY COST -- failing to act on what we know. '
-            'Cite specific intelligence from the articles provided. Name actors and mechanisms. 3-4 sentences.')
+            'Cite specific intelligence from the articles provided. Name actors and mechanisms. '
+            'SYNTHESIS RULE: Do NOT copy or append to previous rounds. Write a completely fresh argument each round. '
+            'PRE-BUTTAL RULE: Anticipate Bear\'s strongest counter and address it before they make it. '
+            '3-4 sentences.')
 
+    # PATCH 2: QUANTIFY + SCOPE beyond oil + RISK PRICING
     BEAR = ('You are the Bear Agent. Quadrant: Lower-Right -- Known Negatives. '
             'Current date: May 2026. All timelines must be relative to 2026. '
             'Focus: FUTURE THREATS from known risks and systemic vulnerabilities. '
             'Name which systems are fragile, why, and what mechanism drives the break. '
+            'QUANTIFY: Support claims with specific figures where known (percentages, volumes, dollar amounts). '
+            'SCOPE: Broaden vulnerability beyond energy -- include semiconductors, critical minerals, manufacturing. '
+            'RISK PRICING: Argue that the THREAT of disruption causes damage through risk premiums '
+            'even before any physical event occurs. '
             'Ground every claim in the articles provided. 3-4 sentences.')
 
+    # PATCH 3: CREDIBILITY ANCHOR + UAP RULE + numbered FALLOUT CHAIN
     SWAN = ('You are the Black Swan Agent. Quadrant: Upper-Left -- Unknown Negatives. '
             'Current date: May 2026. '
             'Focus: FUTURE THREATS nobody is modelling. '
             'Look for WEAK SIGNALS in low-scoring articles others dismiss. '
             'Name a specific low-scoring article and explain exactly why it deserves more attention. '
-            '3-4 sentences. Name the specific mechanism of surprise grounded in the articles.')
+            'CREDIBILITY RULE: Your threat MUST be grounded in real-world evidence -- '
+            'a real technology, real actor, real event. '
+            'UAP RULE: If referencing unidentified phenomena, frame as adversarial drone/UAP/next-gen UAS '
+            'from a known state actor (China, Russia) -- never as speculative fiction or aliens. '
+            'FALLOUT RULE: Present consequences as a numbered chain: '
+            '1. Detection Failure  2. Escalation  3. Geopolitical Retaliation. '
+            'The surprise comes from the CONNECTION nobody made -- not from an impossible scenario. '
+            '3-4 sentences.')
 
+    # PATCH 4: JURISDICTION RULE + INTER-AGENCY SILO-GAP as primary frame (full rewrite)
     OSTRICH = ('You are the Ostrich Agent. Quadrant: Lower-Left -- Ignored Realities. '
                'Current date: May 2026. '
                'Focus: FUTURE THREATS already visible but collectively ignored. '
-               'Name the SPECIFIC institution or government in denial. '
-               'Name the SPECIFIC threat they are ignoring and cost of inaction. '
-               '3-4 sentences. Name names. Cite evidence from the articles provided.')
+               'JURISDICTION RULE: Before naming an institution, verify it has direct authority '
+               'over the threat you are describing. If it does not, find the correct institution. '
+               'PRIMARY FRAME: Find the GAP between two institutions -- where Institution A holds '
+               'the risk but has NOT communicated it to Institution B, and that silence IS the hidden threat. '
+               'Name the specific institutions, the specific gap, the specific cost of that silence. '
+               'Cite evidence from the articles provided. 3-4 sentences. Name names.')
 
-    # GNI-R-235: Personal consultants -- 100% loyal to their agent
-    # Push agents to maximum strength. No balance. No praise. Only push.
+    # ============================================================
+    # CONSULTANT SYSTEM PROMPTS
+    # GNI-R-235: Personal consultants -- 100% loyal to their agent.
+    # UNIVERSAL PATCH: FOUNDATION CHECK first + NO REPEAT RULE on all four.
+    # ============================================================
+
+    # PATCH 5: Bull consultant
     BULL_CONS = ('You are Bull\'s personal strategist. Your ONLY loyalty is Bull. '
-                 'Mission: make Bull sharper and more specific — grounded in the articles provided. '
-                 'Find the specific opportunity in today\'s intelligence that Bull understated or missed. '
-                 'Name the specific actor who could seize this opportunity and what they need to do. '
-                 'No invented numbers. No dates from before 2026. Push Bull to cite actual article evidence. '
-                 'No praise. 3-4 sentences.')
+                 'FOUNDATION CHECK: If Bull\'s argument contains a factual error or logical contradiction, '
+                 'correct it FIRST. Do NOT push harder on a wrong foundation -- fix it before pushing. '
+                 'NO REPEAT RULE: Read Bull\'s current position carefully. '
+                 'Do NOT repeat feedback Bull has already implemented. '
+                 'THEN: Find the specific opportunity Bull understated. '
+                 'Name the actor and what they must do. '
+                 'No invented numbers. No dates from before 2026. '
+                 'Push Bull to cite actual article evidence. No praise. 3-4 sentences.')
 
+    # PATCH 6: Bear consultant
     BEAR_CONS = ('You are Bear\'s personal strategist. Your ONLY loyalty is Bear. '
-                 'Mission: make Bear more specific and evidence-based — grounded in today\'s articles. '
-                 'Find the specific fragility visible in the articles that has no response plan. '
-                 'Name the mechanism: what breaks first, what does it trigger, who is exposed. '
+                 'FOUNDATION CHECK: If Bear\'s argument contains a factual error or logical contradiction, '
+                 'correct it FIRST. Do NOT push harder on a wrong foundation -- fix it before pushing. '
+                 'NO REPEAT RULE: Read Bear\'s current position carefully. '
+                 'Do NOT repeat feedback Bear has already implemented. '
+                 'THEN: Find the specific fragility Bear understated. '
+                 'Name what breaks first and who is exposed. '
                  'No invented dates or percentages. Every claim must trace back to article evidence. '
                  'No praise. 3-4 sentences.')
 
+    # PATCH 7: Swan consultant -- GROUNDING CHECK + no fiction push
     SWAN_CONS = ('You are Black Swan\'s personal strategist. Your ONLY loyalty is Black Swan. '
-                 'Mission: push Swan to be more specific about the weak signal already found. '
-                 'Which specific low-scoring article is Swan overlooking or understating? '
-                 'What is the precise connection between that signal and a larger systemic risk? '
-                 'Push Swan to name the exact triggering event — not a general cascade, a specific one. '
-                 'No invented scenarios. Stay in the article evidence. No praise. 3-4 sentences.')
+                 'GROUNDING CHECK: If Swan drifts into fiction or unverifiable speculation, redirect it FIRST. '
+                 'Do NOT push Swan toward UFOs, aliens, or scenarios without real-world grounding. '
+                 'Push Swan toward MORE SPECIFIC real evidence -- a named adversarial technology, a named state actor. '
+                 'NO REPEAT RULE: Read Swan\'s current position carefully. '
+                 'Do NOT repeat feedback Swan has already implemented. '
+                 'Push Swan to name the exact triggering event -- not a general cascade, a specific grounded one. '
+                 'No invented scenarios. Stay in article evidence. No praise. 3-4 sentences.')
 
+    # PATCH 8: Ostrich consultant -- JURISDICTION CHECK + SILO-GAP frame push
     OSTRICH_CONS = ('You are Ostrich\'s personal strategist. Your ONLY loyalty is Ostrich. '
-                    'Mission: make Ostrich MORE stubborn, MORE specific in denial. '
-                    'Find every reason the status quo holds that Ostrich has not yet named. '
-                    'Push Ostrich to name specific institutions, denial patterns, costs of inaction. '
-                    'Make the inertia argument so strong it cannot be dismissed. '
+                    'JURISDICTION CHECK: Verify Ostrich named an institution with actual authority over the threat. '
+                    'If the institution is wrong, redirect to the correct one FIRST before pushing harder. '
+                    'SILO-GAP FRAME: Push Ostrich to identify which institution holds the risk and which one '
+                    'is NOT being told -- frame that communication gap as the core hidden threat. '
+                    'Make the inertia argument and the communication failure so specific it cannot be dismissed. '
                     'No praise. 3-4 sentences. Push Ostrich harder.')
 
+    # PATCH 9: Arbitrator -- SELF-CONSISTENCY + ACTION PRIORITY + SPECIFICITY + UAP RULE
     ARB_FINAL = ('You are the Arbitrator -- Strategic Synthesiser. '
                  'After 3 rounds identify: '
                  '(1) BLIND SPOT QUADRANT -- most neglected. '
@@ -373,6 +424,14 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  '(3) SHORT FOCUS THREATS -- specific threats in next 7-30 days. '
                  '(4) LONG SHOOT THREATS -- structural threats over 3-24 months. '
                  '(5) Verdict and confidence. '
+                 'SELF-CONSISTENCY RULE: Your short_focus_threats must be consistent with your reasoning baseline. '
+                 'If you predict a direction change from the baseline, name the SPECIFIC catalyst that causes the flip. '
+                 'ACTION PRIORITY RULE: Your primary action_recommendation must address the highest-probability threat. '
+                 'Novel or low-probability threats appear as secondary recommendations only -- never as the primary. '
+                 'SPECIFICITY RULE: Every ignored reality claim must name a specific institution, '
+                 'specific gap, and specific consequence -- no vague placeholders. '
+                 'UAP RULE: If referencing unidentified aerial phenomena, frame as adversarial '
+                 'drone/UAS technology from a named state actor -- not UFOs or aliens. '
                  'Respond ONLY with valid JSON: '
                  '{"verdict": "bullish or bearish or neutral", '
                  '"confidence": 0.0-1.0, '
@@ -386,7 +445,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  '"long_verify_days": 180}')
 
     # Round 1
-    # NP-4: Inject cross-run verdict trend to prevent Pattern Match Bias
     verdict_trend = history.get('verdict_trend', '')
     if verdict_trend:
         print(f'  Verdict trend: {verdict_trend[:100]}')
@@ -399,7 +457,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     round1 = {'bull': bull_r1, 'bear': bear_r1, 'black_swan': swan_r1, 'ostrich': ost_r1}
 
     # GNI-R-235: Personal consultant coaching Round 1 -- 4 separate calls
-    # S28-13: lean context only -- news_ctx caused empty responses (5400 tokens)
     # S28-14: 15s sleep -- 8 back-to-back calls exceed Groq TPM soft limit
     print('  Waiting 15s before consultant calls (TPM soft limit protection)...')
     time.sleep(15)
@@ -419,34 +476,36 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     c1_ost  = _call_agent(OSTRICH_CONS, r1_cons_ctx + '\n\nCoach Ostrich. Push harder for Round 2.', 250)
     arb_c1 = {'bull': c1_bull, 'bear': c1_bear, 'black_swan': c1_swan, 'ostrich': c1_ost}
 
-    # GNI-R-107: Sleep between rounds to stay under Groq RPM limit
-    # Round 1 used 5 calls. Sleep lets the rate limit window breathe.
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
 
     # Round 2
     print('   Round 2: Refined positions...')
-    # P4: compress R1 responses for R2 context (saves ~1,240 tokens)
     r2_base = (news_ctx + '\n\nROUND 1 [summary]:\nBull: ' + _compress(bull_r1) +
                '\nBear: ' + _compress(bear_r1) +
                '\nBlack Swan: ' + _compress(swan_r1) +
                '\nOstrich: ' + _compress(ost_r1) + '\n\n')
-    bull_r2  = _call_agent(BULL,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('bull','')        + '\n\nROUND 2: Respond. Address feedback.', 350)
-    bear_r2  = _call_agent(BEAR,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('bear','')        + '\n\nROUND 2: Respond. Address feedback.', 350)
-    swan_r2  = _call_agent(SWAN,    r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('black_swan','')  + '\n\nROUND 2: Challenge Bull and Bear. Go deeper.', 350)
-    ost_r2   = _call_agent(OSTRICH, r2_base + 'ARBITRATOR TO YOU: ' + arb_c1.get('ostrich','')     + '\n\nROUND 2: Name who is in denial and the cost.', 350)
+    bull_r2  = _call_agent(BULL,    r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bull','')       + '\n\nROUND 2: Write a FRESH argument. Address feedback.', 350)
+    bear_r2  = _call_agent(BEAR,    r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bear','')       + '\n\nROUND 2: Respond. Address feedback.', 350)
+    swan_r2  = _call_agent(SWAN,    r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('black_swan','') + '\n\nROUND 2: Challenge Bull and Bear. Go deeper.', 350)
+    ost_r2   = _call_agent(OSTRICH, r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('ostrich','')    + '\n\nROUND 2: Name who is in denial and the cost.', 350)
     round2 = {'bull': bull_r2, 'bear': bear_r2, 'black_swan': swan_r2, 'ostrich': ost_r2}
 
     # GNI-R-235: Personal consultant coaching Round 2 -- 4 separate calls
-    # S28-13: lean context only -- news_ctx caused empty responses (5400 tokens)
-    # S28-14: 15s sleep -- 8 back-to-back calls exceed Groq TPM soft limit
+    # PATCH 10: R2 consultant context includes R1 feedback already given
+    # Fixes consultant contextual amnesia -- consultant sees what it already said
     print('  Waiting 15s before consultant calls (TPM soft limit protection)...')
     time.sleep(15)
     print('   Personal consultants coaching Round 2...')
     r2_cons_ctx = (
         'REPORT: ' + report.get('title', '') + '\n'
         'ESCALATION: ' + report.get('escalation_level', '') + '\n\n'
-        'ROUND 2 POSITIONS (compressed):\n'
+        'YOUR ROUND 1 FEEDBACK (already given -- do NOT repeat this):\n'
+        'Bull feedback R1: '       + _compress(c1_bull, 40) + '\n'
+        'Bear feedback R1: '       + _compress(c1_bear, 40) + '\n'
+        'Black Swan feedback R1: ' + _compress(c1_swan, 40) + '\n'
+        'Ostrich feedback R1: '    + _compress(c1_ost,  40) + '\n\n'
+        'ROUND 2 POSITIONS (what agent did with your feedback):\n'
         'Bull: '        + _compress(bull_r2, 60) + '\n'
         'Bear: '        + _compress(bear_r2, 60) + '\n'
         'Black Swan: '  + _compress(swan_r2, 60) + '\n'
@@ -458,13 +517,11 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     c2_ost  = _call_agent(OSTRICH_CONS, r2_cons_ctx + '\n\nPush Ostrich to maximum for Round 3 final.', 250)
     arb_c2 = {'bull': c2_bull, 'bear': c2_bear, 'black_swan': c2_swan, 'ostrich': c2_ost}
 
-    # GNI-R-107: Sleep between rounds
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
 
     # Round 3
     print('   Round 3: Final positions...')
-    # P4: compress R1 for R3 context, keep R2 full (saves ~1,240 tokens)
     r3_base = (news_ctx +
                '\n\nR1 [summary] Bull: ' + _compress(bull_r1) +
                '\nR1 Bear: ' + _compress(bear_r1) +
@@ -472,19 +529,17 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                '\nR1 Ostrich: ' + _compress(ost_r1) +
                '\n\nR2 Bull: ' + bull_r2 + '\nR2 Bear: ' + bear_r2 +
                '\nR2 Swan: ' + swan_r2 + '\nR2 Ostrich: ' + ost_r2 + '\n\n')
-    bull_r3  = _call_agent(BULL,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bull','')       + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
+    bull_r3  = _call_agent(BULL,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bull','')       + '\n\nROUND 3 FINAL: Write a FRESH sharpest argument. Changed view?', 350)
     bear_r3  = _call_agent(BEAR,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bear','')       + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
     swan_r3  = _call_agent(SWAN,    r3_base + 'FINAL COACHING: ' + arb_c2.get('black_swan','') + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching.', 350)
     ost_r3   = _call_agent(OSTRICH, r3_base + 'FINAL COACHING: ' + arb_c2.get('ostrich','')    + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction.', 350)
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
 
-    # GNI-R-107: Sleep before arbitrator final (heaviest prompt)
     print('  Waiting 90s before arbitrator synthesis (Groq rate limit protection)...')
     time.sleep(90)  # GNI-R-237: 90s for gpt-oss-120b TPM recovery
 
     # Arbitrator final synthesis
     print('   Arbitrator final synthesis...')
-    # P4: compress R1+R2 for arbitrator, keep R3 full (saves ~2,480 tokens)
     arb_final_user = (
         news_ctx + '\n\n'
         '=== R1 [summary] ===\nBull: ' + _compress(bull_r1) + '\nBear: ' + _compress(bear_r1) +
@@ -499,8 +554,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
         + 'Deliver final synthesis as JSON only.'
     )
     # NN-5: Hard correction channel -- Black Swan + Ostrich enforced at code level
-    # Fixes Gap 3 (Johari Half-Implemented). High/Critical escalation only.
-    # LLMs cannot be reliably instructed via prompts alone -- prepend as hard facts.
     _hard_constraints = []
     _high_escalation = risk_level.upper() in ('HIGH', 'CRITICAL') or 'CRITICAL' in escalation.upper() or 'HIGH' in escalation.upper()
     if _high_escalation:
@@ -526,9 +579,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     short_verify_days = 14
     long_verify_days = 180
 
-    # GNI-R-107: Check for 429 error before attempting JSON parse
-    # If arbitrator call failed with rate limit, arb_final_raw is an error string
-    # Detect this early and use safe defaults -- do not try to parse error as JSON
     _arb_is_error = (
         arb_final_raw.startswith('[Agent error') or
         '429' in arb_final_raw or
@@ -540,11 +590,9 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     else:
         try:
             clean = arb_final_raw.replace('```json', '').replace('```', '').strip()
-            # Strategy 1: direct parse
             try:
                 arb_json = json.loads(clean)
             except json.JSONDecodeError:
-                # Strategy 2: extract JSON object between first { and last }
                 start = clean.find('{')
                 end = clean.rfind('}') + 1
                 if start >= 0 and end > start:
