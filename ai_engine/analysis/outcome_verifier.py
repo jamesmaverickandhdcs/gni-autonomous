@@ -429,7 +429,7 @@ def verify_pending_outcomes():
 
         # PHI-003 NN-PHI-1: Human Security Track
         try:
-            from datetime import date, timedelta
+            from datetime import date
             _hs_kws = ['humanitarian','human rights','war crime','civilian','displacement','refugee']
             _pd = report.get('created_at','')[:10]
             if _pd:
