@@ -6,6 +6,9 @@
 # Runs full MAD protocol with clean Groq TPM window
 # Updates report with mad_* fields
 # GNI-R-110: MAD runs separately to guarantee clean TPM window
+# S37 PATCH: _fetch_relevant_articles splits into two queries:
+#   scored_arts  (stage3_score > 0)  -> Bull/Bear/Ostrich/Arb
+#   weak_arts    (stage3_score = 0)  -> Swan weak signal hunting
 # ============================================================
 
 import os
@@ -20,7 +23,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 GITHUB_ACTIONS = os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true'
 
 # GNI-R-239: Run preflight check before MAD (local only -- GitHub Actions skips)
-# Prevents rushing into MAD without fresh report, proper gap, sufficient quota
 if not GITHUB_ACTIONS:
     try:
         from mad_preflight import run_preflight
@@ -53,8 +55,7 @@ def _fetch_fresh_report(client):
     Intelligence runtime (~45 min) + handshake wait (~25 min) = ~70 min.
     Only returns reports with mad_verdict=pending -- prevents duplicate debates.
     """
-    # 90 min window -- GNI-R-240: extended to cover handshake worst case
-    cutoff = (datetime.now(timezone.utc) - timedelta(minutes=90)).isoformat()  # GNI-R-240: extended from 45 to 90 min (handshake can wait up to 25 min + Intelligence worst case 45 min)
+    cutoff = (datetime.now(timezone.utc) - timedelta(minutes=90)).isoformat()
     try:
         result = client.table('reports') \
             .select('*') \
@@ -80,21 +81,42 @@ def _fetch_fresh_report(client):
 
 
 def _fetch_relevant_articles(client, run_id):
-    """Fetch all relevant articles from this pipeline run for MAD context."""
+    """
+    Fetch articles from this pipeline run for MAD context.
+    S37 PATCH: Split into two pools:
+      scored_arts -- stage3_score > 0, sorted DESC -- for Bull/Bear/Ostrich/Arb
+      weak_arts   -- stage3_score = 0, limit 50    -- for Swan weak signal hunting
+    Returns (scored_arts, weak_arts) tuple.
+    """
     if not run_id:
-        return []
+        return [], []
     try:
-        result = client.table('pipeline_articles') \
+        # Query 1: scored articles for Bull/Bear/Ostrich/Arbitrator
+        scored_result = client.table('pipeline_articles') \
             .select('*') \
             .eq('run_id', run_id) \
             .eq('stage1b_passed', True) \
+            .gt('stage3_score', 0) \
+            .order('stage3_score', desc=True) \
             .execute()
-        articles = result.data or []
-        print('  Fetched ' + str(len(articles)) + ' relevant articles for MAD context')
-        return articles
+
+        # Query 2: weak signal articles for Swan
+        weak_result = client.table('pipeline_articles') \
+            .select('*') \
+            .eq('run_id', run_id) \
+            .eq('stage1b_passed', True) \
+            .lte('stage3_score', 0) \
+            .limit(50) \
+            .execute()
+
+        scored_arts = scored_result.data or []
+        weak_arts = weak_result.data or []
+        print(f'  Fetched {len(scored_arts)} scored articles + {len(weak_arts)} weak signals for MAD context')
+        return scored_arts, weak_arts
+
     except Exception as e:
         print('  Warning: Could not fetch articles: ' + str(e)[:60])
-        return []
+        return [], []
 
 
 def _fetch_run_id_for_report(client, report_id):
@@ -206,13 +228,7 @@ def _send_mad_telegram(report, mad_result):
 def _build_debate_summary(mad_result: dict) -> dict:
     """
     F4: Build 4 derived debate summary fields from mad_result.
-    Zero Groq calls — pure Python transformation of existing data.
-
-    Returns dict with:
-      debate_summary    — 2-3 sentence plain English debate summary
-      agent_positions   — each agent final stance (from round3)
-      key_disagreements — what agents disagreed on most
-      consensus_path    — how debate moved across 3 rounds
+    Zero Groq calls -- pure Python transformation of existing data.
     """
     verdict = mad_result.get('mad_verdict', 'neutral').upper()
     confidence = int(mad_result.get('mad_confidence', 0.5) * 100)
@@ -220,7 +236,6 @@ def _build_debate_summary(mad_result: dict) -> dict:
     action = mad_result.get('mad_action_recommendation', '')[:150]
     blind_spot = mad_result.get('mad_blind_spot', '')[:100]
 
-    # debate_summary — plain English synthesis
     if verdict in ('BULLISH', 'BEARISH'):
         debate_summary = (
             f'The 4-agent MAD debate reached a {verdict} verdict '
@@ -236,25 +251,21 @@ def _build_debate_summary(mad_result: dict) -> dict:
     elif reasoning:
         debate_summary += reasoning[:100] + '.'
 
-    # agent_positions — round 3 final stances (truncated for readability)
     round3 = mad_result.get('mad_round3_positions', {})
     agent_positions = {}
     for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
         pos = round3.get(agent, '')
         if pos and not pos.startswith('[Agent error'):
-            # First sentence only
             first = pos.split('.')[0].strip()
             agent_positions[agent] = first[:200] if first else pos[:200]
         else:
             agent_positions[agent] = ''
 
-    # key_disagreements — compare round1 vs round3
     round1 = mad_result.get('mad_round1_positions', {})
     disagreements = []
     for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
         r1 = round1.get(agent, '')
         r3 = round3.get(agent, '')
-        # If both have content and they differ substantially → disagreement noted
         if r1 and r3 and not r3.startswith('[Agent error'):
             disagreements.append(agent.replace('_', ' ').title())
     if len(disagreements) >= 3:
@@ -269,9 +280,8 @@ def _build_debate_summary(mad_result: dict) -> dict:
             f'Primary tension between {" and ".join(disagreements)} perspectives.'
         )
     else:
-        key_disagreements = 'Debate inconclusive — agents returned fallback positions.'
+        key_disagreements = 'Debate inconclusive -- agents returned fallback positions.'
 
-    # consensus_path — how rounds progressed
     r1_valid = sum(1 for a in ['bull', 'bear', 'black_swan', 'ostrich']
                    if round1.get(a) and not round1.get(a, '').startswith('['))
     r3_valid = sum(1 for a in ['bull', 'bear', 'black_swan', 'ostrich']
@@ -280,17 +290,17 @@ def _build_debate_summary(mad_result: dict) -> dict:
     if r1_valid >= 4 and r3_valid >= 4:
         consensus_path = (
             f'Round 1: {r1_valid}/4 agents positioned '
-            f'→ Round 2: Arbitrator coaching applied '
-            f'→ Round 3: {r3_valid}/4 agents refined '
-            f'→ Verdict: {verdict} ({confidence}%)'
+            f'-> Round 2: Consultant coaching applied '
+            f'-> Round 3: {r3_valid}/4 agents refined '
+            f'-> Verdict: {verdict} ({confidence}%)'
         )
     elif r3_valid >= 2:
         consensus_path = (
             f'Partial debate: {r3_valid}/4 agents reached final position '
-            f'→ Verdict: {verdict} ({confidence}%)'
+            f'-> Verdict: {verdict} ({confidence}%)'
         )
     else:
-        consensus_path = f'Debate incomplete → Fallback verdict: {verdict}'
+        consensus_path = f'Debate incomplete -> Fallback verdict: {verdict}'
 
     return {
         'debate_summary':    debate_summary.strip(),
@@ -300,13 +310,10 @@ def _build_debate_summary(mad_result: dict) -> dict:
     }
 
 
-
 def _wait_for_pipeline_complete(client, report_id, max_attempts=25, poll_interval=60):
     """
     GNI-R-240: Handshake gate -- verify Intelligence completed before MAD runs.
     Polls every 60s for up to 25 minutes (25 attempts).
-    Guarantees 2x/day MAD without separate Groq accounts or time-gap dependency.
-    Returns (should_proceed, reason).
     """
     db_errors = 0
     for attempt in range(max_attempts):
@@ -349,6 +356,7 @@ def _wait_for_pipeline_complete(client, report_id, max_attempts=25, poll_interva
     print('  Next MAD cycle (10:30 UTC) will pick this up')
     return False, 'timeout'
 
+
 def run_mad_pipeline():
     start = datetime.now(timezone.utc)
     print('=' * 60)
@@ -357,13 +365,11 @@ def run_mad_pipeline():
     print('   GNI-R-110: Separate pipeline = clean Groq TPM window')
     print('=' * 60)
 
-    # Connect to Supabase
     client = _get_client()
     if not client:
         print('ABORT: Cannot connect to Supabase')
         return False
 
-    # Fetch fresh report from main pipeline
     print('\n?? Step 1: Fetching fresh report...')
     report = _fetch_fresh_report(client)
     if not report:
@@ -373,7 +379,6 @@ def run_mad_pipeline():
 
     report_id = report['id']
 
-    # GNI-R-240: Handshake gate -- wait for Intelligence to complete
     print('\n  Handshake: Verifying Intelligence pipeline complete...')
     should_proceed, reason = _wait_for_pipeline_complete(client, report_id)
     if not should_proceed:
@@ -381,8 +386,6 @@ def run_mad_pipeline():
         print('  Total time: ' + str(round((datetime.now(timezone.utc) - start).total_seconds(), 2)) + 's')
         return True
 
-    # GNI-R-112: Check quota before MAD runs
-    # sacred=False -- MAD will be blocked if quota too low
     print('\n\U0001f6e1  Quota check (GNI-R-112)...')
     _quota = check_quota('gni_mad', sacred=False)
     print('  ' + _quota['reason'].split('\n')[0])
@@ -393,22 +396,26 @@ def run_mad_pipeline():
         return True
     print('  Used today: ' + str(_quota['tokens_used']) + ' tokens | Headroom: ' + str(_quota['headroom']) + ' tokens')
 
-    # Fetch relevant articles for MAD context
+    # S37 PATCH: fetch returns (scored_arts, weak_arts) tuple
     print('\n?? Step 2: Fetching article context...')
     run_id = _fetch_run_id_for_report(client, report_id)
-    all_articles = _fetch_relevant_articles(client, run_id)
+    scored_arts, weak_arts = _fetch_relevant_articles(client, run_id)
 
-    # Run MAD protocol -- TPM window is clean (5 min gap from main pipeline)
     print('\n???? Step 3: Running Quadratic MAD Protocol...')
     print('   TPM window status: CLEAN (5+ minutes since main pipeline)')
     from analysis.mad_protocol import run_mad_protocol
-    mad_result = run_mad_protocol(report, all_articles=all_articles, report_id=None)
+    # S37 PATCH: pass both pools to run_mad_protocol
+    mad_result = run_mad_protocol(
+        report,
+        all_articles=scored_arts,
+        weak_articles=weak_arts,
+        report_id=None
+    )
 
     verdict = mad_result.get('mad_verdict', 'neutral')
     confidence = mad_result.get('mad_confidence', 0.5)
     print('   Final verdict: ' + verdict + ' (' + str(round(confidence, 2)) + ')')
 
-    # Check if MAD actually succeeded (not just fallback)
     mad_succeeded = (
         verdict in ['bullish', 'bearish'] or
         (verdict == 'neutral' and confidence != 0.5) or
@@ -419,25 +426,20 @@ def run_mad_pipeline():
         print('  WARNING: MAD returned fallback defaults -- arbitrator likely failed')
         print('  Report will be updated but debate content may be empty')
 
-    # F4: Build debate summary fields (zero Groq calls — derived)
     debate_fields = _build_debate_summary(mad_result)
     mad_result.update(debate_fields)
 
-    # Update report with MAD fields
     print('\n?? Step 4: Updating report with MAD fields...')
     success = _update_report_with_mad(client, report_id, mad_result)
 
-    # Save predictions
     if success and mad_succeeded:
         print('\n?? Step 5: Saving predictions...')
         _save_mad_predictions(client, report_id, mad_result)
 
-    # Send Telegram with MAD verdict
     if success:
         print('\n?? Step 6: Sending MAD Telegram...')
         _send_mad_telegram(report, mad_result)
 
-    # Step 7: Trigger Myanmar pipeline via GitHub repository_dispatch
     if success and os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true':
         try:
             import requests as _req
@@ -462,7 +464,6 @@ def run_mad_pipeline():
         except Exception as _e:
             print(f'  WARNING: Dispatch failed: {str(_e)[:60]}')
 
-    # Log Groq usage (GNI-R-124)
     if os.getenv('GITHUB_ACTIONS', 'false').lower() == 'true':
         try:
             from supabase import create_client as _create_client
@@ -474,7 +475,6 @@ def run_mad_pipeline():
         except Exception as _e:
             print('  WARNING: Could not log usage: ' + str(_e)[:60])
 
-    # Done
     total = round((datetime.now(timezone.utc) - start).total_seconds(), 2)
     print('\n' + '=' * 60)
     print('  Status:  ' + ('SUCCESS' if success else 'PARTIAL'))

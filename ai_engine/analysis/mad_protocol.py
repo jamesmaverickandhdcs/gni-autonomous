@@ -8,16 +8,22 @@
 # 21 Groq calls per run
 # GNI-R-237: GROQ_MAD_MODEL=gpt-oss-120b (all 21 calls). GROQ_MODEL fallback.
 # GROQ_API_KEY_2 removed -- same account = same pool, no isolation benefit.
-# S37 PATCHES:
-#   BULL:       SYNTHESIS RULE (no copy-paste) + PRE-BUTTAL RULE
-#   BEAR:       QUANTIFY + SCOPE (beyond oil) + RISK PRICING
+# S37 PROMPT PATCHES:
+#   BULL:       SYNTHESIS RULE + PRE-BUTTAL RULE
+#   BEAR:       QUANTIFY + SCOPE + RISK PRICING
 #   SWAN:       CREDIBILITY ANCHOR + UAP RULE + FALLOUT CHAIN
-#   OSTRICH:    JURISDICTION RULE + INTER-AGENCY SILO-GAP primary frame
-#   ALL CONS:   FOUNDATION CHECK first + NO REPEAT RULE
-#   SWAN CONS:  GROUNDING CHECK (no fiction push)
-#   OSTRICH CONS: JURISDICTION CHECK + SILO-GAP frame push
+#   OSTRICH:    JURISDICTION RULE + SILO-GAP primary frame
+#   ALL CONS:   FOUNDATION CHECK + NO REPEAT RULE
+#   SWAN CONS:  GROUNDING CHECK
+#   OSTRICH CONS: JURISDICTION CHECK + SILO-GAP push
 #   ARBITRATOR: SELF-CONSISTENCY + ACTION PRIORITY + SPECIFICITY + UAP RULE
-#   R2 CTX:     Consultant contextual memory -- R1 feedback injected into R2 ctx
+#   R2 CTX:     Consultant contextual memory
+# S37 ARTICLE ROUTING PATCHES:
+#   _build_news_context: agent param + weak_articles param + sort before cut
+#   run_mad_protocol:    5 agent-specific contexts replacing single news_ctx
+#   Bull/Bear/Ost/Arb:  scored articles sorted DESC by stage3_score
+#   Swan:               weak signal pool (stage3_score=0) -- overlooked articles
+#   All agents:         article summaries included (Fix 2)
 # ============================================================
 
 import os
@@ -31,16 +37,12 @@ from groq_guardian import validate_response  # GNI-R-234
 client = Groq(api_key=os.getenv('GROQ_API_KEY'))
 MODEL = os.getenv('GROQ_MAD_MODEL',
         os.getenv('GROQ_MODEL',
-        os.getenv('GROQ_MODEL_FALLBACK', 'llama-3.3-70b-versatile')))  # GNI-R-237: gpt-oss-120b -> scout -> fallback
+        os.getenv('GROQ_MODEL_FALLBACK', 'llama-3.3-70b-versatile')))
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
 
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, expect_json: bool = False) -> str:
-    # GNI-R-107: Rate-limit-aware Groq call with 429 retry
-    # Attempt 1: primary client (GROQ_API_KEY)
-    # If 429:   sleep 40s -> Attempt 2: primary client
-    # If fails: return error string (pipeline continues)
     for attempt in range(2):
         try:
             response = client.chat.completions.create(
@@ -53,7 +55,6 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
                 temperature=0.7,
             )
             raw = response.choices[0].message.content.strip()
-            # GNI-R-234: validate ALL Groq responses before processing
             validation = validate_response(raw, expect_json=expect_json)
             if not validation['valid']:
                 print(f'  WARNING: groq_guardian rejected response: {validation["rejection_reason"]}')
@@ -72,10 +73,7 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
 
 
 def _call_arbitrator(system_prompt: str, user_prompt: str, max_tokens: int = 600, expect_json: bool = True) -> str:
-    """W-02: TPM-aware arbitrator call with one extra retry.
-    Arbitrator is the most critical call -- gets 3 total attempts vs 2 for agents.
-    If _call_agent returns a 429/rate-limit error, waits 60s and retries once more.
-    """
+    """W-02: TPM-aware arbitrator call with one extra retry."""
     result = _call_agent(system_prompt, user_prompt, max_tokens, expect_json)
     if (result.startswith('[Agent error') and
             ('429' in result or 'rate_limit' in result.lower() or 'rate limit' in result.lower())):
@@ -108,10 +106,24 @@ def _log_safety_event(event_type: str, detail: str) -> None:
             'step_timings':         '{}',
         }).execute()
     except Exception:
-        pass  # Safety logging must NEVER break the pipeline
+        pass
 
 
-def _build_news_context(report: dict, all_articles: list) -> str:
+def _build_news_context(report: dict, all_articles: list,
+                        weak_articles: list = None, agent: str = 'general') -> str:
+    """
+    Build news context for a specific agent.
+    S37 PATCH: agent-specific article selection + sort before cut + summaries.
+
+    agent='bull'/'bear'/'ostrich'/'arbitrator'/'general':
+        Uses all_articles (scored, stage3_score > 0), sorted DESC.
+        Top 15 per pillar = highest significance articles.
+
+    agent='swan':
+        Uses weak_articles (stage3_score = 0) -- overlooked weak signals.
+        Swan's structural mission: find what others dismissed.
+        Falls back to all_articles sorted ASC if weak_articles empty.
+    """
     title = report.get('title', 'No title')
     summary = report.get('summary', '')[:400]
     risk_level = report.get('risk_level', 'Medium')
@@ -123,21 +135,48 @@ def _build_news_context(report: dict, all_articles: list) -> str:
         f'Summary: {summary}\n'
         f'Risk: {risk_level} | Escalation: {escalation} | Location: {location}\n'
     )
-    if not all_articles:
+
+    # Select article pool based on agent
+    if agent == 'swan':
+        pool = weak_articles if weak_articles else all_articles
+        sort_desc = False  # Swan: lowest score first (most overlooked)
+        label = 'WEAK SIGNAL ARTICLES -- overlooked, low-scoring, Swan priority'
+    else:
+        pool = all_articles
+        sort_desc = True   # Others: highest score first (most significant)
+        label = 'INTELLIGENCE BASE -- SCORED ARTICLES (highest significance first)'
+
+    if not pool:
         return report_ctx
+
     by_pillar = {'geo': [], 'fin': [], 'tech': [], 'other': []}
-    for art in all_articles:
+    for art in pool:
         p = art.get('pillar', 'other').lower()
         by_pillar[p if p in by_pillar else 'other'].append(art)
-    articles_ctx = '\nINTELLIGENCE BASE -- ALL RELEVANT ARTICLES:\n'
+
+    articles_ctx = f'\n{label}:\n'
     for pillar, arts in by_pillar.items():
         if not arts:
             continue
+        # Sort before cut -- fixes insertion-order problem
+        sorted_arts = sorted(
+            arts,
+            key=lambda x: x.get('stage3_score', 0),
+            reverse=sort_desc
+        )
         articles_ctx += f'\n[{pillar.upper()} -- {len(arts)} articles]\n'
-        for art in arts[:15]:
-            articles_ctx += f"  - [{art.get('source','')}] {art.get('title','')[:80]} (score:{art.get('stage3_score',0)})\n"
+        for art in sorted_arts[:15]:
+            src = art.get('source', '')
+            ttl = art.get('title', '')[:80]
+            scr = art.get('stage3_score', 0)
+            smr = art.get('summary', '')[:100].replace('\n', ' ')
+            articles_ctx += f'  - [{src}] {ttl} (score:{scr})'
+            if smr:
+                articles_ctx += f' -- {smr}'
+            articles_ctx += '\n'
+
     total = sum(len(v) for v in by_pillar.values())
-    articles_ctx += f'\nTotal relevant: {total}\n'
+    articles_ctx += f'\nTotal in pool: {total}\n'
     return report_ctx + articles_ctx
 
 
@@ -183,7 +222,6 @@ def _get_pillar_arb_instruction(pillar: str) -> str:
 
 
 def _get_debate_history() -> dict:
-    # NP-4: verdict_trend fixes Gap 6 (Zero Cross-Run Memory) + Pattern Match Bias
     history = {'bull': [], 'bear': [], 'black_swan': [], 'ostrich': [], 'verdict_trend': ''}
     try:
         from supabase import create_client
@@ -200,7 +238,6 @@ def _get_debate_history() -> dict:
             .limit(7) \
             .execute()
         rows = result.data or []
-        # Build verdict trend from last 7 runs (newest first)
         trend_parts = []
         for row in rows:
             v = row.get('mad_verdict', '')
@@ -216,7 +253,6 @@ def _get_debate_history() -> dict:
             else:
                 streak_note = ''
             history['verdict_trend'] = 'Last ' + str(len(trend_parts)) + ' verdicts: ' + ' | '.join(trend_parts) + streak_note
-        # Agent history -- last 3 only (token budget)
         for row in rows[:3]:
             d = row.get('created_at', '')[:10]
             for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
@@ -233,13 +269,6 @@ def _fmt_history(h: list) -> str:
 
 
 def _compress(text: str, max_words: int = 40) -> str:
-    """
-    P4: Token compression -- truncate earlier round responses.
-    Takes first max_words words to preserve key argument.
-    350 tokens -> ~40 tokens = 88% reduction per carried response.
-    Only used for historical rounds (R1 in R3, R1+R2 in Arb).
-    Most recent round always passes full text.
-    """
     if not text or text.startswith('[Agent error'):
         return text[:100] if text else ''
     words = text.split()
@@ -304,11 +333,29 @@ def _validate_mad_output(result: dict) -> dict:
     return result
 
 
-def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = None) -> dict:
+def run_mad_protocol(report: dict, all_articles: list = None,
+                     weak_articles: list = None, report_id: str = None) -> dict:
+    """
+    S37 PATCH: weak_articles parameter added.
+    all_articles  = scored articles (stage3_score > 0) -- Bull/Bear/Ostrich/Arb
+    weak_articles = overlooked articles (stage3_score = 0) -- Swan only
+    """
     if all_articles is None:
         all_articles = []
+    if weak_articles is None:
+        weak_articles = []
 
-    news_ctx = _build_news_context(report, all_articles)
+    # ============================================================
+    # S37 ARTICLE ROUTING: Build 5 agent-specific contexts
+    # Each agent gets the right article pool, sorted correctly.
+    # Replaces single news_ctx shared by all agents.
+    # ============================================================
+    bull_ctx = _build_news_context(report, all_articles, agent='bull')
+    bear_ctx = _build_news_context(report, all_articles, agent='bear')
+    swan_ctx = _build_news_context(report, all_articles, weak_articles, agent='swan')
+    ost_ctx  = _build_news_context(report, all_articles, agent='ostrich')
+    arb_ctx  = _build_news_context(report, all_articles, agent='arbitrator')
+
     dominant_pillar = _detect_dominant_pillar(all_articles)
     pillar_instruction = _get_pillar_arb_instruction(dominant_pillar)
     print(f'   Dominant pillar: {dominant_pillar.upper()} -- {pillar_instruction[:60]}...')
@@ -319,10 +366,9 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     dark_side = report.get('dark_side_detected', '')
 
     # ============================================================
-    # AGENT SYSTEM PROMPTS
+    # AGENT SYSTEM PROMPTS -- S37 quality patches
     # ============================================================
 
-    # PATCH 1: SYNTHESIS RULE + PRE-BUTTAL RULE
     BULL = ('You are the Bull Agent. Quadrant: Upper-Right -- Known Positives. '
             'Current date: May 2026. All timelines must be relative to 2026. '
             'Focus: FUTURE THREATS from missed opportunities. '
@@ -332,7 +378,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
             'PRE-BUTTAL RULE: Anticipate Bear\'s strongest counter and address it before they make it. '
             '3-4 sentences.')
 
-    # PATCH 2: QUANTIFY + SCOPE beyond oil + RISK PRICING
     BEAR = ('You are the Bear Agent. Quadrant: Lower-Right -- Known Negatives. '
             'Current date: May 2026. All timelines must be relative to 2026. '
             'Focus: FUTURE THREATS from known risks and systemic vulnerabilities. '
@@ -343,12 +388,11 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
             'even before any physical event occurs. '
             'Ground every claim in the articles provided. 3-4 sentences.')
 
-    # PATCH 3: CREDIBILITY ANCHOR + UAP RULE + numbered FALLOUT CHAIN
     SWAN = ('You are the Black Swan Agent. Quadrant: Upper-Left -- Unknown Negatives. '
             'Current date: May 2026. '
             'Focus: FUTURE THREATS nobody is modelling. '
-            'Look for WEAK SIGNALS in low-scoring articles others dismiss. '
-            'Name a specific low-scoring article and explain exactly why it deserves more attention. '
+            'You are receiving LOW-SCORING articles that others dismissed -- these are your hunting ground. '
+            'Name a specific article from this list and explain exactly why it deserves more attention. '
             'CREDIBILITY RULE: Your threat MUST be grounded in real-world evidence -- '
             'a real technology, real actor, real event. '
             'UAP RULE: If referencing unidentified phenomena, frame as adversarial drone/UAP/next-gen UAS '
@@ -358,7 +402,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
             'The surprise comes from the CONNECTION nobody made -- not from an impossible scenario. '
             '3-4 sentences.')
 
-    # PATCH 4: JURISDICTION RULE + INTER-AGENCY SILO-GAP as primary frame (full rewrite)
     OSTRICH = ('You are the Ostrich Agent. Quadrant: Lower-Left -- Ignored Realities. '
                'Current date: May 2026. '
                'Focus: FUTURE THREATS already visible but collectively ignored. '
@@ -370,12 +413,9 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                'Cite evidence from the articles provided. 3-4 sentences. Name names.')
 
     # ============================================================
-    # CONSULTANT SYSTEM PROMPTS
-    # GNI-R-235: Personal consultants -- 100% loyal to their agent.
-    # UNIVERSAL PATCH: FOUNDATION CHECK first + NO REPEAT RULE on all four.
+    # CONSULTANT SYSTEM PROMPTS -- S37 quality patches
     # ============================================================
 
-    # PATCH 5: Bull consultant
     BULL_CONS = ('You are Bull\'s personal strategist. Your ONLY loyalty is Bull. '
                  'FOUNDATION CHECK: If Bull\'s argument contains a factual error or logical contradiction, '
                  'correct it FIRST. Do NOT push harder on a wrong foundation -- fix it before pushing. '
@@ -386,7 +426,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  'No invented numbers. No dates from before 2026. '
                  'Push Bull to cite actual article evidence. No praise. 3-4 sentences.')
 
-    # PATCH 6: Bear consultant
     BEAR_CONS = ('You are Bear\'s personal strategist. Your ONLY loyalty is Bear. '
                  'FOUNDATION CHECK: If Bear\'s argument contains a factual error or logical contradiction, '
                  'correct it FIRST. Do NOT push harder on a wrong foundation -- fix it before pushing. '
@@ -397,7 +436,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  'No invented dates or percentages. Every claim must trace back to article evidence. '
                  'No praise. 3-4 sentences.')
 
-    # PATCH 7: Swan consultant -- GROUNDING CHECK + no fiction push
     SWAN_CONS = ('You are Black Swan\'s personal strategist. Your ONLY loyalty is Black Swan. '
                  'GROUNDING CHECK: If Swan drifts into fiction or unverifiable speculation, redirect it FIRST. '
                  'Do NOT push Swan toward UFOs, aliens, or scenarios without real-world grounding. '
@@ -407,7 +445,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  'Push Swan to name the exact triggering event -- not a general cascade, a specific grounded one. '
                  'No invented scenarios. Stay in article evidence. No praise. 3-4 sentences.')
 
-    # PATCH 8: Ostrich consultant -- JURISDICTION CHECK + SILO-GAP frame push
     OSTRICH_CONS = ('You are Ostrich\'s personal strategist. Your ONLY loyalty is Ostrich. '
                     'JURISDICTION CHECK: Verify Ostrich named an institution with actual authority over the threat. '
                     'If the institution is wrong, redirect to the correct one FIRST before pushing harder. '
@@ -416,7 +453,6 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                     'Make the inertia argument and the communication failure so specific it cannot be dismissed. '
                     'No praise. 3-4 sentences. Push Ostrich harder.')
 
-    # PATCH 9: Arbitrator -- SELF-CONSISTENCY + ACTION PRIORITY + SPECIFICITY + UAP RULE
     ARB_FINAL = ('You are the Arbitrator -- Strategic Synthesiser. '
                  'After 3 rounds identify: '
                  '(1) BLIND SPOT QUADRANT -- most neglected. '
@@ -444,20 +480,36 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
                  '"long_shoot_threats": "structural threats 3-24 months", '
                  '"long_verify_days": 180}')
 
-    # Round 1
+    # ============================================================
+    # ROUND 1
+    # Each agent gets its own context (article pool + sort order)
+    # ============================================================
     verdict_trend = history.get('verdict_trend', '')
     if verdict_trend:
         print(f'  Verdict trend: {verdict_trend[:100]}')
     print('   Round 1: Opening positions...')
-    r1_base = news_ctx + '\n\nDEBATE HISTORY:\n' + (verdict_trend + '\n\n' if verdict_trend else '')
-    bull_r1  = _call_agent(BULL,    r1_base + _fmt_history(history['bull'])        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
-    bear_r1  = _call_agent(BEAR,    r1_base + _fmt_history(history['bear'])        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
-    swan_r1  = _call_agent(SWAN,    r1_base + _fmt_history(history['black_swan'])  + '\n\nROUND 1: Focus on LOW-SCORING articles others ignore.', 350)
-    ost_r1   = _call_agent(OSTRICH, r1_base + _fmt_history(history['ostrich'])     + '\n\nROUND 1: Name the specific threat being ignored.', 350)
+
+    debate_history_block = '\n\nDEBATE HISTORY:\n' + (verdict_trend + '\n\n' if verdict_trend else '')
+
+    bull_r1 = _call_agent(BULL,
+        bull_ctx + debate_history_block + _fmt_history(history['bull'])
+        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
+
+    bear_r1 = _call_agent(BEAR,
+        bear_ctx + debate_history_block + _fmt_history(history['bear'])
+        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
+
+    swan_r1 = _call_agent(SWAN,
+        swan_ctx + debate_history_block + _fmt_history(history['black_swan'])
+        + '\n\nROUND 1: Focus on LOW-SCORING articles others ignore. Name a specific one.', 350)
+
+    ost_r1 = _call_agent(OSTRICH,
+        ost_ctx + debate_history_block + _fmt_history(history['ostrich'])
+        + '\n\nROUND 1: Name the specific threat being ignored.', 350)
+
     round1 = {'bull': bull_r1, 'bear': bear_r1, 'black_swan': swan_r1, 'ostrich': ost_r1}
 
-    # GNI-R-235: Personal consultant coaching Round 1 -- 4 separate calls
-    # S28-14: 15s sleep -- 8 back-to-back calls exceed Groq TPM soft limit
+    # Consultant coaching Round 1
     print('  Waiting 15s before consultant calls (TPM soft limit protection)...')
     time.sleep(15)
     print('   Personal consultants coaching Round 1...')
@@ -479,21 +531,41 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
 
-    # Round 2
+    # ============================================================
+    # ROUND 2
+    # Shared round1 summary + agent-specific context
+    # ============================================================
     print('   Round 2: Refined positions...')
-    r2_base = (news_ctx + '\n\nROUND 1 [summary]:\nBull: ' + _compress(bull_r1) +
-               '\nBear: ' + _compress(bear_r1) +
-               '\nBlack Swan: ' + _compress(swan_r1) +
-               '\nOstrich: ' + _compress(ost_r1) + '\n\n')
-    bull_r2  = _call_agent(BULL,    r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bull','')       + '\n\nROUND 2: Write a FRESH argument. Address feedback.', 350)
-    bear_r2  = _call_agent(BEAR,    r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bear','')       + '\n\nROUND 2: Respond. Address feedback.', 350)
-    swan_r2  = _call_agent(SWAN,    r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('black_swan','') + '\n\nROUND 2: Challenge Bull and Bear. Go deeper.', 350)
-    ost_r2   = _call_agent(OSTRICH, r2_base + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('ostrich','')    + '\n\nROUND 2: Name who is in denial and the cost.', 350)
+    round1_summary = (
+        '\n\nROUND 1 [summary]:\nBull: ' + _compress(bull_r1) +
+        '\nBear: ' + _compress(bear_r1) +
+        '\nBlack Swan: ' + _compress(swan_r1) +
+        '\nOstrich: ' + _compress(ost_r1) + '\n\n'
+    )
+
+    bull_r2 = _call_agent(BULL,
+        bull_ctx + round1_summary
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bull', '')
+        + '\n\nROUND 2: Write a FRESH argument. Address feedback.', 350)
+
+    bear_r2 = _call_agent(BEAR,
+        bear_ctx + round1_summary
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bear', '')
+        + '\n\nROUND 2: Respond. Address feedback.', 350)
+
+    swan_r2 = _call_agent(SWAN,
+        swan_ctx + round1_summary
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('black_swan', '')
+        + '\n\nROUND 2: Challenge Bull and Bear. Go deeper on your weak signal.', 350)
+
+    ost_r2 = _call_agent(OSTRICH,
+        ost_ctx + round1_summary
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('ostrich', '')
+        + '\n\nROUND 2: Name who is in denial and the cost.', 350)
+
     round2 = {'bull': bull_r2, 'bear': bear_r2, 'black_swan': swan_r2, 'ostrich': ost_r2}
 
-    # GNI-R-235: Personal consultant coaching Round 2 -- 4 separate calls
-    # PATCH 10: R2 consultant context includes R1 feedback already given
-    # Fixes consultant contextual amnesia -- consultant sees what it already said
+    # Consultant coaching Round 2 -- includes R1 feedback (fixes contextual amnesia)
     print('  Waiting 15s before consultant calls (TPM soft limit protection)...')
     time.sleep(15)
     print('   Personal consultants coaching Round 2...')
@@ -520,53 +592,87 @@ def run_mad_protocol(report: dict, all_articles: list = None, report_id: str = N
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
 
-    # Round 3
+    # ============================================================
+    # ROUND 3
+    # Shared R1+R2 history + agent-specific context
+    # ============================================================
     print('   Round 3: Final positions...')
-    r3_base = (news_ctx +
-               '\n\nR1 [summary] Bull: ' + _compress(bull_r1) +
-               '\nR1 Bear: ' + _compress(bear_r1) +
-               '\nR1 Swan: ' + _compress(swan_r1) +
-               '\nR1 Ostrich: ' + _compress(ost_r1) +
-               '\n\nR2 Bull: ' + bull_r2 + '\nR2 Bear: ' + bear_r2 +
-               '\nR2 Swan: ' + swan_r2 + '\nR2 Ostrich: ' + ost_r2 + '\n\n')
-    bull_r3  = _call_agent(BULL,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bull','')       + '\n\nROUND 3 FINAL: Write a FRESH sharpest argument. Changed view?', 350)
-    bear_r3  = _call_agent(BEAR,    r3_base + 'FINAL COACHING: ' + arb_c2.get('bear','')       + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
-    swan_r3  = _call_agent(SWAN,    r3_base + 'FINAL COACHING: ' + arb_c2.get('black_swan','') + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching.', 350)
-    ost_r3   = _call_agent(OSTRICH, r3_base + 'FINAL COACHING: ' + arb_c2.get('ostrich','')    + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction.', 350)
+    round_history = (
+        '\n\nR1 [summary] Bull: ' + _compress(bull_r1) +
+        '\nR1 Bear: ' + _compress(bear_r1) +
+        '\nR1 Swan: ' + _compress(swan_r1) +
+        '\nR1 Ostrich: ' + _compress(ost_r1) +
+        '\n\nR2 Bull: ' + bull_r2 +
+        '\nR2 Bear: ' + bear_r2 +
+        '\nR2 Swan: ' + swan_r2 +
+        '\nR2 Ostrich: ' + ost_r2 + '\n\n'
+    )
+
+    bull_r3 = _call_agent(BULL,
+        bull_ctx + round_history
+        + 'FINAL COACHING: ' + arb_c2.get('bull', '')
+        + '\n\nROUND 3 FINAL: Write a FRESH sharpest argument. Changed view?', 350)
+
+    bear_r3 = _call_agent(BEAR,
+        bear_ctx + round_history
+        + 'FINAL COACHING: ' + arb_c2.get('bear', '')
+        + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
+
+    swan_r3 = _call_agent(SWAN,
+        swan_ctx + round_history
+        + 'FINAL COACHING: ' + arb_c2.get('black_swan', '')
+        + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching.', 350)
+
+    ost_r3 = _call_agent(OSTRICH,
+        ost_ctx + round_history
+        + 'FINAL COACHING: ' + arb_c2.get('ostrich', '')
+        + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction.', 350)
+
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
 
     print('  Waiting 90s before arbitrator synthesis (Groq rate limit protection)...')
-    time.sleep(90)  # GNI-R-237: 90s for gpt-oss-120b TPM recovery
+    time.sleep(90)
 
-    # Arbitrator final synthesis
+    # ============================================================
+    # ARBITRATOR FINAL SYNTHESIS
+    # Uses arb_ctx (scored articles, highest significance)
+    # ============================================================
     print('   Arbitrator final synthesis...')
     arb_final_user = (
-        news_ctx + '\n\n'
+        arb_ctx + '\n\n'
         '=== R1 [summary] ===\nBull: ' + _compress(bull_r1) + '\nBear: ' + _compress(bear_r1) +
         '\nSwan: ' + _compress(swan_r1) + '\nOstrich: ' + _compress(ost_r1) + '\n\n'
         '=== R2 [summary] ===\nBull: ' + _compress(bull_r2) + '\nBear: ' + _compress(bear_r2) +
         '\nSwan: ' + _compress(swan_r2) + '\nOstrich: ' + _compress(ost_r2) + '\n\n'
-        '=== R3 [final] ===\nBull: ' + bull_r3 + '\nBear: ' + bear_r3 + '\nSwan: ' + swan_r3 + '\nOstrich: ' + ost_r3 + '\n\n'
+        '=== R3 [final] ===\nBull: ' + bull_r3 + '\nBear: ' + bear_r3
+        + '\nSwan: ' + swan_r3 + '\nOstrich: ' + ost_r3 + '\n\n'
         + ('Weakness: ' + weakness + '\n' if weakness else '')
         + ('Dark side: ' + dark_side + '\n' if dark_side and dark_side != 'None' else '')
         + 'Escalation: ' + escalation + ' | Risk: ' + risk_level + '\n\n'
         + 'PILLAR WEIGHTING: ' + pillar_instruction + '\n\n'
         + 'Deliver final synthesis as JSON only.'
     )
-    # NN-5: Hard correction channel -- Black Swan + Ostrich enforced at code level
+
+    # NN-5: Hard constraints for high escalation
     _hard_constraints = []
-    _high_escalation = risk_level.upper() in ('HIGH', 'CRITICAL') or 'CRITICAL' in escalation.upper() or 'HIGH' in escalation.upper()
+    _high_escalation = (risk_level.upper() in ('HIGH', 'CRITICAL') or
+                        'CRITICAL' in escalation.upper() or 'HIGH' in escalation.upper())
     if _high_escalation:
         if swan_r3 and not swan_r3.startswith('[Agent error'):
-            _hard_constraints.append('BLACK SWAN MANDATORY CONSTRAINT (unknown danger -- cannot be dismissed): ' + _compress(swan_r3, 60))
+            _hard_constraints.append(
+                'BLACK SWAN MANDATORY CONSTRAINT (unknown danger -- cannot be dismissed): '
+                + _compress(swan_r3, 60))
         if ost_r3 and not ost_r3.startswith('[Agent error'):
-            _hard_constraints.append('OSTRICH MANDATORY CONSTRAINT (ignored reality -- cannot be dismissed): ' + _compress(ost_r3, 60))
+            _hard_constraints.append(
+                'OSTRICH MANDATORY CONSTRAINT (ignored reality -- cannot be dismissed): '
+                + _compress(ost_r3, 60))
     if _hard_constraints:
-        constraint_block = 'HARD CONSTRAINTS -- YOU MUST ADDRESS THESE IN YOUR VERDICT:\n' + '\n'.join(_hard_constraints) + '\n\n'
+        constraint_block = ('HARD CONSTRAINTS -- YOU MUST ADDRESS THESE IN YOUR VERDICT:\n'
+                            + '\n'.join(_hard_constraints) + '\n\n')
         arb_final_user = constraint_block + arb_final_user
         print(f'  NN-5: {len(_hard_constraints)} hard constraint(s) prepended to Arbitrator prompt')
 
-    arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)  # W-02
+    arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)
 
     # Parse final verdict
     mad_verdict = 'neutral'
@@ -662,7 +768,7 @@ if __name__ == '__main__':
         'escalation_level': 'CRITICAL',
         'location_name': 'Iran',
     }
-    r = run_mad_protocol(test, all_articles=[])
+    r = run_mad_protocol(test, all_articles=[], weak_articles=[])
     print(f"Verdict:     {r['mad_verdict']}")
     print(f"Blind Spot:  {r['mad_blind_spot'][:80]}")
     print(f"Short Focus: {r['short_focus_threats'][:80]}")
