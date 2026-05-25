@@ -165,6 +165,8 @@ def _check_relevance(article: dict) -> tuple[bool, str]:
     # Check relevant
     matched = [kw for kw in GEOPOLITICAL_KEYWORDS if kw in text]
     if matched:
+        # Item 2 S38: store match count in article for Stage 3 density bonus
+        article["stage1_match_count"] = len(matched)
         return True, f"Matched keywords: {', '.join(matched[:3])}"
 
     return False, "No geopolitical keywords found"
