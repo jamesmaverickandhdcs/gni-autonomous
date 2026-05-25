@@ -150,7 +150,7 @@ def run_pipeline():
         # -- Step 2: Intelligence Funnel ---------------------
         print("\n?? Step 2: Running Intelligence Funnel...")
         t0 = time.time()
-        top_n = 11 if GITHUB_ACTIONS else 11  # 5 geo + 3 tech + 3 fin (Three Pillar Reports)
+        top_n = 22 if GITHUB_ACTIONS else 22  # 10 geo + 6 tech + 6 fin (Three Pillar Reports)
         top_articles, trace = run_funnel(
             articles,
             top_n=top_n,
