@@ -68,8 +68,8 @@ SOURCES = [
      "content_type": "news", "pillar": "geo", "bias": "Wire Service", "democracy_score": 82},
 
     {"name": "AP News via Google News",
-     "url": "https://news.google.com/rss/search?q=when:24h+allinurl:apnews.com&ceid=US:en&hl=en-US&gl=US",
-     "content_type": "news", "pillar": "geo", "bias": "Wire Service", "democracy_score": 82},
+     "url": "https://apnews.com/rss/apf-topnews",
+     "content_type": "news", "pillar": "geo", "bias": "Wire Service", "democracy_score": 88},
 
     {"name": "Africa Is A Country",
      "url": "https://africasacountry.com/feed",
@@ -78,6 +78,33 @@ SOURCES = [
     {"name": "The Africa Report",
      "url": "https://www.theafricareport.com/feed/",
      "content_type": "news", "pillar": "geo", "bias": "African Business/Political", "democracy_score": 72},
+    # ── S38 NEW GEO SOURCES ───────────────────────────────────
+
+    {"name": "War on the Rocks",
+     "url": "https://warontherocks.com/feed/",
+     "content_type": "news", "pillar": "geo", "bias": "Security Research",
+     "democracy_score": 82},
+
+    {"name": "DFRLab",
+     "url": "https://medium.com/feed/dfrlab",
+     "content_type": "news", "pillar": "geo", "bias": "OSINT/Disinformation",
+     "democracy_score": 88},
+
+    {"name": "ICIJ",
+     "url": "https://icij.org/feed/",
+     "content_type": "news", "pillar": "geo", "bias": "Investigative",
+     "democracy_score": 92},
+
+    {"name": "SIPRI",
+     "url": "https://www.sipri.org/rss.xml",
+     "content_type": "news", "pillar": "geo", "bias": "Peace Research",
+     "democracy_score": 90},
+
+    {"name": "Amnesty International",
+     "url": "https://www.amnesty.org/en/feed/",
+     "content_type": "news", "pillar": "geo", "bias": "Human Rights",
+     "democracy_score": 91},
+
     # ── FINANCIAL PILLAR (5 sources) ──────────────────────────
     {"name": "Financial Times",
      "url": "https://www.ft.com/?format=rss",
@@ -98,6 +125,11 @@ SOURCES = [
     {"name": "CNBC World",
      "url": "https://www.cnbc.com/id/100727362/device/rss/rss.html",
      "content_type": "news", "pillar": "fin", "bias": "Financial", "democracy_score": 65},
+
+    {"name": "ING Think",
+     "url": "https://think.ing.com/feed/",
+     "content_type": "news", "pillar": "fin", "bias": "Economic Research",
+     "democracy_score": 70},
 
     # ── TECHNOLOGY PILLAR (8 sources) ─────────────────────────
     {"name": "Wired",

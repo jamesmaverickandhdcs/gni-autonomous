@@ -462,6 +462,44 @@ def _score_article(article: dict) -> tuple[float, str]:
         reasons.append("OPPORTUNITY signal (" + str(opp_score) + "pts): " + ", ".join(opp_matches[:3]))
 
 
+    # ── HUMAN SECURITY keywords (+3 each, max 12) — PHI-003 NN-PHI-1 ──
+    # Item 1 S38: PHI-003 says GNI serves humans not markets
+    # Human rights/security content now visible in scoring formula
+    WT_HUMAN_SECURITY_KEYWORDS = [
+        # Civilian impact
+        'civilian casualties', 'civilian deaths', 'civilian harm',
+        'civilian population', 'civilian infrastructure',
+        # Humanitarian
+        'humanitarian crisis', 'humanitarian aid', 'humanitarian corridor',
+        'humanitarian access', 'humanitarian emergency',
+        # Rights and freedoms
+        'human rights violation', 'arbitrary detention',
+        'political prisoner', 'freedom of press', 'internet shutdown',
+        'censorship', 'forced disappearance',
+        # Displacement
+        'refugee crisis', 'internally displaced', 'displacement crisis',
+        # Protection
+        'war crime', 'ethnic cleansing', 'genocide',
+        'hospital attack', 'school attack', 'medical access blocked',
+        # Health and basic needs
+        'disease outbreak', 'famine', 'food insecurity',
+        'clean water access', 'medical humanitarian',
+    ]
+    hs_matches = [kw for kw in WT_HUMAN_SECURITY_KEYWORDS if kw in text]
+    hs_score = min(len(hs_matches) * 3, 12)
+    score += hs_score
+    if hs_matches:
+        reasons.append("HUMAN SECURITY signal (" + str(hs_score) + "pts): " + ", ".join(hs_matches[:3]))
+
+    # ── STAGE 1 DENSITY BONUS (+0.3 per match, max 8) — Item 2 S38 ──
+    # Use match count stored by _check_relevance
+    # Article with 20 keyword matches is more significant than one with 2
+    s1_count = article.get('stage1_match_count', 0)
+    if s1_count > 0:
+        density_bonus = round(min(s1_count * 0.3, 8), 1)
+        score += density_bonus
+        reasons.append(f"Stage1 density ({density_bonus}pts): {s1_count} keyword matches")
+
     # ── PHI-003 BALANCE SIGNAL (+3) — Change A ───────────────────────
     # Rewards articles covering BOTH positive AND negative dimensions
     # Encodes PHI-003 all-directions principle: balanced > pure fear
@@ -622,6 +660,11 @@ def _score_article(article: dict) -> tuple[float, str]:
                 rec_bonus = 1
             else:
                 rec_bonus = 0
+            # Item 14 S38: context-sensitive recency
+            # CRITICAL/HIGH escalation: fresh articles matter much more
+            # Normal: mild recency bonus only
+            _escalation_level = art.get('escalation_level', '')
+            _is_critical = 'CRITICAL' in str(_escalation_level).upper() or 'HIGH' in str(_escalation_level).upper()
             # Change C: cap recency bonus for thin content (PHI-003 depth over speed)
             content_score = hi_score + med_score + threat_score + weakness_score + dark_score + opp_score
             if content_score < 5 and rec_bonus > 2:

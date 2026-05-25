@@ -230,6 +230,7 @@ def save_pipeline_articles(run_id: str, trace: list[dict]) -> bool:
                 "stage3_score": float(art.get("stage3_score", 0.0)),
                 "stage4_selected": art.get("stage4_selected", False),
                 "stage4_rank": art.get("stage4_rank", None),
+                "pillar": art.get("pillar", None),
             })
 
         # Insert in batches of 50
