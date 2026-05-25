@@ -191,7 +191,11 @@ def _flag_arbitrator_action_grounded(mad_action: str, short_focus: str) -> bool:
         'supply chain', 'diplomatic', 'sanction', 'military',
         'healthcare', 'trade', 'investment', 'monitor', 'coordinate',
         'policy', 'security', 'economic', 'financial', 'response plan',
-        'international', 'bilateral', 'multilateral'
+        'international', 'bilateral', 'multilateral',
+        'diversif', 'defense system', 'defence system', 'intercept',
+        'strengthen', 'establish', 'implement', 'develop', 'deploy',
+        'prepare', 'mitigate', 'prevent', 'reduce', 'increase',
+        'energy', 'nuclear', 'missile', 'intelligence', 'alliance'
     ]
     return any(p in action_lower for p in good_patterns)
 
