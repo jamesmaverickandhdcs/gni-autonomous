@@ -64,9 +64,9 @@ Respond ONLY with a valid JSON object in this exact format:
   "tickers_affected": ["SPY", "GLD"],
   "market_impact": "3-4 sentences explaining WHY this affects markets. Use causal language: because, therefore, as a result, driven by, consequently, leading to, due to. Explain the chain of causation from event to market outcome in detail.",
   "risk_level": "Low or Medium or High or Critical",
-  "fff_what_is_happening": "1-2 sentences of pure facts only — what happened, where, who. No interpretation.",
-  "fff_honest_analysis": "2-3 sentences on cause, effect, and mechanism. What caused this? What does it lead to? Be direct and honest.",
-  "fff_human_path": "1-2 sentences on what humans can understand, do, or advocate for. Always required — never leave empty."
+  "fff_what_is_happening": "3-4 sentences explaining what is happening as if to a curious 16-year-old who is smart but has not been following this story. Give enough background context: who are the key actors, what is the history in one sentence, what just happened now. Do not assume prior knowledge.",
+  "fff_honest_analysis": "3-4 sentences of clear honest assessment — NOT both-sides corporate neutrality. State what is LIKELY, what is UNCERTAIN, and what the real mechanism is. Is this development realistic or fragile? Who benefits and who is exposed? Do NOT state obvious causal chains everyone already knows like of course sanctions affect oil prices.",
+  "fff_human_path": "2-3 sentences of practical age-appropriate guidance. NOT advocate for diplomacy or stay informed. Instead: how does this affect energy prices, jobs, tech, university costs, or the readers future? What can a young person actually understand and watch for — not investing advice (they have no money yet). Make it real and specific."
 }}
 
 Rules:
@@ -74,9 +74,9 @@ Rules:
 - source_consensus_score: 0.0 to 1.0 (how much sources agree)
 - tickers_affected: choose from [SPY, AAPL, JPM, XOM, GLD, USO, LMT, TLT, EWT, EWJ, FXI, DXY, SOXX, HACK, VIX, EWG, EWY, HYG, EMB, UNG, WEAT, GDX, BTC-USD, ETH-USD, COIN]
 - Do NOT include myanmar_summary field
-- fff_what_is_happening: facts only, no spin, no interpretation
-- fff_honest_analysis: honest cause+effect, no manipulation language
-- fff_human_path: always provide a constructive path — what readers can understand, do, or advocate for
+- fff_what_is_happening: explain with background context for a smart 16-year-old who has not been following the story — include who the actors are, one sentence of history, and what just happened now. Not just the headline.
+- fff_honest_analysis: take a clear position backed by evidence — NOT both-sides neutrality. State what is likely vs uncertain. Is this deal realistic or fragile? Who wins and who loses? Avoid stating obvious causal chains.
+- fff_human_path: practical and age-appropriate — how does this affect energy prices, jobs, tech, university costs, the readers future? Never say advocate for diplomacy or stay informed. Make it specific and real.
 - Respond with JSON only — no extra text, no markdown, no explanation
 """
 
