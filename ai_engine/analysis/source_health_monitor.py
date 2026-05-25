@@ -202,10 +202,13 @@ def save_source_counts(articles: list, sources: list) -> bool:
     if not client:
         return False
 
-    counts = {}
+    counts = {}       # total articles per source
+    geo_counts = {}   # geopolitically relevant articles per source (stage1_passed)
     for art in articles:
         src = art.get("source", "")
         counts[src] = counts.get(src, 0) + 1
+        if art.get("stage1_passed", False):
+            geo_counts[src] = geo_counts.get(src, 0) + 1
 
     run_at  = datetime.now(timezone.utc).isoformat()
     records = []
@@ -218,6 +221,9 @@ def save_source_counts(articles: list, sources: list) -> bool:
             "source_name":   name,
             "pillar":        source.get("pillar", ""),
             "article_count": count,
+            "geo_count": geo_counts.get(name, 0),
+            "geo_ratio": round(geo_counts.get(name, 0) / count, 2) if count > 0 else 0.0,
+            "low_quality_flag": (count > 5 and (geo_counts.get(name, 0) / count) < 0.25),
             "status":        "ok" if count > 0 else "empty",
         })
 
