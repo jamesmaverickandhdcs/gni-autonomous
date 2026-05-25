@@ -435,6 +435,25 @@ def run_pipeline():
         if report and report_id:
             notify_report(report, top_articles)
 
+        # -- Step 6b: Article Forensic Trace (XLSX) --
+        # Generates full pipeline audit trail and sends to admin Telegram
+        # Silent failure -- never breaks the pipeline
+        if run_id and trace and GITHUB_ACTIONS:
+            try:
+                from analysis.gni_forensic_trace import run_forensic_trace_pipeline
+                _pipeline_meta = {
+                    'run_id':               run_id or '',
+                    'articles_collected':   articles_collected,
+                    'after_relevance':      total_after_relevance,
+                    'after_1b':             len([a for a in trace if a.get('stage1b_passed', True) and a.get('stage1_passed')]),
+                    'after_dedup':          total_after_dedup,
+                    'articles_after_funnel': articles_after_funnel,
+                    'total_seconds':        round((datetime.now(timezone.utc) - run_start).total_seconds(), 2),
+                }
+                run_forensic_trace_pipeline(trace, run_id, run_at, _pipeline_meta)
+            except Exception as _fte:
+                print(f'  Warning: Forensic trace failed: {str(_fte)[:60]}')
+
     except Exception as e:
         status = "failed"
         error_message = str(e)
