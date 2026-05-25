@@ -207,6 +207,31 @@ def run_pipeline():
         report['quality_breakdown'] = quality['quality_breakdown']
         report['quality_badge']     = quality['quality_badge']
         update_prompt_score(prompt_version, quality['quality_score'])
+
+        # Item 15 S38: Feed quality score back into source weights
+        # Closes the feedback loop -- good reports reward sources immediately
+        # GPVS remains ground truth long-term; quality score = fast signal
+        try:
+            from analysis.source_weights import update_source_weight as _usw
+            _qs = quality.get('quality_score', 0)
+            if _qs >= 8.5:
+                _magnitude = 0.85   # excellent report -- reward sources
+            elif _qs >= 7.0:
+                _magnitude = 0.60   # good report -- mild reward
+            elif _qs < 6.5:
+                _magnitude = 0.20   # poor report -- penalize sources
+            else:
+                _magnitude = None   # neutral -- no update
+            if _magnitude is not None and top_articles:
+                _sources_updated = set()
+                for _art in top_articles:
+                    _src = _art.get('source', '').lower().strip()
+                    if _src and _src not in _sources_updated:
+                        _usw(_src, _magnitude)
+                        _sources_updated.add(_src)
+                print(f"  📊 Quality feedback: {_qs:.2f}/10 → magnitude {_magnitude} → {len(_sources_updated)} sources updated")
+        except Exception as _qfe:
+            print(f"  Warning: Quality→source_weight feedback failed: {str(_qfe)[:60]}")
         run_count_hash_mod = run_count_hash % 10
         if run_count_hash_mod == 0:
             print("\n\U0001f4ca Updating source credibility scores...")
