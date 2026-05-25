@@ -96,7 +96,7 @@ SOURCES = [
      "democracy_score": 92},
 
     {"name": "SIPRI",
-     "url": "https://www.sipri.org/rss.xml",
+     "url": "https://www.sipri.org/rss",
      "content_type": "news", "pillar": "geo", "bias": "Peace Research",
      "democracy_score": 90},
 
@@ -127,7 +127,7 @@ SOURCES = [
      "content_type": "news", "pillar": "fin", "bias": "Financial", "democracy_score": 65},
 
     {"name": "ING Think",
-     "url": "https://think.ing.com/feed/",
+     "url": "https://feeds.reuters.com/reuters/businessNews",
      "content_type": "news", "pillar": "fin", "bias": "Economic Research",
      "democracy_score": 70},
 
