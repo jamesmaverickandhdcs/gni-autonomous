@@ -669,7 +669,10 @@ def _score_article(article: dict) -> tuple[float, str]:
             _is_critical = 'CRITICAL' in str(_escalation_level).upper() or 'HIGH' in str(_escalation_level).upper()
             # Change C: cap recency bonus for thin content (PHI-003 depth over speed)
             content_score = hi_score + med_score + threat_score + weakness_score + dark_score + opp_score
-            if content_score < 5 and rec_bonus > 2:
+            # Item 14 S38: escalation-aware cap
+            # CRITICAL/HIGH: no cap -- fresh breaking news always valued
+            # Normal: cap recency at +2 for thin content (PHI-003 depth over speed)
+            if content_score < 5 and rec_bonus > 2 and not _is_critical:
                 rec_bonus = 2
             if rec_bonus > 0:
                 score += rec_bonus
