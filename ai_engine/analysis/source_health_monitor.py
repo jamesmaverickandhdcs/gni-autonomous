@@ -29,6 +29,7 @@ GEO_RESERVES = [
     # Africa-specific reserves — for The Africa Report / Africa Is A Country
     {"name": "AllAfrica",          "url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf", "pillar": "geo", "bias": "Pan-African",      "democracy_score": 74},
     {"name": "Mail and Guardian",  "url": "https://mg.co.za/feed/",                                        "pillar": "geo", "bias": "African Independent", "democracy_score": 80},
+    {"name": "ReliefWeb",             "url": "https://reliefweb.int/updates/rss.xml",                          "pillar": "geo", "bias": "Humanitarian",      "democracy_score": 90},
 ]
 
 FIN_RESERVES = [
