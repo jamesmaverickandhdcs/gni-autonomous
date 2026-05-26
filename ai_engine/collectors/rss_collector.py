@@ -95,10 +95,10 @@ SOURCES = [
      "content_type": "news", "pillar": "geo", "bias": "Investigative",
      "democracy_score": 92},
 
-    {"name": "SIPRI",
-     "url": "https://www.sipri.org/rss",
+    {"name": "Stimson Center",
+     "url": "https://www.stimson.org/feed/",
      "content_type": "news", "pillar": "geo", "bias": "Peace Research",
-     "democracy_score": 90},
+     "democracy_score": 88},
 
     {"name": "Amnesty International",
      "url": "https://www.amnesty.org/en/feed/",
