@@ -957,7 +957,8 @@ def _classify_content_type(article: dict) -> dict:
 def run_funnel(
     articles: list[dict],
     top_n: int = 11,  # 5 geo + 3 tech + 3 fin
-    max_per_source: int = 2  # D1: reduced from 3 for source diversity (PHI-003)
+    max_per_source: int = 2,  # D1: reduced from 3 for source diversity (PHI-003)
+    excluded_urls: set = None  # S39: cross-run URL dedup set from main.py
 ) -> tuple[list[dict], list[dict]]:
     """
     Run the 4-stage Intelligence Funnel.
@@ -1111,6 +1112,14 @@ def run_funnel(
     # â”€â”€ Stage 4: Diversity Ranking â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         # -- Stage 4: Pillar Quota + Diversity Ranking -----------
     # Quota: 60% Geo (3) + 20% Tech (1) + 20% Fin (1) = 5
+    # S39: Cross-run URL deduplication -- exclude URLs selected in last 24h
+    if excluded_urls:
+        _before_xrun = len(stage2_pass)
+        stage2_pass = [a for a in stage2_pass if a.get("link", "") not in excluded_urls]
+        _excluded = _before_xrun - len(stage2_pass)
+        if _excluded > 0:
+            print(f"  Cross-run dedup:           {_excluded} recently-selected URLs excluded ({len(stage2_pass)} remain)")
+
     PILLAR_QUOTA = {"geo": 10, "tech": 6, "fin": 6}  # Three Pillar Reports: 10/6/6 = 22 total
 
     sorted_arts = sorted(stage2_pass, key=lambda x: x["stage3_score"], reverse=True)

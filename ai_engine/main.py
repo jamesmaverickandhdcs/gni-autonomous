@@ -150,11 +150,25 @@ def run_pipeline():
         # -- Step 2: Intelligence Funnel ---------------------
         print("\n?? Step 2: Running Intelligence Funnel...")
         t0 = time.time()
+        # S39: Cross-run URL deduplication -- load URLs selected in last 24h
+        _recently_selected_urls = set()
+        try:
+            from supabase import create_client as _xr_sc
+            from datetime import timedelta as _xr_td
+            _xr_sb = _xr_sc(os.getenv("SUPABASE_URL", ""), os.getenv("SUPABASE_SERVICE_KEY", ""))
+            _xr_cutoff = (datetime.now(timezone.utc) - _xr_td(hours=24)).isoformat()
+            _xr_res = _xr_sb.table("pipeline_articles").select("url").eq("stage4_selected", True).gte("created_at", _xr_cutoff).execute()
+            _recently_selected_urls = {r["url"] for r in (_xr_res.data or []) if r.get("url")}
+            if _recently_selected_urls:
+                print(f"  Cross-run dedup: {len(_recently_selected_urls)} recently-selected URLs loaded")
+        except Exception as _xr_e:
+            print(f"  Cross-run dedup: skipped ({str(_xr_e)[:60]})")
         top_n = 22 if GITHUB_ACTIONS else 22  # 10 geo + 6 tech + 6 fin (Three Pillar Reports)
         top_articles, trace = run_funnel(
             articles,
             top_n=top_n,
-            max_per_source=2  # D1: source diversity (PHI-003)
+            max_per_source=2,  # D1: source diversity (PHI-003)
+            excluded_urls=_recently_selected_urls
         )
         step_timings["funnel"] = round(time.time() - t0, 2)
         articles_after_funnel = len(top_articles)
