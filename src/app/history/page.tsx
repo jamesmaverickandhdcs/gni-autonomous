@@ -63,6 +63,7 @@ interface PredictionOutcome {
   direction_correct_30d: boolean
   black_swan_flag: boolean
   human_review_needed: boolean
+  human_security_score: number | null
   measured_at: string
 }
 
@@ -270,6 +271,12 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                     {outcome.spy_change_7d > 0 ? '+' : ''}{outcome.spy_change_7d?.toFixed(1)}%
                   </div>
                   <div className="text-xs text-gray-500">SPY 7-Day</div>
+                </div>
+                <div className="text-center">
+                  <div className={`text-xl font-bold ${outcome.human_security_score === null ? 'text-gray-500' : outcome.human_security_score >= 0.8 ? 'text-green-400' : outcome.human_security_score >= 0.4 ? 'text-yellow-400' : 'text-red-400'}`}>
+                    {outcome.human_security_score === null ? '—' : outcome.human_security_score >= 0.8 ? 'High' : outcome.human_security_score >= 0.4 ? 'Mid' : 'Low'}
+                  </div>
+                  <div className="text-xs text-gray-500">Human Security</div>
                 </div>
               </div>
               {outcome.human_review_needed && (
