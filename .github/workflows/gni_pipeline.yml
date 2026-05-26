@@ -30,7 +30,8 @@ jobs:
             groq \
             requests \
             yake \
-            rank_bm25
+            rank_bm25 \
+            openpyxl
       - name: Run GNI Pipeline
         run: python ai_engine/main.py
         env:
@@ -65,7 +66,8 @@ jobs:
           pip install \
             supabase \
             python-dotenv \
-            requests
+            requests \
+            openpyxl
       - name: Run Outcome Verifier (GPVS)
         run: python ai_engine/analysis/outcome_verifier.py
         env:
