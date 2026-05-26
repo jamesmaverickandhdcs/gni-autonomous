@@ -357,6 +357,16 @@ def verify_pending_outcomes():
         print(f"  GLD: 3d={gld_3d}% / 7d={gld_7d}% / 30d={gld_30d}%")
         print(f"  USO: 3d={uso_3d}% / 7d={uso_7d}% / 30d={uso_30d}%")
 
+        # W-07: Detect total price data failure -- both Yahoo and Twelve Data down
+        _all_none = all(v is None for v in [spy_3d, spy_7d, spy_30d, gld_3d, uso_3d])
+        if _all_none:
+            print("  WARNING: W-07 -- ALL price fetches returned None (Yahoo+TwelveData both down)")
+            try:
+                from notifications.telegram_notifier import send_admin_message
+                send_admin_message("[GNI W-07 ALERT] GPVS price fetch total failure -- Yahoo AND Twelve Data both returned None. Outcome verification skipped for this report to protect accuracy history.")
+            except Exception:
+                pass
+            continue
         sentiment = report.get('sentiment', 'Neutral')
 
         def direction(change, sent):
