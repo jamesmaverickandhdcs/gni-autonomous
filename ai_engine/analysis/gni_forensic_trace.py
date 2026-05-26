@@ -388,8 +388,8 @@ def _build_trace_sheet(ws, articles, run_at, pipeline_meta):
             art.get('source', ''),                     # 3 Source
             (art.get('pillar') or '').upper(),         # 4 Pillar
             art.get('title', ''),                      # 5 Title
-            art.get('url', ''),                        # URL
             str(art.get('published_at', ''))[:16],     # 6 Published
+            art.get('url', ''),                        # 7 URL
             'PASS' if art.get('stage1_passed') else 'FAIL',  # 7 S1 Result
             art.get('stage1_reason', ''),              # 8 S1 Keywords
             art.get('content_type', 'news'),           # 9 Content Type
