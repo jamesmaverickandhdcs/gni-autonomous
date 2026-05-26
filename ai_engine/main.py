@@ -163,7 +163,7 @@ def run_pipeline():
                 print(f"  Cross-run dedup: {len(_recently_selected_urls)} recently-selected URLs loaded")
         except Exception as _xr_e:
             print(f"  Cross-run dedup: skipped ({str(_xr_e)[:60]})")
-        top_n = 22 if GITHUB_ACTIONS else 22  # 10 geo + 6 tech + 6 fin (Three Pillar Reports)
+        top_n = 22 if GITHUB_ACTIONS else 22  # 14 geo + 4 tech + 4 fin (Three Pillar Reports)
         top_articles, trace = run_funnel(
             articles,
             top_n=top_n,

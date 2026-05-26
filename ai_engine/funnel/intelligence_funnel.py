@@ -1120,7 +1120,7 @@ def run_funnel(
         if _excluded > 0:
             print(f"  Cross-run dedup:           {_excluded} recently-selected URLs excluded ({len(stage2_pass)} remain)")
 
-    PILLAR_QUOTA = {"geo": 10, "tech": 6, "fin": 6}  # Three Pillar Reports: 10/6/6 = 22 total
+    PILLAR_QUOTA = {"geo": 14, "tech": 4, "fin": 4}  # Three Pillar Reports: 14/4/4 = 22 total
 
     sorted_arts = sorted(stage2_pass, key=lambda x: x["stage3_score"], reverse=True)
 
@@ -1202,7 +1202,7 @@ def run_funnel(
             pillar_dist[p] += 1
 
     print(f"  Stage 4 (Ranking+Diversity): Top {len(selected)} selected")
-    print(f"  Pillar distribution: Geo={pillar_dist['geo']}/10 Tech={pillar_dist['tech']}/6 Fin={pillar_dist['fin']}/6 (Three Pillar Reports)")
+    print(f"  Pillar distribution: Geo={pillar_dist['geo']}/14 Tech={pillar_dist['tech']}/4 Fin={pillar_dist['fin']}/4 (Three Pillar Reports)")
     print(f"  Source distribution: {dist}")
     print(f"  âœ… Funnel complete â€” {len(selected)} articles ready for AI analysis")
     print(f"  ðŸ“Š Total trace: {len(trace)} articles documented")
