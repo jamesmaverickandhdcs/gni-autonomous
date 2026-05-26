@@ -1,3 +1,10 @@
+# ============================================================
+# PHI-003 -- Freedom from Fear
+# "Any human being has to clearly understand Freedom from Fear
+#  since the age of a teenager."
+# "Every senior citizen has to understand that everyone has
+#  duty to support this."
+# ============================================================
 import os
 import json
 import re
