@@ -127,7 +127,7 @@ SOURCES = [
      "content_type": "news", "pillar": "fin", "bias": "Financial", "democracy_score": 65},
 
     {"name": "ING Think",
-     "url": "https://feeds.reuters.com/reuters/businessNews",
+     "url": "https://feeds.bloomberg.com/economics/news.rss",
      "content_type": "news", "pillar": "fin", "bias": "Economic Research",
      "democracy_score": 70},
 
