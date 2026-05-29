@@ -1,7 +1,7 @@
 # ============================================================
 # PHI-003 -- Freedom from Fear
 # "Any human being has to clearly understand Freedom from Fear
-#  since the age of a teenager."
+#  since the age of a young adult (voting age)."
 # "Every senior citizen has to understand that everyone has
 #  duty to support this."
 # ============================================================
