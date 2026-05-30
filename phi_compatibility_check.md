@@ -1,13 +1,13 @@
 # PHI-003 Philosophy Compatibility Check
 # GNI Autonomous — Team Geeks
 # Rule: LR-099 — Every philosophy update requires this file to be reviewed and updated before session close.
-# Last verified: May 24, 2026 (GNI S36)
+# Last verified: May 31, 2026 (GNI S40)
 
 ## Non-Negotiables Mapping
 
 | NN | Principle | Code Location | Status | Last Verified |
 |---|---|---|---|---|
-| NN-PHI-1 | GNI serves the human being, not the market. Teenager Standard. | `nexus_analyzer.py` FFF prompt + `brief/page.tsx` FFF section | LIVE | May 24 2026 |
+| NN-PHI-1 | GNI serves the human being, not the market. Voting-Age Standard. | `nexus_analyzer.py` FFF prompt + `brief/page.tsx` FFF section + `escalation_scorer.py` PHI-003 consistency gate (escalation must agree with honest sentiment/risk read -- no manufactured fear) | LIVE | May 31 2026 |
 | NN-PHI-2 | All news directions equal — good, bad, opportunity, threat | `intelligence_funnel.py` OPPORTUNITY keywords + balance signal | LIVE | May 24 2026 |
 | NN-PHI-3 | Manipulation techniques never in GNI output | `intelligence_funnel.py` INJECTION_PATTERNS Cat 1-11 + SANITIZE_VOCAB | LIVE | May 24 2026 |
 | NN-PHI-4 | Every threat must have a path — fff_human_path always required | `nexus_analyzer.py` + `prompt_manager.py` fff_human_path field | LIVE | May 24 2026 |
