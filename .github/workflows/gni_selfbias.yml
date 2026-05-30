@@ -1,0 +1,31 @@
+name: GNI Self-Bias Gate
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 06:00 UTC daily -- clear of 02:00/10:00 pipeline + MAD windows
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  self_bias_audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install supabase python-dotenv
+
+      - name: Run GNI Self-Bias Gate
+        run: |
+          cd ai_engine
+          python -m analysis.self_bias_gate
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
