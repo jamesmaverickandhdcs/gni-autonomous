@@ -303,7 +303,7 @@ def run_pipeline():
 
         # -- Step 3d: Escalation Scoring ------------------
         print("\n?? Step 3d: Scoring Escalation Risk...")
-        escalation = score_escalation(top_articles)
+        escalation = score_escalation(top_articles, sentiment=report.get('sentiment'), risk_level=report.get('risk_level'))
         report['escalation_score'] = escalation['escalation_score']
         report['escalation_level'] = escalation['escalation_level']
         recommended_interval = get_recommended_interval(escalation['escalation_level'], escalation['escalation_score'])

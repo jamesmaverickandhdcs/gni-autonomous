@@ -54,7 +54,7 @@ CRITICAL_COMBOS = [
 ]
 
 
-def score_escalation(articles: list[dict]) -> dict:
+def score_escalation(articles: list[dict], sentiment: str = None, risk_level: str = None) -> dict:
     """
     Score systemic escalation risk from selected articles.
 
@@ -100,6 +100,20 @@ def score_escalation(articles: list[dict]) -> dict:
     final_score = round(min(raw_score, 10.0), 1)
     final_score = max(final_score, 1.0)
 
+    # -- PHI-003 gate: escalation must be consistent with honest analysis --
+    # Keyword counts cannot tell de-escalation from escalation (same words,
+    # opposite meaning). When GNI's own LLM read says calm, pull the score
+    # down -- UNLESS a hard CRITICAL_COMBO fired (ostrich guard: signals
+    # overrule a complacent analyst).
+    gate_applied = None
+    if sentiment and risk_level:
+        calm_sentiment = sentiment.strip().lower() in ('bullish', 'neutral')
+        calm_risk = risk_level.strip().lower() in ('low', 'medium')
+        if calm_sentiment and calm_risk and combo_bonus < 3 and final_score > 5.0:
+            gate_applied = ('PHI-003 gate: ' + str(sentiment) + '/' + str(risk_level) +
+                            ', no critical combo -> capped 5.0 (was ' + str(final_score) + ')')
+            final_score = 5.0
+
     # Escalation level
     if final_score >= 9:
         level = 'CRITICAL'
@@ -122,6 +136,7 @@ def score_escalation(articles: list[dict]) -> dict:
         'combo_bonus':     round(combo_bonus, 1),
         'raw_score':       round(raw_score, 1),
         'final_score':     final_score,
+        'gate_applied':    gate_applied,
     }
     factors = []
     if tech_hits:
@@ -152,6 +167,7 @@ def score_escalation(articles: list[dict]) -> dict:
         'combo_bonus':     combo_bonus,
         'score_breakdown': score_breakdown,
         'factors':         factors,
+        'gate_applied':    gate_applied,
     }
 
 
