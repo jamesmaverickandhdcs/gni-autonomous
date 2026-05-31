@@ -187,6 +187,70 @@ def _check_flatline(reports: list[dict]) -> list[dict]:
     return findings
 
 
+def _fetch_latest_selected() -> list[dict]:
+    """Pull stage4-selected articles from the most recent pipeline run."""
+    client = _get_client()
+    if not client:
+        return []
+    try:
+        # newest run_id first
+        latest = client.table("pipeline_articles") \
+            .select("run_id, created_at") \
+            .order("created_at", desc=True) \
+            .limit(1) \
+            .execute()
+        if not latest.data:
+            return []
+        run_id = latest.data[0].get("run_id")
+        if not run_id:
+            return []
+        sel = client.table("pipeline_articles") \
+            .select("source, pillar, stage4_selected, run_id") \
+            .eq("run_id", run_id) \
+            .eq("stage4_selected", True) \
+            .execute()
+        return sel.data or []
+    except Exception as e:
+        print(f"  Warning: source-dominance fetch failed: {str(e)[:80]}")
+        return []
+
+
+def _check_source_dominance(min_selected: int = 10, threshold: float = 0.35) -> list[dict]:
+    """
+    Set-level check (NN-PHI-2 + NN-PHI-6): no single source should dominate
+    GNI's own selection. PHI-002 turned inward -- if one voice supplies a
+    disproportionate share of the selected set, GNI's output is being captured
+    by that source's framing, the exact risk LENS found in RT (OP-033). This
+    audits GNI's selection the way GNI audits its sources. Conservative: needs
+    >= min_selected articles before judging (a tiny run won't false-flag).
+    """
+    selected = _fetch_latest_selected()
+    findings = []
+    total = len(selected)
+    if total < min_selected:
+        return findings  # too few to judge -- not enough signal
+
+    counts = {}
+    for a in selected:
+        src = (a.get("source") or "Unknown").strip()
+        counts[src] = counts.get(src, 0) + 1
+
+    for src, n in counts.items():
+        share = n / total
+        if share > threshold:
+            findings.append({
+                "check": "source_dominance",
+                "nn_phi": "NN-PHI-2/6",
+                "report_id": None,
+                "title": f"selection capture: {src}",
+                "detail": (f"{src} supplied {n}/{total} selected articles "
+                           f"({share:.0%}) -- single-source dominance over "
+                           f"{threshold:.0%} threshold (selection framing risk)"),
+                "escalation_score": None,
+            })
+    return findings
+
+
 def run_self_bias_audit(hours: int = 24) -> dict:
     """
     Main entry point. Reads recent reports, runs every coherence check,
@@ -205,6 +269,7 @@ def run_self_bias_audit(hours: int = 24) -> dict:
 
     # Set-level checks (compare across reports, not per-row)
     findings.extend(_check_flatline(reports))
+    findings.extend(_check_source_dominance())
 
     # Write to the tamper-evident chain -- the audit of GNI cannot be rewritten
     try:
