@@ -158,6 +158,35 @@ CHECKS = [
 ]
 
 
+def _check_flatline(reports: list[dict]) -> list[dict]:
+    """
+    Set-level check (NN-PHI-1 + NN-PHI-3): a numeric field frozen bit-identical
+    across many consecutive reports is the latch signature -- the escalation
+    bug that broadcast CRITICAL 10.0 for days while the world changed. Genuine
+    analysis always has some jitter; perfect constancy across N+ distinct runs
+    is manufactured constancy, a pretense. Conservative: needs >= 4 reports and
+    EXACT equality (mild stability does not trip it).
+    """
+    findings = []
+    if len(reports) < 4:
+        return findings
+    for field in ("escalation_score", "sentiment_score"):
+        vals = [r.get(field) for r in reports]
+        if any(v is None for v in vals):
+            continue
+        if len(set(vals)) == 1:  # bit-identical across every report
+            findings.append({
+                "check": "flatline",
+                "nn_phi": "NN-PHI-1/3",
+                "report_id": reports[0].get("id"),
+                "title": (reports[0].get("title") or "")[:80],
+                "detail": (f"{field} frozen at {vals[0]} across {len(vals)} consecutive "
+                           f"reports -- possible latch (manufactured constancy)"),
+                "escalation_score": reports[0].get("escalation_score"),
+            })
+    return findings
+
+
 def run_self_bias_audit(hours: int = 24) -> dict:
     """
     Main entry point. Reads recent reports, runs every coherence check,
@@ -173,6 +202,9 @@ def run_self_bias_audit(hours: int = 24) -> dict:
             f = check(r)
             if f:
                 findings.append(f)
+
+    # Set-level checks (compare across reports, not per-row)
+    findings.extend(_check_flatline(reports))
 
     # Write to the tamper-evident chain -- the audit of GNI cannot be rewritten
     try:
