@@ -47,6 +47,15 @@ jobs:
           TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+      - name: Alert admin on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
+            -d chat_id="${ADMIN}" \
+            --data-urlencode "text=⚠️ GNI pipeline run FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}
 
   verify-outcomes:
     runs-on: ubuntu-latest
@@ -76,3 +85,12 @@ jobs:
           GITHUB_ACTIONS: "true"
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+      - name: Alert admin on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
+            -d chat_id="${ADMIN}" \
+            --data-urlencode "text=⚠️ GNI GPVS verify run FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}
