@@ -306,6 +306,7 @@ def run_pipeline():
         escalation = score_escalation(top_articles, sentiment=report.get('sentiment'), risk_level=report.get('risk_level'))
         report['escalation_score'] = escalation['escalation_score']
         report['escalation_level'] = escalation['escalation_level']
+        report['combo_bonus'] = escalation.get('combo_bonus', 0)
         recommended_interval = get_recommended_interval(escalation['escalation_level'], escalation['escalation_score'])
         log_frequency_decision(escalation['escalation_score'], escalation['escalation_level'], recommended_interval, f"Escalation {escalation['escalation_level']} {escalation['escalation_score']}/10")
         print(f"   ?  Next run recommended in {recommended_interval:.1f}h ({escalation['escalation_level']})")
