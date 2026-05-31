@@ -221,7 +221,7 @@ def save_pipeline_articles(run_id: str, trace: list[dict]) -> bool:
                 "title": art.get("title", ""),
                 "url": art.get("link") or art.get("url", ""),
                 "summary": (art.get("summary", "") or "")[:500],
-                "published_at": str(art.get("published", "")),
+                "published_at": str(art.get("published_at") or art.get("published", "")),
                 "stage1_passed": art.get("stage1_passed", False),
                 "stage1_reason": art.get("stage1_reason", ""),
                 "stage1b_passed": art.get("stage1b_passed", True),
