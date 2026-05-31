@@ -247,7 +247,7 @@ def _build_selected_sheet(ws, articles, run_at, pipeline_meta):
         title = art.get('title', '')
         score = art.get('stage3_score', 0)
         ct = art.get('content_type', 'news')
-        url = art.get('url', '')
+        url = art.get('url') or art.get('link', '')
 
         row_data = [rank, ref_id, source, pillar, title,
                     score, ct, 'SELECTED', url]
@@ -389,7 +389,7 @@ def _build_trace_sheet(ws, articles, run_at, pipeline_meta):
             (art.get('pillar') or '').upper(),         # 4 Pillar
             art.get('title', ''),                      # 5 Title
             str(art.get('published_at', ''))[:16],     # 6 Published
-            art.get('url', ''),                        # 7 URL
+            art.get('url') or art.get('link', ''),     # 7 URL
             'PASS' if art.get('stage1_passed') else 'FAIL',  # 7 S1 Result
             art.get('stage1_reason', ''),              # 8 S1 Keywords
             art.get('content_type', 'news'),           # 9 Content Type
