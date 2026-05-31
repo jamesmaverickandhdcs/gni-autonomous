@@ -4,7 +4,6 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Analytics } from '@vercel/analytics/react'
-import ResetBanner from '@/components/ResetBanner'
 
 const siteUrl = 'https://gni-autonomous.vercel.app'
 
@@ -78,7 +77,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", GeistSans.variable, GeistMono.variable)}>
       <body className="min-h-screen bg-background antialiased">
-        <ResetBanner />
         {children}
         <Analytics />
       </body>
