@@ -60,3 +60,12 @@ jobs:
           TELEGRAM_ADMIN_ID:    ${{ secrets.TELEGRAM_ADMIN_ID }}
           TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
           MYANMAR_DISPATCH_PAT: ${{ secrets.MYANMAR_DISPATCH_PAT }}
+      - name: Alert admin on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
+            -d chat_id="${ADMIN}" \
+            --data-urlencode "text=⚠️ GNI MAD run FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}

@@ -19,3 +19,12 @@ jobs:
         env:
           SELF_CHECK_INTERNAL_KEY: ${{ secrets.SELF_CHECK_INTERNAL_KEY }}
           GNI_APP_URL: ${{ secrets.GNI_APP_URL }}
+      - name: Alert admin on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
+            -d chat_id="${ADMIN}" \
+            --data-urlencode "text=⚠️ GNI selfcheck run FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}
