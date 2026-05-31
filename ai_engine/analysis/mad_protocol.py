@@ -611,22 +611,22 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     bull_r3 = _call_agent(BULL,
         bull_ctx + round_history
         + 'FINAL COACHING: ' + arb_c2.get('bull', '')
-        + '\n\nROUND 3 FINAL: Write a FRESH sharpest argument. Changed view?', 350)
+        + '\n\nROUND 3 FINAL: Write a FRESH sharpest argument in 5-7 sentences. Changed view?', 600)
 
     bear_r3 = _call_agent(BEAR,
         bear_ctx + round_history
         + 'FINAL COACHING: ' + arb_c2.get('bear', '')
-        + '\n\nROUND 3 FINAL: Sharpest position. Changed view?', 350)
+        + '\n\nROUND 3 FINAL: Sharpest position in 5-7 sentences. Changed view?', 600)
 
     swan_r3 = _call_agent(SWAN,
         swan_ctx + round_history
         + 'FINAL COACHING: ' + arb_c2.get('black_swan', '')
-        + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching.', 350)
+        + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching. 5-7 sentences.', 600)
 
     ost_r3 = _call_agent(OSTRICH,
         ost_ctx + round_history
         + 'FINAL COACHING: ' + arb_c2.get('ostrich', '')
-        + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction.', 350)
+        + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction. 5-7 sentences.', 600)
 
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
 
