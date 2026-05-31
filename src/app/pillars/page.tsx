@@ -156,7 +156,7 @@ export default function PillarsPage() {
                       {report ? (
                         <>
                           <div className="text-sm font-bold text-white mb-2 leading-tight">{report.title}</div>
-                          <div className="text-xs text-gray-400 mb-3 leading-relaxed line-clamp-4">{report.summary}</div>
+                          <div className="text-xs text-gray-400 mb-3 leading-relaxed">{report.summary}</div>
                           <div className="flex items-center justify-between mb-3">
                             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${riskColor(report.risk_level)}`}>
                               {report.risk_level?.toUpperCase()}
@@ -168,19 +168,19 @@ export default function PillarsPage() {
                           {report.market_impact && (
                             <div className="bg-black bg-opacity-20 rounded-lg p-3 mb-3">
                               <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Market Impact</div>
-                              <p className="text-xs text-gray-300 leading-relaxed line-clamp-3">{report.market_impact}</p>
+                              <p className="text-xs text-gray-300 leading-relaxed">{report.market_impact}</p>
                             </div>
                           )}
                           {report.weakness_identified && (
                             <div className="text-xs text-yellow-600 border-t border-gray-700 pt-2 mt-2">
                               <span className="font-bold">Weakness: </span>
-                              <span className="line-clamp-2">{report.weakness_identified}</span>
+                              <span>{report.weakness_identified}</span>
                             </div>
                           )}
                           {report.dark_side_detected && report.dark_side_detected !== 'None' && (
                             <div className="text-xs text-purple-400 mt-2">
                               <span className="font-bold">Dark side: </span>
-                              <span className="line-clamp-2">{report.dark_side_detected}</span>
+                              <span>{report.dark_side_detected}</span>
                             </div>
                           )}
                           {report.tickers_affected?.length > 0 && (

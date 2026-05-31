@@ -871,7 +871,7 @@ export default function Home() {
                 </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {pillars.map(({ key, label, emoji, report, border, bg, accent }) => (
-                      <div key={key} className={`border rounded-xl p-4 ${border} ${bg}`}>
+                      <a key={key} href="/pillars" className={`block border rounded-xl p-4 transition-all hover:brightness-125 ${border} ${bg}`}>
                         <div className="flex items-center gap-2 mb-3">
                           <span className="text-xl">{emoji}</span>
                           <span className={`text-xs font-bold uppercase tracking-wider ${accent}`}>{label}</span>
@@ -909,7 +909,7 @@ export default function Home() {
                         ) : (
                           <div className="text-xs text-gray-600 italic py-4 text-center">Pending next pipeline run</div>
                         )}
-                      </div>
+                      </a>
                     ))}
                   </div>
                 </section>
