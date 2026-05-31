@@ -309,22 +309,6 @@ export default function DebatePage() {
                                 coaching={getArbFeedback(selected.mad_arb_feedbacks, 'round1', agent.key)} />
                             ))}
                           </div>
-                          {AGENTS.some(a => getArbFeedback(selected.mad_arb_feedbacks, 'round1', a.key)) && (
-                          <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-lg">💼</span>
-                              <div className="text-sm font-bold text-purple-400">Personal Consultants — After Round 1</div>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                              {AGENTS.map(agent => (
-                                <div key={agent.key} className="bg-gray-800 rounded-lg p-2">
-                                  <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} {agent.label}{"'"}s Consultant</div>
-                                  <p className="text-gray-400 italic">{getArbFeedback(selected.mad_arb_feedbacks, 'round1', agent.key) || 'No coaching recorded'}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          )}
                         </div>
 
                         {/* Round 2 */}
@@ -340,22 +324,6 @@ export default function DebatePage() {
                                 coaching={getArbFeedback(selected.mad_arb_feedbacks, 'round2', agent.key)} />
                             ))}
                           </div>
-                          {AGENTS.some(a => getArbFeedback(selected.mad_arb_feedbacks, 'round2', a.key)) && (
-                          <div className="mt-3 bg-gray-900 border border-gray-700 rounded-xl p-4">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="text-lg">💼</span>
-                              <div className="text-sm font-bold text-purple-400">Personal Consultants — After Round 2</div>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-                              {AGENTS.map(agent => (
-                                <div key={agent.key} className="bg-gray-800 rounded-lg p-2">
-                                  <div className={`font-bold mb-1 ${agent.color}`}>{agent.emoji} To {agent.label}</div>
-                                  <p className="text-gray-400 italic">{getArbFeedback(selected.mad_arb_feedbacks, 'round2', agent.key) || 'No coaching recorded'}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          )}
                         </div>
 
                         {/* Round 3 */}
