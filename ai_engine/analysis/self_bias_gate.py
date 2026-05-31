@@ -128,9 +128,33 @@ def _check_threat_has_path(r: dict) -> dict | None:
     }
 
 
+# ---- Check 3: required output fields must not be silently empty (NN-PHI-1) ----
+# Conservative whitelist -- only fields that are ALWAYS required on a real
+# report. A blank here means GNI published incomplete intelligence as if
+# complete -- a small pretense (PHI-001) and a Freedom-from-Fear failure if
+# the missing field is the human path (PHI-003). Sibling-class of the
+# published_at/url silent-empty bugs found by the S40 silent-fail sweep.
+_REQUIRED_NONEMPTY = ("title", "sentiment", "risk_level")
+
+def _check_required_field_empty(r: dict) -> dict | None:
+    missing = [f for f in _REQUIRED_NONEMPTY if not (r.get(f) or "").strip()]
+    if not missing:
+        return None
+    return {
+        "check": "required_field_empty",
+        "nn_phi": "NN-PHI-1",
+        "report_id": r.get("id"),
+        "title": (r.get("title") or "")[:80],
+        "detail": ("required field(s) silently empty: " + ", ".join(missing) +
+                   " -- incomplete intelligence presented as complete"),
+        "escalation_score": r.get("escalation_score"),
+    }
+
+
 CHECKS = [
     _check_escalation_sentiment,
     _check_threat_has_path,
+    _check_required_field_empty,
 ]
 
 
