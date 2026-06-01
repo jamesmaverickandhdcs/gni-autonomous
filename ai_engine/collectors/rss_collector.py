@@ -104,6 +104,14 @@ SOURCES = [
      "url": "https://www.amnesty.org/en/feed/",
      "content_type": "news", "pillar": "geo", "bias": "Human Rights",
      "democracy_score": 91},
+    {"name": "Breaking Defense",
+     "url": "https://breakingdefense.com/full-rss-feed/",
+     "content_type": "news", "pillar": "geo", "bias": "Specialist",
+     "democracy_score": 78},
+    {"name": "Dawn",
+     "url": "https://www.dawn.com/feeds/world",
+     "content_type": "news", "pillar": "geo", "bias": "Non-Western",
+     "democracy_score": 68},
 
     # ── FINANCIAL PILLAR (5 sources) ──────────────────────────
     {"name": "Financial Times",
