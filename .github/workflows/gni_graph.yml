@@ -1,0 +1,36 @@
+name: GNI Entity Graph
+on:
+  schedule:
+    - cron: '45 2 * * *'   # 02:45 UTC -- after 02:00 pipeline saves articles, clear of MAD (02:30)
+    - cron: '45 10 * * *'  # 10:45 UTC -- after 10:00 pipeline saves articles, clear of MAD (10:30)
+  workflow_dispatch:  # Allow manual trigger
+jobs:
+  entity_graph:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install supabase python-dotenv networkx
+      - name: Run GNI Entity Graph Job
+        run: |
+          cd ai_engine
+          python -m analysis.gni_graph_job
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      - name: Alert admin on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
+            -d chat_id="${ADMIN}" \
+            --data-urlencode "text=⚠️ GNI entity-graph run FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}
