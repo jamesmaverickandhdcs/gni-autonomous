@@ -150,6 +150,19 @@ if __name__ == "__main__":
         ("Markets steady", "Tensions in Lebanon ease as Hezbollah withdraws",
          {"Lebanon", "Hezbollah"}, "Lebanon",
          "entities from SUMMARY when title has none (aboutness from summary)"),
+        # REAL headlines (Dawn + Breaking Defense live feeds), APOSTROPHES KEPT.
+        # S40 logged a "possessive bug" -- it was a TEST ARTIFACT: that session
+        # hand-stripped the apostrophe (Lebanon's->Lebanons) for heredoc safety,
+        # turning a working possessive into a failing glued-plural. Verified S41:
+        # ASCII ', typographic U+2019, and HTML &apos;/&#039; ALL extract correctly;
+        # sanitize swaps words only; no ascii-coercion in the live collect->funnel
+        # path. The possessive was never broken. These cases lock that in.
+        ("Israel captures Lebanon\u2019s medieval Beaufort Castle in deepest incursion", "",
+         {"Israel", "Lebanon"}, "Israel",
+         "REAL possessive (typographic apostrophe): both entities extract"),
+        ("Japan\u2019s defense minister rebuffs militarism allegation", "",
+         {"Japan"}, "Japan",
+         "REAL possessive (typographic apostrophe): single entity, no false-hit"),
     ]
 
     print("=== entity_extractor self-test ===")
