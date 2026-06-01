@@ -23,6 +23,7 @@ echo "❌ FAMILIAR/EASY = THE TELL: a past-bug match OR an obvious one-line fix 
 echo "❌ NEVER rush — slow is faster than wrong"
 echo "❌ NEVER modify conclusion when corrected — RESET to zero"
 echo "✅ SAY: I recognize this pattern but let me read files first"
+echo "✅ LR-101: grep -n for ASCII anchor before any python -c patch"
 echo "========================================"
 echo ""
 
