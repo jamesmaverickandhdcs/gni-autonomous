@@ -205,6 +205,9 @@ def save_pipeline_run(
         return None
 
 
+from analysis.entity_extractor import extract_entities  # B3: per-article entities
+
+
 def save_pipeline_articles(run_id: str, trace: list[dict]) -> bool:
     """Save full article trace to pipeline_articles table."""
     client = get_client()
@@ -235,6 +238,8 @@ def save_pipeline_articles(run_id: str, trace: list[dict]) -> bool:
                 "content_type_signals": art.get("content_type_signals", ""),
                 "review_gate": art.get("review_gate", "skipped"),
                 "pillar": art.get("pillar", None),
+                "entities": sorted(extract_entities(art)["entities"]),  # B3 jsonb
+
             })
 
         # Insert in batches of 50
