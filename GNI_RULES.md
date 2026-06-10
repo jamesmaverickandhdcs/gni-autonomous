@@ -41,3 +41,18 @@
 - NN-PHI-7: Data reset when philosophy resets.
 
 Last updated: May 24, 2026 — GNI S36
+
+## LR-106 -- LLM JSON parsers must guarantee dict-or-None
+Any function parsing LLM JSON output (e.g. _parse_json_response) MUST coerce the
+result to dict-or-None before returning. LLMs intermittently wrap the report in an
+array [{...}]; json.loads then returns a list and downstream .get() crashes ('list'
+object has no attribute 'get'). Unwrap single-object lists to the dict; return None
+for [] or non-dict arrays. Root-caused from Jun 7 Intelligence #210 (the only failure
+in 9 autonomous days). Fix: commit a15bcc0.
+
+## LR-107 -- A brief-claimed bug is a hypothesis, not a fact
+A bug asserted in a prior session's brief (or by anyone) is unverified until reproduced
+against live execution. S42 had TWO false ones: the S41 "URGENT" possessive bug (a test
+artifact from heredoc apostrophe-stripping) and the initial "Sunday digest mutates shared
+state" theory for #210 (the code shared no state; real cause was list-shaped JSON). Verify
+before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / LR-102.
