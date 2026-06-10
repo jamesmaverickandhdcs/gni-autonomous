@@ -177,6 +177,18 @@ def _call_cerebras(prompt: str) -> str | None:
     return None
 
 
+def _coerce_to_dict(parsed):
+    """LLMs sometimes wrap the report in a JSON array: [{...}]. json.loads then
+    returns a list, and downstream report.get() crashes ('list' has no .get).
+    Unwrap a single-object list to the dict; otherwise treat as unparseable.
+    Found live (Jun 7 pillar run): array-shaped LLM output crashed schema validation."""
+    if isinstance(parsed, dict):
+        return parsed
+    if isinstance(parsed, list) and len(parsed) >= 1 and isinstance(parsed[0], dict):
+        return parsed[0]
+    return None
+
+
 def _parse_json_response(raw: str) -> dict | None:
     """
     Safely parse JSON from LLM response.
@@ -200,7 +212,7 @@ def _parse_json_response(raw: str) -> dict | None:
 
     # ── Strategy 1: Direct parse ──────────────────────────────────────────
     try:
-        return json.loads(text)
+        return _coerce_to_dict(json.loads(text))
     except json.JSONDecodeError:
         pass
 
@@ -212,7 +224,7 @@ def _parse_json_response(raw: str) -> dict | None:
             text = text[:-3]
         text = text.strip()
     try:
-        return json.loads(text)
+        return _coerce_to_dict(json.loads(text))
     except json.JSONDecodeError:
         pass
 
@@ -221,7 +233,7 @@ def _parse_json_response(raw: str) -> dict | None:
     end = text.rfind("}") + 1
     if start >= 0 and end > start:
         try:
-            return json.loads(text[start:end])
+            return _coerce_to_dict(json.loads(text[start:end]))
         except json.JSONDecodeError:
             pass
 
