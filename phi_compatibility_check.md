@@ -1,7 +1,7 @@
 # PHI-003 Philosophy Compatibility Check
 # GNI Autonomous — Team Geeks
 # Rule: LR-099 — Every philosophy update requires this file to be reviewed and updated before session close.
-# Last verified: May 31, 2026 (GNI S40)
+# Last verified: June 12, 2026 (GNI S43)
 
 ## Non-Negotiables Mapping
 
@@ -14,6 +14,7 @@
 | NN-PHI-5 | Absence is intelligence — coverage gaps reported | `absence_detector.py` + `gni_keyword_history` + `gni_coverage_alerts` | LIVE | May 24 2026 |
 | NN-PHI-6 | Adversarial sources are signal not authority — review_only | `rss_collector.py` content_type + `intelligence_funnel.py` classifier | LIVE | May 23 2026 |
 | NN-PHI-7 | Data reset when philosophy resets | U-8 executed May 23 2026 | COMPLETE | May 23 2026 |
+| NN-PHI-8 | The Duty Clause (PHI-003 sentence two): seniors are the delivery channel of Freedom-from-Fear understanding to voting-age young adults. Method, never verdict. | No code surface yet -- first planned: fff_conversation_starter + micro-lesson | OPEN | Jun 12 2026 |
 
 ## Output Layer Compatibility
 
@@ -45,6 +46,10 @@
 | About page | Update copy to reflect PHI-003 identity | S37 |
 | Banner | Update from "rebuilding" to "PHI-003 live" | S37 |
 | Self-bias semantic | Does GNI output use the OP-005/Cui Bono techniques it flags in sources? | IMPORTANT S41 |
+| NN-PHI-8 | fff_conversation_starter -- one senior-to-young-adult question per report; question-grammar only (method-not-verdict); full LR-100 sweep: prompt + validator + regex fallback + saver + Telegram + brief page + self-bias gate + Supabase column | S43+ |
+| NN-PHI-8 | Manipulation micro-lesson -- one named pattern per report with live example (senior teaching material) | S43+ |
+| NN-PHI-8 | Human tests: senior transmissibility (one 55+ reader) + first-voter test (one 17-19 reader). Zero code. | S43+ |
+| NN-PHI-8 | Election-window scrutiny -- design doc before code | QUEUE |
 
 ## Self-Audit Layer (S40 -- BEGUN, NOT COMPLETE)
 
@@ -60,6 +65,34 @@ layers, only the first of which is built.
 
 Origin: the BEARISH 10/10 escalation latch (caught by a 16-year-old before
 any analyst) was the live proof the gap was real. Structural layer shipped S40.
+
+## Duty Clause -- Senior-First Delivery (S43 INTERPRETATION UPDATE; wording unchanged)
+
+PHI-003 canonical wording is untouched (voting-age form, commit ead47e5).
+S43 established the authoritative reading of sentence two: it is not a
+parallel statement -- it is the DELIVERY MECHANISM of sentence one.
+
+- Target: the voting-age young adult (understanding in place when their
+  share of sovereignty activates).
+- Channel: the seniors around each young adult -- young adults are
+  environment-dependent; the trusted-elder channel outperforms direct
+  delivery (two-step flow).
+- First wave: 55+ -- time surplus, lowest-friction grandparent channel,
+  lived pattern archive (decades of fear campaigns witnessed), and the
+  purpose dividend (the duty restores role; purpose self-sustains).
+- Sequence inside the wave: inoculate first, then activate (seniors are
+  also the most fear-targeted cohort; a senior who just caught a
+  manipulation aimed at themselves is the best teacher).
+- Hard boundary: transmit the METHOD of recognizing manufactured fear,
+  never the VERDICT. Conversation elements must be questions by grammar.
+  Any senior-facing surface that carries conclusions inverts the duty
+  into inherited bias -- the exact failure PHI-002 names.
+- Life cycle: equipped young adults become the next duty-holders.
+  Success condition is cultural transmission that survives the platform.
+
+Guards owed before any NN-PHI-8 surface ships: SANITIZE_VOCAB applies to
+new fields; self_bias_gate required-field check extends to them; regex
+fallback dict must carry them (the S36 empty-FFF lesson, LR-100).
 
 ## Instructions for Next Philosophy Update
 
