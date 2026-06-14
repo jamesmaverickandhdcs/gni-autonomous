@@ -42,10 +42,6 @@ SOURCES = [
      "url": "https://news.usni.org/feed",
      "content_type": "news", "pillar": "geo", "bias": "Specialist", "democracy_score": 55},
 
-    {"name": "The Diplomat",
-     "url": "https://thediplomat.com/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "Academic", "democracy_score": 85},
-
     {"name": "The Conversation",
      "url": "https://theconversation.com/global/articles.atom",
      "content_type": "news", "pillar": "geo", "bias": "Academic", "democracy_score": 83},
@@ -53,10 +49,6 @@ SOURCES = [
     {"name": "Human Rights Watch",
      "url": "https://www.hrw.org/rss.xml",
      "content_type": "news", "pillar": "geo", "bias": "Human Rights", "democracy_score": 93},
-
-    {"name": "Foreign Policy",
-     "url": "https://foreignpolicy.com/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "Research", "democracy_score": 84},
 
     {"name": "Crisis Group",
      "url": "https://www.crisisgroup.org/rss.xml",
@@ -114,21 +106,13 @@ SOURCES = [
      "democracy_score": 68},
 
     # ── FINANCIAL PILLAR (5 sources) ──────────────────────────
-    {"name": "Financial Times",
-     "url": "https://www.ft.com/?format=rss",
-     "content_type": "news", "pillar": "fin", "bias": "Financial", "democracy_score": 79},
-
-    {"name": "The Economist",
-     "url": "https://www.economist.com/finance-and-economics/rss.xml",
-     "content_type": "news", "pillar": "fin", "bias": "Financial", "democracy_score": 88},
-
     {"name": "Project Syndicate",
      "url": "https://www.project-syndicate.org/rss",
      "content_type": "news", "pillar": "fin", "bias": "Research", "democracy_score": 79},
 
-    {"name": "Nikkei Asia",
-     "url": "https://asia.nikkei.com/rss/feed/nar",
-     "content_type": "news", "pillar": "fin", "bias": "Financial", "democracy_score": 62},
+    {"name": "Yahoo Finance",
+     "url": "https://finance.yahoo.com/news/rssindex",
+     "content_type": "news", "pillar": "fin", "bias": "Financial Aggregator", "democracy_score": 70},
 
     {"name": "CNBC World",
      "url": "https://www.cnbc.com/id/100727362/device/rss/rss.html",
@@ -143,10 +127,6 @@ SOURCES = [
     {"name": "Wired",
      "url": "https://www.wired.com/feed/rss",
      "content_type": "news", "pillar": "tech", "bias": "Technology", "democracy_score": 68},
-
-    {"name": "MIT Technology Review",
-     "url": "https://www.technologyreview.com/feed/",
-     "content_type": "news", "pillar": "tech", "bias": "Technology", "democracy_score": 71},
 
     {"name": "EFF Deeplinks",
      "url": "https://www.eff.org/rss/updates.xml",
@@ -195,12 +175,41 @@ def make_id(title: str, source: str) -> str:
     return hashlib.md5(raw).hexdigest()
 
 
-def parse_date(entry) -> str:
-    """Extract published date from RSS entry."""
+def parse_date(entry) -> tuple:
+    """Extract published date from RSS entry.
+    Returns (iso_string, date_is_real). date_is_real is False when the feed
+    gave no machine-readable date and we fell back to now() -- the U2 capture-lag
+    gate must know the difference so a faked 'now' cannot silently pass."""
     if hasattr(entry, "published_parsed") and entry.published_parsed:
         dt = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
-        return dt.isoformat()
-    return datetime.now(timezone.utc).isoformat()
+        return dt.isoformat(), True
+    return datetime.now(timezone.utc).isoformat(), False
+
+
+# ============================================================
+# U2 -- Capture-Lag Freshness Gate (collected_at - published_at <= 18h)
+# Rejects stale backlog from slow feeds and archive-replay (dead-feed ghosts).
+# DRY-RUN default: logs what it WOULD drop, drops nothing, until verified live.
+# ============================================================
+CAPTURE_LAG_MAX_HOURS = 18.0
+CAPTURE_GATE_DRY_RUN = True  # observe-only first run; flip to False to enforce
+
+
+def _within_capture_window(published_iso: str, collected_iso: str,
+                           date_is_real: bool) -> tuple:
+    """Return (keep, reason). lag = collected - published.
+    Strict: a missing real publish date fails the gate."""
+    if not date_is_real:
+        return False, "no-real-date"
+    try:
+        p = datetime.fromisoformat(published_iso)
+        c = datetime.fromisoformat(collected_iso)
+    except Exception:
+        return False, "unparseable-date"
+    lag_h = (c - p).total_seconds() / 3600.0
+    if lag_h > CAPTURE_LAG_MAX_HOURS:
+        return False, "stale " + format(lag_h, ".1f") + "h"
+    return True, "ok " + format(lag_h, ".1f") + "h"
 
 
 def collect_articles(max_per_source: int = 20) -> list[dict]:
@@ -212,6 +221,7 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
     """
     articles = []
     seen_ids = set()
+    capture_dropped = 0
 
     # Fetch active reserves once at start of collection
     active_reserves = _get_active_reserves()
@@ -258,6 +268,18 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
                     article_id = make_id(title, src_name)
                     if article_id in seen_ids:
                         continue
+
+                    pub_iso, date_is_real = parse_date(entry)
+                    col_iso = datetime.now(timezone.utc).isoformat()
+                    keep, reason = _within_capture_window(pub_iso, col_iso, date_is_real)
+                    if not keep:
+                        capture_dropped += 1
+                        if CAPTURE_GATE_DRY_RUN:
+                            print("  [CAPTURE-LAG dry-run] would drop (" + reason + "): " + src_name + " | " + title[:60])
+                        else:
+                            print("  [CAPTURE-LAG] dropped (" + reason + "): " + src_name + " | " + title[:60])
+                            continue
+
                     seen_ids.add(article_id)
 
                     articles.append({
@@ -272,8 +294,8 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
                         "pillar":           src.get("pillar", source.get("pillar", "geo")),
                         "democracy_score":  src.get("democracy_score", source.get("democracy_score", 50)),
                         "content_type":     src.get("content_type", source.get("content_type", "news")),
-                        "published_at":     parse_date(entry),
-                        "collected_at":     datetime.now(timezone.utc).isoformat(),
+                        "published_at":     pub_iso,
+                        "collected_at":     col_iso,
                     })
                     count += 1
 
@@ -293,6 +315,10 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
             print(f"  Warning: {name}: 0 articles collected — reserve not yet activated")
 
     print(f"\n  Total collected: {len(articles)} articles")
+
+    if capture_dropped:
+        mode = "would drop (dry-run)" if CAPTURE_GATE_DRY_RUN else "dropped"
+        print("  Capture-lag gate (" + format(CAPTURE_LAG_MAX_HOURS, ".0f") + "h): " + mode + " " + str(capture_dropped) + " stale article(s)")
 
     # Show reserve usage summary
     reserve_used = [a for a in articles if a.get("is_reserve")]
