@@ -51,11 +51,11 @@ SOURCES = [
 
     {"name": "Human Rights Watch",
      "url": "https://www.hrw.org/rss.xml",
-     "content_type": "news", "pillar": "geo", "bias": "Human Rights", "democracy_score": 93},
+     "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "Human Rights", "democracy_score": 93},
 
     {"name": "Crisis Group",
      "url": "https://www.crisisgroup.org/rss.xml",
-     "content_type": "news", "pillar": "geo", "bias": "Research", "democracy_score": 92},
+     "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "Research", "democracy_score": 92},
 
 
     {"name": "NPR World News",
@@ -76,17 +76,17 @@ SOURCES = [
 
     {"name": "War on the Rocks",
      "url": "https://warontherocks.com/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "Security Research",
+     "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "Security Research",
      "democracy_score": 82},
 
     {"name": "DFRLab",
-     "url": "https://dfrlab.org/feed/",  # O1 swap (S44): moved off Medium Feb 2025; weekly cadence -> ANALYSIS_TIER
-     "content_type": "news", "pillar": "geo", "bias": "OSINT/Disinformation",
+     "url": "https://dfrlab.org/feed/",  # O1 swap (S44): moved off Medium Feb 2025; ~150h cadence
+     "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "OSINT/Disinformation",
      "democracy_score": 88},
 
     {"name": "ICIJ",
      "url": "https://icij.org/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "Investigative",
+     "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "Investigative",
      "democracy_score": 92},
 
     {"name": "Stimson Center",
@@ -96,7 +96,7 @@ SOURCES = [
 
     {"name": "Amnesty International",
      "url": "https://www.amnesty.org/en/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "Human Rights",
+     "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "Human Rights",
      "democracy_score": 91},
     {"name": "Breaking Defense",
      "url": "https://breakingdefense.com/full-rss-feed/",
@@ -133,29 +133,28 @@ SOURCES = [
      "url": "https://hongkongfp.com/feed/",
      "content_type": "news", "pillar": "geo", "bias": "HK Independent", "democracy_score": 85},
 
-    # review/opinion tier + Google-News site: fallbacks -> parked in ANALYSIS_TIER
-    #   (168h) as S44 arc-3 interim, until arc 4 splits review(48h)/opinion(120h).
+    # review tier (48h) + opinion (RFA, 120h) via inline "tier" fields (S44 arc 4).
     #   gov-funded (RFE/RL, RFA): §5 bias-guard + OP-005, democracy_score set
     #   BELOW reader/NGO outlets so no state narrative is laundered.
     {"name": "RFE/RL",
      "url": "https://news.google.com/rss/search?q=when:48h+site:rferl.org&hl=en-US&gl=US&ceid=US:en",
-     "content_type": "news", "pillar": "geo", "bias": "US-Gov Funded", "democracy_score": 72},
+     "content_type": "news", "pillar": "geo", "tier": "review", "bias": "US-Gov Funded", "democracy_score": 72},
 
     {"name": "Global Voices",
      "url": "https://globalvoices.org/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "Citizen Media/Global South", "democracy_score": 87},
+     "content_type": "news", "pillar": "geo", "tier": "review", "bias": "Citizen Media/Global South", "democracy_score": 87},
 
     {"name": "Radio Free Asia",
      "url": "https://www.rfa.org/english/rss2.xml",
-     "content_type": "news", "pillar": "geo", "bias": "US-Gov Funded", "democracy_score": 70},
+     "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "US-Gov Funded", "democracy_score": 70},
 
     {"name": "The Irrawaddy",
      "url": "https://news.google.com/rss/search?q=when:48h+site:irrawaddy.com&hl=en-US&gl=US&ceid=US:en",
-     "content_type": "news", "pillar": "geo", "bias": "Myanmar Independent", "democracy_score": 80},
+     "content_type": "news", "pillar": "geo", "tier": "review", "bias": "Myanmar Independent", "democracy_score": 80},
 
     {"name": "IranWire",
      "url": "https://news.google.com/rss/search?q=when:48h+site:iranwire.com&hl=en-US&gl=US&ceid=US:en",
-     "content_type": "news", "pillar": "geo", "bias": "Iranian Independent", "democracy_score": 82},
+     "content_type": "news", "pillar": "geo", "tier": "review", "bias": "Iranian Independent", "democracy_score": 82},
 
     # ── FINANCIAL PILLAR (5 sources) ──────────────────────────
     # PHI-001 cut (S44): Project Syndicate (register-gate) + Bloomberg Economics
@@ -198,7 +197,7 @@ SOURCES = [
 
     {"name": "Bellingcat",
      "url": "https://www.bellingcat.com/feed/",
-     "content_type": "news", "pillar": "tech", "bias": "OSINT", "democracy_score": 90},
+     "content_type": "news", "pillar": "tech", "tier": "opinion", "bias": "OSINT", "democracy_score": 90},
 
     {"name": "Ars Technica",
      "url": "https://feeds.arstechnica.com/arstechnica/index",
@@ -243,33 +242,34 @@ def parse_date(entry) -> tuple:
 
 
 # ============================================================
-# U2 -- Capture-Lag Freshness Gate (collected_at - published_at <= 18h)
-# Rejects stale backlog from slow feeds and archive-replay (dead-feed ghosts).
-# DRY-RUN default: logs what it WOULD drop, drops nothing, until verified live.
+# U2 -- Capture-Lag Freshness Gate (3-tier model, S44 arc 4)
+# lag = collected_at - published_at; drop if lag > TIER_WINDOW_HOURS[tier].
+# Each source declares "tier" ("news"|"review"|"opinion"); absent => "news".
+# Missing/unparseable publish date = STRICT DROP (date_is_real from parse_date).
+# DRY-RUN: logs what it WOULD drop, drops nothing, until verified live.
 # ============================================================
-CAPTURE_LAG_MAX_HOURS = 18.0          # default window: NEWS sources (fresh standard)
-ANALYSIS_WINDOW_HOURS = 168.0        # 7 days: slow-cadence analysis tier
-CAPTURE_GATE_DRY_RUN = False         # ENFORCING: 18h news / 168h analysis (verified S43 cron 0708 UTC)
+TIER_WINDOW_HOURS = {"news": 18.0, "review": 48.0, "opinion": 120.0}
+DEFAULT_TIER = "news"
+CAPTURE_GATE_DRY_RUN = True           # arc-4 dry-run: verify per-tier drop counts before flip
 
-# Sources whose nature is deep analysis, not breaking news (Lens STATE-tier analog).
-# These publish on multi-day cadence; the 18h news gate would wrongly kill them.
-ANALYSIS_TIER = {
-    "Crisis Group", "Human Rights Watch", "Amnesty International",
-    "ICIJ", "Bellingcat", "War on the Rocks",
-    "DFRLab",   # S44 O1: weekly OSINT cadence (~150h) -> needs 168h window, not 18h
-    # S44 arc-3 interim: review/opinion ports parked at 168h until arc-4 3-tier split
-    #   (targets: RFE/RL 48h, Global Voices 48h, RFA 120h, Irrawaddy 48h, IranWire 48h)
-    "RFE/RL", "Global Voices", "Radio Free Asia", "The Irrawaddy", "IranWire",
-}
+# §1 tier mapping (inline "tier" field on each source dict; search '"tier":'):
+#   opinion (120h) = the old 168h "analysis" set, tightened: Crisis Group, HRW,
+#     Amnesty, ICIJ, Bellingcat, War on the Rocks, DFRLab, Radio Free Asia.
+#   review (48h): RFE/RL, Global Voices, The Irrawaddy, IranWire.
+#   news (18h): all others (default).
+# NOTE (S44, user-accepted): opinion@120h drops Crisis Group (~250h) and DFRLab
+#   (~150h) while they are stale -- their slow cadence exceeds the strict ceiling.
 
 
-def _window_for(source_name: str) -> float:
-    """Return the freshness window (hours) for a source by tier."""
-    return ANALYSIS_WINDOW_HOURS if source_name in ANALYSIS_TIER else CAPTURE_LAG_MAX_HOURS
+def _window_for(source: dict) -> float:
+    """Return the freshness window (hours) for a source by its declared tier.
+    Absent tier defaults to 'news' (18h, the strict fresh standard)."""
+    tier = source.get("tier", DEFAULT_TIER)
+    return TIER_WINDOW_HOURS.get(tier, TIER_WINDOW_HOURS[DEFAULT_TIER])
 
 
 def _within_capture_window(published_iso: str, collected_iso: str,
-                           date_is_real: bool, max_hours: float = CAPTURE_LAG_MAX_HOURS) -> tuple:
+                           date_is_real: bool, max_hours: float = TIER_WINDOW_HOURS["news"]) -> tuple:
     """Return (keep, reason). lag = collected - published.
     Strict: a missing real publish date fails the gate.
     max_hours is the per-source freshness window (tiered)."""
@@ -345,7 +345,7 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
 
                     pub_iso, date_is_real = parse_date(entry)
                     col_iso = datetime.now(timezone.utc).isoformat()
-                    keep, reason = _within_capture_window(pub_iso, col_iso, date_is_real, _window_for(name))
+                    keep, reason = _within_capture_window(pub_iso, col_iso, date_is_real, _window_for(source))
                     if not keep:
                         capture_dropped += 1
                         if CAPTURE_GATE_DRY_RUN:
@@ -392,7 +392,7 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
 
     if capture_dropped:
         mode = "would drop (dry-run)" if CAPTURE_GATE_DRY_RUN else "dropped"
-        print("  Capture-lag gate (" + format(CAPTURE_LAG_MAX_HOURS, ".0f") + "h): " + mode + " " + str(capture_dropped) + " stale article(s)")
+        print("  Capture-lag gate (3-tier 18/48/120h): " + mode + " " + str(capture_dropped) + " stale article(s)")
 
     # Show reserve usage summary
     reserve_used = [a for a in articles if a.get("is_reserve")]
