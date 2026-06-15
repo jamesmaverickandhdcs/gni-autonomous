@@ -12,6 +12,37 @@ from analysis.source_weights import get_source_weights
 # Each article carries pass/fail + reason at every stage
 # ============================================================
 
+# PHI-003 "Freedom From Fear" keyword set (§5, S44): mass mobilization /
+# crackdowns under authoritarian regimes are leading indicators of geopolitical
+# rupture (UN human-security pillar; civil-resistance scholarship). Folded into
+# GEO relevance below (NOT a 4th pillar). All lowercase for substring matching.
+# Bare ambiguous acronyms from the brief (PDF, CDM, NUG, FBK) use full forms,
+# and bare "Memorial" is omitted, to avoid substring false positives
+# (e.g. "pdf" files, "nugget", "memorial day").
+PHI003_FREEDOM_FROM_FEAR = [
+    # Universal — repression / civil-resistance signals
+    'political prisoner', 'prisoner of conscience', 'arbitrary detention',
+    'enforced disappearance', 'civil disobedience', 'nonviolent resistance',
+    'pro-democracy protest', 'crackdown', 'internet shutdown', 'censorship',
+    'dissident', 'exile', 'defector', 'junta', 'martial law',
+    'magnitsky', 'targeted sanctions',
+    # Myanmar
+    'spring revolution', 'national unity government', "people's defence force",
+    'civil disobedience movement', 'tatmadaw',
+    # China
+    'white paper protest', 'a4 revolution', 'uyghur', 'xinjiang', 'tibet',
+    'hong kong', '709 crackdown',
+    # Iran
+    'woman life freedom', 'mahsa amini', 'hijab protest', 'irgc', 'evin prison',
+    # Russia
+    'navalny', 'anti-corruption foundation', 'foreign agent law',
+    'mobilization protest',
+    # North Korea
+    'kwanliso', 'political prison camp', 'forced labor', 'forced labour',
+    # Belarus
+    'tsikhanouskaya', 'viasna', 'bialiatski', '2020 protests',
+]
+
 # Stage 1: Relevance keywords
 GEOPOLITICAL_KEYWORDS = [
     # Tier 4 — Strategic chokepoints and maritime (GNI unique angle)
@@ -40,6 +71,9 @@ GEOPOLITICAL_KEYWORDS = [
     # Tier 7 — Humanitarian and global issues
     'refugee', 'humanitarian', 'famine', 'drought', 'climate',
     'pandemic', 'vaccine', 'who', 'tension', 'pacific',
+    # Tier 8 — PHI-003 Freedom From Fear (§5): authoritarian crackdown /
+    #   civil-resistance early-warning. Folded into GEO, not a 4th pillar.
+    *PHI003_FREEDOM_FROM_FEAR,
 ]
 
 IRRELEVANT_KEYWORDS = [
