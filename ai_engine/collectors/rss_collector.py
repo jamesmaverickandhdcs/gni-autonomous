@@ -191,14 +191,28 @@ def parse_date(entry) -> tuple:
 # Rejects stale backlog from slow feeds and archive-replay (dead-feed ghosts).
 # DRY-RUN default: logs what it WOULD drop, drops nothing, until verified live.
 # ============================================================
-CAPTURE_LAG_MAX_HOURS = 18.0
-CAPTURE_GATE_DRY_RUN = True  # observe-only first run; flip to False to enforce
+CAPTURE_LAG_MAX_HOURS = 18.0          # default window: NEWS sources (fresh standard)
+ANALYSIS_WINDOW_HOURS = 168.0        # 7 days: slow-cadence analysis tier
+CAPTURE_GATE_DRY_RUN = True          # observe-only first run; flip to False to enforce
+
+# Sources whose nature is deep analysis, not breaking news (Lens STATE-tier analog).
+# These publish on multi-day cadence; the 18h news gate would wrongly kill them.
+ANALYSIS_TIER = {
+    "Crisis Group", "Human Rights Watch", "Amnesty International",
+    "ICIJ", "Bellingcat", "War on the Rocks",
+}
+
+
+def _window_for(source_name: str) -> float:
+    """Return the freshness window (hours) for a source by tier."""
+    return ANALYSIS_WINDOW_HOURS if source_name in ANALYSIS_TIER else CAPTURE_LAG_MAX_HOURS
 
 
 def _within_capture_window(published_iso: str, collected_iso: str,
-                           date_is_real: bool) -> tuple:
+                           date_is_real: bool, max_hours: float = CAPTURE_LAG_MAX_HOURS) -> tuple:
     """Return (keep, reason). lag = collected - published.
-    Strict: a missing real publish date fails the gate."""
+    Strict: a missing real publish date fails the gate.
+    max_hours is the per-source freshness window (tiered)."""
     if not date_is_real:
         return False, "no-real-date"
     try:
@@ -207,7 +221,7 @@ def _within_capture_window(published_iso: str, collected_iso: str,
     except Exception:
         return False, "unparseable-date"
     lag_h = (c - p).total_seconds() / 3600.0
-    if lag_h > CAPTURE_LAG_MAX_HOURS:
+    if lag_h > max_hours:
         return False, "stale " + format(lag_h, ".1f") + "h"
     return True, "ok " + format(lag_h, ".1f") + "h"
 
@@ -271,7 +285,7 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
 
                     pub_iso, date_is_real = parse_date(entry)
                     col_iso = datetime.now(timezone.utc).isoformat()
-                    keep, reason = _within_capture_window(pub_iso, col_iso, date_is_real)
+                    keep, reason = _within_capture_window(pub_iso, col_iso, date_is_real, _window_for(name))
                     if not keep:
                         capture_dropped += 1
                         if CAPTURE_GATE_DRY_RUN:
