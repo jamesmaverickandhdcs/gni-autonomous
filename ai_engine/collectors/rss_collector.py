@@ -5,7 +5,7 @@ from typing import Optional
 
 # ============================================================
 # GNI RSS Collector — Updated with Reserve Source Support
-# 25 primary sources: 12 Geo + 8 Tech + 5 Fin
+# Primary sources: 20 Geo + 5 Fin + 6 Tech = 31 (S44 PHI-001 paywall cut + FIN backfill)
 # Democracy framework applied -- minimum 50% threshold
 # Reserve sources activated by admin via Telegram reply (1-5)
 # Active reserves fetched from Supabase source_reserves table
@@ -67,9 +67,8 @@ SOURCES = [
      "url": "https://africasacountry.com/feed",
      "content_type": "news", "pillar": "geo", "bias": "Post-Colonial Analysis", "democracy_score": 75},
 
-    {"name": "The Africa Report",
-     "url": "https://www.theafricareport.com/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "African Business/Political", "democracy_score": 72},
+    # PHI-001 cut (S44): The Africa Report removed — teaser-only feed on a metered site
+    #   (dead-on-arrival link for free Telegram readers). Africa Is A Country retained for coverage.
     # ── S38 NEW GEO SOURCES ───────────────────────────────────
 
     {"name": "War on the Rocks",
@@ -106,10 +105,9 @@ SOURCES = [
      "democracy_score": 68},
 
     # ── FINANCIAL PILLAR (5 sources) ──────────────────────────
-    {"name": "Project Syndicate",
-     "url": "https://www.project-syndicate.org/rss",
-     "content_type": "news", "pillar": "fin", "bias": "Research", "democracy_score": 79},
-
+    # PHI-001 cut (S44): Project Syndicate (register-gate) + Bloomberg Economics
+    #   (the entry formerly mislabeled "ING Think" carried feeds.bloomberg.com,
+    #   hard-metered) removed. Backfilled with free Google-News FIN feeds below.
     {"name": "Yahoo Finance",
      "url": "https://finance.yahoo.com/news/rssindex",
      "content_type": "news", "pillar": "fin", "bias": "Financial Aggregator", "democracy_score": 70},
@@ -118,16 +116,21 @@ SOURCES = [
      "url": "https://www.cnbc.com/id/100727362/device/rss/rss.html",
      "content_type": "news", "pillar": "fin", "bias": "Financial", "democracy_score": 65},
 
-    {"name": "ING Think",
-     "url": "https://feeds.bloomberg.com/economics/news.rss",
-     "content_type": "news", "pillar": "fin", "bias": "Economic Research",
-     "democracy_score": 70},
+    # S44 FIN backfill — free Google-News search feeds (when:24h keeps them fresh)
+    {"name": "FIN Financial Stability (Google News)",
+     "url": "https://news.google.com/rss/search?q=when:24h+%22sanctions%22+OR+%22financial+stability%22+OR+%22debt+crisis%22&hl=en-US&gl=US&ceid=US:en",
+     "content_type": "news", "pillar": "fin", "bias": "Financial Aggregator", "democracy_score": 70},
+
+    {"name": "FIN Central Banks (Google News)",
+     "url": "https://news.google.com/rss/search?q=when:24h+%22central+bank%22+OR+%22Federal+Reserve%22+OR+%22interest+rates%22+OR+%22inflation%22&hl=en-US&gl=US&ceid=US:en",
+     "content_type": "news", "pillar": "fin", "bias": "Financial Aggregator", "democracy_score": 70},
+
+    {"name": "FIN IMF/World Bank (Google News)",
+     "url": "https://news.google.com/rss/search?q=when:24h+%22IMF%22+OR+%22World+Bank%22+OR+%22sovereign+debt%22&hl=en-US&gl=US&ceid=US:en",
+     "content_type": "news", "pillar": "fin", "bias": "Financial Aggregator", "democracy_score": 70},
 
     # ── TECHNOLOGY PILLAR (8 sources) ─────────────────────────
-    {"name": "Wired",
-     "url": "https://www.wired.com/feed/rss",
-     "content_type": "news", "pillar": "tech", "bias": "Technology", "democracy_score": 68},
-
+    # PHI-001 cut (S44): Wired removed — metered paywall (dead link for free readers).
     {"name": "EFF Deeplinks",
      "url": "https://www.eff.org/rss/updates.xml",
      "content_type": "news", "pillar": "tech", "bias": "Digital Rights", "democracy_score": 91},
