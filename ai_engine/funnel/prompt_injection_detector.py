@@ -10,6 +10,15 @@ except Exception:
     _log_audit = None
 
 # ============================================================
+# !!! DEPRECATED / NOT WIRED INTO THE PIPELINE (verified S44 arc 6) !!!
+# The LIVE Stage-1b detector is intelligence_funnel._check_injection.
+# Nothing imports detect_injection/filter_injections from this module.
+# The line-108 URL allowlist below is stale (lists cut domains reuters/
+# nikkei/ft/technologyreview) AND broken in the same way the funnel's old
+# Category-10b pattern was: it flags any non-allowlisted URL, which would
+# wipe full-content feeds. The S44 0708 cliff was actually caused by the
+# funnel pattern, not this file. Recommend deleting this module.
+# ============================================================
 # GNI Prompt Injection Detector — Day 11
 # Expanded from 16 to 50+ patterns
 # Covers: classic, encoded, multilingual, role confusion,

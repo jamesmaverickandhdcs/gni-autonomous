@@ -160,10 +160,13 @@ INJECTION_PATTERNS = [
     r'send\s+(all|this)\s+(data|article|information)\s+to',
     r'forward\s+(all|this)\s+(data|article|information)\s+to',
     r'exfiltrate\s+(data|information|results)',
-    # Category 10b: URLs only flagged when combined with exfiltration language
-    # NOT blocking all external URLs -- legitimate articles routinely cite sources
-    # Only flag: send/forward/exfiltrate + URL pattern (true data exfiltration)
-    r'(send|forward|post|submit|exfiltrate).{0,50}https?://',
+    # Category 10b: exfiltration = verb + data-object + URL, close together.
+    # NOT blocking external URLs -- legit articles cite sources constantly.
+    # Tightened S44 (arc 6): the old `(send|forward|post|submit|exfiltrate).{0,50}url`
+    #   wiped 100% of full-content feeds (WoR/Breaking Defense/Bellingcat/Amnesty/
+    #   DFRLab) because "post"/"submit"/"forward"/"send" sit near a link in any HTML
+    #   body. Genuine "send all data to X" is still caught by the precise patterns above.
+    r'(send|forward|upload|exfiltrate|leak)\b[^\n]{0,30}\b(data|information|results|credentials|content|article)s?\b[^\n]{0,30}https?://',
     # Category 11: PHI-003 manipulation techniques (GNI S35)
     # Peer pressure — consensus without evidence
     r'everyone\s+(agrees|knows|understands|accepts)',
