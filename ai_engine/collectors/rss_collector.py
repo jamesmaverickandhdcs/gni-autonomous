@@ -30,9 +30,12 @@ SOURCES = [
      "url": "https://www.aljazeera.com/xml/rss/all.xml",
      "content_type": "news", "pillar": "geo", "bias": "Non-Western", "democracy_score": 70},
 
-    {"name": "CNN",
-     "url": "http://rss.cnn.com/rss/edition.rss",
-     "content_type": "news", "pillar": "geo", "bias": "Western Liberal", "democracy_score": 69},
+    # O1 swap (S44): CNN removed — rss.cnn.com host frozen Aug 2024 (serves
+    #   archive entries with NO machine-readable date; strict gate drops all).
+    #   Replaced with NDTV World (live-verified fresh 8.3h).
+    {"name": "NDTV World",
+     "url": "https://feeds.feedburner.com/ndtvnews-world-news",
+     "content_type": "news", "pillar": "geo", "bias": "Non-Western", "democracy_score": 68},
 
     {"name": "Eye on the Arctic",
      "url": "https://www.rcinet.ca/eye-on-the-arctic/feed/",
@@ -77,7 +80,7 @@ SOURCES = [
      "democracy_score": 82},
 
     {"name": "DFRLab",
-     "url": "https://medium.com/feed/dfrlab",
+     "url": "https://dfrlab.org/feed/",  # O1 swap (S44): moved off Medium Feb 2025; weekly cadence -> ANALYSIS_TIER
      "content_type": "news", "pillar": "geo", "bias": "OSINT/Disinformation",
      "democracy_score": 88},
 
@@ -203,6 +206,7 @@ CAPTURE_GATE_DRY_RUN = False         # ENFORCING: 18h news / 168h analysis (veri
 ANALYSIS_TIER = {
     "Crisis Group", "Human Rights Watch", "Amnesty International",
     "ICIJ", "Bellingcat", "War on the Rocks",
+    "DFRLab",   # S44 O1: weekly OSINT cadence (~150h) -> needs 168h window, not 18h
 }
 
 
