@@ -193,7 +193,7 @@ def parse_date(entry) -> tuple:
 # ============================================================
 CAPTURE_LAG_MAX_HOURS = 18.0          # default window: NEWS sources (fresh standard)
 ANALYSIS_WINDOW_HOURS = 168.0        # 7 days: slow-cadence analysis tier
-CAPTURE_GATE_DRY_RUN = True          # observe-only first run; flip to False to enforce
+CAPTURE_GATE_DRY_RUN = False         # ENFORCING: 18h news / 168h analysis (verified S43 cron 0708 UTC)
 
 # Sources whose nature is deep analysis, not breaking news (Lens STATE-tier analog).
 # These publish on multi-day cadence; the 18h news gate would wrongly kill them.
