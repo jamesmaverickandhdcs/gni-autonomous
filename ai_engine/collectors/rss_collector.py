@@ -5,7 +5,7 @@ from typing import Optional
 
 # ============================================================
 # GNI RSS Collector — Updated with Reserve Source Support
-# Primary sources: 20 Geo + 5 Fin + 6 Tech = 31 (S44 PHI-001 paywall cut + FIN backfill)
+# Primary sources: 31 Geo + 5 Fin + 6 Tech = 42 (S44: PHI-001 cut + O1 swap + §4 ports)
 # Democracy framework applied -- minimum 50% threshold
 # Reserve sources activated by admin via Telegram reply (1-5)
 # Active reserves fetched from Supabase source_reserves table
@@ -107,6 +107,56 @@ SOURCES = [
      "content_type": "news", "pillar": "geo", "bias": "Non-Western",
      "democracy_score": 68},
 
+    # ── S44 NEW GEO SOURCES (§4 ports — all live-verified fresh this session) ──
+    # news tier (18h default gate):
+    {"name": "Fox News World",
+     "url": "https://moxie.foxnews.com/google-publisher/world.xml",
+     "content_type": "news", "pillar": "geo", "bias": "Western Conservative", "democracy_score": 60},
+
+    {"name": "Myanmar Now",
+     "url": "https://myanmar-now.org/en/feed/",
+     "content_type": "news", "pillar": "geo", "bias": "Myanmar Independent", "democracy_score": 80},
+
+    {"name": "Meduza EN",
+     "url": "https://meduza.io/rss/en/all",
+     "content_type": "news", "pillar": "geo", "bias": "Russian Independent (exile)", "democracy_score": 85},
+
+    {"name": "The Moscow Times",
+     "url": "https://www.themoscowtimes.com/rss/news",
+     "content_type": "news", "pillar": "geo", "bias": "Russian Independent (exile)", "democracy_score": 82},
+
+    {"name": "Daily NK",
+     "url": "https://www.dailynk.com/english/feed/",
+     "content_type": "news", "pillar": "geo", "bias": "North Korea Focus", "democracy_score": 75},
+
+    {"name": "Hong Kong Free Press",
+     "url": "https://hongkongfp.com/feed/",
+     "content_type": "news", "pillar": "geo", "bias": "HK Independent", "democracy_score": 85},
+
+    # review/opinion tier + Google-News site: fallbacks -> parked in ANALYSIS_TIER
+    #   (168h) as S44 arc-3 interim, until arc 4 splits review(48h)/opinion(120h).
+    #   gov-funded (RFE/RL, RFA): §5 bias-guard + OP-005, democracy_score set
+    #   BELOW reader/NGO outlets so no state narrative is laundered.
+    {"name": "RFE/RL",
+     "url": "https://news.google.com/rss/search?q=when:48h+site:rferl.org&hl=en-US&gl=US&ceid=US:en",
+     "content_type": "news", "pillar": "geo", "bias": "US-Gov Funded", "democracy_score": 72},
+
+    {"name": "Global Voices",
+     "url": "https://globalvoices.org/feed/",
+     "content_type": "news", "pillar": "geo", "bias": "Citizen Media/Global South", "democracy_score": 87},
+
+    {"name": "Radio Free Asia",
+     "url": "https://www.rfa.org/english/rss2.xml",
+     "content_type": "news", "pillar": "geo", "bias": "US-Gov Funded", "democracy_score": 70},
+
+    {"name": "The Irrawaddy",
+     "url": "https://news.google.com/rss/search?q=when:48h+site:irrawaddy.com&hl=en-US&gl=US&ceid=US:en",
+     "content_type": "news", "pillar": "geo", "bias": "Myanmar Independent", "democracy_score": 80},
+
+    {"name": "IranWire",
+     "url": "https://news.google.com/rss/search?q=when:48h+site:iranwire.com&hl=en-US&gl=US&ceid=US:en",
+     "content_type": "news", "pillar": "geo", "bias": "Iranian Independent", "democracy_score": 82},
+
     # ── FINANCIAL PILLAR (5 sources) ──────────────────────────
     # PHI-001 cut (S44): Project Syndicate (register-gate) + Bloomberg Economics
     #   (the entry formerly mislabeled "ING Think" carried feeds.bloomberg.com,
@@ -207,6 +257,9 @@ ANALYSIS_TIER = {
     "Crisis Group", "Human Rights Watch", "Amnesty International",
     "ICIJ", "Bellingcat", "War on the Rocks",
     "DFRLab",   # S44 O1: weekly OSINT cadence (~150h) -> needs 168h window, not 18h
+    # S44 arc-3 interim: review/opinion ports parked at 168h until arc-4 3-tier split
+    #   (targets: RFE/RL 48h, Global Voices 48h, RFA 120h, Irrawaddy 48h, IranWire 48h)
+    "RFE/RL", "Global Voices", "Radio Free Asia", "The Irrawaddy", "IranWire",
 }
 
 
