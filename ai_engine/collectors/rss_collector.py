@@ -185,7 +185,7 @@ SOURCES = [
     # PHI-001 cut (S44): Wired removed — metered paywall (dead link for free readers).
     {"name": "EFF Deeplinks",
      "url": "https://www.eff.org/rss/updates.xml",
-     "content_type": "news", "pillar": "tech", "bias": "Digital Rights", "democracy_score": 91},
+     "content_type": "news", "pillar": "tech", "tier": "opinion", "bias": "Digital Rights", "democracy_score": 91},
 
     {"name": "Rest of World",
      "url": "https://restofworld.org/feed/",
@@ -205,7 +205,7 @@ SOURCES = [
 
     {"name": "IEEE Spectrum",
      "url": "https://spectrum.ieee.org/feeds/feed.rss",
-     "content_type": "news", "pillar": "tech", "bias": "Technology", "democracy_score": 74},
+     "content_type": "news", "pillar": "tech", "tier": "opinion", "bias": "Technology", "democracy_score": 74},
 
 ]
 
@@ -250,7 +250,7 @@ def parse_date(entry) -> tuple:
 # ============================================================
 TIER_WINDOW_HOURS = {"news": 18.0, "review": 48.0, "opinion": 120.0}
 DEFAULT_TIER = "news"
-CAPTURE_GATE_DRY_RUN = True           # arc-4 dry-run: verify per-tier drop counts before flip
+CAPTURE_GATE_DRY_RUN = False          # arc-4 FLIP: gate now enforcing (drops in production)
 
 # §1 tier mapping (inline "tier" field on each source dict; search '"tier":'):
 #   opinion (120h) = the old 168h "analysis" set, tightened: Crisis Group, HRW,
