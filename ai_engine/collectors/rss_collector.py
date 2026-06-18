@@ -286,6 +286,56 @@ def _within_capture_window(published_iso: str, collected_iso: str,
     return True, "ok " + format(lag_h, ".1f") + "h"
 
 
+# ============================================================
+# Feed-chrome guard (S45 arc B)
+# Some site:/archive feeds emit nav/breadcrumb rows AS entries (epoch-zero
+# dates, feed-title echoes). They are not articles. Skip them BEFORE the
+# pipeline AND before they count toward a source's raw-entry total -- so the
+# (Arc A) health monitor never sees feed chrome as real fetched content.
+# Two independent signals (OR):
+#   1. implausibly old publish date  (lag > CHROME_MAX_LAG_HOURS ~ 5 years)
+#   2. title is nav/breadcrumb chrome (feed-title echo or denylist label)
+# Pure-ASCII anchors (LR-101). Short labels match EXACT title only -- a
+# substring "home" would wrongly drop "Homes destroyed in ...".
+# ============================================================
+CHROME_MAX_LAG_HOURS = 43800.0          # ~5 years: older => feed-chrome, not an article
+CHROME_TITLE_EXACT = ("home", "majlis", "archives")        # whole-title nav labels
+CHROME_TITLE_CONTAINS = ("video archive", "donate to")     # distinctive chrome phrases
+
+
+def _is_feed_chrome(title: str, feed_title: str, pub_iso: str,
+                    date_is_real: bool, collected_iso: str) -> tuple:
+    """Return (is_chrome, reason). True => skip this entry as feed chrome."""
+    tl = title.strip().lower()
+
+    # signal 1: implausibly old publish date (epoch-ish chrome marker)
+    if date_is_real:
+        try:
+            p = datetime.fromisoformat(pub_iso)
+            c = datetime.fromisoformat(collected_iso)
+            lag_h = (c - p).total_seconds() / 3600.0
+            if lag_h > CHROME_MAX_LAG_HOURS:
+                return True, "chrome-stale " + format(lag_h, ".0f") + "h"
+        except Exception:
+            pass
+
+    # signal 2: title is the feed's own name / a breadcrumb / a nav label
+    ftl = (feed_title or "").strip().lower()
+    if ftl:
+        if tl == ftl:
+            return True, "title==feed-title"
+        if tl.endswith(" - " + ftl) or tl.endswith(" | " + ftl):
+            return True, "feed-title breadcrumb"
+    for bad in CHROME_TITLE_EXACT:
+        if tl == bad:
+            return True, "chrome-title '" + bad + "'"
+    for bad in CHROME_TITLE_CONTAINS:
+        if bad in tl:
+            return True, "chrome-phrase '" + bad + "'"
+
+    return False, ""
+
+
 def collect_articles(max_per_source: int = 20) -> list[dict]:
     """
     Collect articles from all RSS sources.
@@ -296,6 +346,7 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
     articles = []
     seen_ids = set()
     capture_dropped = 0
+    chrome_skipped = 0
 
     # Fetch active reserves once at start of collection
     active_reserves = _get_active_reserves()
@@ -330,6 +381,12 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
                         print(f"  Warning: {src_name}: Feed error -- trying reserve if available")
                     continue
 
+                feed_title = ""
+                try:
+                    feed_title = feed.feed.get("title", "")
+                except Exception:
+                    feed_title = ""
+
                 count = 0
                 for entry in feed.entries[:max_per_source]:
                     title   = entry.get("title", "").strip()
@@ -339,12 +396,22 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
                     if not title:
                         continue
 
+                    pub_iso, date_is_real = parse_date(entry)
+                    col_iso = datetime.now(timezone.utc).isoformat()
+
+                    # Feed-chrome guard (S45 arc B): drop nav/archive rows BEFORE
+                    # the pipeline and before they count as raw fetched content.
+                    is_chrome, chrome_reason = _is_feed_chrome(
+                        title, feed_title, pub_iso, date_is_real, col_iso)
+                    if is_chrome:
+                        chrome_skipped += 1
+                        print("  [CHROME-SKIP] (" + chrome_reason + "): " + src_name + " | " + title[:60])
+                        continue
+
                     article_id = make_id(title, src_name)
                     if article_id in seen_ids:
                         continue
 
-                    pub_iso, date_is_real = parse_date(entry)
-                    col_iso = datetime.now(timezone.utc).isoformat()
                     keep, reason = _within_capture_window(pub_iso, col_iso, date_is_real, _window_for(source))
                     if not keep:
                         capture_dropped += 1
@@ -390,6 +457,9 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
 
     print(f"\n  Total collected: {len(articles)} articles")
 
+    if chrome_skipped:
+        print("  Feed-chrome guard: skipped " + str(chrome_skipped) + " nav/archive row(s) (not articles)")
+
     if capture_dropped:
         mode = "would drop (dry-run)" if CAPTURE_GATE_DRY_RUN else "dropped"
         print("  Capture-lag gate (3-tier 18/48/120h): " + mode + " " + str(capture_dropped) + " stale article(s)")
@@ -402,8 +472,43 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
     return articles
 
 
+def _selftest_chrome() -> None:
+    """S45 arc B self-test (no network): the live junk rows flag, real
+    headlines do not. W2 -- assert exact counts."""
+    now = datetime.now(timezone.utc)
+    n = now.isoformat()
+    old = now.replace(year=now.year - 8).isoformat()   # ~70,000h old
+
+    # (title, feed_title, pub_iso, date_is_real)
+    junk = [
+        ("Video Archive - Radio Free Europe/Radio Liberty", "Radio Free Europe/Radio Liberty", old, True),
+        ("Rohingya Archives - The Irrawaddy", "The Irrawaddy", old, True),
+        ("Majlis", "Radio Free Europe/Radio Liberty", n, True),
+        ("Home", "Radio Free Europe/Radio Liberty", n, True),
+        ("Donate to ICIJ", "ICIJ", n, False),
+    ]
+    real = [
+        ("Myanmar junta launches new offensive in Rakhine", "Myanmar Now", n, True),
+        ("Meduza editor detained at the border", "Meduza", n, True),
+        ("Homes destroyed as floods hit Pakistan", "Dawn", n, True),
+        ("Pentagon archives declassified after 50 years", "USNI News", n, True),
+    ]
+
+    flagged = [t for (t, ft, p, r) in junk if _is_feed_chrome(t, ft, p, r, n)[0]]
+    assert len(flagged) == len(junk), \
+        "chrome guard MISSED junk: " + repr([t for (t, *_ ) in junk if t not in flagged])
+
+    passed = [t for (t, ft, p, r) in real if not _is_feed_chrome(t, ft, p, r, n)[0]]
+    assert len(passed) == len(real), \
+        "chrome guard FALSE-POSITIVED a real headline: " + repr([t for (t, *_ ) in real if t not in passed])
+
+    print("  [selftest] chrome guard OK: " + str(len(junk)) + " junk flagged, "
+          + str(len(real)) + " real passed")
+
+
 if __name__ == "__main__":
     print("GNI RSS Collector -- Test Run\n")
+    _selftest_chrome()
     articles = collect_articles(max_per_source=5)
     if articles:
         print(f"\nSample article:")
