@@ -680,7 +680,7 @@ if __name__ == "__main__":
         except Exception:
             print("  ⚠️  Ollama not running — will use Groq fallback\n")
 
-    raw = collect_articles(max_per_source=20)
+    raw, _source_stats = collect_articles(max_per_source=20)
     top = run_funnel(raw, top_n=10, max_per_source=3)
 
     print("\n🔬 Analyzing top articles...\n")

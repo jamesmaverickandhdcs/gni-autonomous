@@ -109,14 +109,14 @@ def run_pipeline():
         # -- Step 1: Collect Articles ------------------------
         print("\n?? Step 1: Collecting RSS Articles...")
         t0 = time.time()
-        articles = collect_articles(max_per_source=20)
+        articles, source_stats = collect_articles(max_per_source=20)
         step_timings["collection"] = round(time.time() - t0, 2)
         articles_collected = len(articles)
 
         # -- Source health check (RSS failure detection) --------
         from collectors.rss_collector import SOURCES as RSS_SOURCES
         print("\n  Checking source health...")
-        run_source_health_check(articles, RSS_SOURCES)
+        run_source_health_check(articles, RSS_SOURCES, source_stats)
 
         # -- Emerging keyword detection --------------------------
         if GITHUB_ACTIONS:

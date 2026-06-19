@@ -19,6 +19,26 @@ MIN_EXPECTED         = 3
 ROLLING_WINDOW       = 7
 ALERT_INTERVAL_HOURS = 3
 
+# ── S45 arc A: fetch-health vs yield ─────────────────────────
+# A source is DOWN on FETCH health, not post-gate YIELD. The 3-tier freshness
+# gate (S44) is a legitimate downstream filter -- a slow opinion source that
+# fetches fine but yields 0 survivors is HEALTHY, not down. We measure:
+#   fetch_ok -- transport returned a parseable feed (HTTP 200, >=1 entry)
+#   raw      -- real candidate entries delivered (post chrome-guard, PRE
+#               dedup/freshness). The honest up/down signal.
+# DOWN iff: fetch_ok == False (any tier, immediate)
+#        OR raw == 0 for a NEWS-tier feed (a fresh wire feed with 0 real
+#           entries is genuinely broken)
+#        OR raw == 0 sustained >= RAW_ZERO_PATIENCE_HOURS for a slow tier
+#           (review/opinion can be legitimately quiet for one run; only a
+#           SUSTAINED zero -- time-spanned, not run-counted -- is "down").
+# DRY-RUN: detection runs and logs WOULD-alert verdicts but sends nothing and
+# writes no reserve/fix rows until proven on live data (LR-105). Flip to False
+# only after James sees the dry-run proof.
+HEALTH_ALERT_DRY_RUN    = True
+RAW_ZERO_PATIENCE_HOURS = 72.0          # slow tiers: zero must persist this long
+IMMEDIATE_ZERO_TIERS    = {"news"}      # raw==0 flags on the spot for these
+
 # ── Reserve Sources Pool ─────────────────────────────────────
 GEO_RESERVES = [
     {"name": "Global Voices",     "url": "https://globalvoices.org/feed/",                          "pillar": "geo", "bias": "Global South",   "democracy_score": 88},
@@ -80,12 +100,15 @@ def _send_admin_message(message: str) -> bool:
         return False
 
 
-def _build_reserve_alert(source_name: str, pillar: str, avg: float, hours_down: float) -> str:
+def _build_reserve_alert(source_name: str, pillar: str, avg: float,
+                         hours_down: float, reason: str = "") -> str:
     reserves = _get_reserves_for_pillar(pillar)
     lines = [
         "\U0001f534 <b>[GNI RSS Alert] Source DOWN: " + source_name + "</b>",
-        "Pillar: " + pillar.upper() + " | Was averaging: " + str(avg) + " articles",
+        "Pillar: " + pillar.upper() + " | Avg raw entries: " + str(avg),
     ]
+    if reason:
+        lines.append("Why: " + reason)
     if hours_down > 3:
         lines.append("\u23f0 Down for: " + str(round(hours_down, 1)) + " hours")
     lines.append("")
@@ -199,12 +222,14 @@ def _upsert_reserve_record(client, source_name: str, pillar: str) -> None:
         print("  Warning: Could not upsert reserve record: " + str(e)[:60])
 
 
-def save_source_counts(articles: list, sources: list) -> bool:
+def save_source_counts(articles: list, sources: list, source_stats: dict = None) -> bool:
     client = _get_client()
     if not client:
         return False
 
-    counts = {}       # total articles per source
+    source_stats = source_stats or {}
+
+    counts = {}       # total articles per source (post-gate YIELD)
     geo_counts = {}   # geopolitically relevant articles per source (stage1_passed)
     for art in articles:
         src = art.get("source", "")
@@ -217,12 +242,16 @@ def save_source_counts(articles: list, sources: list) -> bool:
 
     for source in sources:
         name  = source["name"]
-        count = counts.get(name, 0)
+        count = counts.get(name, 0)            # YIELD (survivors) -- dashboard field
+        stat  = source_stats.get(name, {})
+        raw   = stat.get("raw", count)         # RAW fetch health (pre-gate); fall
+                                               # back to yield if stats absent
         records.append({
             "run_at":        run_at,
             "source_name":   name,
             "pillar":        source.get("pillar", ""),
             "article_count": count,
+            "raw_count":     raw,
             "geo_count": geo_counts.get(name, 0),
             "geo_ratio": round(geo_counts.get(name, 0) / count, 2) if count > 0 else 0.0,
             "low_quality_flag": (count > 5 and (geo_counts.get(name, 0) / count) < 0.25),
@@ -233,60 +262,155 @@ def save_source_counts(articles: list, sources: list) -> bool:
         client.table("source_health").insert(records).execute()
         return True
     except Exception as e:
+        # Migration-safe: raw_count column may not exist yet. Retry without it
+        # so health history keeps saving until the ALTER TABLE lands.
+        if "raw_count" in str(e):
+            for r in records:
+                r.pop("raw_count", None)
+            try:
+                client.table("source_health").insert(records).execute()
+                print("  Note: source_health.raw_count column missing -- saved "
+                      "without it. Run: ALTER TABLE source_health ADD COLUMN raw_count int;")
+                return True
+            except Exception as e2:
+                print("  Warning: Could not save source health: " + str(e2))
+                return False
         print("  Warning: Could not save source health: " + str(e))
         return False
 
 
-def detect_rss_failures(sources: list) -> list:
+def _health_verdict(tier: str, fetch_ok: bool, raw: int,
+                    zero_streak_hours: float,
+                    patience_hours: float = RAW_ZERO_PATIENCE_HOURS) -> tuple:
+    """Pure DOWN/UP decision for one source. Returns (is_down, reason).
+    No I/O -- deterministically testable (W2). Yield is intentionally NOT an
+    input: a slow source that fetches fine but yields 0 is HEALTHY (S45 arc A)."""
+    if not fetch_ok:
+        return True, "fetch-down"
+    if raw > 0:
+        return False, "healthy (raw=" + str(raw) + ")"
+    # raw == 0 and transport OK below:
+    if tier in IMMEDIATE_ZERO_TIERS:
+        return True, "raw==0 (news tier, immediate)"
+    if zero_streak_hours >= patience_hours:
+        return True, ("raw==0 sustained " + format(zero_streak_hours, ".0f")
+                      + "h (>= " + format(patience_hours, ".0f") + "h, slow tier)")
+    return False, ("raw==0 quiet " + format(zero_streak_hours, ".0f")
+                   + "h (< " + format(patience_hours, ".0f") + "h patience, slow tier)")
+
+
+def _raw_zero_streak_hours(client, source_name: str) -> float:
+    """How long (hours) raw_count has been CONTINUOUSLY 0 across saved
+    source_health rows -- time-spanned, not run-counted (S45 arc A, James).
+    Returns 0.0 if the most recent run delivered raw>0, or if raw_count history
+    is unavailable (column missing / pre-migration) -- both => 'do not flag'."""
+    if client is None:
+        return 0.0
+    try:
+        cutoff = (datetime.now(timezone.utc)
+                  - timedelta(hours=RAW_ZERO_PATIENCE_HOURS * 2)).isoformat()
+        result = client.table("source_health") \
+            .select("raw_count, run_at") \
+            .eq("source_name", source_name) \
+            .gte("run_at", cutoff) \
+            .order("run_at", desc=True) \
+            .limit(ROLLING_WINDOW * 4) \
+            .execute()
+        rows = result.data or []
+        newest_zero_dt = None
+        oldest_zero_dt = None
+        for r in rows:
+            rc = r.get("raw_count")
+            if rc is None or rc > 0:       # unknown or delivered -> streak ends
+                break
+            try:
+                dt = datetime.fromisoformat(str(r["run_at"]).replace("Z", "+00:00"))
+            except Exception:
+                break
+            if newest_zero_dt is None:
+                newest_zero_dt = dt
+            oldest_zero_dt = dt
+        if newest_zero_dt is None or oldest_zero_dt is None:
+            return 0.0
+        return (newest_zero_dt - oldest_zero_dt).total_seconds() / 3600.0
+    except Exception:
+        return 0.0
+
+
+def _avg_raw(client, source_name: str) -> float:
+    """Rolling avg of raw_count (informational, for the alert text). The old
+    article_count (yield) average is obsolete under the enforcing gate."""
+    if client is None:
+        return 0.0
+    try:
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+        result = client.table("source_health") \
+            .select("raw_count, run_at") \
+            .eq("source_name", source_name) \
+            .gte("run_at", cutoff) \
+            .order("run_at", desc=True) \
+            .limit(ROLLING_WINDOW) \
+            .execute()
+        vals = [r["raw_count"] for r in (result.data or []) if r.get("raw_count") is not None]
+        return round(sum(vals) / len(vals), 1) if vals else 0.0
+    except Exception:
+        return 0.0
+
+
+def detect_rss_failures(sources: list, source_stats: dict = None) -> list:
+    """Detect DOWN sources on FETCH health (not post-gate yield). Requires the
+    per-source fetch stats emitted by collect_articles (S45 arc A)."""
     client = _get_client()
-    if not client:
-        return []
+    source_stats = source_stats or {}
 
     failed = []
-    cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    healthy_quiet = []   # fetched fine, low/zero yield or under-patience -> NOT down
 
     for source in sources:
         name = source["name"]
-        try:
-            result = client.table("source_health") \
-                .select("article_count, run_at") \
-                .eq("source_name", name) \
-                .gte("run_at", cutoff) \
-                .order("run_at", desc=True) \
-                .limit(ROLLING_WINDOW) \
-                .execute()
+        tier = source.get("tier", "news")
+        stat = source_stats.get(name)
 
-            rows = result.data or []
-            if len(rows) < 2:
-                # New source with no history yet -- if it just returned 0,
-                # flag it immediately rather than silently skipping.
-                if rows and rows[0]["article_count"] == 0:
-                    failed.append({
-                        "name":    name,
-                        "pillar":  source.get("pillar", "geo"),
-                        "current": 0,
-                        "avg":     0.0,
-                        "url":     source.get("url", ""),
-                        "run_at":  rows[0]["run_at"],
-                    })
-                continue
+        if stat is None:
+            # No fetch stat for this slot (e.g. called without arc-A stats).
+            # Be conservative: cannot judge fetch health -> do not flag.
+            continue
 
-            current    = rows[0]["article_count"]
-            historical = [r["article_count"] for r in rows[1:]]
-            avg        = sum(historical) / len(historical) if historical else 0
+        fetch_ok = bool(stat.get("fetch_ok", False))
+        raw      = int(stat.get("raw", 0))
 
-            if current == 0 and avg >= MIN_EXPECTED:
-                failed.append({
-                    "name":   name,
-                    "pillar": source.get("pillar", "geo"),
-                    "current": current,
-                    "avg":    round(avg, 1),
-                    "url":    source.get("url", ""),
-                    "run_at": rows[0]["run_at"],
-                })
+        zero_streak = 0.0
+        if fetch_ok and raw == 0 and tier not in IMMEDIATE_ZERO_TIERS:
+            zero_streak = _raw_zero_streak_hours(client, name)
 
-        except Exception as e:
-            print("  Warning: Health check failed for " + name + ": " + str(e))
+        is_down, reason = _health_verdict(tier, fetch_ok, raw, zero_streak)
+
+        if not is_down:
+            if stat.get("yield", 0) == 0:
+                healthy_quiet.append(name + "[" + tier + ",raw=" + str(raw) + "]")
+            continue
+
+        # alert-facing reason -- include HTTP/parse detail for a fetch-down
+        full_reason = reason
+        if not fetch_ok:
+            full_reason = reason + ": " + str(stat.get("reason", ""))[:90]
+
+        failed.append({
+            "name":    name,
+            "pillar":  source.get("pillar", "geo"),
+            "tier":    tier,
+            "current": stat.get("yield", 0),
+            "raw":     raw,
+            "avg":     _avg_raw(client, name),
+            "reason":  full_reason,
+            "url":     source.get("url", ""),
+            "run_at":  datetime.now(timezone.utc).isoformat(),
+        })
+
+    # Surface slow-but-healthy sources so the dry-run proves they do NOT flag
+    # (PHI-002: never auto-drop slow deep sources just for publishing slowly).
+    if healthy_quiet:
+        print("  Healthy (fetched, low/zero yield -- NOT down): " + ", ".join(healthy_quiet))
 
     return failed
 
@@ -302,13 +426,20 @@ def alert_and_log_failures(failed_sources: list) -> None:
         pillar = src["pillar"]
         avg    = src["avg"]
         url    = src["url"]
+        reason = src.get("reason", "")
 
-        print("  RSS FAILURE: " + name + " (" + pillar.upper() + ") -- was averaging " + str(avg))
+        print("  RSS FAILURE: " + name + " (" + pillar.upper() + ") -- " + reason
+              + " | avg raw " + str(avg))
+
+        if HEALTH_ALERT_DRY_RUN:
+            print("  [HEALTH dry-run] WOULD alert DOWN: " + name + " (" + reason
+                  + ") -- no Telegram / no reserve / no fix-row written")
+            continue
 
         should_alert, hours_down = _should_send_alert(client, name)
 
         if should_alert:
-            msg  = _build_reserve_alert(name, pillar, avg, hours_down)
+            msg  = _build_reserve_alert(name, pillar, avg, hours_down, reason)
             sent = _send_admin_message(msg)
             if sent:
                 print("  Reserve choice alert sent to admin for: " + name)
@@ -330,7 +461,7 @@ def alert_and_log_failures(failed_sources: list) -> None:
                 if not existing.data:
                     client.table("code_fix_suggestions").insert({
                         "bug_class":      "rss_feed_down",
-                        "error_message":  name + " returned 0 articles. Was averaging " + str(avg) + ". URL: " + url,
+                        "error_message":  name + " fetch-health DOWN: " + reason + ". Avg raw " + str(avg) + ". URL: " + url,
                         "suggested_fix":  "Admin selecting reserve via Telegram webhook. Test " + url + " manually.",
                         "affected_file":  name,
                         "status":         "pending",
@@ -370,12 +501,65 @@ def get_active_reserves(client=None) -> dict:
         return {}
 
 
-def run_source_health_check(articles: list, sources: list) -> None:
-    """Main entry point -- called from main.py after collection."""
-    save_source_counts(articles, sources)
-    failed = detect_rss_failures(sources)
+def run_source_health_check(articles: list, sources: list, source_stats: dict = None) -> None:
+    """Main entry point -- called from main.py after collection.
+    source_stats (S45 arc A) carries per-source fetch health from the collector;
+    health is judged on fetch success, not post-gate yield."""
+    save_source_counts(articles, sources, source_stats)
+    failed = detect_rss_failures(sources, source_stats)
     if failed:
-        print("  " + str(len(failed)) + " RSS source(s) down -- checking reserve alerts")
+        mode = " [DRY-RUN]" if HEALTH_ALERT_DRY_RUN else ""
+        print("  " + str(len(failed)) + " RSS source(s) DOWN (fetch-based)" + mode
+              + " -- checking reserve alerts")
         alert_and_log_failures(failed)
     else:
-        print("  All " + str(len(sources)) + " sources healthy")
+        print("  All " + str(len(sources)) + " sources healthy (fetch-based)")
+
+
+def _selftest_health_verdict() -> None:
+    """S45 arc A offline proof (no network/DB): replays the 2026-06-18 0643/1244
+    enforcing scenario through the PURE verdict fn. The genuinely fetch-broken
+    feeds flag DOWN; the slow-but-fetched opinion feeds (DFRLab/ICIJ/Bellingcat/
+    HRW/WoR) do NOT -- even at yield 0. W2: assert exact membership."""
+    P = RAW_ZERO_PATIENCE_HOURS
+
+    # (label, tier, fetch_ok, raw, zero_streak_hours, EXPECT_DOWN)
+    cases = [
+        # genuinely fetch-broken -> DOWN (any tier, immediate)
+        ("Stimson Center",          "news",    False, 0,  0.0,   True),
+        ("AP News via Google News", "news",    False, 0,  0.0,   True),
+        ("Crisis Group",            "opinion", False, 0,  0.0,   True),
+        # news tier delivering 0 real entries -> DOWN immediately
+        ("BBC (broken feed)",       "news",    True,  0,  0.0,   True),
+        # slow tier, raw==0 SUSTAINED past patience -> DOWN (truly dead slow feed)
+        ("Dead slow feed",          "opinion", True,  0,  P + 1, True),
+        # slow-but-fetched opinion feeds, yield 0 but raw>0 -> HEALTHY (PHI-002)
+        ("DFRLab",                  "opinion", True,  6,  0.0,   False),
+        ("ICIJ",                    "opinion", True,  4,  0.0,   False),
+        ("Bellingcat",              "opinion", True,  3,  0.0,   False),
+        ("Human Rights Watch",      "opinion", True,  9,  0.0,   False),
+        ("War on the Rocks",        "opinion", True,  2,  0.0,   False),
+        # slow tier quiet for ONE run (raw==0, streak < patience) -> NOT down yet
+        ("DFRLab (quiet day)",      "opinion", True,  0,  24.0,  False),
+        ("RFE/RL (quiet review)",   "review",  True,  0,  12.0,  False),
+        # healthy news feed -> NOT down
+        ("BBC",                     "news",    True,  18, 0.0,   False),
+    ]
+
+    down    = [c[0] for c in cases if _health_verdict(c[1], c[2], c[3], c[4])[0]]
+    exp_dn  = [c[0] for c in cases if c[5]]
+    assert down == exp_dn, ("verdict mismatch\n  got DOWN:      " + repr(down)
+                            + "\n  expected DOWN: " + repr(exp_dn))
+
+    # W2: exactly the 5 broken feeds flag, exactly the 8 healthy/quiet do not
+    assert len(exp_dn) == 5,  "expected 5 DOWN, scenario drifted: " + str(len(exp_dn))
+    assert len(down)   == 5,  "verdict flagged != 5: " + repr(down)
+
+    print("  [selftest] health verdict OK: " + str(len(down))
+          + " fetch-broken flagged, " + str(len(cases) - len(down))
+          + " slow-but-fetched / quiet held (NOT flagged)")
+
+
+if __name__ == "__main__":
+    print("GNI Source Health Monitor -- Test Run (offline)\n")
+    _selftest_health_verdict()

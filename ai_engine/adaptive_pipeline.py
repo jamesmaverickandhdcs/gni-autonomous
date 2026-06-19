@@ -129,7 +129,7 @@ def run_standard_mode(client, report: dict, reason: str) -> dict:
 
         # Collect fresh articles
         print('  Collecting fresh articles...')
-        articles = collect_articles(max_per_source=10)
+        articles, _source_stats = collect_articles(max_per_source=10)
         if len(articles) < 5:
             print('  WARNING: Too few articles -- aborting standard mode')
             return {'mode': 'standard', 'groq_calls': 0}

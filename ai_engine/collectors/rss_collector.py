@@ -336,17 +336,26 @@ def _is_feed_chrome(title: str, feed_title: str, pub_iso: str,
     return False, ""
 
 
-def collect_articles(max_per_source: int = 20) -> list[dict]:
+def collect_articles(max_per_source: int = 20) -> tuple[list[dict], dict]:
     """
     Collect articles from all RSS sources.
     If a primary source is down and admin has activated a reserve,
     the reserve source is used automatically.
-    Returns list of article dicts with pillar field.
+    Returns (articles, source_stats).
+      articles     -- list of article dicts (post chrome/dedup/freshness gate).
+      source_stats -- {primary_name: {"fetch_ok": bool, "raw": int, "yield": int,
+                       "reason": str}} for the source actually served (primary or
+                       reserve). raw = real candidate entries the feed delivered
+                       (post chrome-guard, PRE dedup/freshness) -- the honest
+                       up/down signal the S45 arc-A health monitor measures on.
+                       yield = survivors after the gate (expected LOW for opinion
+                       tier; NOT a health signal).
     """
     articles = []
     seen_ids = set()
     capture_dropped = 0
     chrome_skipped = 0
+    source_stats = {}
 
     # Fetch active reserves once at start of collection
     active_reserves = _get_active_reserves()
@@ -369,17 +378,31 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
             src_name = src["name"]
             is_reserve = src_name != name
 
+            # Per-attempt fetch-health (S45 arc A). Reset each attempt so the
+            # recorded stat reflects the source that actually served the slot.
+            fetch_ok = False
+            raw_count = 0
+            fetch_reason = "not-fetched"
+
             try:
                 label = f"{src_name} [RESERVE for {name}]" if is_reserve else src_name
                 print(f"  Fetching: {label}...")
                 feed = feedparser.parse(src["url"])
 
                 if feed.bozo and not feed.entries:
+                    bozo_exc = getattr(feed, "bozo_exception", "")
+                    fetch_reason = ("fetch-fail status=" + str(getattr(feed, "status", "?"))
+                                    + (" " + str(bozo_exc)[:80] if bozo_exc else ""))
                     if is_reserve:
                         print(f"  Warning: Reserve {src_name} also failed — no articles for {name}")
                     else:
                         print(f"  Warning: {src_name}: Feed error -- trying reserve if available")
                     continue
+
+                # Transport succeeded: HTTP-level fetch is healthy regardless of
+                # how many entries survive the downstream gate.
+                fetch_ok = True
+                fetch_reason = "ok status=" + str(getattr(feed, "status", "?"))
 
                 feed_title = ""
                 try:
@@ -407,6 +430,11 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
                         chrome_skipped += 1
                         print("  [CHROME-SKIP] (" + chrome_reason + "): " + src_name + " | " + title[:60])
                         continue
+
+                    # Real candidate entry the feed delivered. Count it as RAW
+                    # fetch health BEFORE dedup/freshness -- those are legitimate
+                    # downstream filters, not feed-down signals (S45 arc A).
+                    raw_count += 1
 
                     article_id = make_id(title, src_name)
                     if article_id in seen_ids:
@@ -449,8 +477,20 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
                 break  # Success — no need to try reserve
 
             except Exception as e:
+                fetch_ok = False
+                fetch_reason = "exception: " + str(e)[:80]
                 print(f"  Error {src_name}: {e}")
                 continue
+
+        # Record fetch health for the slot (values reflect the last attempt =
+        # the source that served, or the final failed attempt). Keyed by the
+        # PRIMARY name -- the health monitor tracks slots, not reserve URLs.
+        source_stats[name] = {
+            "fetch_ok": fetch_ok,
+            "raw":      raw_count,
+            "yield":    collected,
+            "reason":   fetch_reason,
+        }
 
         if collected == 0 and name not in active_reserves:
             print(f"  Warning: {name}: 0 articles collected — reserve not yet activated")
@@ -469,7 +509,7 @@ def collect_articles(max_per_source: int = 20) -> list[dict]:
     if reserve_used:
         print(f"  Reserve articles included: {len(reserve_used)}")
 
-    return articles
+    return articles, source_stats
 
 
 def _selftest_chrome() -> None:
@@ -509,7 +549,7 @@ def _selftest_chrome() -> None:
 if __name__ == "__main__":
     print("GNI RSS Collector -- Test Run\n")
     _selftest_chrome()
-    articles = collect_articles(max_per_source=5)
+    articles, _stats = collect_articles(max_per_source=5)
     if articles:
         print(f"\nSample article:")
         a = articles[0]
