@@ -35,7 +35,7 @@ ALERT_INTERVAL_HOURS = 3
 # DRY-RUN: detection runs and logs WOULD-alert verdicts but sends nothing and
 # writes no reserve/fix rows until proven on live data (LR-105). Flip to False
 # only after James sees the dry-run proof.
-HEALTH_ALERT_DRY_RUN    = True
+HEALTH_ALERT_DRY_RUN    = False
 RAW_ZERO_PATIENCE_HOURS = 72.0          # slow tiers: zero must persist this long
 IMMEDIATE_ZERO_TIERS    = {"news"}      # raw==0 flags on the spot for these
 
