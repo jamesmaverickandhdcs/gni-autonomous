@@ -403,7 +403,8 @@ def run_mad_pipeline():
 
     print('\n???? Step 3: Running Quadratic MAD Protocol...')
     print('   TPM window status: CLEAN (5+ minutes since main pipeline)')
-    from analysis.mad_protocol import run_mad_protocol
+    from analysis.mad_protocol import run_mad_protocol, reset_token_usage, get_token_usage
+    reset_token_usage()
     # S37 PATCH: pass both pools to run_mad_protocol
     mad_result = run_mad_protocol(
         report,
@@ -480,7 +481,10 @@ def run_mad_pipeline():
                 os.getenv('SUPABASE_URL', ''),
                 os.getenv('SUPABASE_SERVICE_KEY', '')
             )
-            log_usage(_sb, 'gni_mad', 7433, 15, report_id or '')
+            _usage = get_token_usage()
+            _real_tokens = _usage['total'] or (_usage['prompt'] + _usage['completion'])
+            log_usage(_sb, 'gni_mad', _real_tokens, _usage['calls'], report_id or '')
+            print(f'  Metered MAD usage: {_real_tokens} tokens over {_usage["calls"]} calls')
         except Exception as _e:
             print('  WARNING: Could not log usage: ' + str(_e)[:60])
 

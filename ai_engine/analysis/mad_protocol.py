@@ -6,7 +6,8 @@
 # Short Focus (7-30 days) + Long Shoots (3-24 months)
 # Predictions saved to debate_predictions table
 # 21 Groq calls per run
-# GNI-R-237: GROQ_MAD_MODEL=gpt-oss-120b (all 21 calls). GROQ_MODEL fallback.
+# GNI-R-237: MAD uses GROQ_MAD_MODEL (confirmed secret = llama-3.3-70b-versatile),
+#            falling back to GROQ_MODEL then GROQ_MODEL_FALLBACK. All 21 calls, one model.
 # GROQ_API_KEY_2 removed -- same account = same pool, no isolation benefit.
 # S37 PROMPT PATCHES:
 #   BULL:       SYNTHESIS RULE + PRE-BUTTAL RULE
@@ -41,6 +42,19 @@ MODEL = os.getenv('GROQ_MAD_MODEL',
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
+# S46 Phase 0 -- real token metering (observability only; no prompt/debate-logic change).
+# Accumulates actual response.usage across every Groq call in one MAD run.
+# Counts retries (real cost) and guardian-rejected responses (tokens were billed).
+_TOKEN_USAGE = {'prompt': 0, 'completion': 0, 'total': 0, 'calls': 0}
+
+
+def reset_token_usage():
+    _TOKEN_USAGE.update({'prompt': 0, 'completion': 0, 'total': 0, 'calls': 0})
+
+
+def get_token_usage():
+    return dict(_TOKEN_USAGE)
+
 
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, expect_json: bool = False) -> str:
     for attempt in range(2):
@@ -54,6 +68,12 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
                 max_tokens=max_tokens,
                 temperature=0.7,
             )
+            _u = getattr(response, 'usage', None)
+            if _u:
+                _TOKEN_USAGE['prompt']     += getattr(_u, 'prompt_tokens', 0) or 0
+                _TOKEN_USAGE['completion'] += getattr(_u, 'completion_tokens', 0) or 0
+                _TOKEN_USAGE['total']      += getattr(_u, 'total_tokens', 0) or 0
+                _TOKEN_USAGE['calls']      += 1
             raw = response.choices[0].message.content.strip()
             validation = validate_response(raw, expect_json=expect_json)
             if not validation['valid']:
