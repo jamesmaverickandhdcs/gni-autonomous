@@ -152,7 +152,7 @@ def run_preflight() -> bool:
         checks.append(('⚠️ ', f'GROQ_MAD_MODEL not set — will use GROQ_MODEL: {groq_model}'))
     else:
         checks.append(('❌', 'Neither GROQ_MAD_MODEL nor GROQ_MODEL set in .env'))
-        instructions.append('→ Add GROQ_MAD_MODEL=openai/gpt-oss-120b to .env')
+        instructions.append('→ Add GROQ_MAD_MODEL=llama-3.3-70b-versatile to .env')
 
     # ── Check 5: Report title preview ────────────────────────
     if fresh_report:

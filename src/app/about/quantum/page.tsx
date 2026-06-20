@@ -10,6 +10,7 @@ interface Report {
   escalation_level: string
   mad_verdict: string
   mad_confidence: number
+  mad_arb_failed?: boolean
   mad_action_recommendation: string
   mad_blind_spot: string
   created_at: string
@@ -75,8 +76,8 @@ export default function AboutQuantumPage() {
                   <h2 className="text-lg font-bold text-white mb-1">{report.title}</h2>
                   <p className="text-xs text-gray-500">{new Date(report.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
-                <div className={"px-4 py-2 rounded-lg border font-bold text-sm " + vColor(report.mad_verdict)}>
-                  {report.mad_verdict?.toUpperCase() || 'PENDING'} {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : ''}
+                <div className={"px-4 py-2 rounded-lg border font-bold text-sm " + (report.mad_arb_failed ? "bg-amber-900 text-amber-300 border-amber-700" : vColor(report.mad_verdict))}>
+                  {report.mad_arb_failed ? '⚠ INCOMPLETE' : (report.mad_verdict?.toUpperCase() || 'PENDING') + ' ' + (report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : '')}
                 </div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

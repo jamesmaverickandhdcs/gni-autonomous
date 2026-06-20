@@ -726,6 +726,10 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     long_verify_days = 180
     short_focus_opportunities = ''
     preparedness_path = ''
+    # COMMIT 1: typed failure flag -- single source of truth for "no real verdict".
+    # True => Arbitrator produced no usable verdict (429/error OR unparseable JSON).
+    # neutral/0.5 are NOT the failure signal anymore; this flag is.
+    mad_arb_failed = False
 
     _arb_is_error = (
         arb_final_raw.startswith('[Agent error') or
@@ -735,6 +739,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     if _arb_is_error:
         print('  WARNING: Arbitrator call failed -- using safe defaults')
         mad_reasoning = arb_final_raw
+        mad_arb_failed = True
     else:
         try:
             clean = arb_final_raw.replace('```json', '').replace('```', '').strip()
@@ -767,6 +772,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         except (json.JSONDecodeError, ValueError, KeyError) as e:
             print('  WARNING: Arbitrator JSON parse failed: ' + str(e)[:60])
             mad_reasoning = arb_final_raw
+            mad_arb_failed = True
 
     print(f'   Blind Spot:  {mad_blind_spot[:60]}')
     print(f'   Short Focus: {short_focus_threats[:60]}')
@@ -785,6 +791,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         'mad_ostrich_case':          ost_r3,
         'mad_verdict':               mad_verdict,
         'mad_confidence':            mad_confidence,
+        'mad_arb_failed':            mad_arb_failed,
         'mad_reasoning':             mad_reasoning,
         'mad_blind_spot':            mad_blind_spot,
         'mad_action_recommendation': mad_action_recommendation,

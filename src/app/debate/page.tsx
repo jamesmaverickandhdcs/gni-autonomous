@@ -22,6 +22,7 @@ interface Report {
   sentiment: string
   mad_verdict: string
   mad_confidence: number
+  mad_arb_failed?: boolean
   mad_bull_case: string
   mad_bear_case: string
   mad_black_swan_case: string
@@ -120,10 +121,12 @@ export default function DebatePage() {
       .finally(() => setLoading(false))
   }, [])
 
+  // COMMIT 1: exclude Arbitrator-failed runs -- a flagged false-neutral is not a real verdict
+  const counted = reports.filter(r => !r.mad_arb_failed)
   const verdictCounts = {
-    bullish: reports.filter(r => r.mad_verdict === 'bullish').length,
-    bearish: reports.filter(r => r.mad_verdict === 'bearish').length,
-    neutral: reports.filter(r => r.mad_verdict === 'neutral').length,
+    bullish: counted.filter(r => r.mad_verdict === 'bullish').length,
+    bearish: counted.filter(r => r.mad_verdict === 'bearish').length,
+    neutral: counted.filter(r => r.mad_verdict === 'neutral').length,
   }
 
   const isQuadratic = (r: Report | null) => !!(r?.mad_round1_positions)

@@ -52,6 +52,7 @@ interface Report {
   mad_blind_spot: string
   mad_action_recommendation: string
   mad_verdict: string
+  mad_arb_failed?: boolean
   weakness_identified: string
   threat_horizon: string
   dark_side_detected: string
@@ -549,14 +550,16 @@ export default function Home() {
                 <div className="px-4 py-3 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <span className={`text-sm font-bold px-3 py-1 rounded-full ${
+                      latest?.mad_arb_failed ? 'bg-amber-900 text-amber-300 border border-amber-700' :
                       latest?.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300 border border-green-700' :
                       latest?.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300 border border-red-700' :
                       'bg-gray-700 text-gray-300 border border-gray-600'
                     }`}>
-                      {latest?.mad_verdict === 'bullish' ? '🐂' : latest?.mad_verdict === 'bearish' ? '🐻' : '◆'} {latest?.mad_verdict?.toUpperCase() || 'PENDING'}
+                      {latest?.mad_arb_failed ? '⚠ INCOMPLETE' :
+                        (latest?.mad_verdict === 'bullish' ? '🐂' : latest?.mad_verdict === 'bearish' ? '🐻' : '◆') + ' ' + (latest?.mad_verdict?.toUpperCase() || 'PENDING')}
                     </span>
                     <span className="text-xs text-gray-400">
-                      Confidence: <span className="text-white font-bold">{latest?.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}</span>
+                      Confidence: <span className="text-white font-bold">{latest?.mad_arb_failed ? 'N/A' : (latest?.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A')}</span>
                     </span>
                     <span className="text-xs text-gray-500 hidden md:block truncate max-w-xs">
                       {latest?.mad_action_recommendation?.slice(0, 80) || 'Awaiting MAD verdict'}

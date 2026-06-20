@@ -144,6 +144,7 @@ def _update_report_with_mad(client, report_id, mad_result):
         'mad_ostrich_case':          mad_result.get('mad_ostrich_case', ''),
         'mad_verdict':               mad_result.get('mad_verdict', 'neutral'),
         'mad_confidence':            mad_result.get('mad_confidence', 0.5),
+        'mad_arb_failed':            mad_result.get('mad_arb_failed', False),
         'mad_reasoning':             mad_result.get('mad_reasoning', ''),
         'mad_blind_spot':            mad_result.get('mad_blind_spot', ''),
         'mad_action_recommendation': mad_result.get('mad_action_recommendation', ''),
@@ -188,13 +189,77 @@ def _save_mad_predictions(client, report_id, mad_result):
         print('  Warning: Could not save predictions: ' + str(e)[:60])
 
 
-def _send_mad_telegram(report, mad_result):
-    """Send Telegram with MAD verdict."""
-    import requests
-    token = os.getenv('TELEGRAM_BOT_TOKEN', '')
-    chat_id = os.getenv('TELEGRAM_ADMIN_ID', os.getenv('TELEGRAM_QSChannel_ID', ''))
-    if not token or not chat_id:
-        return
+def _log_safety_event_runner(event_type: str, detail: str) -> None:
+    """
+    COMMIT 1: mirror of mad_protocol._log_safety_event -- IDENTICAL 6-field
+    runtime_logs shape, silent try/except, independent of mad_protocol so the
+    runner does not import the Groq client just to log.
+    """
+    try:
+        from supabase import create_client
+        sb = create_client(
+            os.getenv('SUPABASE_URL', ''),
+            os.getenv('SUPABASE_SERVICE_KEY', '')
+        )
+        sb.table('runtime_logs').insert({
+            'status':                event_type,
+            'error_message':         detail,
+            'articles_collected':    0,
+            'articles_after_funnel': 0,
+            'reports_saved':         0,
+            'step_timings':          '{}',
+        }).execute()
+    except Exception:
+        pass
+
+
+def _compute_mad_succeeded(mad_result: dict) -> bool:
+    """
+    COMMIT 1: single decision point for whether a MAD run counts as a real
+    success for scoring/prediction purposes.
+
+    mad_arb_failed is an ABSOLUTE VETO: a run without a genuine Arbitrator
+    verdict has NOT succeeded, regardless of how healthy the agent cases are.
+    (Closes the old leak where bool(mad_bull_case) flipped success True on an
+    Arbitrator-only failure.)
+    """
+    if mad_result.get('mad_arb_failed', False):
+        return False
+    verdict = mad_result.get('mad_verdict', 'neutral')
+    confidence = mad_result.get('mad_confidence', 0.5)
+    return (
+        verdict in ('bullish', 'bearish') or
+        (verdict == 'neutral' and confidence != 0.5) or
+        bool(mad_result.get('mad_bull_case', ''))
+    )
+
+
+def _assert_mad_integrity(mad_succeeded: bool, mad_arb_failed: bool) -> None:
+    """
+    COMMIT 1 canary. After _compute_mad_succeeded vetoes on mad_arb_failed,
+    the combination (mad_succeeded AND mad_arb_failed) is structurally
+    impossible. If it ever fires, a regression has reopened the false-neutral
+    hole -- shout loudly and log it instead of silently polluting data.
+    """
+    if mad_succeeded and mad_arb_failed:
+        print('  ALERT INTEGRITY VIOLATION: mad_succeeded=True while mad_arb_failed=True '
+              '-- false-neutral guard regressed; scoring/predictions must NOT proceed')
+        _log_safety_event_runner(
+            'integrity_violation',
+            'mad_succeeded && mad_arb_failed -- COMMIT-1 false-neutral guard breached'
+        )
+
+
+def _mad_telegram_text(report, mad_result) -> str:
+    """
+    COMMIT 1: build the Telegram body. On Arbitrator failure, send an HONEST
+    'incomplete' notice instead of a fake NEUTRAL verdict card.
+    """
+    if mad_result.get('mad_arb_failed', False):
+        msg = '[GNI MAD] WARNING -- INCOMPLETE\n'
+        msg += 'Report: ' + report.get('title', '')[:60] + '\n'
+        msg += 'Arbitrator rate-limited/failed -- no verdict this run.\n'
+        return msg
 
     verdict = mad_result.get('mad_verdict', 'neutral').upper()
     confidence = int(mad_result.get('mad_confidence', 0.5) * 100)
@@ -213,6 +278,18 @@ def _send_mad_telegram(report, mad_result):
         msg += 'Short Focus: ' + short_focus + '\n'
     if action:
         msg += 'Action: ' + action + '\n'
+    return msg
+
+
+def _send_mad_telegram(report, mad_result):
+    """Send Telegram with MAD verdict (or honest 'incomplete' notice on failure)."""
+    import requests
+    token = os.getenv('TELEGRAM_BOT_TOKEN', '')
+    chat_id = os.getenv('TELEGRAM_ADMIN_ID', os.getenv('TELEGRAM_QSChannel_ID', ''))
+    if not token or not chat_id:
+        return
+
+    msg = _mad_telegram_text(report, mad_result)
 
     try:
         requests.post(
@@ -417,11 +494,13 @@ def run_mad_pipeline():
     confidence = mad_result.get('mad_confidence', 0.5)
     print('   Final verdict: ' + verdict + ' (' + str(round(confidence, 2)) + ')')
 
-    mad_succeeded = (
-        verdict in ['bullish', 'bearish'] or
-        (verdict == 'neutral' and confidence != 0.5) or
-        bool(mad_result.get('mad_bull_case', ''))
-    )
+    mad_arb_failed = mad_result.get('mad_arb_failed', False)
+    mad_succeeded = _compute_mad_succeeded(mad_result)
+    _assert_mad_integrity(mad_succeeded, mad_arb_failed)
+
+    if mad_arb_failed:
+        print('  WARNING: Arbitrator failed (mad_arb_failed=True) -- run flagged, '
+              'excluded from scoring/predictions/counts')
 
     if not mad_succeeded:
         print('  WARNING: MAD returned fallback defaults -- arbitrator likely failed')

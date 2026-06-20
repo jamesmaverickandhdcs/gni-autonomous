@@ -9,6 +9,7 @@ interface BriefData {
   escalation_score: number
   mad_verdict: string
   mad_confidence: number
+  mad_arb_failed?: boolean
   mad_action_recommendation: string
   mad_blind_spot: string
   tickers_affected: string[]
@@ -117,17 +118,19 @@ export default function BriefPage() {
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">MAD Verdict</div>
               <div className="flex items-center gap-3 mb-3">
                 <span className={`text-sm font-bold px-3 py-1 rounded-full ${
+                  brief.mad_arb_failed ? 'bg-amber-900 text-amber-300 border border-amber-700' :
                   brief.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300 border border-green-700' :
                   brief.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300 border border-red-700' :
                   'bg-gray-700 text-gray-300'
                 }`}>
-                  {brief.mad_verdict === 'bullish' ? '🐂' : brief.mad_verdict === 'bearish' ? '🐻' : '◆'} {brief.mad_verdict?.toUpperCase() || 'PENDING'}
+                  {brief.mad_arb_failed ? '⚠ INCOMPLETE' :
+                    (brief.mad_verdict === 'bullish' ? '🐂' : brief.mad_verdict === 'bearish' ? '🐻' : '◆') + ' ' + (brief.mad_verdict?.toUpperCase() || 'PENDING')}
                 </span>
                 <div className="flex-1 bg-gray-800 rounded-full h-2">
-                  <div className={`h-2 rounded-full ${brief.mad_verdict === 'bullish' ? 'bg-green-500' : brief.mad_verdict === 'bearish' ? 'bg-red-500' : 'bg-gray-500'}`}
-                    style={{ width: Math.round((brief.mad_confidence || 0) * 100) + '%' }} />
+                  <div className={`h-2 rounded-full ${brief.mad_arb_failed ? 'bg-amber-500' : brief.mad_verdict === 'bullish' ? 'bg-green-500' : brief.mad_verdict === 'bearish' ? 'bg-red-500' : 'bg-gray-500'}`}
+                    style={{ width: brief.mad_arb_failed ? '100%' : Math.round((brief.mad_confidence || 0) * 100) + '%' }} />
                 </div>
-                <span className="text-xs text-white font-bold shrink-0">{brief.mad_confidence ? Math.round(brief.mad_confidence * 100) + '%' : 'N/A'}</span>
+                <span className="text-xs text-white font-bold shrink-0">{brief.mad_arb_failed ? 'N/A' : (brief.mad_confidence ? Math.round(brief.mad_confidence * 100) + '%' : 'N/A')}</span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-green-950 border border-green-900 rounded-lg p-3">
