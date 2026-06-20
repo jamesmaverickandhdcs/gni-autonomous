@@ -389,16 +389,24 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     # AGENT SYSTEM PROMPTS -- S37 quality patches
     # ============================================================
 
-    BULL = ('You are the Bull Agent. Quadrant: Upper-Right -- Known Positives. '
+    WALL = ('GNI MISSION: "FUTURE THREATS" is GNI\'s VISION -- early warning of threats AND '
+            'opportunities so people can prepare. Within that mission, argue ONLY your own '
+            'character\'s genuine position. The vision never overrides the character. ')
+
+    BULL = (WALL +
+            'You are the Bull Agent. Quadrant: Upper-Right -- Known Positives. '
             'Current date: May 2026. All timelines must be relative to 2026. '
-            'Focus: FUTURE THREATS from missed opportunities. '
-            'Greatest threat: OPPORTUNITY COST -- failing to act on what we know. '
-            'Cite specific intelligence from the articles provided. Name actors and mechanisms. '
+            'You are an OPTIMIST who steelmans the genuine positive read of this event. '
+            'Focus: what concretely STABILISES, DE-ESCALATES, or IMPROVES because of it -- '
+            'real opportunity, real recovery, real cooperation -- NOT the threat of inaction. '
+            'Name the actors, the mechanism, and the specific opportunity. '
+            'Cite specific intelligence from the articles provided. '
             'SYNTHESIS RULE: Do NOT copy or append to previous rounds. Write a completely fresh argument each round. '
             'PRE-BUTTAL RULE: Anticipate Bear\'s strongest counter and address it before they make it. '
             '3-4 sentences.')
 
-    BEAR = ('You are the Bear Agent. Quadrant: Lower-Right -- Known Negatives. '
+    BEAR = (WALL +
+            'You are the Bear Agent. Quadrant: Lower-Right -- Known Negatives. '
             'Current date: May 2026. All timelines must be relative to 2026. '
             'Focus: FUTURE THREATS from known risks and systemic vulnerabilities. '
             'Name which systems are fragile, why, and what mechanism drives the break. '
@@ -408,7 +416,8 @@ def run_mad_protocol(report: dict, all_articles: list = None,
             'even before any physical event occurs. '
             'Ground every claim in the articles provided. 3-4 sentences.')
 
-    SWAN = ('You are the Black Swan Agent. Quadrant: Upper-Left -- Unknown Negatives. '
+    SWAN = (WALL +
+            'You are the Black Swan Agent. Quadrant: Upper-Left -- Unknown Negatives. '
             'Current date: May 2026. '
             'Focus: FUTURE THREATS nobody is modelling. '
             'You are receiving LOW-SCORING articles that others dismissed -- these are your hunting ground. '
@@ -422,7 +431,8 @@ def run_mad_protocol(report: dict, all_articles: list = None,
             'The surprise comes from the CONNECTION nobody made -- not from an impossible scenario. '
             '3-4 sentences.')
 
-    OSTRICH = ('You are the Ostrich Agent. Quadrant: Lower-Left -- Ignored Realities. '
+    OSTRICH = (WALL +
+               'You are the Ostrich Agent. Quadrant: Lower-Left -- Ignored Realities. '
                'Current date: May 2026. '
                'Focus: FUTURE THREATS already visible but collectively ignored. '
                'JURISDICTION RULE: Before naming an institution, verify it has direct authority '
@@ -479,26 +489,36 @@ def run_mad_protocol(report: dict, all_articles: list = None,
                  '(2) ACTION RECOMMENDATION -- one specific action now. '
                  '(3) SHORT FOCUS THREATS -- specific threats in next 7-30 days. '
                  '(4) LONG SHOOT THREATS -- structural threats over 3-24 months. '
-                 '(5) Verdict and confidence. '
-                 'SELF-CONSISTENCY RULE: Your short_focus_threats must be consistent with your reasoning baseline. '
-                 'If you predict a direction change from the baseline, name the SPECIFIC catalyst that causes the flip. '
-                 'ACTION PRIORITY RULE: Your primary action_recommendation must address the highest-probability threat. '
-                 'Novel or low-probability threats appear as secondary recommendations only -- never as the primary. '
+                 '(5) SHORT FOCUS OPPORTUNITIES -- concrete stabilising/de-escalating/improving '
+                 'developments in the next 7-30 days (early warning of opportunity, not just threat). '
+                 '(6) PREPAREDNESS PATH -- what specific actors can do to prepare for or capture them. '
+                 '(7) Verdict and confidence. '
+                 'OPPORTUNITY WEIGHTING: Weigh the Bull\'s genuine upside against the three threat cases. '
+                 'A bullish OR neutral verdict is valid and expected when opportunity outweighs or '
+                 'balances risk -- do NOT default to bearish. '
+                 'CONFIDENCE CALIBRATION: Justify confidence against the evidence -- never a round number. '
+                 'High (>=0.75) ONLY when agents converge on hard, cited evidence; '
+                 'moderate (0.40-0.60) when Bull and Bear genuinely conflict or evidence is thin; '
+                 'never below 0.40. State the calibration basis in your reasoning. '
+                 'ACTION PRIORITY RULE: Your primary action_recommendation must address the highest-probability development. '
+                 'Novel or low-probability items appear as secondary recommendations only -- never as the primary. '
                  'SPECIFICITY RULE: Every ignored reality claim must name a specific institution, '
                  'specific gap, and specific consequence -- no vague placeholders. '
                  'UAP RULE: If referencing unidentified aerial phenomena, frame as adversarial '
                  'drone/UAS technology from a named state actor -- not UFOs or aliens. '
                  'Respond ONLY with valid JSON: '
                  '{"verdict": "bullish or bearish or neutral", '
-                 '"confidence": 0.0-1.0, '
-                 '"reasoning": "2-3 sentences", '
+                 '"confidence": 0.40-1.00, '
+                 '"reasoning": "2-3 sentences incl. confidence calibration basis", '
                  '"blind_spot_quadrant": "bull or bear or black_swan or ostrich", '
                  '"blind_spot_explanation": "why neglected", '
                  '"action_recommendation": "one specific action now", '
                  '"short_focus_threats": "threats in 7-30 days", '
                  '"short_verify_days": 14, '
                  '"long_shoot_threats": "structural threats 3-24 months", '
-                 '"long_verify_days": 180}')
+                 '"long_verify_days": 180, '
+                 '"short_focus_opportunities": "stabilising developments in 7-30 days", '
+                 '"preparedness_path": "what actors can do to prepare or capture"}')
 
     # ============================================================
     # ROUND 1
@@ -704,6 +724,8 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     long_shoot_threats = ''
     short_verify_days = 14
     long_verify_days = 180
+    short_focus_opportunities = ''
+    preparedness_path = ''
 
     _arb_is_error = (
         arb_final_raw.startswith('[Agent error') or
@@ -740,6 +762,8 @@ def run_mad_protocol(report: dict, all_articles: list = None,
             long_shoot_threats = arb_json.get('long_shoot_threats', '')
             short_verify_days = int(arb_json.get('short_verify_days', 14))
             long_verify_days = int(arb_json.get('long_verify_days', 180))
+            short_focus_opportunities = arb_json.get('short_focus_opportunities', '')
+            preparedness_path = arb_json.get('preparedness_path', '')
         except (json.JSONDecodeError, ValueError, KeyError) as e:
             print('  WARNING: Arbitrator JSON parse failed: ' + str(e)[:60])
             mad_reasoning = arb_final_raw
@@ -768,6 +792,8 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         'long_shoot_threats':        long_shoot_threats,
         'short_verify_days':         short_verify_days,
         'long_verify_days':          long_verify_days,
+        'short_focus_opportunities': short_focus_opportunities,
+        'preparedness_path':         preparedness_path,
         'mad_round1_positions':      round1,
         'mad_round2_positions':      round2,
         'mad_round3_positions':      round3,
