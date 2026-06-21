@@ -34,13 +34,26 @@ import time
 from datetime import datetime, timezone, timedelta
 from groq import Groq
 from groq_guardian import validate_response  # GNI-R-234
+from mad_rate_governor import (  # COMMIT 2 -- header-aware 429 governor
+    compute_wait_from_headers, compute_backoff, is_transient_error,
+)
 
-client = Groq(api_key=os.getenv('GROQ_API_KEY'))
+# COMMIT 2 / Decision A1: max_retries=0 -- the governor owns ALL waits.
+# The SDK's internal retries honor only retry-after (~4s) and would fire into a
+# near-empty token bucket during a TPM storm; we wait the real ~56s reset instead.
+client = Groq(api_key=os.getenv('GROQ_API_KEY'), max_retries=0)
 MODEL = os.getenv('GROQ_MAD_MODEL',
         os.getenv('GROQ_MODEL',
         os.getenv('GROQ_MODEL_FALLBACK', 'llama-3.3-70b-versatile')))
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
+
+# COMMIT 2 / Decision B: 3 attempts -- one extra chance, since waiting the real
+# token-reset window (vs the old flat 40s that undershot the ~56s bucket) makes
+# the later attempt actually likely to succeed.
+_MAX_ATTEMPTS = 3
+# W-02 final-retry wait ceiling (~token-bucket refill); see _call_arbitrator.
+CAP_W02_SECONDS = 75.0
 
 # S46 Phase 0 -- real token metering (observability only; no prompt/debate-logic change).
 # Accumulates actual response.usage across every Groq call in one MAD run.
@@ -57,7 +70,7 @@ def get_token_usage():
 
 
 def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, expect_json: bool = False) -> str:
-    for attempt in range(2):
+    for attempt in range(_MAX_ATTEMPTS):
         try:
             response = client.chat.completions.create(
                 model=MODEL,
@@ -77,6 +90,16 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
             raw = response.choices[0].message.content.strip()
             validation = validate_response(raw, expect_json=expect_json)
             if not validation['valid']:
+                # COMMIT 2: body-429 gap closure -- a 200-status body that the
+                # guardian flags as rate-limited used to return WITHOUT retry.
+                # No headers on this path, so exponential backoff. Only rate-limit
+                # rejections retry; refusal/injection/quality still return now.
+                if validation['checks'].get('is_rate_limit') and attempt < _MAX_ATTEMPTS - 1:
+                    wait = compute_backoff(attempt)
+                    print(f'  WARNING: body-429 (guardian) -- backoff {wait:.1f}s '
+                          f'(attempt {attempt + 1}/{_MAX_ATTEMPTS})')
+                    time.sleep(wait)
+                    continue
                 print(f'  WARNING: groq_guardian rejected response: {validation["rejection_reason"]}')
                 _log_safety_event('guardian_rejection', validation['rejection_reason'])
                 return '[Agent error: ' + validation['rejection_reason'] + ']'
@@ -84,9 +107,25 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
         except Exception as e:
             err = str(e)
             is_rate_limit = '429' in err or 'rate_limit' in err.lower() or 'rate limit' in err.lower()
-            if is_rate_limit and attempt == 0:
-                print('  WARNING: Groq 429 rate limit -- sleeping 40s before retry...')
-                time.sleep(40)
+            if is_rate_limit and attempt < _MAX_ATTEMPTS - 1:
+                # COMMIT 2: header-aware wait. RateLimitError carries .response;
+                # APIConnectionError/APITimeoutError do NOT -- getattr guard mandatory.
+                resp = getattr(e, 'response', None)
+                wait = compute_wait_from_headers(getattr(resp, 'headers', None)) if resp is not None else None
+                if wait is None:
+                    wait = compute_backoff(attempt)
+                print(f'  WARNING: Groq 429 -- waiting {wait:.1f}s '
+                      f'(attempt {attempt + 1}/{_MAX_ATTEMPTS})')
+                time.sleep(wait)
+                continue
+            # COMMIT 2 / A1 addition: recover non-429 transient resilience lost by
+            # max_retries=0 -- ONE backoff retry for 5xx/timeout/connection errors.
+            # Non-transient (400/401/403/404/422) returns immediately, no retry.
+            if (not is_rate_limit) and attempt == 0 and is_transient_error(e, err):
+                wait = compute_backoff(attempt)
+                print(f'  WARNING: transient error ({type(e).__name__}) -- '
+                      f'backoff {wait:.1f}s then one retry')
+                time.sleep(wait)
                 continue
             return '[Agent error: ' + err[:100] + ']'
     return '[Agent error: max retries exceeded]'
@@ -97,8 +136,12 @@ def _call_arbitrator(system_prompt: str, user_prompt: str, max_tokens: int = 600
     result = _call_agent(system_prompt, user_prompt, max_tokens, expect_json)
     if (result.startswith('[Agent error') and
             ('429' in result or 'rate_limit' in result.lower() or 'rate limit' in result.lower())):
-        print('  WARNING: Arbitrator 429 -- W-02 TPM wait 60s before final retry...')
-        time.sleep(60)
+        # COMMIT 2: W-02 only sees the error STRING (no exception/headers here --
+        # the header-exact wait already happened inside _call_agent's retries).
+        # This is the final coarse safety net: one more try after a bucket-sized wait.
+        wait = compute_backoff(0, base=60.0, cap=CAP_W02_SECONDS)
+        print(f'  WARNING: Arbitrator 429 -- W-02 bucket wait {wait:.1f}s before final retry...')
+        time.sleep(wait)
         result = _call_agent(system_prompt, user_prompt, max_tokens, expect_json)
         if result.startswith('[Agent error'):
             print('  WARNING: Arbitrator final retry also failed -- using safe defaults')
