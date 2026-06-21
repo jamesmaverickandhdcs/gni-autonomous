@@ -316,20 +316,24 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
     except Exception as _e:
         print('  WARNING: Could not log adaptive run: ' + str(_e)[:60])
 
-    # -- Log Groq usage so quota_guard can see adaptive token consumption (GNI-R-131)
+    # -- Log adaptive run activity.
+    # GNI-R-223: adaptive is Cerebras-only (zero Groq, no Groq fallback in production).
+    # Log the activity row with 0 Groq tokens so it does NOT pollute the shared Groq
+    # daily ceiling (get_today_usage sums tokens_used across ALL pipelines, unfiltered).
+    # requests_used kept as the truthful analysis-request count (not a Groq token charge,
+    # never summed by the quota guard) so /adaptive-log + alerts run-history survive.
     groq_calls = result.get('groq_calls', 0)
     if groq_calls > 0:
         try:
-            tokens_estimate = groq_calls * 6175
             log_usage(
                 client,
                 pipeline='gni_adaptive',
-                tokens_used=tokens_estimate,
+                tokens_used=0,            # Cerebras, not Groq -- zero Groq charge
                 requests_used=groq_calls,
                 run_id=None,
                 reason=reason,
             )
-            print('  OK Usage logged: gni_adaptive +' + str(tokens_estimate) + ' tokens, +' + str(groq_calls) + ' requests')
+            print('  OK Activity logged: gni_adaptive (Cerebras -- 0 Groq tokens, +' + str(groq_calls) + ' requests)')
         except Exception as _e2:
             print('  WARNING: Could not log usage: ' + str(_e2)[:60])
 
