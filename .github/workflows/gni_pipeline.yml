@@ -1,8 +1,8 @@
 name: GNI Intelligence Pipeline
 on:
   schedule:
-    - cron: '0 2 * * *'
-    - cron: '0 10 * * *'
+    - cron: '13 2 * * *'   # 02:13 UTC -- off :00 to reduce GitHub scheduler drift
+    - cron: '13 10 * * *'  # 10:13 UTC -- off :00; 8h spacing preserved
   workflow_dispatch:
 
 env:
@@ -60,8 +60,8 @@ jobs:
   verify-outcomes:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Run once daily at 11:00 UTC (after market close)
-    if: github.event.schedule == '0 10 * * *' || github.event_name == 'workflow_dispatch'
+    # Run once daily after the second pipeline run (10:13 UTC)
+    if: github.event.schedule == '13 10 * * *' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

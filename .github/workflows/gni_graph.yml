@@ -1,8 +1,8 @@
 name: GNI Entity Graph
 on:
   schedule:
-    - cron: '45 2 * * *'   # 02:45 UTC -- after 02:00 pipeline saves articles, clear of MAD (02:30)
-    - cron: '45 10 * * *'  # 10:45 UTC -- after 10:00 pipeline saves articles, clear of MAD (10:30)
+    - cron: '58 2 * * *'   # 02:58 UTC -- after 02:13 pipeline saves articles, 15 min after MAD (02:43)
+    - cron: '58 10 * * *'  # 10:58 UTC -- after 10:13 pipeline saves articles, 15 min after MAD (10:43)
   workflow_dispatch:  # Allow manual trigger
 jobs:
   entity_graph:

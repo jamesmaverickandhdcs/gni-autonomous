@@ -4,8 +4,8 @@ name: GNI MAD Pipeline
 # This guarantees the Groq TPM window is completely cleared
 # and daily token budget has recovered before MAD starts.
 #
-# Main pipeline: 02:00 UTC + 10:00 UTC
-# MAD pipeline:  02:30 UTC + 10:30 UTC  (30 min later)
+# Main pipeline: 02:13 UTC + 10:13 UTC
+# MAD pipeline:  02:43 UTC + 10:43 UTC  (30 min later)
 #
 # Why 30 minutes:
 #   - Groq TPM window (60s) clears in 1 min -- but daily budget needs more
@@ -15,8 +15,8 @@ name: GNI MAD Pipeline
 
 on:
   schedule:
-    - cron: '30 2 * * *'
-    - cron: '30 10 * * *'
+    - cron: '43 2 * * *'   # 02:43 UTC -- pipeline (02:13) + 30 min
+    - cron: '43 10 * * *'  # 10:43 UTC -- pipeline (10:13) + 30 min; inside 09:00-10:45 protection window
   workflow_dispatch:
 
 env:
