@@ -50,12 +50,13 @@ def _get_supabase_client():
     return create_client(url, key)
 
 
-def get_today_usage(client) -> int:
+def get_today_usage(client, account: str = 'morning') -> int:
     today = datetime.now(timezone.utc).date().isoformat()
     try:
         result = client.table('groq_daily_usage') \
             .select('tokens_used') \
             .eq('usage_date', today) \
+            .eq('account', account) \
             .execute()
         total = sum(row['tokens_used'] for row in (result.data or []))
         return total
@@ -66,7 +67,7 @@ def get_today_usage(client) -> int:
 
 def log_usage(client, pipeline: str, tokens_used: int,
               requests_used: int, run_id: str = None,
-              reason: str = '') -> bool:
+              reason: str = '', account: str = 'morning') -> bool:
     today = datetime.now(timezone.utc).date().isoformat()
     try:
         client.table('groq_daily_usage').insert({
@@ -76,6 +77,7 @@ def log_usage(client, pipeline: str, tokens_used: int,
             'requests_used': requests_used,
             'run_id':        run_id or '',
             'reason':        reason or '',
+            'account':       account,
         }).execute()
         print('  OK Usage logged: ' + pipeline + ' +' +
               str(tokens_used) + ' tokens, +' + str(requests_used) + ' requests')
@@ -100,7 +102,7 @@ def _send_telegram_alert(message: str):
         pass
 
 
-def check_quota(pipeline: str, sacred: bool = False) -> dict:
+def check_quota(pipeline: str, sacred: bool = False, account: str = 'morning') -> dict:
     client = _get_supabase_client()
     if not client:
         return {
@@ -112,7 +114,7 @@ def check_quota(pipeline: str, sacred: bool = False) -> dict:
             'pipeline_cost': PIPELINE_COSTS.get(pipeline, 0),
         }
 
-    tokens_used = get_today_usage(client)
+    tokens_used = get_today_usage(client, account)
     pipeline_cost = PIPELINE_COSTS.get(pipeline, 0)
 
     if tokens_used == -1:

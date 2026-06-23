@@ -51,7 +51,8 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_API_KEY: ${{ github.event.schedule == '43 10 * * *' && secrets.GROQ_MAD_EVENING || secrets.GROQ_API_KEY }}
+          GNI_MAD_ACCOUNT: ${{ github.event.schedule == '43 10 * * *' && 'evening' || 'morning' }}
           GROQ_MODEL: ${{ secrets.GROQ_MODEL }}
           GROQ_MAD_MODEL: ${{ secrets.GROQ_MAD_MODEL }}
           GITHUB_ACTIONS: "true"

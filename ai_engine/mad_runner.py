@@ -447,6 +447,9 @@ def run_mad_pipeline():
         print('ABORT: Cannot connect to Supabase')
         return False
 
+    mad_account = os.getenv('GNI_MAD_ACCOUNT', 'morning')
+    print('  MAD account: ' + mad_account)
+
     print('\n?? Step 1: Fetching fresh report...')
     report = _fetch_fresh_report(client)
     if not report:
@@ -464,7 +467,7 @@ def run_mad_pipeline():
         return True
 
     print('\n\U0001f6e1  Quota check (GNI-R-112)...')
-    _quota = check_quota('gni_mad', sacred=False)
+    _quota = check_quota('gni_mad', sacred=False, account=mad_account)
     print('  ' + _quota['reason'].split('\n')[0])
     if not _quota['allowed']:
         print('  BLOCKED: Insufficient quota -- exiting cleanly')
@@ -562,7 +565,8 @@ def run_mad_pipeline():
             )
             _usage = get_token_usage()
             _real_tokens = _usage['total'] or (_usage['prompt'] + _usage['completion'])
-            log_usage(_sb, 'gni_mad', _real_tokens, _usage['calls'], report_id or '')
+            log_usage(_sb, 'gni_mad', _real_tokens, _usage['calls'], report_id or '',
+                      account=mad_account)
             print(f'  Metered MAD usage: {_real_tokens} tokens over {_usage["calls"]} calls')
         except Exception as _e:
             print('  WARNING: Could not log usage: ' + str(_e)[:60])
