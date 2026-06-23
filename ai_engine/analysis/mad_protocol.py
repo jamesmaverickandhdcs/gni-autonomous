@@ -25,6 +25,9 @@
 #   Bull/Bear/Ost/Arb:  scored articles sorted DESC by stage3_score
 #   Swan:               weak signal pool (stage3_score=0) -- overlooked articles
 #   All agents:         article summaries included (Fix 2)
+# CURRENT SIZING (S48):
+#   per-pillar [:15] article slice; summary [:400] (was [:100])
+#   R1/R2 agent max_tokens 500 (was 350)
 # ============================================================
 
 import os
@@ -232,7 +235,7 @@ def _build_news_context(report: dict, all_articles: list,
             src = art.get('source', '')
             ttl = art.get('title', '')[:80]
             scr = art.get('stage3_score', 0)
-            smr = art.get('summary', '')[:100].replace('\n', ' ')
+            smr = art.get('summary', '')[:400].replace('\n', ' ')
             articles_ctx += f'  - [{src}] {ttl} (score:{scr})'
             if smr:
                 articles_ctx += f' -- {smr}'
@@ -651,19 +654,19 @@ def run_mad_protocol(report: dict, all_articles: list = None,
 
     bull_r1 = _call_agent(BULL,
         bull_ctx + debate_history_block + _fmt_history(history['bull'])
-        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
+        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 500)
 
     bear_r1 = _call_agent(BEAR,
         bear_ctx + debate_history_block + _fmt_history(history['bear'])
-        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 350)
+        + '\n\nROUND 1: Opening position on FUTURE THREATS.', 500)
 
     swan_r1 = _call_agent(SWAN,
         swan_ctx + debate_history_block + _fmt_history(history['black_swan'])
-        + '\n\nROUND 1: Focus on LOW-SCORING articles others ignore. Name a specific one.', 350)
+        + '\n\nROUND 1: Focus on LOW-SCORING articles others ignore. Name a specific one.', 500)
 
     ost_r1 = _call_agent(OSTRICH,
         ost_ctx + debate_history_block + _fmt_history(history['ostrich'])
-        + '\n\nROUND 1: Name the specific threat being ignored.', 350)
+        + '\n\nROUND 1: Name the specific threat being ignored.', 500)
 
     round1 = {'bull': bull_r1, 'bear': bear_r1, 'black_swan': swan_r1, 'ostrich': ost_r1}
 
@@ -704,22 +707,22 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     bull_r2 = _call_agent(BULL,
         bull_ctx + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bull', '')
-        + '\n\nROUND 2: Write a FRESH argument. Address feedback.', 350)
+        + '\n\nROUND 2: Write a FRESH argument. Address feedback.', 500)
 
     bear_r2 = _call_agent(BEAR,
         bear_ctx + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bear', '')
-        + '\n\nROUND 2: Respond. Address feedback.', 350)
+        + '\n\nROUND 2: Respond. Address feedback.', 500)
 
     swan_r2 = _call_agent(SWAN,
         swan_ctx + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('black_swan', '')
-        + '\n\nROUND 2: Challenge Bull and Bear. Go deeper on your weak signal.', 350)
+        + '\n\nROUND 2: Challenge Bull and Bear. Go deeper on your weak signal.', 500)
 
     ost_r2 = _call_agent(OSTRICH,
         ost_ctx + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('ostrich', '')
-        + '\n\nROUND 2: Name who is in denial and the cost.', 350)
+        + '\n\nROUND 2: Name who is in denial and the cost.', 500)
 
     round2 = {'bull': bull_r2, 'bear': bear_r2, 'black_swan': swan_r2, 'ostrich': ost_r2}
 
