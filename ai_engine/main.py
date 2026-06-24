@@ -101,7 +101,7 @@ def run_pipeline():
     # GNI-R-112: Check quota before pipeline runs
     # sacred=True -- never blocks sacred runs, alerts only
     print("\n\U0001f6e1  Quota check (GNI-R-112)...")
-    _quota = check_quota('gni_pipeline', sacred=True)
+    _quota = check_quota('gni_pipeline', sacred=True, account='not_mad')
     print("  " + _quota['reason'].split("\n")[0])
     print("  Used today: " + str(_quota['tokens_used']) + " tokens | Headroom: " + str(_quota['headroom']) + " tokens")
 
@@ -442,7 +442,7 @@ def run_pipeline():
                     os.getenv('SUPABASE_URL', ''),
                     os.getenv('SUPABASE_SERVICE_KEY', '')
                 )
-                log_usage(_sb, 'gni_pipeline', 6175, 6, run_id or '')
+                log_usage(_sb, 'gni_pipeline', 6175, 6, run_id or '', account='not_mad')
             except Exception as _e:
                 print('  WARNING: Could not log usage: ' + str(_e)[:60])
 
