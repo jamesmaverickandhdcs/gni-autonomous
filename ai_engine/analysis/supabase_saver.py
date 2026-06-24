@@ -232,6 +232,7 @@ def save_pipeline_articles(run_id: str, trace: list[dict]) -> bool:
                 "stage2_passed": art.get("stage2_passed", True),
                 "stage2_reason": art.get("stage2_reason", ""),
                 "stage3_score": float(art.get("stage3_score", 0.0)),
+                "stage3_reason": art.get("stage3_reason", ""),
                 "stage4_selected": art.get("stage4_selected", False),
                 "stage4_rank": art.get("stage4_rank", None),
                 "content_type": art.get("content_type", "news"),
