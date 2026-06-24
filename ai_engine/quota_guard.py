@@ -22,7 +22,7 @@ BUFFER           =  15000
 
 PIPELINE_COSTS = {
     'gni_pipeline': 6175,
-    'gni_mad':      7433,   # P4: reduced from 12393 after token compression
+    'gni_mad':      80000,  # S48: real metered [:400] MAD cost (was stale 7433); divergence baseline, not a gate
     'gni_verify':   0,
     'gni_heartbeat':0,
     'gni_adaptive': 0,      # GNI-R-223: Cerebras ONLY -- zero Groq cost
@@ -31,8 +31,8 @@ PIPELINE_COSTS = {
 # P6: Soft quota reservations per pipeline (C2 portioning)
 # Ensures each sacred pipeline always has its budget available.
 # Non-sacred pipelines (adaptive) only run if headroom > their reservation.
-# Total reserved: 6175 + 7433 + 7433 = 21041 tokens per full day cycle.
-# Safe ceiling: 85000 tokens -- headroom after two full cycles: ~42918 tokens.
+# Total reserved: 6175 + 80000 = 86175 tokens per full day cycle (one pipeline + one MAD).
+# Safe ceiling 85000 (non-sacred only); MAD is sacred -- runs regardless, divergence-alerted.
 PIPELINE_RESERVATIONS = {
     'gni_pipeline': 10000,  # sacred -- always runs (GNI-R-121)
     'gni_mad':      10000,  # sacred -- guaranteed window after pipeline

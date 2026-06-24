@@ -35,7 +35,7 @@ if not GITHUB_ACTIONS:
         print('  Copy mad_preflight.py to ai_engine/ folder for safety checks')
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from quota_guard import check_quota, log_usage
+from quota_guard import check_quota, log_usage, _send_telegram_alert
 
 
 def _get_client():
@@ -467,7 +467,7 @@ def run_mad_pipeline():
         return True
 
     print('\n\U0001f6e1  Quota check (GNI-R-112)...')
-    _quota = check_quota('gni_mad', sacred=False, account=mad_account)
+    _quota = check_quota('gni_mad', sacred=True, account=mad_account)
     print('  ' + _quota['reason'].split('\n')[0])
     if not _quota['allowed']:
         print('  BLOCKED: Insufficient quota -- exiting cleanly')
@@ -568,6 +568,15 @@ def run_mad_pipeline():
             log_usage(_sb, 'gni_mad', _real_tokens, _usage['calls'], report_id or '',
                       account=mad_account)
             print(f'  Metered MAD usage: {_real_tokens} tokens over {_usage["calls"]} calls')
+            # S48 cost-divergence assertion -- observability ONLY, never blocks (sacred run already committed).
+            _est = _quota.get('pipeline_cost', 0)
+            if _est and (_real_tokens > _est * 1.25 or _real_tokens < _est * 0.75):
+                _ratio = round(_real_tokens / _est, 2)
+                _msg = ('[GNI MAD] Cost divergence: est=' + str(_est) +
+                        ' real=' + str(_real_tokens) + ' ratio=' + str(_ratio) +
+                        ' account=' + str(mad_account))
+                print('  WARNING: ' + _msg)
+                _send_telegram_alert(_msg)
         except Exception as _e:
             print('  WARNING: Could not log usage: ' + str(_e)[:60])
 
