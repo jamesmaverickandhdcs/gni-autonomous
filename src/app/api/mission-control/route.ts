@@ -96,8 +96,19 @@ export async function GET(request: NextRequest) {
     const usage = data.usage || []
     const today = new Date().toISOString().split('T')[0]
     const todayUsage = usage.filter((u: {created_at: string}) => u.created_at.startsWith(today))
-    const totalTokens = todayUsage.reduce((s: number, u: {tokens_used: number}) => s + (u.tokens_used || 0), 0)
-    const pct = Math.round((totalTokens / 100000) * 100)
+    // S48: account-aware quota. morning + evening are SEPARATE Groq accounts, each with its OWN
+    // 100000/day pool. Evaluate the WORST account against its own ceiling -- never the blind cross-account sum.
+    const byAccount: Record<string, number> = {}
+    for (const u of todayUsage as Array<{ account?: string; tokens_used?: number }>) {
+      const acct = u.account || 'unknown'
+      byAccount[acct] = (byAccount[acct] || 0) + (u.tokens_used || 0)
+    }
+    let worstAcct = 'none', worstTokens = 0
+    for (const [acct, toks] of Object.entries(byAccount)) {
+      if (toks > worstTokens) { worstTokens = toks; worstAcct = acct }
+    }
+    const pct = Math.round((worstTokens / 100000) * 100)
+    const acctBreakdown = Object.entries(byAccount).map(([a, t]) => `${a}:${t}`).join(', ') || 'no usage today'
     // Check pipeline recency from same data
     const pipelineRuns = usage.filter((u: {pipeline: string, created_at: string}) =>
       u.pipeline === 'gni_pipeline' &&
@@ -108,13 +119,13 @@ export async function GET(request: NextRequest) {
       new Date(u.created_at).getTime() > Date.now() - 20 * 3600000
     )
     if (pct >= 90) {
-      checks['groq_quota'] = { status: 'CRITICAL', message: `Quota at ${pct}% — ${totalTokens}/100000 tokens today` }
+      checks['groq_quota'] = { status: 'CRITICAL', message: `Quota at ${pct}% -- worst account ${worstAcct} ${worstTokens}/100000 today (${acctBreakdown})` }
       issuesFound++
     } else if (pct >= 70) {
-      checks['groq_quota'] = { status: 'WARNING', message: `Quota at ${pct}% — monitor closely` }
+      checks['groq_quota'] = { status: 'WARNING', message: `Quota at ${pct}% -- worst account ${worstAcct} approaching (${acctBreakdown})` }
       issuesFound++
     } else {
-      checks['groq_quota'] = { status: 'OK', message: `Quota at ${pct}% — ${totalTokens}/100000 tokens today` }
+      checks['groq_quota'] = { status: 'OK', message: `Quota at ${pct}% -- worst account ${worstAcct} ${worstTokens}/100000 today (${acctBreakdown})` }
     }
     checks['pipeline_recent'] = pipelineRuns.length > 0
       ? { status: 'OK', message: 'gni_pipeline ran within last 20 hours' }

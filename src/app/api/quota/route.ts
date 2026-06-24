@@ -12,11 +12,24 @@ export async function GET(request: NextRequest) {
   try {
     const { data, error } = await supabase
       .from('groq_daily_usage')
-      .select('pipeline, tokens_used, requests_used, created_at')
+      .select('pipeline, tokens_used, requests_used, created_at, account')   // S48: account-aware quota
       .order('created_at', { ascending: false })
       .limit(500)
     if (error) throw error
-    return NextResponse.json({ usage: data || [] }, { headers: { 'Cache-Control': 'no-store' } })
+    // S48: per-account token sums for TODAY (UTC). ADDITIVE -- `usage` unchanged for existing consumers.
+    const usage = data || []
+    const today = new Date().toISOString().split('T')[0]
+    const byAccountToday: Record<string, number> = {}
+    for (const u of usage as Array<{ created_at?: string; account?: string; tokens_used?: number }>) {
+      if (typeof u.created_at === 'string' && u.created_at.startsWith(today)) {
+        const acct = u.account || 'unknown'
+        byAccountToday[acct] = (byAccountToday[acct] || 0) + (u.tokens_used || 0)
+      }
+    }
+    return NextResponse.json(
+      { usage, by_account_today: byAccountToday, daily_limit: 100000 },
+      { headers: { 'Cache-Control': 'no-store' } }
+    )
   } catch {
     return NextResponse.json({ usage: [] }, { status: 500 })
   }
