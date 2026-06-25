@@ -338,7 +338,7 @@ def save_mad_quality(client, report_id: str, quality_record: dict) -> bool:
     Called from mad_runner.py after _update_report_with_mad succeeds.
     """
     try:
-        record = {**quality_record, 'report_id': report_id}
+        record = {**quality_record, 'report_id': report_id, 'account': os.getenv('GNI_MAD_ACCOUNT', 'morning')}
         client.table('mad_quality_log').insert(record).execute()
         print('  OK MAD quality record saved')
         return True
