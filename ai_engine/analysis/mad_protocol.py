@@ -26,7 +26,7 @@
 #   Swan:               weak signal pool (stage3_score=0) -- overlooked articles
 #   All agents:         article summaries included (Fix 2)
 # CURRENT SIZING (S48):
-#   per-pillar [:15] article slice; summary [:400] (was [:100])
+#   per-pillar [:15] article slice; summary depth is solver-set (S51; was static 400)
 #   R1/R2 agent max_tokens 500 (was 350)
 # ============================================================
 
@@ -40,6 +40,7 @@ from groq_guardian import validate_response  # GNI-R-234
 from mad_rate_governor import (  # COMMIT 2 -- header-aware 429 governor
     compute_wait_from_headers, compute_backoff, is_transient_error,
 )
+from analysis.mad_budget_solver import compute_depth  # S51 -- depth budget solver
 
 # COMMIT 2 / Decision A1: max_retries=0 -- the governor owns ALL waits.
 # The SDK's internal retries honor only retry-after (~4s) and would fire into a
@@ -176,7 +177,8 @@ def _log_safety_event(event_type: str, detail: str) -> None:
 
 
 def _build_news_context(report: dict, all_articles: list,
-                        weak_articles: list = None, agent: str = 'general') -> str:
+                        weak_articles: list = None, agent: str = 'general',
+                        depth: int = 400) -> str:
     """
     Build news context for a specific agent.
     S37 PATCH: agent-specific article selection + sort before cut + summaries.
@@ -235,7 +237,7 @@ def _build_news_context(report: dict, all_articles: list,
             src = art.get('source', '')
             ttl = art.get('title', '')[:80]
             scr = art.get('stage3_score', 0)
-            smr = art.get('summary', '')[:400].replace('\n', ' ')
+            smr = art.get('summary', '')[:depth].replace('\n', ' ')
             articles_ctx += f'  - [{src}] {ttl} (score:{scr})'
             if smr:
                 articles_ctx += f' -- {smr}'
@@ -620,11 +622,23 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     # Each agent gets the right article pool, sorted correctly.
     # Replaces single news_ctx shared by all agents.
     # ============================================================
-    bull_ctx = _build_news_context(report, all_articles, agent='bull')
-    bear_ctx = _build_news_context(report, all_articles, agent='bear')
-    swan_ctx = _build_news_context(report, all_articles, weak_articles, agent='swan')
-    ost_ctx  = _build_news_context(report, all_articles, agent='ostrich')
-    arb_ctx  = _build_news_context(report, all_articles, agent='arbitrator')
+    # S51 DEPTH SOLVER (Commit 1): one global D from the scored pool's effective N
+    # (per-pillar capped; mirrors lines 218-221 + the [:15] cap @234).
+    # COUPLING: if bucket keys (~218) or the cap 15 (~234) change, update this count.
+    # N is sacred (never reduced); D is the only lever.
+    _buckets = {'geo': 0, 'fin': 0, 'tech': 0, 'other': 0}
+    for _art in all_articles:
+        _p = _art.get('pillar', 'other').lower()
+        _buckets[_p if _p in _buckets else 'other'] += 1
+    _eff_n = sum(min(_c, 15) for _c in _buckets.values())  # max 60, matches grid
+    _depth, _depth_est, _depth_status = compute_depth(_eff_n)
+    print(f'   S51 depth solver: N={_eff_n} D={_depth} est={_depth_est} status={_depth_status}')
+
+    bull_ctx = _build_news_context(report, all_articles, agent='bull', depth=_depth)
+    bear_ctx = _build_news_context(report, all_articles, agent='bear', depth=_depth)
+    swan_ctx = _build_news_context(report, all_articles, weak_articles, agent='swan', depth=_depth)
+    ost_ctx  = _build_news_context(report, all_articles, agent='ostrich', depth=_depth)
+    arb_ctx  = _build_news_context(report, all_articles, agent='arbitrator', depth=_depth)
 
     dominant_pillar = _detect_dominant_pillar(all_articles)
     pillar_instruction = _get_pillar_arb_instruction(dominant_pillar)
