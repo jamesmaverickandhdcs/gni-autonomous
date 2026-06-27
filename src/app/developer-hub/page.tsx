@@ -12,6 +12,7 @@ export default function DeveloperHub() {
   const [quota, setQuota] = useState<QuotaData | null>(null)
   const [sourceCount, setSourceCount] = useState<{healthy: number, total: number} | null>(null)
   const [reportCount, setReportCount] = useState(0)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/quota', { headers: { 'X-GNI-Key': GNI_KEY } })
@@ -21,7 +22,7 @@ export default function DeveloperHub() {
           setQuota({ used_today: data.used_today, hard_limit: data.hard_limit || 100000, safe_ceiling: data.safe_ceiling || 85000 })
         }
       })
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
 
     fetch('/api/source-health', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
@@ -30,12 +31,12 @@ export default function DeveloperHub() {
         const healthy = sources.filter((s: {status: string}) => s.status === 'healthy').length
         setSourceCount({ healthy, total: sources.length })
       })
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
 
     fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setReportCount((data.reports || []).length))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
   }, [])
 
   const quotaPct = quota ? Math.round((quota.used_today / quota.hard_limit) * 100) : 0
@@ -70,6 +71,8 @@ export default function DeveloperHub() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+
+        {error && <div className="text-center py-8 text-red-400">{error}</div>}
 
         {/* Intro */}
         <div className="bg-purple-950 border border-purple-700 border-l-4 border-l-purple-400 rounded-xl p-5 mb-6">

@@ -7,12 +7,13 @@ export default function AboutPage() {
     articles_analysed: number
     reports_generated: number
   } | null>(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/about-stats')
       .then(r => r.json())
       .then(d => setLiveStats(d))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
   }, [])
   const infra = [
     { name: 'Groq API (Llama 3)', role: 'Cloud AI — free tier, 100K tokens/day', cost: '$0.00' },
@@ -70,6 +71,8 @@ export default function AboutPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
+
+        {error && <div className="text-center py-8 text-red-400">{error}</div>}
 
         {/* $0 Hero */}
         <div className="bg-gray-900 border border-gray-700 rounded-2xl p-8 text-center">

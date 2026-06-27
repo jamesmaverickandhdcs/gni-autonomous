@@ -11,12 +11,13 @@ interface ReportSummary {
 
 export default function ResearcherHub() {
   const [reports, setReports] = useState<ReportSummary[]>([])
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setReports(data.reports || []))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
   }, [])
 
   const last7 = reports.slice(0, 7).reverse()
@@ -57,6 +58,8 @@ export default function ResearcherHub() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+
+        {error && <div className="text-center py-8 text-red-400">{error}</div>}
 
         {/* Intro */}
         <div className="bg-green-950 border border-green-700 border-l-4 border-l-green-400 rounded-xl p-5 mb-6">

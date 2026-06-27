@@ -14,12 +14,13 @@ interface Prediction {
 
 export default function ReportsHub() {
   const [predictions, setPredictions] = useState<Prediction[]>([])
+  const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/predictions-list', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setPredictions(data.predictions || []))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
   }, [])
 
   const pending = predictions.filter(p => !p.verified_at)
@@ -60,6 +61,8 @@ export default function ReportsHub() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+
+        {error && <div className="text-center py-8 text-red-400">{error}</div>}
 
         {/* Intro */}
         <div className="bg-amber-950 border border-amber-700 border-l-4 border-l-amber-400 rounded-xl p-5 mb-6">
