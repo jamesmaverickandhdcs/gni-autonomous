@@ -54,7 +54,7 @@ export default function MethodologyPage() {
           <div className="space-y-3">
             {[
               { stage: 'Step 0', title: 'Quota Guard Pre-flight', desc: 'Reads groq_daily_usage → sums today\'s tokens → checks against 85K safe ceiling. If insufficient headroom: EXIT with Telegram alert. Sacred runs (02:00+10:00 UTC) always permitted.' },
-              { stage: 'Stage 1a', title: 'RSS Collection', desc: 'Fetches up to 20 articles per RSS source from 25+ global news feeds. Target: 400+ raw articles per run. All saved to pipeline_articles table.' },
+              { stage: 'Stage 1a', title: 'RSS Collection', desc: 'Fetches up to 20 articles per RSS source from 42+ global news feeds. Target: 400+ raw articles per run. All saved to pipeline_articles table.' },
               { stage: 'Stage 1b', title: 'Injection Detection', desc: '66 prompt injection patterns scanned across 7 layers: Unicode norm, source credibility, context boundary, NER, Groq hardened JSON, output sanitization, audit trail. Flagged articles written to audit_trail table.' },
               { stage: 'Stage 2', title: 'Deduplication', desc: 'MD5 hash of first 6 title words. Articles with same hash within 6 hours are deduplicated. Prevents duplicate reporting on same event.' },
               { stage: 'Stage 3', title: 'Intelligence Funnel', desc: 'Each article scored on geopolitical significance (0-20). Top N articles selected with source diversity enforced (max 3 per source). Pillar routing: geo/tech/fin tags assigned.' },

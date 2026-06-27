@@ -8,7 +8,7 @@ const ENDPOINTS = [
   { method: 'GET', path: '/api/pillar-reports', desc: 'GEO / TECH / FIN pillar intelligence reports', group: 'Core' },
   { method: 'GET', path: '/api/quota', desc: 'Live token usage vs 85K safe ceiling vs 100K limit', group: 'System' },
   { method: 'GET', path: '/api/health', desc: 'Pipeline status + quality scores per run', group: 'System' },
-  { method: 'GET', path: '/api/source-health', desc: '25 RSS sources: healthy / degraded / down', group: 'System' },
+  { method: 'GET', path: '/api/source-health', desc: '42 RSS sources: healthy / degraded / down', group: 'System' },
   { method: 'GET', path: '/api/alerts', desc: 'Alert archive: CRITICAL / NYSE / ADAPTIVE / SOURCE_DOWN', group: 'System' },
   { method: 'GET', path: '/api/adaptive-log', desc: 'Self-healing log: when triggered, why, tokens used', group: 'System' },
   { method: 'GET', path: '/api/predictions-list', desc: 'All MAD predictions + verify dates + accuracy scores', group: 'Intelligence' },
