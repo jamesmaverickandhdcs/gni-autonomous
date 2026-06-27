@@ -20,14 +20,24 @@ export async function GET(request: NextRequest) {
     const usage = data || []
     const today = new Date().toISOString().split('T')[0]
     const byAccountToday: Record<string, number> = {}
+    let todayTokens = 0
     for (const u of usage as Array<{ created_at?: string; account?: string; tokens_used?: number }>) {
       if (typeof u.created_at === 'string' && u.created_at.startsWith(today)) {
         const acct = u.account || 'unknown'
         byAccountToday[acct] = (byAccountToday[acct] || 0) + (u.tokens_used || 0)
+        todayTokens += (u.tokens_used || 0)
       }
     }
     return NextResponse.json(
-      { usage, by_account_today: byAccountToday, daily_limit: 100000 },
+      {
+        usage,
+        by_account_today: byAccountToday,
+        daily_limit: 100000,
+        today_tokens: todayTokens,
+        used_today: todayTokens,
+        hard_limit: 100000,
+        safe_ceiling: 85000,
+      },
       { headers: { 'Cache-Control': 'no-store' } }
     )
   } catch {
