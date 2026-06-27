@@ -942,6 +942,10 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         'mad_arb_feedbacks':         {'round1': arb_c1, 'round2': arb_c2},
         'mad_historian_case':        '',
         'mad_risk_case':             '',
+        'mad_depth':                 _depth,
+        'mad_depth_est':             _depth_est,
+        'mad_depth_status':          _depth_status,
+        'mad_eff_n':                 _eff_n,
     }
 
     return _validate_mad_output(result)

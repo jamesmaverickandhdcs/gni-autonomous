@@ -569,7 +569,7 @@ def run_mad_pipeline():
                       account=mad_account)
             print(f'  Metered MAD usage: {_real_tokens} tokens over {_usage["calls"]} calls')
             # S48 cost-divergence assertion -- observability ONLY, never blocks (sacred run already committed).
-            _est = _quota.get('pipeline_cost', 0)
+            _est = mad_result.get('mad_depth_est') or _quota.get('pipeline_cost', 0)
             if _est and (_real_tokens > _est * 1.25 or _real_tokens < _est * 0.75):
                 _ratio = round(_real_tokens / _est, 2)
                 _msg = ('[GNI MAD] Cost divergence: est=' + str(_est) +
