@@ -6,6 +6,7 @@ interface QuotaData {
   today_tokens: number
   daily_limit: number
   today_cost: number
+  usage?: { pipeline: string; tokens_used: number; created_at: string }[]
 }
 
 export default function AboutDevopsPage() {
@@ -23,11 +24,20 @@ export default function AboutDevopsPage() {
 
   const pct = quota && quota.daily_limit ? Math.round(quota.today_tokens / quota.daily_limit * 100) : 0
 
+  // Wire gni_mad live from the quota usage[] we already fetch: most recent gni_mad row's
+  // tokens_used (real metered, varies 75-94k). Static ~80,000/run fallback if absent.
+  const madRecent = quota?.usage
+    ?.filter(u => u.pipeline === 'gni_mad')
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]?.tokens_used
+  const madTokens = madRecent
+    ? `~${madRecent.toLocaleString()}/run (recent; varies with load)`
+    : '~80,000/run'
+
   const pipelines = [
-    { name: 'gni_pipeline', schedule: '02:00 + 10:00 UTC', tokens: '~6,175/run', color: 'blue', desc: 'Core intelligence pipeline. RSS collection from 25 sources — injection detection across 66 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. The sacred run that never fails.' },
-    { name: 'gni_mad', schedule: '02:30 + 10:30 UTC', tokens: '~12,393/run', color: 'purple', desc: 'Quadratic MAD Protocol. Four AI agents (Bull, Bear, Black Swan, Ostrich) debate the latest report across 3 rounds with Arbitrator coaching after each round. Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction.' },
+    { name: 'gni_pipeline', schedule: '02:00 + 10:00 UTC', tokens: '~6,175/run (reservation estimate)', color: 'blue', desc: 'Core intelligence pipeline. RSS collection from 25 sources — injection detection across 66 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. The sacred run that never fails.' },
+    { name: 'gni_mad', schedule: '02:30 + 10:30 UTC', tokens: madTokens, color: 'purple', desc: 'Quadratic MAD Protocol. Four AI agents (Bull, Bear, Black Swan, Ostrich) debate the latest report across 3 rounds with Arbitrator coaching after each round. Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction.' },
     { name: 'gni_heartbeat', schedule: 'Every 30 min', tokens: '0 tokens', color: 'green', desc: 'Escalation monitoring and NYSE alert system. Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold.' },
-    { name: 'gni_adaptive', schedule: 'On trigger', tokens: '0 to 12,393', color: 'amber', desc: 'Emergency fresh analysis when world escalation spikes. CRITICAL level = 0 Groq calls (cached data only). HIGH = 4 calls. LOW = 19 calls. Frequency controller adjusts run interval autonomously: CRITICAL=30min, HIGH=2h, ELEVATED=4h, MODERATE=6h, LOW=12h.' },
+    { name: 'gni_adaptive', schedule: 'On trigger', tokens: '0 (Cerebras path -- logs 0 Groq)', color: 'amber', desc: 'Emergency fresh analysis when world escalation spikes. CRITICAL level = 0 Groq calls (cached data only). HIGH = 4 calls. LOW = 19 calls. Frequency controller adjusts run interval autonomously: CRITICAL=30min, HIGH=2h, ELEVATED=4h, MODERATE=6h, LOW=12h.' },
   ]
 
   const architecture = [

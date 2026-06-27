@@ -28,10 +28,10 @@ export default function MethodologyPage() {
             </div>
             <div className="space-y-3">
               {[
-                { pipeline: 'gni_pipeline', cron: '02:00 + 10:00 UTC', tokens: '~6,175/run', desc: 'RSS collection → intelligence funnel → AI analysis → CI → pillar reports → save → verify' },
-                { pipeline: 'gni_mad', cron: '02:30 + 10:30 UTC', tokens: '~12,393/run', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
+                { pipeline: 'gni_pipeline', cron: '02:00 + 10:00 UTC', tokens: '~6,175/run (reservation estimate)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → pillar reports → save → verify' },
+                { pipeline: 'gni_mad', cron: '02:30 + 10:30 UTC', tokens: '~80,000/run (varies with load)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
                 { pipeline: 'gni_heartbeat', cron: 'Every 30 min', tokens: '0 (zero)', desc: 'Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection' },
-                { pipeline: 'gni_adaptive', cron: 'On trigger', tokens: '0–12,393', desc: 'Fresh analysis when escalation spikes — CRITICAL=0 Groq, HIGH=4 calls, LOW=19 calls' },
+                { pipeline: 'gni_adaptive', cron: 'On trigger', tokens: '0 (Cerebras path)', desc: 'Fresh analysis when escalation spikes — CRITICAL=0 Groq, HIGH=4 calls, LOW=19 calls' },
               ].map(p => (
                 <div key={p.pipeline} className="bg-gray-800 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-1">
