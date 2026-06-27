@@ -37,7 +37,6 @@ export default function AboutPage() {
     { label: 'Reports generated', value: liveStats ? liveStats.reports_generated.toLocaleString() : '...' },
     { label: 'GPVS accuracy (7d)', value: gpvs ? `${gpvs.accuracy_7d}%` : '...' },
     { label: 'Injection patterns',value: '45+' },
-    { label: 'Sprint days',       value: '37' },
   ]
 
   const comparisons = [

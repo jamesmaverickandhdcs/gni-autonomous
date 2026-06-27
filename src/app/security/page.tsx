@@ -135,7 +135,7 @@ export default function SecurityPage() {
         {/* Pentest Results */}
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">
-            🧪 Pentest Results — Sprint Day 17
+            🧪 Pentest Results — Initial Security Audit (Sprint Day 17)
           </div>
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="bg-green-950 border border-green-800 rounded-lg p-3 text-center">
