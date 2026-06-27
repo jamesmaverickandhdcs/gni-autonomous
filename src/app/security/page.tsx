@@ -51,14 +51,6 @@ export default function SecurityPage() {
       .catch(() => setError('Failed to load data.'))
   }, [])
 
-  const injectionCategories = [
-    { name: 'Prompt override attempts', icon: '🚫', count: 12 },
-    { name: 'Role hijacking patterns', icon: '🎭', count: 8 },
-    { name: 'Instruction injection', icon: '⚠️', count: 15 },
-    { name: 'Data exfiltration probes', icon: '🕵️', count: 6 },
-    { name: 'Context manipulation', icon: '🌀', count: 11 },
-    { name: 'Jailbreak attempts', icon: '🔓', count: 14 },
-  ]
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -70,7 +62,7 @@ export default function SecurityPage() {
             <h1 className="text-2xl font-bold text-white">🛡️ Security Engine</h1>
             <p className="text-sm text-gray-400">Injection Detection · Audit Trail · Chain Verification</p>
             <p className="text-xs text-gray-500 mt-1 max-w-6xl">
-              Every article is scanned for 66 prompt injection patterns before entering the AI pipeline.
+              Every article is scanned for 81 prompt injection patterns before entering the AI pipeline.
               Every pipeline event is recorded in an immutable SHA-256 hash chain audit trail.
             </p>
           </div>
@@ -89,7 +81,7 @@ export default function SecurityPage() {
             <div className="text-xs text-green-600 mt-1">Security Grade</div>
           </div>
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
-            <div className="text-4xl font-bold text-white">66</div>
+            <div className="text-4xl font-bold text-white">81</div>
             <div className="text-xs text-gray-500 mt-1">Injection Patterns</div>
           </div>
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
@@ -99,36 +91,6 @@ export default function SecurityPage() {
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
             <div className="text-4xl font-bold text-blue-400">{auditTrail.length}</div>
             <div className="text-xs text-gray-500 mt-1">Audit entries</div>
-          </div>
-        </div>
-
-        {/* Injection Categories */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">
-            🚫 Injection Pattern Categories — 66 Total Patterns
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {injectionCategories.map((cat, i) => (
-              <div key={i} className="bg-gray-800 rounded-lg p-3 flex items-center gap-3">
-                <span className="text-xl">{cat.icon}</span>
-                <div>
-                  <div className="text-xs font-bold text-white">{cat.name}</div>
-                  <div className="text-xs text-gray-500">{cat.count} patterns</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 bg-gray-800 rounded-lg p-3">
-            <div className="text-xs text-gray-500 mb-2">Additional categories covered</div>
-            <div className="flex flex-wrap gap-2">
-              {['Code injection', 'SQL patterns', 'XSS vectors', 'Path traversal',
-                'Command injection', 'CRLF injection', 'Unicode tricks', 'Encoding attacks',
-                'Nested instructions', 'False authority'].map(tag => (
-                <span key={tag} className="text-xs bg-gray-700 text-gray-400 px-2 py-0.5 rounded">
-                  {tag}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
 
