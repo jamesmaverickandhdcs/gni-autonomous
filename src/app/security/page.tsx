@@ -24,6 +24,7 @@ interface Article {
 export default function SecurityPage() {
   const [auditTrail, setAuditTrail] = useState<AuditEntry[]>([])
   const [injectionStats, setInjectionStats] = useState({ total: 0, blocked: 0, passed: 0 })
+  const [error, setError] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -40,13 +41,14 @@ export default function SecurityPage() {
             const blocked = arts.filter(a => a.stage1b_passed === false).length
             setInjectionStats({ total, blocked, passed: total - blocked })
           })
+          .catch(() => setError('Failed to load data.'))
       }
-    }).finally(() => {})
+    }).catch(() => setError('Failed to load data.'))
 
     fetch('/api/audit-trail', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => setAuditTrail(data.entries || []))
-      .catch(() => {})
+      .catch(() => setError('Failed to load data.'))
   }, [])
 
   const injectionCategories = [
@@ -77,6 +79,8 @@ export default function SecurityPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+
+        {error && <div className="text-center py-8 text-red-400">{error}</div>}
 
         {/* Security Score */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
