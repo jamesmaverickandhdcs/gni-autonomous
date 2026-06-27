@@ -77,7 +77,7 @@ export default function DeveloperHub() {
           <p className="text-sm text-gray-100 leading-relaxed">
             Dev Console is GNI&apos;s technical transparency hub, designed for developers, system architects, and anyone who wants to understand how GNI works under the hood.
             Every component of the autonomous pipeline is observable here — from the 66-pattern injection security filter to the A/B prompt quality system and the self-healing adaptive engine.
-            The API reference documents all 21 endpoints with method, path, and description, making it straightforward to integrate GNI intelligence into external systems.
+            The API reference documents all 27 endpoints with method, path, and description, making it straightforward to integrate GNI intelligence into external systems.
             Source health monitoring tracks all 25 RSS feeds in real time, showing which sources are healthy, degraded, or down and how their trust weights are adjusted dynamically.
             The quota monitor ensures GNI never exceeds its free-tier token budget, with a safe ceiling at 85K tokens and a hard limit at 100K per day — the foundation of the $0.00/month architecture.
           </p>
