@@ -17,7 +17,10 @@
 # PROVENANCE
 #   Constants verified in P3-SOLVER validation against the P3-2D direct-harness
 #   grid built from real Supabase run 7db741c6 (186 scored rows; pillars
-#   geo:136 / fin:49 / tech:1). Least-squares fit, FIXED held at 35700.
+#   geo:136 / fin:49 / tech:1). Least-squares per-N fit; FIXED recalibrated
+#   35700->57300 at S52 from two live billed runs (N=34->89372, N=39->94212;
+#   back-solve 57257/57374, <0.1% err). Held-constant bump, not a fresh joint
+#   fit -- per-N slope re-validated ~0.1%.
 #   Model reproduces the 4x4 (N=[15,30,45,60] x D=[100,200,300,400]) grid to
 #   within <= 2.73% max error.
 #
@@ -35,7 +38,7 @@
 # ============================================================
 
 # --- verified constants (P3-SOLVER, run 7db741c6 grid, <= 2.73% error) ---
-FIXED          = 35700
+FIXED          = 57300
 PER_A_BASE     = 397.25
 PER_A_PER_CHAR = 1.3683
 
@@ -101,16 +104,18 @@ if __name__ == "__main__":
     # doc_label_cost = the human-rounded target from P3-SOLVER; we assert the
     # EXACT code output (int(cost(n,D))) and report the delta to the doc label.
     print("\n(1) validated table  [n -> D / est_cost / status]")
+    # Re-derived @ FIXED=57300 (S52). At the higher fixed overhead the curve hits
+    # the bands far sooner: trimming begins ~N=30, OK->DRIFT at N=35, FLOOR_HIT at
+    # N>=45. doc_cost = exact int(cost(n,D)) for the chosen D (delta 0, tol kept @2).
     table = [
-        # n,  expD, expStatus, doc_cost, doc_tol
-        (15,  400,  "OK",      49869,    2),
-        (30,  400,  "OK",      64037,    2),
-        (45,  400,  "OK",      78206,    2),
-        # N=60: solve(target)=310.18 -> int(d)=310 -> cost(60,310)=84985.
-        # The int(d) truncation of 0.18 char x 60 articles drops ~15 tok vs the
-        # continuous-D ideal of 85000; this is the spec'd code's true output.
-        (60,  310,  "OK",      85000,    20),
-        (31,  400,  "OK",      64982,    2),  # today's real run
+        # n,  expD, expStatus,   doc_cost, doc_tol
+        (15,  400,  "OK",        71468,    2),
+        (30,  384,  "OK",        84980,    2),
+        (34,  305,  "OK",        84995,    2),
+        (39,  300,  "DRIFT",     88801,    2),  # hold-300 band
+        (45,  250,  "FLOOR_HIT", 90569,    2),  # was OK/400 pre-recalibration
+        (60,  250,  "FLOOR_HIT", 101659,   2),  # was OK/310 pre-recalibration
+        (31,  362,  "OK",        84969,    2),  # today's real run (re-derived)
     ]
     for n, expD, expS, doc_cost, doc_tol in table:
         d, est, st = compute_depth(n)
@@ -122,17 +127,21 @@ if __name__ == "__main__":
         check(f"N={n}: est ~ {doc_cost} (+/-{doc_tol})",
               abs(est - doc_cost) <= doc_tol, f"est={est}, delta={est-doc_cost}")
 
-    # ---- guardrails fire when pushed out of spec ----
+    # ---- guardrails fire when pushed out of spec (@ FIXED=57300) ----
     print("\n(2) dormant guardrail branches activate under pressure")
-    # N=65: target needs sub-300 depth but cost(65,300) <= hard -> HOLD 300, DRIFT
+    # N=42: target needs sub-300 depth and cost(42,300) busts hard -> dial down
+    # toward floor against the hard ceiling -> DRIFT at D=int(solve(hard))=278.
+    d, est, st = compute_depth(42)
+    check("N=42: status == DRIFT (sub-300 hard-ceiling dial-down)", st == "DRIFT", f"D={d}, est={est}, st={st}")
+    check("N=42: D == 278", d == 278, f"got D={d}")
+    # N=65: even d_floor_min exceeds hard -> FLOOR_HIT alert. NOTE: this INVERTS vs
+    # pre-recalibration, where N=65 held 300/DRIFT; the higher fixed overhead floors it.
     d, est, st = compute_depth(65)
-    check("N=65: status == DRIFT (hold-300 branch)", st == "DRIFT", f"D={d}, est={est}, st={st}")
-    check("N=65: D == 300", d == 300, f"got D={d}")
-    # N=80: even 300 busts hard and solve(hard) < floor_min -> FLOOR_HIT alert
+    check("N=65: status == FLOOR_HIT (floored at d_floor_min)", st == "FLOOR_HIT", f"D={d}, est={est}, st={st}")
+    check("N=65: D == D_FLOOR_MIN (250)", d == D_FLOOR_MIN, f"got D={d}")
+    # N=80: deeper into FLOOR_HIT territory -- still floored at 250.
     d, est, st = compute_depth(80)
-    check("N=80: status in {DRIFT, FLOOR_HIT}", st in ("DRIFT", "FLOOR_HIT"),
-          f"D={d}, est={est}, st={st}")
-    check("N=80: status == FLOOR_HIT (floored at d_floor_min)", st == "FLOOR_HIT", f"got {st}")
+    check("N=80: status == FLOOR_HIT (floored at d_floor_min)", st == "FLOOR_HIT", f"D={d}, est={est}, st={st}")
     check("N=80: D == D_FLOOR_MIN (250)", d == D_FLOOR_MIN, f"got D={d}")
 
     # ---- N is sacred: compute_depth never returns or reduces N ----
