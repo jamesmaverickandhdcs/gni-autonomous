@@ -121,14 +121,18 @@ export default function SelfCheckPage() {
                 <div>
                   <div className="text-xl font-bold">{data.overall_status}</div>
                   <div className="text-xs opacity-80">
-                    {data.overall_status === 'HEALTHY' ? 'All systems operational' : `${data.issues_found} issue${data.issues_found > 1 ? 's' : ''} detected`}
+                    {data.overall_status === 'HEALTHY'
+                      ? 'All systems operational'
+                      : data.issues_found == null
+                        ? 'No check has run yet'
+                        : `${data.issues_found} issue${data.issues_found > 1 ? 's' : ''} detected`}
                     {data.telegram_sent && ' | Telegram alert sent'}
                   </div>
                 </div>
               </div>
               <div className="text-right text-xs opacity-70">
-                <div>Checked: {new Date(data.checked_at).toLocaleString()}</div>
-                <div>Duration: {data.duration_ms}ms</div>
+                <div>Checked: {data.checked_at ? new Date(data.checked_at).toLocaleString() : 'no run yet'}</div>
+                <div>Duration: {data.duration_ms != null ? `${data.duration_ms}ms` : '--'}</div>
               </div>
             </div>
           </div>
@@ -145,7 +149,7 @@ export default function SelfCheckPage() {
           <section className="mb-6">
             <div className="text-xs text-purple-400 font-bold uppercase tracking-wider mb-3">System Checks</div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {Object.entries(data.checks).map(([key, check]) => (
+              {Object.entries(data.checks || {}).map(([key, check]) => (
                 <div key={key} className="bg-gray-900 border border-gray-700 rounded-xl p-4">
                   <div className="flex items-center justify-between mb-1">
                     <div className="text-sm font-bold text-white">{CHECK_LABELS[key] || key}</div>
@@ -157,6 +161,9 @@ export default function SelfCheckPage() {
                 </div>
               ))}
             </div>
+            {Object.keys(data.checks || {}).length === 0 && (
+              <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 text-xs text-gray-600">No checks recorded yet -- run first check above</div>
+            )}
           </section>
         )}
 
