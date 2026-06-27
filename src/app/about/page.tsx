@@ -1,4 +1,5 @@
 'use client'
+const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 
 export default function AboutPage() {
@@ -7,12 +8,17 @@ export default function AboutPage() {
     articles_analysed: number
     reports_generated: number
   } | null>(null)
+  const [gpvs, setGpvs] = useState<{ accuracy_7d: number } | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/about-stats')
       .then(r => r.json())
       .then(d => setLiveStats(d))
+      .catch(() => setError('Failed to load data.'))
+    fetch('/api/prediction-outcomes', { headers: { 'X-GNI-Key': GNI_KEY } })
+      .then(r => r.json())
+      .then(d => setGpvs(d.summary))
       .catch(() => setError('Failed to load data.'))
   }, [])
   const infra = [
@@ -29,7 +35,7 @@ export default function AboutPage() {
     { label: 'Pipeline runs',     value: liveStats ? liveStats.pipeline_runs.toLocaleString() : '...' },
     { label: 'Articles analysed', value: liveStats ? liveStats.articles_analysed.toLocaleString() + '+' : '...' },
     { label: 'Reports generated', value: liveStats ? liveStats.reports_generated.toLocaleString() : '...' },
-    { label: 'GPVS accuracy',     value: '100%*' },
+    { label: 'GPVS accuracy (7d)', value: gpvs ? `${gpvs.accuracy_7d}%` : '...' },
     { label: 'Injection patterns',value: '45+' },
     { label: 'Sprint days',       value: '37' },
   ]
