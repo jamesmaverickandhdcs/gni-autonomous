@@ -10,7 +10,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Missing env vars' }, { status: 500 })
     }
     const res = await fetch(
-      `${url}/rest/v1/gni_stats?id=eq.1&select=pipeline_runs,articles_analysed,reports_generated,updated_at`,
+      `${url}/rest/v1/gni_stats?id=eq.1&select=pipeline_runs,articles_analysed,reports_generated,injection_patterns,updated_at`,
       {
         headers: {
           'apikey': key,

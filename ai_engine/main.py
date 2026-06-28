@@ -10,7 +10,7 @@ load_dotenv()
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from collectors.rss_collector import collect_articles
-from funnel.intelligence_funnel import run_funnel
+from funnel.intelligence_funnel import run_funnel, INJECTION_PATTERNS
 from analysis.nexus_analyzer import analyze
 from analysis.quality_scorer import score_report
 # MAD protocol moved to mad_runner.py (GNI-R-110 -- separate pipeline)
@@ -389,6 +389,7 @@ def run_pipeline():
                 'pipeline_runs':     _row.get('pipeline_runs', 0) + 1,
                 'articles_analysed': _row.get('articles_analysed', 0) + articles_collected,
                 'reports_generated': _row.get('reports_generated', 0) + reports_saved,
+                'injection_patterns': len(INJECTION_PATTERNS),
                 'updated_at': datetime.now(timezone.utc).isoformat(),
             }).execute()
             print('  OK gni_stats updated')
