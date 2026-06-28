@@ -610,6 +610,18 @@ def analyze(articles: list[dict], prompt_override: str = None, provider: str = "
         print("  ❌ Both Ollama and Groq failed")
         return None
 
+    # L6 (GNI-R-234): guard the raw Groq response before parsing.
+    # expect_json=False -- _parse_json_response already owns JSON structure
+    # (5 strategies incl. truncation repair); guardian owns refusal /
+    # rate-limit / injection / length-floor. max_length=None disables ONLY the
+    # upper bound here: max_tokens=3000 (~12k chars) exceeds the shared 8000
+    # ceiling, which would false-reject valid long reports. MAD keeps 8000.
+    from groq_guardian import validate_response
+    _gv = validate_response(raw, expect_json=False, max_length=None)
+    if not _gv['valid']:
+        print(f"  ❌ Guardian rejected response: {_gv['rejection_reason']}")
+        return None
+
     report = _parse_json_response(raw)
     if not report:
         print("  ❌ Failed to parse LLM response as JSON")

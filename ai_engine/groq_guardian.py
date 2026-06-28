@@ -120,13 +120,18 @@ def is_injection_attempt(raw: str) -> bool:
     return any(signal in lower for signal in INJECTION_SIGNALS)
 
 
-def is_quality_response(raw: str) -> bool:
+def is_quality_response(raw: str, max_length: int | None = MAX_RESPONSE_LENGTH) -> bool:
     """
     Return True if the response meets minimum quality standards:
     - Not empty
     - Not an agent error string
     - Length within acceptable range
     - Contains JSON structure indicators (for JSON-expected responses)
+
+    max_length: upper char bound. Pass None to SKIP only the upper-bound
+    check (e.g. the nexus_analyzer path, where max_tokens=3000 can yield
+    ~12k-char valid reports the parser already repairs). Floor + all other
+    checks are unaffected. Default keeps the 8000 ceiling for existing callers.
     """
     if not raw:
         return False
@@ -137,7 +142,7 @@ def is_quality_response(raw: str) -> bool:
         return False
     if len(stripped) < MIN_RESPONSE_LENGTH:
         return False
-    if len(stripped) > MAX_RESPONSE_LENGTH:
+    if max_length is not None and len(stripped) > max_length:
         return False
     return True
 
@@ -168,7 +173,8 @@ def sanitize_response(raw: str) -> str:
     return cleaned
 
 
-def validate_response(raw: str, expect_json: bool = True) -> dict:
+def validate_response(raw: str, expect_json: bool = True,
+                      max_length: int | None = MAX_RESPONSE_LENGTH) -> dict:
     """
     Run all validation checks on a raw Groq API response.
 
@@ -204,7 +210,7 @@ def validate_response(raw: str, expect_json: bool = True) -> dict:
     checks['is_rate_limit'] = is_rate_limit_error(sanitized)
     checks['is_refusal']    = is_refusal(sanitized)
     checks['is_injection']  = is_injection_attempt(sanitized)
-    checks['is_quality']    = is_quality_response(sanitized)
+    checks['is_quality']    = is_quality_response(sanitized, max_length=max_length)
     checks['has_json']      = has_json_structure(sanitized)
 
     # Determine rejection reason
