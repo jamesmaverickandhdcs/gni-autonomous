@@ -2,6 +2,8 @@
 import hashlib
 import sys
 import os
+import html
+import unicodedata
 from datetime import datetime
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from analysis.source_weights import get_source_weights
@@ -235,6 +237,44 @@ _STUFFING_KW = [
 ]
 
 
+# ============================================================
+# LAYER 1: Unicode normalization for the injection scan (S52 7-layer step 1).
+# Lifted (copied) from keyword_sensor._normalize_text -- the dormant module is
+# NOT imported. NFC -> NFKC here so compatibility forms (full-width, etc.) fold
+# to ASCII and cannot be used to evade the 81-pattern scan. DETECTION-ONLY:
+# _check_injection normalizes a LOCAL scan copy; the article's title/summary are
+# never mutated (non-English content reaches MAD/readers untouched).
+# ============================================================
+_HOMOGLYPHS = {
+    'а': 'a', 'е': 'e', 'о': 'o', 'р': 'p',
+    'с': 'c', 'ѕ': 's', 'і': 'i', 'ј': 'j',
+    'ɡ': 'g', 'ʜ': 'h', 'ĸ': 'k', 'ʟ': 'l',
+    'ɴ': 'n', 'ᴛ': 't', 'ᴜ': 'u', 'ᴠ': 'v',
+    'ᴡ': 'w', 'ʏ': 'y', 'Α': 'A', 'Β': 'B',
+    'Ε': 'E', 'Ζ': 'Z', 'Η': 'H', 'Ι': 'I',
+    'Κ': 'K', 'Μ': 'M', 'Ν': 'N', 'Ο': 'O',
+    'Ρ': 'P', 'Τ': 'T', 'Υ': 'Y', 'Χ': 'X',
+}
+
+_INVISIBLE_CHARS = {
+    '​', '‌', '‍', '⁠', '﻿', '­',
+}
+
+
+def _normalize_text_funnel(text: str) -> str:
+    """Fold homoglyph/invisible/entity/full-width evasions to plain ASCII so the
+    injection patterns scan the real payload. Pure (stdlib only), no side effects."""
+    text = unicodedata.normalize('NFKC', text)
+    text = ''.join(ch for ch in text if ch not in _INVISIBLE_CHARS)
+    text = ''.join(_HOMOGLYPHS.get(ch, ch) for ch in text)
+    text = html.unescape(text)
+    text = ''.join(
+        ch for ch in text
+        if (ch.isascii() and (ch.isprintable() or ch == ' '))
+    )
+    return text.strip()
+
+
 def _check_injection(article: dict) -> tuple[str, str]:
     """Stage 1b: Check for adversarial content.
 
@@ -244,7 +284,9 @@ def _check_injection(article: dict) -> tuple[str, str]:
       PASS   — clean article
     GNI S29: upgraded from (bool, str) to (str, str) for FLAG support.
     """
-    text = f"{article.get('title', '')} {article.get('summary', '')}".lower()
+    # LAYER 1 (S52): normalize a LOCAL scan copy only -- never mutate the article.
+    raw = f"{article.get('title', '')} {article.get('summary', '')}"
+    text = _normalize_text_funnel(raw).lower()
 
     # Check direct injection patterns (REMOVE)
     for pattern in INJECTION_PATTERNS:
