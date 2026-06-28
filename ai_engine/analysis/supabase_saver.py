@@ -32,49 +32,71 @@ def get_client() -> Client | None:
         return None
 
 
-def check_recent_duplicate(top_articles: list[dict], hours: int = 1, overlap_threshold: float = 0.7) -> dict | None:
+def check_recent_duplicate(top_articles: list[dict], prior_selected: set | None = None,
+                           hours: int = 6, novelty_threshold: float = 0.5) -> dict | None:
     """
-    Check if a recent report covers the same topic.
-    Returns the recent report if duplicate found, None otherwise.
+    Article-URL novelty gate (S53). Replaces the prior title-keyword overlap
+    compare, which false-skipped same-event / different-URL reports (the asymmetric
+    div-by-recent-title defect that suppressed the 27th evening report).
+
+    Keys ONLY on the article URL:
+      - basket articles expose the URL as 'link' (a.get('link'))
+      - prior rows expose it as pipeline_articles.url
+      - 'id' is md5(source:title) -- NOT a URL -- and is never used here.
+
+    INJECTABLE: pass `prior_selected` (a set of prior-run URLs) to bypass the DB
+    fetch (used by tests). When None, fetch the most-recent prior run's selected
+    URLs. run_id is NOT in scope inside this module, so the fetch omits the
+    .neq(run_id) filter and instead keeps only rows from the newest run_id (the
+    current run's rows do not exist yet at the main.py:184 call site).
+
+    Returns a truthy marker dict to SKIP (basket mostly recycled), or None to
+    PUBLISH. Preserves the main.py:182-198 contract (truthy=skip, falsy=publish).
     """
-    client = get_client()
-    if not client:
-        return None
+    newest_created_at = ""
 
-    try:
-        from datetime import datetime, timezone, timedelta
-        cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+    if prior_selected is None:
+        client = get_client()
+        if not client:
+            return None
+        try:
+            from datetime import datetime, timezone, timedelta
+            cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
 
-        result = client.table("reports")             .select("id, title, created_at")             .gte("created_at", cutoff)             .order("created_at", desc=True)             .limit(3)             .execute()
+            res = client.table("pipeline_articles")                 .select("url, run_id, created_at")                 .eq("stage4_selected", True)                 .gte("created_at", cutoff)                 .order("created_at", desc=True)                 .limit(40)                 .execute()
 
-        if not result.data:
+            if res.data:
+                newest_run_id = res.data[0]["run_id"]
+                newest_created_at = res.data[0].get("created_at", "") or ""
+                prior_selected = {
+                    r["url"] for r in res.data
+                    if r.get("run_id") == newest_run_id and r.get("url")
+                }
+            else:
+                prior_selected = set()
+        except Exception as e:
+            print(f"  ⚠️  Dedup check failed: {e}")
             return None
 
-        # Extract keywords from current top articles
-        current_text = " ".join([
-            f"{a.get('title', '')} {a.get('summary', '')}".lower()
-            for a in top_articles
-        ])
-        current_words = set(w for w in current_text.split() if len(w) > 4)
+    prior_selected = prior_selected or set()
 
-        for recent in result.data:
-            recent_title = recent.get("title", "").lower()
-            recent_words = set(w for w in recent_title.split() if len(w) > 4)
-
-            if not current_words or not recent_words:
-                continue
-
-            overlap = len(current_words & recent_words) / max(len(recent_words), 1)
-
-            if overlap >= overlap_threshold:
-                print(f"  ⚠️  Duplicate detected — {overlap:.0%} keyword overlap with report from {recent['created_at'][:16]}")
-                return recent
-
+    if not top_articles:
         return None
 
-    except Exception as e:
-        print(f"  ⚠️  Dedup check failed: {e}")
-        return None
+    total = len(top_articles)
+    new_count = sum(1 for a in top_articles if a.get("link") not in prior_selected)
+    novelty = new_count / max(total, 1)
+
+    if novelty >= novelty_threshold:
+        return None  # enough fresh URLs -> publish
+
+    # Mostly recycled basket -> skip. Marker carries the keys main.py:185-196 reads.
+    print(f"  ⚠️  Recycled basket — only {new_count}/{total} new URLs (novelty {novelty:.0%}) — skipping")
+    return {
+        "created_at": newest_created_at,
+        "title": f"Recycled basket — {new_count}/{total} new URLs (novelty {novelty:.0%})",
+        "novelty": novelty,
+    }
 
 
 def save_report(report: dict, articles: list[dict], quality_score: float = 0, quality_breakdown: dict = None) -> str | None:
