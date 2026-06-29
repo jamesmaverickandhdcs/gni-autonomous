@@ -1005,7 +1005,7 @@ export default function Home() {
 
                   <div className="px-6 pt-2 pb-3 text-xs text-gray-400 leading-relaxed">
                     <span className="text-white font-bold">How AI Thinking works: </span>
-                    GNI collects articles from 29 RSS sources, then passes them through a 4-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 69 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
+                    GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 81 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
                   </div>
 
                   {showAIThinking && (
