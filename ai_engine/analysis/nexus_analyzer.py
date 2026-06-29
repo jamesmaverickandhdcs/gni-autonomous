@@ -33,6 +33,27 @@ CEREBRAS_URL = "https://api.cerebras.ai/v1/chat/completions"
 CEREBRAS_MODEL = "llama3.1-8b"
 GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS", "false").lower() == "true"
 
+# S53 Half B: per-run Groq token meter. Module globals reset to 0 each GHA
+# process (one `python main.py` per scheduled run). GROQ-ONLY -- recorded at
+# _call_groq + _run_with_temperature, NOT _call_cerebras (non-Groq quota).
+# Ported from the proven mad_protocol.py _TOKEN_USAGE pattern.
+_RUN_TOKENS = 0
+_RUN_CALLS = 0
+
+
+def _record_usage(resp_json: dict) -> None:
+    """Accumulate one Groq response's total_tokens + a call. Defensive:
+    Groq always sends usage{}, but default to 0 if absent (matches MAD's
+    getattr(_u,'total_tokens',0) style) so a malformed body never crashes."""
+    global _RUN_TOKENS, _RUN_CALLS
+    _RUN_TOKENS += (resp_json or {}).get("usage", {}).get("total_tokens", 0) or 0
+    _RUN_CALLS += 1
+
+
+def get_run_usage() -> tuple:
+    """Return (total_tokens, groq_calls) accumulated this run."""
+    return (_RUN_TOKENS, _RUN_CALLS)
+
 
 def _build_prompt(articles: list[dict], prompt_override: str = None) -> str:
     """Build analysis prompt from top articles."""
@@ -135,7 +156,9 @@ def _call_groq(prompt: str, model: str = None) -> str | None:
             if response.status_code == 200:
                 if attempt == 2:
                     print(f"  ⚠️  Primary model failed — used fallback: {model_name}")
-                return response.json()["choices"][0]["message"]["content"]
+                _resp = response.json()
+                _record_usage(_resp)  # S53 Half B: Groq token meter
+                return _resp["choices"][0]["message"]["content"]
             else:
                 print(f"  ⚠️  Groq error (attempt {attempt}, model={model_name}): {response.status_code} {response.text[:100]}")
         except Exception as e:
@@ -467,7 +490,9 @@ def _run_with_temperature(prompt: str, temperature: float) -> dict | None:
             timeout=30
         )
         if response.status_code == 200:
-            raw = response.json()["choices"][0]["message"]["content"]
+            _resp = response.json()
+            _record_usage(_resp)  # S53 Half B: Groq token meter (CI temp runs)
+            raw = _resp["choices"][0]["message"]["content"]
             return _parse_json_response(raw)
     except Exception:
         pass

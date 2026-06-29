@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from collectors.rss_collector import collect_articles
 from funnel.intelligence_funnel import run_funnel, INJECTION_PATTERNS
-from analysis.nexus_analyzer import analyze
+from analysis.nexus_analyzer import analyze, get_run_usage
 from analysis.quality_scorer import score_report
 # MAD protocol moved to mad_runner.py (GNI-R-110 -- separate pipeline)
 # from analysis.mad_protocol import run_mad_protocol, _save_predictions
@@ -443,7 +443,9 @@ def run_pipeline():
                     os.getenv('SUPABASE_URL', ''),
                     os.getenv('SUPABASE_SERVICE_KEY', '')
                 )
-                log_usage(_sb, 'gni_pipeline', 6175, 6, run_id or '', account='not_mad')
+                _run_tokens, _run_calls = get_run_usage()
+                print(f'  Real Groq usage this run: {_run_tokens} tokens across {_run_calls} calls')
+                log_usage(_sb, 'gni_pipeline', _run_tokens, _run_calls, run_id or '', account='not_mad')
             except Exception as _e:
                 print('  WARNING: Could not log usage: ' + str(_e)[:60])
 
