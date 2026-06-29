@@ -596,7 +596,8 @@ def _build_plain_narrative(report: dict) -> str:
         return ""
 
 
-def analyze(articles: list[dict], prompt_override: str = None, provider: str = "groq") -> dict | None:
+def analyze(articles: list[dict], prompt_override: str = None, provider: str = "groq",
+            enable_ci: bool = True) -> dict | None:
     """
     Analyze top articles using appropriate LLM.
     GitHub Actions → Groq API directly (no Ollama timeout waste)
@@ -672,7 +673,7 @@ def analyze(articles: list[dict], prompt_override: str = None, provider: str = "
     # 2 extra calls: temp 0.1 (lower bound) + temp 0.7 (upper bound)
     # sleep(30) before each CI call -- TPM protection after primary analysis
     base_score = report.get("sentiment_score", 0.0)
-    if GITHUB_ACTIONS and provider != "cerebras":
+    if enable_ci and GITHUB_ACTIONS and provider != "cerebras":
         print("  Running confidence interval analysis (2 additional runs)...")
         scores = [base_score]
         for temp in [0.1, 0.7]:

@@ -426,7 +426,7 @@ def run_pipeline():
                     print("  Waiting 45s for Groq rate limit reset between pillars...")
                     time.sleep(45)
                 _p_prompt = get_pillar_prompt(_pillar_name)
-                _p_report = analyze(_p_arts, prompt_override=_p_prompt)
+                _p_report = analyze(_p_arts, prompt_override=_p_prompt, enable_ci=False)
                 if _p_report:
                     save_pillar_report(_p_report, _pillar_name, run_id, report_id)
                 else:
