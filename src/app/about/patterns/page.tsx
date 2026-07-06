@@ -127,7 +127,7 @@ export default function AboutPatternsPage() {
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
           <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Long-Term Research Value</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">Pattern Intelligence becomes more valuable over time. As GNI accumulates verified predictions, the statistical confidence of its source weights increases and the GPVS Scorecard becomes a genuine empirical accuracy record — not a theoretical claim.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">By April 2026, the first GPVS verifications complete. By Q3 2026, Model Learning begins recalibrating from surprise outcomes. By Q4 2026, the Pattern Library identifies historical escalation sequences that predict future geopolitical events with statistically significant accuracy.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">Report-level GPVS verification has been live since April 2026; prediction-level verification is currently backlogged and will backfill once the verifier resumes. Model Learning and the Pattern Library are in development — when live, they will recalibrate from surprise outcomes and identify historical escalation sequences that help anticipate future geopolitical events.</p>
         </div>
 
       </main>
