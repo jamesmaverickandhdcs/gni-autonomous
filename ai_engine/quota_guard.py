@@ -21,7 +21,7 @@ TPD_SAFE_CEILING =  85000
 BUFFER           =  15000
 
 PIPELINE_COSTS = {
-    'gni_pipeline': 6175,
+    'gni_pipeline': 17500, # S56 O2: real measured cost ~16.9-17.3K (live run 17312); was stale 6175 (2.8x wrong)
     'gni_mad':      80000,  # S48: real metered [:400] MAD cost (was stale 7433); divergence baseline, not a gate
     'gni_verify':   0,
     'gni_heartbeat':0,
@@ -31,7 +31,7 @@ PIPELINE_COSTS = {
 # P6: Soft quota reservations per pipeline (C2 portioning)
 # Ensures each sacred pipeline always has its budget available.
 # Non-sacred pipelines (adaptive) only run if headroom > their reservation.
-# Total reserved: 6175 + 80000 = 86175 tokens per full day cycle (one pipeline + one MAD).
+# Total reserved: 17500 + 80000 = 97500 tokens per account-day (one pipeline + one MAD) -- honestly tight vs 100K TPD.
 # Safe ceiling 85000 (non-sacred only); MAD is sacred -- runs regardless, divergence-alerted.
 PIPELINE_RESERVATIONS = {
     'gni_pipeline': 10000,  # sacred -- always runs (GNI-R-121)
