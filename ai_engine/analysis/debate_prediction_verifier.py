@@ -151,7 +151,8 @@ def run(apply: bool, limit: int):
         return report_created[rid]
 
     counts = {'materialized': 0, 'not_materialized': 0,
-              'inconclusive': 0, 'no_data': 0, 'skipped': 0}
+              'inconclusive': 0, 'no_data': 0, 'skipped': 0,
+              'fossil': 0}
     optional_fields = [f for f in ('outcome', 'market_change_pct',
                                    'verified_at', 'verification_method')
                        if f in cols]
@@ -159,6 +160,29 @@ def run(apply: bool, limit: int):
           + ((', ' + ', '.join(optional_fields)) if optional_fields else ' (only)'))
 
     for row in rows:
+        # S57 I2-b fossil guard: agent-error text is not a prediction.
+        # 429 storms write '[Agent error: ...]' into round3 texts and
+        # they land here as rows; judging them by SPY poisons accuracy.
+        pred_text = str(row.get('prediction', '') or '')
+        if (not pred_text.strip()) or \
+                pred_text.lstrip().startswith('[Agent error'):
+            counts['fossil'] += 1
+            print('  FOSSIL          id=' + str(row.get('id', '?'))
+                  + ' error/empty prediction -- not judged')
+            if apply:
+                update = {'verified_by': 'fossil_error_row'}
+                if 'outcome' in cols:
+                    update['outcome'] = 'error_row'
+                if 'verified_at' in cols:
+                    update['verified_at'] = \
+                        datetime.now(timezone.utc).isoformat()
+                try:
+                    client.table('debate_predictions').update(update) \
+                        .eq('id', row['id']).execute()
+                except Exception as e:
+                    print('  WARNING: fossil mark failed id='
+                          + str(row.get('id')) + ': ' + str(e)[:80])
+            continue
         start = window_start(row)
         end = str(row['verify_by'])[:10]
         if not start or start >= end:
