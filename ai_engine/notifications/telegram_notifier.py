@@ -1,3 +1,4 @@
+import html
 import os
 import requests
 from datetime import datetime
@@ -89,6 +90,12 @@ def format_channel_message(report: dict, articles: list) -> str:
         if len(title) > 75:
             title = title[:72] + "..."
 
+        # S57 I3-b: external feed text is hostile input to the HTML
+        # parse_mode (R-S56-1) -- escape at the boundary
+        source = html.escape(str(source))
+        title = html.escape(str(title))
+        url = html.escape(str(url), quote=True)
+
         if url:
             article_lines += (
                 f"\n{i}. [{source}] "
@@ -116,9 +123,10 @@ def format_channel_message(report: dict, articles: list) -> str:
     )
 
     # PHI-003 Freedom from Fear section
-    fff_what = report.get("fff_what_is_happening", "")
-    fff_analysis = report.get("fff_honest_analysis", "")
-    fff_path = report.get("fff_human_path", "")
+    # S57 I3-b: LLM-generated text is hostile input to HTML parse_mode
+    fff_what = html.escape(str(report.get("fff_what_is_happening", "") or ""))
+    fff_analysis = html.escape(str(report.get("fff_honest_analysis", "") or ""))
+    fff_path = html.escape(str(report.get("fff_human_path", "") or ""))
     if fff_what or fff_analysis or fff_path:
         fff_block = "\n\n🕊️ <b>Freedom from Fear Intelligence</b>\n"
         fff_block += "━━━━━━━━━━━━━━━━━━━━\n"
@@ -143,10 +151,10 @@ def send_critical_alert(report: dict) -> bool:
         "🚨🚨🚨 <b>CRITICAL ALERT — GNI_Autonomous</b> 🚨🚨🚨\n"
         "━━━━━━━━━━━━━━━━━━━━\n"
         f"Escalation Score: <b>{escalation_score}/10 [{escalation_level}]</b>\n\n"
-        f"<b>Report:</b> {report.get('title', '')}\n"
-        f"<b>Sentiment:</b> {report.get('sentiment', '')}\n"
-        f"<b>Risk Level:</b> {report.get('risk_level', '')}\n"
-        f"<b>Location:</b> {report.get('location_name', '')}\n\n"
+        f"<b>Report:</b> {html.escape(str(report.get('title', '') or ''))}\n"
+        f"<b>Sentiment:</b> {html.escape(str(report.get('sentiment', '') or ''))}\n"
+        f"<b>Risk Level:</b> {html.escape(str(report.get('risk_level', '') or ''))}\n"
+        f"<b>Location:</b> {html.escape(str(report.get('location_name', '') or ''))}\n\n"
         "⚠️ All three GNI intelligence pillars are active.\n"
         "Immediate human review recommended.\n\n"
         "📊 <a href=\"https://gni-autonomous.vercel.app\">View Dashboard</a>"

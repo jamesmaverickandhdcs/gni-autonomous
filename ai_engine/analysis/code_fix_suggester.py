@@ -119,15 +119,21 @@ def _send_telegram(message):
     admin_chat = TELEGRAM_ADMIN_CHAT_ID or TELEGRAM_QSChannel_ID
     if not TELEGRAM_BOT_TOKEN or not admin_chat:
         return
+    # S57 I3-b: plain text (parse_mode dropped) -- strike messages are
+    # plain text and any future dynamic error text would be hostile
+    # input to an HTML parser (R-S56-1). Non-200 and exceptions must
+    # CONFESS, never die silently (the 967-hour lesson).
     try:
-        requests.post(
+        resp = requests.post(
             "https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage",
-            json={"chat_id": admin_chat, "text": message,
-                  "parse_mode": "HTML"},
+            json={"chat_id": admin_chat, "text": message},
             timeout=10,
         )
-    except Exception:
-        pass
+        if resp.status_code != 200:
+            print("  Warning: fix-suggester Telegram send failed: "
+                  + str(resp.status_code) + " " + resp.text[:100])
+    except Exception as e:
+        print("  Warning: fix-suggester Telegram exception: " + str(e))
 
 
 def _get_client():
