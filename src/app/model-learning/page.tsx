@@ -11,7 +11,7 @@ export default function ModelLearningPage() {
               <h1 className="text-xl font-bold text-amber-300">🧠 Model Learning</h1>
               <p className="text-xs text-gray-400">Model Learning documents every time GNI was surprised — when a prediction was confidently wrong and reality forced a recalibration. Each surprise event triggers source weight adjustments via Exponential Moving Average, so future pipeline runs rely less on sources that misled the model. This is how GNI gets smarter over time without any human intervention.</p>
             </div>
-            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: Q3 2026</span>
+            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">In development</span>
           </div>
         </div>
       </header>
@@ -26,7 +26,7 @@ export default function ModelLearningPage() {
             Model Learning tracks every event where reality surprised GNI&apos;s predictions — and how the system responded. When a Black Swan event occurs, source weights are recalibrated, prompt templates are adjusted in the A/B system, and the adaptive pipeline modifies its escalation thresholds. This page will document GNI&apos;s learning trajectory, showing measurable improvement in prediction accuracy over time.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
-            <span className="text-xs text-amber-300">⏰ Available: <span className="font-bold text-white">Q3 2026</span></span>
+            <span className="text-xs text-amber-300">⏰ Status: <span className="font-bold text-white">In development</span></span>
           </div>
         </div>
 
@@ -63,8 +63,8 @@ export default function ModelLearningPage() {
               <div className="text-xs text-gray-500">First Verification</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-amber-300">Q3 2026</div>
-              <div className="text-xs text-gray-500">Page Available</div>
+              <div className="text-xl font-bold text-amber-300">In development</div>
+              <div className="text-xs text-gray-500">Page Status</div>
             </div>
           </div>
         </div>

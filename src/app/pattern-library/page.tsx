@@ -11,7 +11,7 @@ export default function PatternLibraryPage() {
               <h1 className="text-xl font-bold text-amber-300">📚 Pattern Library</h1>
               <p className="text-xs text-gray-400">Pattern Library identifies when current geopolitical escalation sequences match historical validated patterns from GNI&apos;s prediction archive. When a match is found, GNI surfaces the historical outcome as a predictive signal for what is likely to happen next. This is GNI&apos;s most advanced predictive capability — pattern recognition across time rather than single-point analysis.</p>
             </div>
-            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Available: Q4 2026</span>
+            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">In development</span>
           </div>
         </div>
       </header>
@@ -26,7 +26,7 @@ export default function PatternLibraryPage() {
             The Pattern Library is GNI&apos;s most advanced future capability — a database of validated escalation sequences that have historically preceded specific geopolitical outcomes. When current escalation scores match a historical validated sequence, GNI will proactively predict what comes next based on prior evidence. This transforms GNI from a reactive intelligence system into a predictive pattern-matching platform.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
-            <span className="text-xs text-amber-300">⏰ Available: <span className="font-bold text-white">Q4 2026</span></span>
+            <span className="text-xs text-amber-300">⏰ Status: <span className="font-bold text-white">In development</span></span>
           </div>
         </div>
 
@@ -63,8 +63,8 @@ export default function PatternLibraryPage() {
               <div className="text-xs text-gray-500">First Verification</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-amber-300">Q4 2026</div>
-              <div className="text-xs text-gray-500">Page Available</div>
+              <div className="text-xl font-bold text-amber-300">In development</div>
+              <div className="text-xs text-gray-500">Page Status</div>
             </div>
           </div>
         </div>
