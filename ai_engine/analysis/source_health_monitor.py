@@ -7,6 +7,7 @@
 # ============================================================
 
 import os
+import html
 import requests
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
@@ -94,7 +95,11 @@ def _send_admin_message(message: str) -> bool:
             json={"chat_id": TELEGRAM_ADMIN_ID, "text": message, "parse_mode": "HTML"},
             timeout=10,
         )
-        return resp.status_code == 200
+        if resp.status_code != 200:
+            print("  Warning: Telegram send HTTP " + str(resp.status_code)
+                  + ": " + resp.text[:100])
+            return False
+        return True
     except Exception as e:
         print("  Warning: Telegram send failed: " + str(e)[:60])
         return False
@@ -108,7 +113,7 @@ def _build_reserve_alert(source_name: str, pillar: str, avg: float,
         "Pillar: " + pillar.upper() + " | Avg raw entries: " + str(avg),
     ]
     if reason:
-        lines.append("Why: " + reason)
+        lines.append("Why: " + html.escape(reason))
     if hours_down > 3:
         lines.append("\u23f0 Down for: " + str(round(hours_down, 1)) + " hours")
     lines.append("")
