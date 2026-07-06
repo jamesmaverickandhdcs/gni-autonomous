@@ -180,7 +180,7 @@ export default function ComparisonPage() {
         {!loading && reports.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">&#x1F4E1;</div>
-            <p>No reports yet. Pipeline runs at 02:00 and 10:00 UTC.</p>
+            <p>No reports yet. Pipeline runs twice daily.</p>
           </div>
         )}
 

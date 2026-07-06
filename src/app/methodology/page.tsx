@@ -28,8 +28,8 @@ export default function MethodologyPage() {
             </div>
             <div className="space-y-3">
               {[
-                { pipeline: 'gni_pipeline', cron: '02:00 + 10:00 UTC', tokens: '~6,175/run (reservation estimate)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → pillar reports → save → verify' },
-                { pipeline: 'gni_mad', cron: '02:30 + 10:30 UTC', tokens: '~80,000/run (varies with load)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
+                { pipeline: 'gni_pipeline', cron: '02:13 + 10:13 UTC', tokens: '~6,175/run (reservation estimate)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → pillar reports → save → verify' },
+                { pipeline: 'gni_mad', cron: '02:43 + 10:43 UTC', tokens: '~80,000/run (varies with load)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
                 { pipeline: 'gni_heartbeat', cron: 'Every 30 min', tokens: '0 (zero)', desc: 'Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection' },
                 { pipeline: 'gni_adaptive', cron: 'On trigger', tokens: '0 (Cerebras path)', desc: 'Fresh analysis when escalation spikes — CRITICAL=0 Groq, HIGH=4 calls, LOW=19 calls' },
               ].map(p => (
@@ -53,7 +53,7 @@ export default function MethodologyPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Pipeline Stages — Step by Step</div>
           <div className="space-y-3">
             {[
-              { stage: 'Step 0', title: 'Quota Guard Pre-flight', desc: 'Reads groq_daily_usage → sums today\'s tokens → checks against 85K safe ceiling. If insufficient headroom: EXIT with Telegram alert. Sacred runs (02:00+10:00 UTC) always permitted.' },
+              { stage: 'Step 0', title: 'Quota Guard Pre-flight', desc: 'Reads groq_daily_usage → sums today\'s tokens → checks against 85K safe ceiling. If insufficient headroom: EXIT with Telegram alert. Sacred runs (02:13+10:13 UTC) always permitted.' },
               { stage: 'Stage 1a', title: 'RSS Collection', desc: 'Fetches up to 20 articles per RSS source from 42+ global news feeds. Target: 400+ raw articles per run. All saved to pipeline_articles table.' },
               { stage: 'Stage 1b', title: 'Injection Detection', desc: 'Every article passes a 7-layer adversarial-content defense: Unicode/NFKC normalization, prompt-boundary detection, source-credibility scoring, 81-pattern injection scan, hardened-JSON response guardian, input language normalization, and SHA-256 audit chain. Flagged articles written to audit_trail table.' },
               { stage: 'Stage 2', title: 'Deduplication', desc: 'MD5 hash of first 6 title words. Articles with same hash within 6 hours are deduplicated. Prevents duplicate reporting on same event.' },

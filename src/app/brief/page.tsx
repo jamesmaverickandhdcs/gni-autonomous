@@ -109,7 +109,7 @@ export default function BriefPage() {
             <section className="mb-4 bg-gray-900 border border-blue-800 rounded-xl p-4">
               <div className="text-xs text-blue-400 font-bold uppercase tracking-wider mb-2">🎯 Action Recommendation</div>
               <p className="text-sm text-white leading-relaxed font-medium">
-                {brief.mad_action_recommendation || 'MAD arbitrator synthesis pending — check back after next pipeline run (02:00 or 10:00 UTC).'}
+                {brief.mad_action_recommendation || 'MAD arbitrator synthesis pending — check back after the next scheduled run.'}
               </p>
             </section>
 
@@ -193,7 +193,7 @@ export default function BriefPage() {
                 Brief generated from latest pipeline run —{' '}
                 {brief.created_at ? new Date(brief.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A'}
               </p>
-              <p className="text-xs text-gray-700 mt-1">Updates every pipeline run (02:00 + 10:00 UTC)</p>
+              <p className="text-xs text-gray-700 mt-1">Updates every pipeline run (twice daily)</p>
             </section>
 
             {/* DISCLAIMER */}

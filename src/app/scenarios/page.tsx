@@ -280,7 +280,7 @@ export default function ScenariosPage() {
         {!loading && withScenarios.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">📊</div>
-            <p>No scenario data yet. Pipeline runs at 02:00 and 10:00 UTC.</p>
+            <p>No scenario data yet. Pipeline runs twice daily.</p>
           </div>
         )}
 
