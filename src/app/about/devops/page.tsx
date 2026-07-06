@@ -6,6 +6,7 @@ interface QuotaData {
   today_tokens: number
   daily_limit: number
   today_cost: number
+  by_account_today?: Record<string, number>
   usage?: { pipeline: string; tokens_used: number; created_at: string }[]
 }
 
@@ -22,7 +23,10 @@ export default function AboutDevopsPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  const pct = quota && quota.daily_limit ? Math.round(quota.today_tokens / quota.daily_limit * 100) : 0
+  // daily_limit (100K) is PER ACCOUNT; summed/single was the false-185% class (S54).
+  const acctVals = quota?.by_account_today ? Object.values(quota.by_account_today) : []
+  const worstTokens = acctVals.length > 0 ? Math.max(...acctVals) : (quota?.today_tokens || 0)
+  const pct = quota && quota.daily_limit ? Math.round(worstTokens / quota.daily_limit * 100) : 0
 
   // Wire gni_mad live from the quota usage[] we already fetch: most recent gni_mad row's
   // tokens_used (real metered, varies 75-94k). Static ~80,000/run fallback if absent.
@@ -96,9 +100,9 @@ export default function AboutDevopsPage() {
             <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Live Token Quota — .00/Month Proof</div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {[
-                { label: 'Tokens Used Today', value: quota.today_tokens?.toLocaleString() || '0', color: 'text-white' },
-                { label: 'Daily Limit', value: quota.daily_limit?.toLocaleString() || '100,000', color: 'text-gray-400' },
-                { label: 'Usage', value: String(pct) + '%', color: pct > 85 ? 'text-red-400' : pct > 70 ? 'text-yellow-400' : 'text-green-400' },
+                { label: 'Tokens Today (All Accounts)', value: quota.today_tokens?.toLocaleString() || '0', color: 'text-white' },
+                { label: 'Limit Per Account', value: quota.daily_limit?.toLocaleString() || '100,000', color: 'text-gray-400' },
+                { label: 'Worst Account Today', value: String(pct) + '%', color: pct > 85 ? 'text-red-400' : pct > 70 ? 'text-yellow-400' : 'text-green-400' },
                 { label: 'Cost Today', value: '.00', color: 'text-green-400' },
               ].map(item => (
                 <div key={item.label} className="bg-gray-800 rounded-lg p-4 text-center">
