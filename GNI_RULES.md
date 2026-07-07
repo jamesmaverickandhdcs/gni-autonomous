@@ -56,3 +56,12 @@ against live execution. S42 had TWO false ones: the S41 "URGENT" possessive bug 
 artifact from heredoc apostrophe-stripping) and the initial "Sunday digest mutates shared
 state" theory for #210 (the code shared no state; real cause was list-shaped JSON). Verify
 before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / LR-102.
+
+- **R-S55-1 - Sibling sweep:** when a bug is found in ONE consumer of a shared route/field, grep ALL consumers before closing the arc. (The 4th false-185% sibling on /about/devops sat undiscovered for 2 sessions.)
+- **R-S55-2 - Widen the fossil grep:** after any fossil is found, generalize its pattern before declaring the class swept. (The "02:00" grep missed the ":30" MAD variants.)
+- **R-S55-3 - Confirm the patch ran before trusting the verify:** require the PATCHED/DONE print first; verify-greps on an unpatched file prove nothing. (U1 was "verified" twice on an unpatched file.)
+- **R-S55-4 - One calibration:** model-coupled fixes (budget solver, quality scorer, grounding gate) bundle WITH the model migration, never before it.
+- **R-S55-5 - Transfer Protocol v1 adopted:** HANDOFF_S{N}.md + CONTRACT.md replace the 6-file close. Caps hard, delta-only, LOAD CHECK echo mandatory. Spec: docs/GNI_Session_Transfer_Protocol.md.
+
+- **R-S56-1 - Escape at the boundary:** a failure reason (or any external/LLM text) is hostile input to any formatting channel (Telegram HTML, etc). Escape at insertion or drop the parser. (The Stimson 403 reason contained literal <unknown>, poisoned its own alert, and shadow-killed reserves for 967h. Sibling sweep closed the class across 3 files in S56-S57.)
+- **R-S57-1 - Line endings are per-ANCHOR facts:** this repo mixes CRLF and LF per-file AND per-region. Every patch script carries the LF->CRLF fallback and confesses which matched; never infer a file's convention from one hit.
