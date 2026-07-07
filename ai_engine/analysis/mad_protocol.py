@@ -873,7 +873,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     )
     if _arb_is_error:
         print('  WARNING: Arbitrator call failed -- using safe defaults')
-        print('  ARB RAW (logs only): ' + arb_final_raw[:200])
+        print('  ARB RAW (logs only): ' + arb_final_raw[:400])
         mad_reasoning = ('Verdict unavailable this run -- the Arbitrator call was '
                          'rate-limited after the debate completed. The four-agent '
                          'debate transcript is complete; a fresh verdict comes from '
@@ -910,7 +910,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
             preparedness_path = arb_json.get('preparedness_path', '')
         except (json.JSONDecodeError, ValueError, KeyError) as e:
             print('  WARNING: Arbitrator JSON parse failed: ' + str(e)[:60])
-            print('  ARB RAW (logs only): ' + arb_final_raw[:200])
+            print('  ARB RAW (logs only): ' + arb_final_raw[:400])
             mad_reasoning = ('Verdict unavailable this run -- the Arbitrator response '
                              'could not be parsed. The four-agent debate transcript is '
                              'complete; a fresh verdict comes from the next scheduled run.')
