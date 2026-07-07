@@ -181,7 +181,7 @@ SOURCES = [
      "url": "https://news.google.com/rss/search?q=when:24h+%22IMF%22+OR+%22World+Bank%22+OR+%22sovereign+debt%22&hl=en-US&gl=US&ceid=US:en",
      "content_type": "news", "pillar": "fin", "bias": "Financial Aggregator", "democracy_score": 70},
 
-    # ── TECHNOLOGY PILLAR (8 sources) ─────────────────────────
+    # ── TECHNOLOGY PILLAR (6 sources) ─────────────────────────
     # PHI-001 cut (S44): Wired removed — metered paywall (dead link for free readers).
     {"name": "EFF Deeplinks",
      "url": "https://www.eff.org/rss/updates.xml",
@@ -189,11 +189,11 @@ SOURCES = [
 
     {"name": "Rest of World",
      "url": "https://restofworld.org/feed/",
-     "content_type": "news", "pillar": "tech", "bias": "Global Tech", "democracy_score": 87},
+     "content_type": "news", "pillar": "tech", "tier": "review", "bias": "Global Tech", "democracy_score": 87},
 
     {"name": "Krebs on Security",
      "url": "https://krebsonsecurity.com/feed/",
-     "content_type": "news", "pillar": "tech", "bias": "Cybersecurity", "democracy_score": 81},
+     "content_type": "news", "pillar": "tech", "tier": "opinion", "bias": "Cybersecurity", "democracy_score": 81},
 
     {"name": "Bellingcat",
      "url": "https://www.bellingcat.com/feed/",
@@ -201,7 +201,7 @@ SOURCES = [
 
     {"name": "Ars Technica",
      "url": "https://feeds.arstechnica.com/arstechnica/index",
-     "content_type": "news", "pillar": "tech", "bias": "Technology", "democracy_score": 68},
+     "content_type": "news", "pillar": "tech", "tier": "review", "bias": "Technology", "democracy_score": 68},
 
     {"name": "IEEE Spectrum",
      "url": "https://spectrum.ieee.org/feeds/feed.rss",
