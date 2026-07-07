@@ -46,7 +46,7 @@ export default function AboutDevopsPage() {
 
   const architecture = [
     { layer: 'L1 Data', title: 'RSS Ingestion + Deduplication', desc: '42 global news sources, up to 20 articles each, 400-500 raw articles per run. MD5 deduplication prevents duplicate event reporting within 6-hour rolling windows.' },
-    { layer: 'L2 Security', title: '81-Pattern Injection Detection', desc: 'Every article passes 7 security layers: Unicode/NFKC normalization, prompt-boundary detection, source-credibility scoring, 81-pattern injection scan, hardened-JSON response guardian, input language normalization, and SHA-256 audit chain for every intelligence item.' },
+    { layer: 'L2 Security', title: '70-Pattern Injection Detection', desc: 'Every article passes 7 security layers: Unicode/NFKC normalization, prompt-boundary detection, source-credibility scoring, 70-pattern injection scan, hardened-JSON response guardian, input language normalization, and SHA-256 audit chain for every intelligence item.' },
     { layer: 'L3 Intelligence', title: 'Funnel Scoring + AI Analysis', desc: 'Geopolitical significance scoring (0-20 points), top-N selection with source diversity enforcement, 3 independent AI runs at temperatures 0.1/0.3/0.7, t-distribution confidence interval (t=4.303, n=3, alpha=0.05) for every sentiment score.' },
     { layer: 'L4 Validation', title: 'GPVS Prediction Scoring', desc: 'After verify_date passes, actual SPY movement measured against prediction direction. Correct predictions: source weight x1.1 via EMA. Wrong predictions: weight x0.9. Weights bounded 0.5 to 2.0. Creates compounding accuracy advantage.' },
     { layer: 'L5 Autonomy', title: 'Self-Healing + Mission Control', desc: 'Heartbeat monitors escalation delta every 30 minutes. Mission Control checks Supabase connection, report freshness, quota ceiling, source health, pipeline recency. Telegram CRITICAL/WARNING alerts with specific action recommendations.' },
@@ -71,7 +71,7 @@ export default function AboutDevopsPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
           <h1 className="text-2xl font-bold text-purple-400">Dev Console — Autonomous Architecture</h1>
-          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the 4 GitHub Actions pipelines to the self-healing heartbeat to the 81-pattern injection security layer. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the .00/month evidence.</p>
+          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the 4 GitHub Actions pipelines to the self-healing heartbeat to the 70-pattern injection security layer. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the .00/month evidence.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">

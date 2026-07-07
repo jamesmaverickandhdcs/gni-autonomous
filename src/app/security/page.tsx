@@ -62,7 +62,7 @@ export default function SecurityPage() {
             <h1 className="text-2xl font-bold text-white">🛡️ Security Engine</h1>
             <p className="text-sm text-gray-400">Injection Detection · Audit Trail · Chain Verification</p>
             <p className="text-xs text-gray-500 mt-1 max-w-6xl">
-              Every article is scanned for 81 prompt injection patterns before entering the AI pipeline.
+              Every article is scanned for 70 prompt injection patterns before entering the AI pipeline.
               Every pipeline event is recorded in an immutable SHA-256 hash chain audit trail.
             </p>
           </div>
