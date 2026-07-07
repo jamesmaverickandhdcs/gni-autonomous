@@ -69,3 +69,5 @@ before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / LR-102.
 - **R-S58-1 - Text-mode patching banned:** Python text-mode open() is a line-ending NORMALIZER: it converts CRLF->LF on read, so writing the
 string back rewrites the entire file's endings even for a 2-char edit. ALL patch scripts on this
 repo read rb / write wb with BYTE anchors (b"..."). Text-mode file patching is banned.
+
+R-S59-1: Census before sweep -- grep the FULL tree for a claim before patching any instance; never chain a git commit after a sweep-verify grep in the same paste (81->70 took 3 commits because commit fired before census was read).
