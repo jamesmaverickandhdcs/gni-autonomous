@@ -48,8 +48,8 @@ export default function AboutFeedbackPage() {
     opportunities: [
       'Myanmar language integration (GNI_Myanmar) opens ASEAN-language intelligence gap',
       'GPVS verification compounding — accuracy advantage grows as predictions accumulate',
-      'Pattern Library (Q4 2026) will enable predictive pattern matching across historical sequences',
-      'Model Learning (Q3 2026) will enable autonomous recalibration from surprise outcomes',
+      'Pattern Library (planned) will enable predictive pattern matching across historical sequences',
+      'Model Learning (planned) will enable autonomous recalibration from surprise outcomes',
       'API export layer enables third-party applications to build on GNI intelligence output',
       'L8 autonomy roadmap includes Mission Control-triggered pipeline response to breaking news',
     ],
