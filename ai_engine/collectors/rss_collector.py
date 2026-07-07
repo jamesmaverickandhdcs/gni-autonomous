@@ -254,8 +254,10 @@ CAPTURE_GATE_DRY_RUN = False          # arc-4 FLIP: gate now enforcing (drops in
 
 # §1 tier mapping (inline "tier" field on each source dict; search '"tier":'):
 #   opinion (120h) = the old 168h "analysis" set, tightened: Crisis Group, HRW,
-#     Amnesty, ICIJ, Bellingcat, War on the Rocks, DFRLab, Radio Free Asia.
-#   review (48h): RFE/RL, Global Voices, The Irrawaddy, IranWire.
+#     Amnesty, ICIJ, Bellingcat, War on the Rocks, DFRLab, Radio Free Asia,
+#     Krebs on Security (S57).
+#   review (48h): RFE/RL, Global Voices, The Irrawaddy, IranWire,
+#     Ars Technica, Rest of World (S57).
 #   news (18h): all others (default).
 # NOTE (S44, user-accepted): opinion@120h drops Crisis Group (~250h) and DFRLab
 #   (~150h) while they are stale -- their slow cadence exceeds the strict ceiling.
