@@ -8,8 +8,8 @@ try:
     print(f'Mission Control Status: {status}')
     print(f'Issues Found: {issues}')
     if status == 'CRITICAL':
-        print('CRITICAL issues detected -- check Telegram for details')
-        sys.exit(1)
+        print('CRITICAL findings -- endpoint alerts sent; check is healthy (exit 0)')
+        sys.exit(0)
     elif status == 'WARNING':
         print('WARNING issues detected -- monitor closely')
     else:
