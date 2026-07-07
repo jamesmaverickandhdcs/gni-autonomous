@@ -457,7 +457,7 @@ export default function DebatePage() {
                       {selected.short_focus_threats ? (
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.short_focus_threats}</p>
                       ) : (
-                        <p className="text-sm text-gray-600 italic">Available for Quadratic MAD reports only.</p>
+                        <p className="text-sm text-gray-600 italic">{selected.mad_arb_failed ? 'No predictions this run -- the Arbitrator was rate-limited; the next scheduled run brings a fresh verdict.' : 'Available for Quadratic MAD reports only.'}</p>
                       )}
                     </div>
                     <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
@@ -465,7 +465,7 @@ export default function DebatePage() {
                       {selected.long_shoot_threats ? (
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.long_shoot_threats}</p>
                       ) : (
-                        <p className="text-sm text-gray-600 italic">Available for Quadratic MAD reports only.</p>
+                        <p className="text-sm text-gray-600 italic">{selected.mad_arb_failed ? 'No predictions this run -- the Arbitrator was rate-limited; the next scheduled run brings a fresh verdict.' : 'Available for Quadratic MAD reports only.'}</p>
                       )}
                     </div>
                     <div className="bg-blue-950 border border-blue-800 rounded-xl p-4">
