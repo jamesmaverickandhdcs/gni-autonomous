@@ -13,6 +13,9 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase
       .from('debate_predictions')
       .select('*')
+      // W10: exclude quarantined fossil rows (verified_by='fossil_error_row');
+      // null-safe OR -- a bare .neq() would silently drop all NULL verified_by rows
+      .or('verified_by.is.null,verified_by.neq.fossil_error_row')
       .order('created_at', { ascending: false })
       .limit(1000)
     if (error) throw error
