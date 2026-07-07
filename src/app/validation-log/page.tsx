@@ -46,7 +46,7 @@ export default function ValidationLogPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Why This Requires GPVS Accumulation</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 14, 2026. Prediction-level verification is currently backlogged while the verifier is offline, so pending predictions are accumulating unscored. Because scoring uses historical market data, nothing is lost — once verification resumes, results will backfill automatically and this page will populate.
+            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 14, 2026. The prediction verifier was restored in S57 and currently runs manually while scheduled runs are wired in; a verification backlog is being worked through. Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature.
           </p>
         </div>
 
