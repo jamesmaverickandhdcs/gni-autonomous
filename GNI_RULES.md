@@ -65,3 +65,7 @@ before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / LR-102.
 
 - **R-S56-1 - Escape at the boundary:** a failure reason (or any external/LLM text) is hostile input to any formatting channel (Telegram HTML, etc). Escape at insertion or drop the parser. (The Stimson 403 reason contained literal <unknown>, poisoned its own alert, and shadow-killed reserves for 967h. Sibling sweep closed the class across 3 files in S56-S57.)
 - **R-S57-1 - Line endings are per-ANCHOR facts:** this repo mixes CRLF and LF per-file AND per-region. Every patch script carries the LF->CRLF fallback and confesses which matched; never infer a file's convention from one hit.
+
+- **R-S58-1 - Text-mode patching banned:** Python text-mode open() is a line-ending NORMALIZER: it converts CRLF->LF on read, so writing the
+string back rewrites the entire file's endings even for a 2-char edit. ALL patch scripts on this
+repo read rb / write wb with BYTE anchors (b"..."). Text-mode file patching is banned.
