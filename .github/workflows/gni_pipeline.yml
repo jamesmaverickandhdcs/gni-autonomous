@@ -85,6 +85,12 @@ jobs:
           GITHUB_ACTIONS: "true"
           ALPHA_VANTAGE_API_KEY: ${{ secrets.ALPHA_VANTAGE_API_KEY }}
           TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+      - name: Run Debate Prediction Verifier (GPVS)
+        run: python ai_engine/analysis/debate_prediction_verifier.py --apply
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GITHUB_ACTIONS: "true"
       - name: Alert admin on failure
         if: failure()
         run: |
