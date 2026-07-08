@@ -71,3 +71,11 @@ string back rewrites the entire file's endings even for a 2-char edit. ALL patch
 repo read rb / write wb with BYTE anchors (b"..."). Text-mode file patching is banned.
 
 R-S59-1: Census before sweep -- grep the FULL tree for a claim before patching any instance; never chain a git commit after a sweep-verify grep in the same paste (81->70 took 3 commits because commit fired before census was read).
+
+R-S60-1: Browser verification requires a hard-refresh (Ctrl+Shift+R) first -- a stale client
+  bundle perfectly mimics a code bug (V-W13: code, API, and DB were all clean; cache was the bug).
+R-S60-2: Structural quality scores do not measure grounding. A MAD run scoring 100% published
+  two fabricated entities. Grounding requires its own deterministic gate against the article basket.
+R-S60-3: Never pipe an ungrounded layer's output into grounded layers unchecked. Consultants
+  receive no article basket; labeling their text "PERSONAL CONSULTANT TO YOU" launders invention
+  into evidence. 4/4 confirmed specimens entered through this channel.
