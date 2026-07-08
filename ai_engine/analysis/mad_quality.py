@@ -309,12 +309,19 @@ def calculate_mad_quality(mad_result: dict) -> dict:
 
     scores = _calculate_composite_scores(flags)
 
+    # S61: Layer-1 grounding gate shadow output (jsonb). Structure != grounding
+    # (R-S60-2) -- a run can score 100% quality yet launder a fabrication, so this
+    # is logged as an INDEPENDENT signal alongside the quality flags.
+    grounding_shadow = mad_result.get('grounding_shadow',
+                                      {'consultant_hits': [], 'arb_hits': [], 'total': 0})
+
     record = {
         **flags,
         **scores,
         'swan_article_cited':    swan_cited,
         'arbitrator_verdict':    mad_verdict,
         'arbitrator_short_focus': short_focus[:200],
+        'grounding_hits':        grounding_shadow,
         'created_at':            datetime.now(timezone.utc).isoformat(),
     }
 
@@ -339,7 +346,18 @@ def save_mad_quality(client, report_id: str, quality_record: dict) -> bool:
     """
     try:
         record = {**quality_record, 'report_id': report_id, 'account': os.getenv('GNI_MAD_ACCOUNT', 'morning')}
-        client.table('mad_quality_log').insert(record).execute()
+        try:
+            client.table('mad_quality_log').insert(record).execute()
+        except Exception as e:
+            # S61: if the grounding_hits column has not been ALTER-ed in yet, do not
+            # lose the whole quality row -- drop the new field and retry once. Keeps
+            # the shadow build zero-impact regardless of migration timing.
+            if 'grounding_hits' in record and 'grounding_hits' in str(e):
+                print('  Warning: grounding_hits column absent -- saving quality row without it')
+                record.pop('grounding_hits', None)
+                client.table('mad_quality_log').insert(record).execute()
+            else:
+                raise
         print('  OK MAD quality record saved')
         return True
     except Exception as e:

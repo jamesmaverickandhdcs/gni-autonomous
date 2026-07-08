@@ -17,6 +17,7 @@ on:
   schedule:
     - cron: '43 2 * * *'   # 02:43 UTC -- pipeline (02:13) + 30 min
     - cron: '43 10 * * *'  # 10:43 UTC -- pipeline (10:13) + 30 min; inside 09:00-10:45 protection window
+    - cron: '13 11 * * *'  # 11:13 UTC -- S61 grounding watch; clear of pipeline (:13), MAD (:43), graph (:58); after evening MAD
   workflow_dispatch:
 
 env:
@@ -26,6 +27,8 @@ jobs:
   run-mad:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    # S61: the 11:13 slot is the grounding-watch digest only -- never run MAD there.
+    if: github.event.schedule != '13 11 * * *'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -67,6 +70,47 @@ jobs:
           curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
             -d chat_id="${ADMIN}" \
             --data-urlencode "text=⚠️ GNI MAD run FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}
+
+  grounding-watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # S61: fabrication-rate digest (7d) over mad_quality_log.grounding_hits.
+    # Runs ONLY on the 11:13 slot (or manual dispatch). Zero Groq calls.
+    if: github.event.schedule == '13 11 * * *' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install \
+            supabase \
+            python-dotenv \
+            requests
+
+      - name: Run Grounding Watch (7d digest)
+        run: python ai_engine/analysis/grounding_watch.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_ADMIN_ID: ${{ secrets.TELEGRAM_ADMIN_ID }}
+          GITHUB_ACTIONS: "true"
+      - name: Alert admin on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
+            -d chat_id="${ADMIN}" \
+            --data-urlencode "text=⚠️ GNI Grounding Watch FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
         env:
           TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}

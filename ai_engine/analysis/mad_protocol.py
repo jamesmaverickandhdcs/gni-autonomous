@@ -41,6 +41,7 @@ from mad_rate_governor import (  # COMMIT 2 -- header-aware 429 governor
     compute_wait_from_headers, compute_backoff, is_transient_error,
 )
 from analysis.mad_budget_solver import compute_depth  # S51 -- depth budget solver
+from analysis.mad_grounding_gate import check_grounding  # S61 -- Layer-1 grounding gate (SHADOW)
 
 # COMMIT 2 / Decision A1: max_retries=0 -- the governor owns ALL waits.
 # The SDK's internal retries honor only retry-after (~4s) and would fire into a
@@ -640,6 +641,27 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     ost_ctx  = _build_news_context(report, all_articles, agent='ostrich', depth=_depth)
     arb_ctx  = _build_news_context(report, all_articles, agent='arbitrator', depth=_depth)
 
+    # S61 GROUNDING GATE (SHADOW): detect + log only -- zero behaviour change.
+    # Basket = every article the debate was grounded in (scored + weak). Whitelist =
+    # report framing the caller supplies (title/summary/location) + Swan FALLOUT
+    # template headers that legitimately recur in Swan output.
+    _grounding_basket = list(all_articles or []) + list(weak_articles or [])
+    _grounding_whitelist = [
+        report.get('title', ''), report.get('summary', ''),
+        report.get('location_name', ''),
+        'Detection Failure', 'Escalation', 'Geopolitical Retaliation',
+    ]
+    grounding_shadow = {'consultant_hits': [], 'arb_hits': [], 'total': 0}
+
+    def _shadow_check(reply, label, bucket):
+        """Run the grounding gate on one reply; never break the pipeline."""
+        try:
+            _g = check_grounding(reply, _grounding_basket, _grounding_whitelist,
+                                 location=label)
+            grounding_shadow[bucket].extend(_g['hits'])
+        except Exception as _ge:
+            print('  Grounding gate (shadow) skipped ' + label + ': ' + str(_ge)[:60])
+
     dominant_pillar = _detect_dominant_pillar(all_articles)
     pillar_instruction = _get_pillar_arb_instruction(dominant_pillar)
     print(f'   Dominant pillar: {dominant_pillar.upper()} -- {pillar_instruction[:60]}...')
@@ -703,6 +725,12 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     c1_ost  = _call_agent(OSTRICH_CONS, r1_cons_ctx + '\n\nCoach Ostrich. Push harder for Round 2.', 250)
     arb_c1 = {'bull': c1_bull, 'bear': c1_bear, 'black_swan': c1_swan, 'ostrich': c1_ost}
 
+    # SEAM 1 (S61 SHADOW): grounding gate on R1 consultant replies (the infection vector).
+    _shadow_check(c1_bull, 'c1_bull', 'consultant_hits')
+    _shadow_check(c1_bear, 'c1_bear', 'consultant_hits')
+    _shadow_check(c1_swan, 'c1_swan', 'consultant_hits')
+    _shadow_check(c1_ost,  'c1_ost',  'consultant_hits')
+
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
 
@@ -763,6 +791,12 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     c2_swan = _call_agent(SWAN_CONS,    r2_cons_ctx + '\n\nPush Black Swan to maximum for Round 3 final.', 250)
     c2_ost  = _call_agent(OSTRICH_CONS, r2_cons_ctx + '\n\nPush Ostrich to maximum for Round 3 final.', 250)
     arb_c2 = {'bull': c2_bull, 'bear': c2_bear, 'black_swan': c2_swan, 'ostrich': c2_ost}
+
+    # SEAM 2 (S61 SHADOW): grounding gate on R2 consultant replies.
+    _shadow_check(c2_bull, 'c2_bull', 'consultant_hits')
+    _shadow_check(c2_bear, 'c2_bear', 'consultant_hits')
+    _shadow_check(c2_swan, 'c2_swan', 'consultant_hits')
+    _shadow_check(c2_ost,  'c2_ost',  'consultant_hits')
 
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
@@ -848,6 +882,17 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         print(f'  NN-5: {len(_hard_constraints)} hard constraint(s) prepended to Arbitrator prompt')
 
     arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)
+
+    # SEAM 3 (S61 SHADOW): grounding gate on the Arbitrator's final output. The
+    # W-02 retry machinery lives INSIDE _call_arbitrator; we gate AFTER it returns.
+    # Arbitrator-level hits are the alarm class (fabrication reached the verdict).
+    _shadow_check(arb_final_raw, 'arb_final', 'arb_hits')
+    grounding_shadow['total'] = (len(grounding_shadow['consultant_hits']) +
+                                 len(grounding_shadow['arb_hits']))
+    if grounding_shadow['total']:
+        print(f"  GROUNDING SHADOW: {len(grounding_shadow['consultant_hits'])} "
+              f"consultant + {len(grounding_shadow['arb_hits'])} arb hit(s) "
+              f"(shadow -- no action taken)")
 
     # Parse final verdict
     mad_verdict = 'neutral'
@@ -953,6 +998,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         'mad_depth_est':             _depth_est,
         'mad_depth_status':          _depth_status,
         'mad_eff_n':                 _eff_n,
+        'grounding_shadow':          grounding_shadow,  # S61 -- logged to mad_quality_log
     }
 
     return _validate_mad_output(result)
