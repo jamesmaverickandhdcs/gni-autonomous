@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
-import { createClient } from '@supabase/supabase-js'
+import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { NextResponse } from 'next/server'
 
 
 export async function GET() {
-  const supabase = createClient(
+  const supabase = createNoStoreClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 )

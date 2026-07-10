@@ -1,13 +1,13 @@
 export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { validateApiKey } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   const authError = validateApiKey(request)
   if (authError) return authError
   try {
-    const supabase = createClient(
+    const supabase = createNoStoreClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
     )

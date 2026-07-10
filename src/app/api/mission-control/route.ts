@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic'
-import { createClient } from '@supabase/supabase-js'
+import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { NextRequest, NextResponse } from 'next/server'
 
 
@@ -19,7 +19,7 @@ async function sendTelegram(message: string) {
 }
 
 async function wasTelegramSentRecently(): Promise<boolean> {
-  const supabase = createClient(
+  const supabase = createNoStoreClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_KEY!
   )
@@ -32,7 +32,7 @@ async function wasTelegramSentRecently(): Promise<boolean> {
 }
 
 export async function GET(request: NextRequest) {
-  const supabase = createClient(
+  const supabase = createNoStoreClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 )
@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
 
   // Check 3: Quota status -- call existing /api/quota (NO DUPLICATION)
   try {
-    const res = await fetch(`${baseUrl}/api/quota`, { signal: AbortSignal.timeout(5000), headers: { 'X-Internal-Key': INTERNAL_KEY } })
+    const res = await fetch(`${baseUrl}/api/quota`, { cache: 'no-store', signal: AbortSignal.timeout(5000), headers: { 'X-Internal-Key': INTERNAL_KEY } })
     const data = await res.json()
     const usage = data.usage || []
     const today = new Date().toISOString().split('T')[0]
@@ -144,7 +144,7 @@ export async function GET(request: NextRequest) {
 
   // Check 4: Source health -- call existing /api/source-health (NO DUPLICATION)
   try {
-    const res = await fetch(`${baseUrl}/api/source-health`, { headers: { 'X-GNI-Key': process.env.GNI_API_KEYS?.split(',')[0] || '' }, signal: AbortSignal.timeout(5000) })
+    const res = await fetch(`${baseUrl}/api/source-health`, { cache: 'no-store', headers: { 'X-GNI-Key': process.env.GNI_API_KEYS?.split(',')[0] || '' }, signal: AbortSignal.timeout(5000) })
     const data = await res.json()
     const sources = data.sources || []
     const healthy = sources.filter((s: {status: string}) => s.status === 'healthy').length
@@ -169,6 +169,7 @@ export async function GET(request: NextRequest) {
   try {
     const apiKey = process.env.GNI_API_KEYS?.split(',')[0] || ''
     const res = await fetch(`${baseUrl}/api/reports`, {
+      cache: 'no-store',
       headers: { 'X-GNI-Key': apiKey },
       signal: AbortSignal.timeout(8000)
     })

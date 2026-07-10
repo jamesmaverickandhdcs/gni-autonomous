@@ -1,6 +1,6 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from '@supabase/supabase-js'
+import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { validateApiKey } from '@/lib/auth'
@@ -11,7 +11,7 @@ const QuerySchema = z.object({
 })
 
 export async function GET(request: NextRequest) {
-  const supabase = createClient(
+  const supabase = createNoStoreClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 )

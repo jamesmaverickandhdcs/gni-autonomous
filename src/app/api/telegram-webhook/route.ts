@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic'
-import { createClient } from '@supabase/supabase-js'
+import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { NextRequest, NextResponse } from 'next/server'
 
 // ============================================================
@@ -61,7 +61,7 @@ interface TelegramUpdate { message?: { from?: { id?: number }; text?: string } }
 export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // ── Init Supabase inside handler — never at module level ──
-  const supabase = createClient(
+  const supabase = createNoStoreClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
   )
