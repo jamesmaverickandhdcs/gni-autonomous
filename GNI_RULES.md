@@ -105,3 +105,12 @@ R-S63-2: Fallback resources (reserves, backups, secondaries) are guilty-until-ve
   reserve is worse than none -- it converts an outage into a silent one.
 R-S63-3: No protection may permanently mute its own alert path. Any "already handled ->
   skip alert" state needs an escalation branch for re-failure.
+R-S64-1: "Success. No rows returned" (any silent DB response) proves nothing. Every
+  UPDATE gets a SELECT verify, and state audits census the WHOLE table (no LIMIT) --
+  a LIMIT hid a live PRIMARY-DUP row in S64.
+R-S64-2: Aggregated views (trace Collected, dashboard counts) cannot answer WHO served
+  a slot -- reserve articles log under the primary's name. The run's raw console log is
+  the only authority on serve-path questions; read it before concluding.
+R-S64-3: Dedupe fallback resources by feed DOMAIN, not display name. "Radio Free
+  Europe" vs "RFE/RL" sailed past a name-set guard while serving identical rferl.org
+  content -- name spelling is not identity.
