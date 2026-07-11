@@ -80,6 +80,7 @@ export async function GET(request: NextRequest) {
       } else if (fetchOk === true) {
         if (rawCount === 0) status = 'silent'
         else if (current === 0) status = 'stale-gated'
+        else if (current < avg * 0.5) status = 'degraded'
         else status = 'healthy'
       } else {
         // Legacy row written before fetch_ok/served_by existed.
