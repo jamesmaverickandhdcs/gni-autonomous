@@ -254,6 +254,10 @@ def _upsert_reserve_record(client, source_name: str, pillar: str) -> None:
         print("  Warning: Could not upsert reserve record: " + str(e)[:60])
 
 
+def raw_val_guard(stat: dict, count: int) -> bool:
+    """FT-GAP write-time warn condition: transport+entries OK, gate ate all."""
+    return (stat.get("raw") or 0) > 0 and count == 0
+
 def save_source_counts(articles: list, sources: list, source_stats: dict = None) -> bool:
     client = _get_client()
     if not client:
@@ -276,6 +280,16 @@ def save_source_counts(articles: list, sources: list, source_stats: dict = None)
         name  = source["name"]
         count = counts.get(name, 0)            # YIELD (survivors) -- dashboard field
         stat  = source_stats.get(name, {})
+        fetch_ok  = stat.get("fetch_ok")
+        served_by = None
+        if stat.get("is_reserve"):
+            try:
+                served_by = _get_active_reserve_name(client, name) or None
+            except Exception:
+                served_by = None
+        if fetch_ok and raw_val_guard(stat, count):
+            print("  WARNING [STALE-GATED] " + name + ": raw="
+                  + str(stat.get("raw")) + " yield=0 -- gate ate all entries (FT-GAP)")
         raw   = stat.get("raw", count)         # RAW fetch health (pre-gate); fall
                                                # back to yield if stats absent
         records.append({
@@ -287,6 +301,8 @@ def save_source_counts(articles: list, sources: list, source_stats: dict = None)
             "geo_count": geo_counts.get(name, 0),
             "geo_ratio": round(geo_counts.get(name, 0) / count, 2) if count > 0 else 0.0,
             "low_quality_flag": (count > 5 and (geo_counts.get(name, 0) / count) < 0.25),
+            "fetch_ok":      fetch_ok,
+            "served_by":     served_by,
             "status":        "ok" if count > 0 else "empty",
         })
 
