@@ -114,3 +114,12 @@ R-S64-2: Aggregated views (trace Collected, dashboard counts) cannot answer WHO 
 R-S64-3: Dedupe fallback resources by feed DOMAIN, not display name. "Radio Free
   Europe" vs "RFE/RL" sailed past a name-set guard while serving identical rferl.org
   content -- name spelling is not identity.
+R-S65-1: Fetch-based "recovery" is not recovery. Any auto-retire/auto-activate criterion
+  must consult yield or serve-path, not transport alone -- C2 retired a reserve for a
+  primary that fetched fine and served zero.
+R-S65-2: Executor (Claude Code) diffs get chat clearance BEFORE the git trigger, every
+  time, however clean they look. Review-then-trigger is the contract's protection for
+  the day the diff isn't clean.
+R-S65-3: Never blind-wrap keyword lists in word boundaries. Lists contain deliberate
+  stems (extremis, geopolit); use an explicit stem convention ('*' suffix) and annotate
+  conservatively -- a too-greedy stem is the substring bug wearing a different hat.
