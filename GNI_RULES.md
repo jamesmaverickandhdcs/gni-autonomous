@@ -87,3 +87,21 @@ R-S62-2: Any placeholder in a command MUST be loudly marked (warning emoji + "PL
   what to substitute). The operator runs commands verbatim. (S62: <path> and YOUR_KEY both ran literally.)
 R-S62-3: Server-side Supabase reads go through createNoStoreClient (src/lib/supabaseNoStore.ts).
   New API routes never call createClient directly -- Vercel Data Cache serves fossils otherwise.
+
+R-S63-1: Any option list whose reply-number maps to list POSITION in a consumer (Telegram
+  webhook class) must preserve numbering across changes -- annotate bad options, never
+  filter, until every consumer is read and updated in the same commit.
+R-S63-2: Fallback resources (reserves, backups, secondaries) are guilty-until-verified:
+  live-check + dedupe-against-primaries before they may be offered as safety. A dead
+  reserve is worse than none -- it converts an outage into a silent one.
+R-S63-3: No protection may permanently mute its own alert path. Any "already handled ->
+  skip alert" state needs an escalation branch for re-failure.
+
+R-S63-1: Any option list whose reply-number maps to list POSITION in a consumer (Telegram
+  webhook class) must preserve numbering across changes -- annotate bad options, never
+  filter, until every consumer is read and updated in the same commit.
+R-S63-2: Fallback resources (reserves, backups, secondaries) are guilty-until-verified:
+  live-check + dedupe-against-primaries before they may be offered as safety. A dead
+  reserve is worse than none -- it converts an outage into a silent one.
+R-S63-3: No protection may permanently mute its own alert path. Any "already handled ->
+  skip alert" state needs an escalation branch for re-failure.
