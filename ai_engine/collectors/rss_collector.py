@@ -476,7 +476,18 @@ def collect_articles(max_per_source: int = 20) -> tuple[list[dict], dict]:
                     print(f"  OK {src_name}: {count} articles")
 
                 collected = count
-                break  # Success — no need to try reserve
+
+                # S63 fix: a valid-but-EMPTY primary must fall through to
+                # its ACTIVATED reserve. An activated reserve only exists
+                # because the health monitor already declared this slot
+                # DOWN -- so on zero real entries, serving the reserve is
+                # always correct. Transport success alone is not success.
+                if raw_count == 0 and not is_reserve and name in active_reserves:
+                    print("  " + src_name + " fetched OK but delivered 0 real entries"
+                          " -- falling through to activated reserve")
+                    continue
+
+                break  # Success -- real entries delivered (or no reserve queued)
 
             except Exception as e:
                 fetch_ok = False
