@@ -499,10 +499,11 @@ def collect_articles(max_per_source: int = 20) -> tuple[list[dict], dict]:
         # the source that served, or the final failed attempt). Keyed by the
         # PRIMARY name -- the health monitor tracks slots, not reserve URLs.
         source_stats[name] = {
-            "fetch_ok": fetch_ok,
-            "raw":      raw_count,
-            "yield":    collected,
-            "reason":   fetch_reason,
+            "fetch_ok":   fetch_ok,
+            "raw":        raw_count,
+            "yield":      collected,
+            "reason":     fetch_reason,
+            "is_reserve": is_reserve,   # S63 C2/C4: who served -- primary or reserve
         }
 
         if collected == 0 and name not in active_reserves:

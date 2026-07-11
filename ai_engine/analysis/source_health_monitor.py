@@ -40,6 +40,14 @@ HEALTH_ALERT_DRY_RUN    = False
 RAW_ZERO_PATIENCE_HOURS = 72.0          # slow tiers: zero must persist this long
 IMMEDIATE_ZERO_TIERS    = {"news"}      # raw==0 flags on the spot for these
 
+# S63 C3: timed auto-activation. 0 = DISABLED (default). Set the env var to
+# e.g. 8 to auto-activate the top reserve after 8h of unanswered DOWN.
+# James gates this per-deployment -- autonomy is opt-in, never default.
+AUTO_RESERVE_AFTER_HOURS = float(os.getenv("GNI_AUTO_RESERVE_AFTER_HOURS", "0"))
+# S63 C4: after a reserve serves cleanly this many days, send a PROPOSAL
+# (never an action) to promote it or revive the primary.
+PROMOTION_PROPOSAL_DAYS  = 7.0
+
 # ── Reserve Sources Pool ─────────────────────────────────────
 GEO_RESERVES = [
     {"name": "Global Voices",     "url": "https://globalvoices.org/feed/",                          "pillar": "geo", "bias": "Global South",   "democracy_score": 88},
@@ -106,10 +114,14 @@ def _send_admin_message(message: str) -> bool:
 
 
 def _build_reserve_alert(source_name: str, pillar: str, avg: float,
-                         hours_down: float, reason: str = "") -> str:
+                         hours_down: float, reason: str = "",
+                         failing_reserve: str = "", escalation: bool = False) -> str:
     reserves = _get_reserves_for_pillar(pillar)
+    header = ("\U0001f6a8 <b>[GNI RSS Alert] RESERVE ALSO DOWN: " + source_name
+              + " (reserve: " + failing_reserve + ")</b>") if escalation else \
+             ("\U0001f534 <b>[GNI RSS Alert] Source DOWN: " + source_name + "</b>")
     lines = [
-        "\U0001f534 <b>[GNI RSS Alert] Source DOWN: " + source_name + "</b>",
+        header,
         "Pillar: " + pillar.upper() + " | Avg raw entries: " + str(avg),
     ]
     if reason:
@@ -119,7 +131,15 @@ def _build_reserve_alert(source_name: str, pillar: str, avg: float,
     lines.append("")
     lines.append("Please choose a reserve source:")
     for i, r in enumerate(reserves, 1):
-        lines.append(str(i) + "\ufe0f\u20e3 " + r["name"] + " (" + str(r["democracy_score"]) + "% democracy score)")
+        # S63 C5 guard: annotate, NEVER remove -- webhook maps reply-number to
+        # list POSITION, so filtering would silently activate the wrong source.
+        note = ""
+        if r["name"] == source_name:
+            note = " \u26a0\ufe0f (self -- do not pick)"
+        elif failing_reserve and r["name"] == failing_reserve:
+            note = " \u26a0\ufe0f (currently failing)"
+        lines.append(str(i) + "\ufe0f\u20e3 " + r["name"] + " ("
+                     + str(r["democracy_score"]) + "% democracy score)" + note)
     lines.append("")
     lines.append("Reply with number <b>1-" + str(len(reserves)) + "</b> to activate.")
     lines.append("\u23f3 Next reminder in " + str(ALERT_INTERVAL_HOURS) + " hours if no reply.")
@@ -441,7 +461,22 @@ def alert_and_log_failures(failed_sources: list) -> None:
                   + ") -- no Telegram / no reserve / no fix-row written")
             continue
 
+        # S63 C1: a DOWN verdict while a reserve is ACTIVE means the reserve
+        # itself is failing. The old flow skipped alerting entirely here --
+        # a slot could die silently forever. Escalate instead.
+        active_res = _get_active_reserve_name(client, name)
+        if active_res:
+            _escalate_reserve_down(client, src, active_res)
+            continue
+
         should_alert, hours_down = _should_send_alert(client, name)
+
+        # S63 C3 (flag-gated, default OFF): unanswered DOWN past the window
+        # -> auto-activate the top non-self reserve, announce loudly.
+        if (AUTO_RESERVE_AFTER_HOURS > 0
+                and hours_down >= AUTO_RESERVE_AFTER_HOURS
+                and _auto_activate_reserve(client, src, hours_down)):
+            continue
 
         if should_alert:
             msg  = _build_reserve_alert(name, pillar, avg, hours_down, reason)
@@ -511,6 +546,7 @@ def run_source_health_check(articles: list, sources: list, source_stats: dict = 
     source_stats (S45 arc A) carries per-source fetch health from the collector;
     health is judged on fetch success, not post-gate yield."""
     save_source_counts(articles, sources, source_stats)
+    reserve_lifecycle(sources, source_stats)   # S63 C2 recovery + C4 proposals
     failed = detect_rss_failures(sources, source_stats)
     if failed:
         mode = " [DRY-RUN]" if HEALTH_ALERT_DRY_RUN else ""
@@ -519,6 +555,175 @@ def run_source_health_check(articles: list, sources: list, source_stats: dict = 
         alert_and_log_failures(failed)
     else:
         print("  All " + str(len(sources)) + " sources healthy (fetch-based)")
+
+
+# ============================================================
+# S63 C1-C4 -- reserve lifecycle helpers
+# ============================================================
+
+def _get_active_reserve_name(client, primary: str) -> str:
+    """Name of the ACTIVE reserve for this primary slot, or '' if none."""
+    if client is None:
+        return ""
+    try:
+        r = client.table("source_reserves") \
+            .select("reserve_source") \
+            .eq("primary_source", primary) \
+            .eq("status", "active") \
+            .limit(1).execute()
+        if r.data:
+            return r.data[0].get("reserve_source") or ""
+        return ""
+    except Exception:
+        return ""
+
+
+def _escalate_reserve_down(client, src: dict, failing_reserve: str) -> None:
+    """C1: slot DOWN while its reserve is active -> the reserve is failing.
+    Throttled by last_alerted_at on the ACTIVE record (ALERT_INTERVAL_HOURS)."""
+    name = src["name"]
+    try:
+        r = client.table("source_reserves") \
+            .select("id, last_alerted_at") \
+            .eq("primary_source", name) \
+            .eq("status", "active") \
+            .limit(1).execute()
+        if not r.data:
+            return
+        rec = r.data[0]
+        now = datetime.now(timezone.utc)
+        last = rec.get("last_alerted_at")
+        if last:
+            try:
+                last_dt = datetime.fromisoformat(str(last).replace("Z", "+00:00"))
+                if (now - last_dt).total_seconds() / 3600 < ALERT_INTERVAL_HOURS:
+                    print("  Reserve-down escalation throttled for " + name)
+                    return
+            except Exception:
+                pass
+        msg = _build_reserve_alert(name, src.get("pillar", "geo"), src.get("avg", 0.0),
+                                   0.0, src.get("reason", ""),
+                                   failing_reserve=failing_reserve, escalation=True)
+        if _send_admin_message(msg):
+            print("  ESCALATION sent: reserve " + failing_reserve
+                  + " also down for slot " + name)
+            client.table("source_reserves").update(
+                {"last_alerted_at": now.isoformat()}).eq("id", rec["id"]).execute()
+    except Exception as e:
+        print("  Warning: escalation failed for " + name + ": " + str(e)[:60])
+
+
+def _auto_activate_reserve(client, src: dict, hours_down: float) -> bool:
+    """C3 (flag-gated): pick the top pillar reserve that is not the primary
+    itself, mark the record active, announce. Returns True if activated."""
+    if client is None:
+        return False
+    name = src["name"]
+    pool = [r for r in _get_reserves_for_pillar(src.get("pillar", "geo"))
+            if r["name"] != name]
+    if not pool:
+        return False
+    choice = pool[0]
+    try:
+        rec = client.table("source_reserves") \
+            .select("id") \
+            .eq("primary_source", name) \
+            .in_("status", ["pending", "alerted"]) \
+            .order("created_at", desc=True) \
+            .limit(1).execute()
+        now = datetime.now(timezone.utc).isoformat()
+        if rec.data:
+            client.table("source_reserves").update({
+                "status": "active", "reserve_source": choice["name"],
+                "last_alerted_at": now,
+            }).eq("id", rec.data[0]["id"]).execute()
+        else:
+            client.table("source_reserves").insert({
+                "primary_source": name, "reserve_source": choice["name"],
+                "status": "active", "last_alerted_at": now, "days_down": 0,
+                "pillar": src.get("pillar", "geo"),
+            }).execute()
+        _send_admin_message(
+            "\u26a1 <b>AUTO-ACTIVATED reserve</b> (unanswered "
+            + format(hours_down, ".1f") + "h >= "
+            + format(AUTO_RESERVE_AFTER_HOURS, ".1f") + "h)\n"
+            + "Slot: " + name + "\nReserve: " + choice["name"]
+            + "\nReply a number from the last alert anytime to override.")
+        print("  AUTO-ACTIVATED " + choice["name"] + " for " + name)
+        return True
+    except Exception as e:
+        print("  Warning: auto-activate failed for " + name + ": " + str(e)[:60])
+        return False
+
+
+def reserve_lifecycle(sources: list, source_stats: dict = None) -> None:
+    """C2: retire the reserve record when the PRIMARY serves again (collector
+    tries primary first every run -- recovery is organic; this keeps the DB
+    truthful and tells James). C4: after a reserve serves cleanly >=
+    PROMOTION_PROPOSAL_DAYS, send a throttled PROPOSAL -- never an action."""
+    client = _get_client()
+    if client is None or not source_stats:
+        return
+    try:
+        rows = client.table("source_reserves") \
+            .select("id, primary_source, reserve_source, created_at, last_alerted_at") \
+            .eq("status", "active").execute().data or []
+    except Exception:
+        return
+    now = datetime.now(timezone.utc)
+    for row in rows:
+        primary = row.get("primary_source", "")
+        stat = source_stats.get(primary)
+        if not stat:
+            continue
+        ok  = bool(stat.get("fetch_ok", False))
+        raw = int(stat.get("raw", 0))
+        served_by_reserve = bool(stat.get("is_reserve", False))
+
+        # C2 -- primary recovered (it served this run with real entries)
+        if ok and raw > 0 and not served_by_reserve:
+            try:
+                client.table("source_reserves").update(
+                    {"status": "recovered"}).eq("id", row["id"]).execute()
+                _send_admin_message(
+                    "\u2705 <b>Primary recovered:</b> " + primary
+                    + "\nReserve " + str(row.get("reserve_source"))
+                    + " deactivated -- primary serving again.")
+                print("  Reserve retired (primary recovered): " + primary)
+            except Exception as e:
+                print("  Warning: reserve retire failed: " + str(e)[:60])
+            continue
+
+        # C4 -- reserve serving cleanly long enough: proposal, 24h-throttled
+        if ok and raw > 0 and served_by_reserve:
+            try:
+                created = datetime.fromisoformat(
+                    str(row.get("created_at")).replace("Z", "+00:00"))
+                days = (now - created).total_seconds() / 86400.0
+            except Exception:
+                continue
+            if days < PROMOTION_PROPOSAL_DAYS:
+                continue
+            last = row.get("last_alerted_at")
+            if last:
+                try:
+                    last_dt = datetime.fromisoformat(str(last).replace("Z", "+00:00"))
+                    if (now - last_dt).total_seconds() / 3600 < 24.0:
+                        continue
+                except Exception:
+                    pass
+            _send_admin_message(
+                "\U0001f4cb <b>PROMOTION PROPOSAL</b> (no action taken)\n"
+                + "Reserve <b>" + str(row.get("reserve_source")) + "</b> has served slot <b>"
+                + primary + "</b> cleanly for ~" + format(days, ".0f") + " days.\n"
+                + "Options: promote it to primary (edit rss_collector.py), keep as-is, "
+                + "or investigate reviving the primary. Your call.")
+            try:
+                client.table("source_reserves").update(
+                    {"last_alerted_at": now.isoformat()}).eq("id", row["id"]).execute()
+            except Exception:
+                pass
+            print("  Promotion proposal sent for " + primary)
 
 
 def _selftest_health_verdict() -> None:
