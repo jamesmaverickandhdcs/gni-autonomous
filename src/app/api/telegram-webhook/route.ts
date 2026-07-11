@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // ============================================================
 // GNI Telegram Webhook — S21-5
 // Receives admin replies for reserve source selection.
-// Admin replies 1-5 to activate a reserve source.
+// Admin replies with an option number to activate a reserve source.
 // Security: verifies X-Telegram-Bot-Api-Secret-Token header.
 // ============================================================
 
@@ -14,23 +14,33 @@ const BOT_TOKEN      = process.env.TELEGRAM_BOT_TOKEN || ''
 const ADMIN_ID       = process.env.TELEGRAM_ADMIN_ID || ''
 
 // Reserve sources — must match source_health_monitor.py exactly
+// Reserve pools -- ORDER IS LOAD-BEARING (R-S63-1): reply-numbers resolve by
+// position. Must match ai_engine/analysis/source_health_monitor.py EXACTLY.
 const GEO_RESERVES = [
-  { name: 'Global Voices',     url: 'https://globalvoices.org/feed/',                         pillar: 'geo', democracy_score: 88 },
-  { name: 'The Independent',   url: 'https://www.independent.co.uk/news/world/rss',           pillar: 'geo', democracy_score: 82 },
-  { name: 'Radio Free Europe', url: 'https://www.rferl.org/api/epiqq',                        pillar: 'geo', democracy_score: 85 },
-  { name: 'New York Times',    url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml', pillar: 'geo', democracy_score: 81 },
-  { name: 'Washington Post',   url: 'https://feeds.washingtonpost.com/rss/world',             pillar: 'geo', democracy_score: 79 },
+  { name: 'The Independent',  url: 'https://www.independent.co.uk/news/world/rss',                   pillar: 'geo', democracy_score: 82 },
+  { name: 'New York Times',   url: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml',         pillar: 'geo', democracy_score: 81 },
+  { name: 'Washington Post',  url: 'https://feeds.washingtonpost.com/rss/world',                     pillar: 'geo', democracy_score: 79 },
+  { name: 'The Diplomat',     url: 'https://thediplomat.com/feed/',                                  pillar: 'geo', democracy_score: 84 },
+  { name: 'Defense News',     url: 'https://www.defensenews.com/arc/outboundfeeds/rss/',             pillar: 'geo', democracy_score: 78 },
+  { name: 'AllAfrica',        url: 'https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf', pillar: 'geo', democracy_score: 74 },
+  { name: 'ReliefWeb',        url: 'https://reliefweb.int/updates/rss.xml',                          pillar: 'geo', democracy_score: 90 },
 ]
 
 const FIN_RESERVES = [
-  { name: 'Wall Street Journal', url: 'https://feeds.a.dj.com/rss/RSSWorldNews.xml', pillar: 'fin', democracy_score: 76 },
-  { name: 'Newsweek',            url: 'https://www.newsweek.com/rss',                pillar: 'fin', democracy_score: 68 },
+  { name: 'Newsweek',          url: 'https://www.newsweek.com/rss',                               pillar: 'fin', democracy_score: 68 },
+  { name: 'MarketWatch',       url: 'https://feeds.content.dowjones.io/public/rss/mw_topstories', pillar: 'fin', democracy_score: 74 },
+  { name: 'Investing.com News',url: 'https://www.investing.com/rss/news.rss',                     pillar: 'fin', democracy_score: 70 },
 ]
 
 const TECH_RESERVES = [
-  { name: 'The Verge',    url: 'https://www.theverge.com/rss/index.xml', pillar: 'tech', democracy_score: 63 },
-  { name: 'Dark Reading', url: 'https://www.darkreading.com/rss.xml',    pillar: 'tech', democracy_score: 75 },
+  { name: 'The Verge',             url: 'https://www.theverge.com/rss/index.xml',     pillar: 'tech', democracy_score: 63 },
+  { name: 'Dark Reading',          url: 'https://www.darkreading.com/rss.xml',        pillar: 'tech', democracy_score: 75 },
+  { name: 'MIT Technology Review', url: 'https://www.technologyreview.com/feed/',     pillar: 'tech', democracy_score: 80 },
+  { name: 'TechCrunch',            url: 'https://techcrunch.com/feed/',               pillar: 'tech', democracy_score: 65 },
+  { name: 'The Register',          url: 'https://www.theregister.com/headlines.atom', pillar: 'tech', democracy_score: 72 },
 ]
+
+const MAX_RESERVE_CHOICE = Math.max(GEO_RESERVES.length, FIN_RESERVES.length, TECH_RESERVES.length)
 
 function getReservesForPillar(pillar: string) {
   if (pillar === 'geo')  return GEO_RESERVES
@@ -97,7 +107,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // ── Process numeric reply (1-7) ───────────────────────────
   const choice = parseInt(text, 10)
-  if (!isNaN(choice) && choice >= 1 && choice <= 7) {
+  if (!isNaN(choice) && choice >= 1 && choice <= MAX_RESERVE_CHOICE) {
     console.log(`Webhook: Admin chose reserve ${choice}`)
 
     // Find most recent pending/alerted reserve record
@@ -164,7 +174,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     await sendAdminMessage(
       BOT_TOKEN, ADMIN_ID,
       '⚠️ Unrecognised reply.\n' +
-      'If a source is down, reply with a number (1-7) to select a reserve.\n' +
+      'If a source is down, reply with the number of a reserve from the LATEST alert.\n' +
       'Wait for the next alert if you are unsure.'
     )
   }

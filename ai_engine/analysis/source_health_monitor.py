@@ -50,26 +50,33 @@ PROMOTION_PROPOSAL_DAYS  = 7.0
 
 # ── Reserve Sources Pool ─────────────────────────────────────
 GEO_RESERVES = [
-    {"name": "Global Voices",     "url": "https://globalvoices.org/feed/",                          "pillar": "geo", "bias": "Global South",   "democracy_score": 88},
-    {"name": "The Independent",   "url": "https://www.independent.co.uk/news/world/rss",            "pillar": "geo", "bias": "Western Liberal", "democracy_score": 82},
-    {"name": "Radio Free Europe", "url": "https://www.rferl.org/api/epiqq",                         "pillar": "geo", "bias": "Pro-Democracy",   "democracy_score": 85},
-    {"name": "New York Times",    "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",  "pillar": "geo", "bias": "Western Liberal", "democracy_score": 81},
-    {"name": "Washington Post",   "url": "https://feeds.washingtonpost.com/rss/world",              "pillar": "geo", "bias": "Western Liberal", "democracy_score": 79},
-    # Africa-specific reserves — for Africa Is A Country (The Africa Report cut S44 PHI-001)
-    {"name": "AllAfrica",          "url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf", "pillar": "geo", "bias": "Pan-African",      "democracy_score": 74},
-    {"name": "Mail and Guardian",  "url": "https://mg.co.za/feed/",                                        "pillar": "geo", "bias": "African Independent", "democracy_score": 80},
-    {"name": "ReliefWeb",             "url": "https://reliefweb.int/updates/rss.xml",                          "pillar": "geo", "bias": "Humanitarian",      "democracy_score": 90},
-    {"name": "Stimson Center",          "url": "https://www.stimson.org/feed/",                                   "pillar": "geo", "bias": "Peace Research",   "democracy_score": 88},
+    # ORDER IS LOAD-BEARING (R-S63-1): reply-numbers resolve by position.
+    # Must match src/app/api/telegram-webhook/route.ts EXACTLY, same order.
+    {"name": "The Independent",  "url": "https://www.independent.co.uk/news/world/rss",                    "pillar": "geo", "bias": "Western Liberal",       "democracy_score": 82},
+    {"name": "New York Times",   "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",          "pillar": "geo", "bias": "Western Liberal",       "democracy_score": 81},
+    {"name": "Washington Post",  "url": "https://feeds.washingtonpost.com/rss/world",                      "pillar": "geo", "bias": "Western Liberal",       "democracy_score": 79},
+    {"name": "The Diplomat",     "url": "https://thediplomat.com/feed/",                                   "pillar": "geo", "bias": "Asia-Pacific Analysis", "democracy_score": 84},
+    {"name": "Defense News",     "url": "https://www.defensenews.com/arc/outboundfeeds/rss/",              "pillar": "geo", "bias": "US Defense",            "democracy_score": 78},
+    # Africa-specific reserves -- for Africa Is A Country (The Africa Report cut S44 PHI-001)
+    {"name": "AllAfrica",        "url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",  "pillar": "geo", "bias": "Pan-African",           "democracy_score": 74},
+    {"name": "ReliefWeb",        "url": "https://reliefweb.int/updates/rss.xml",                           "pillar": "geo", "bias": "Humanitarian",          "democracy_score": 90},
 ]
 
 FIN_RESERVES = [
-    {"name": "Wall Street Journal", "url": "https://feeds.a.dj.com/rss/RSSWorldNews.xml", "pillar": "fin", "bias": "Financial", "democracy_score": 76},
-    {"name": "Newsweek",            "url": "https://www.newsweek.com/rss",                "pillar": "fin", "bias": "News",      "democracy_score": 68},
+    # ORDER IS LOAD-BEARING (R-S63-1): must match route.ts exactly.
+    {"name": "Newsweek",         "url": "https://www.newsweek.com/rss",                                    "pillar": "fin", "bias": "News",              "democracy_score": 68},
+    {"name": "MarketWatch",      "url": "https://feeds.content.dowjones.io/public/rss/mw_topstories",      "pillar": "fin", "bias": "Financial",         "democracy_score": 74},
+    {"name": "Investing.com News","url": "https://www.investing.com/rss/news.rss",                         "pillar": "fin", "bias": "Financial Markets", "democracy_score": 70},
 ]
 
 TECH_RESERVES = [
-    {"name": "The Verge",    "url": "https://www.theverge.com/rss/index.xml", "pillar": "tech", "bias": "Technology",    "democracy_score": 63},
-    {"name": "Dark Reading", "url": "https://www.darkreading.com/rss.xml",    "pillar": "tech", "bias": "Cybersecurity", "democracy_score": 75},
+    # ORDER IS LOAD-BEARING (R-S63-1): must match route.ts exactly.
+    {"name": "The Verge",              "url": "https://www.theverge.com/rss/index.xml",       "pillar": "tech", "bias": "Technology",          "democracy_score": 63},
+    {"name": "Dark Reading",           "url": "https://www.darkreading.com/rss.xml",          "pillar": "tech", "bias": "Cybersecurity",       "democracy_score": 75},
+    {"name": "MIT Technology Review",  "url": "https://www.technologyreview.com/feed/",       "pillar": "tech", "bias": "Technology Research", "democracy_score": 80},
+    {"name": "TechCrunch",             "url": "https://techcrunch.com/feed/",                 "pillar": "tech", "bias": "Tech Industry",       "democracy_score": 65},
+    # The Register requires Commit 1 (RESERVE_FETCH_HEADERS) -- WAF-blocked on bare parse.
+    {"name": "The Register",           "url": "https://www.theregister.com/headlines.atom",   "pillar": "tech", "bias": "Tech Independent",    "democracy_score": 72},
 ]
 
 ALL_RESERVES = GEO_RESERVES + FIN_RESERVES + TECH_RESERVES
