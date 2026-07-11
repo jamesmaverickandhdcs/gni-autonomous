@@ -79,3 +79,11 @@ R-S60-2: Structural quality scores do not measure grounding. A MAD run scoring 1
 R-S60-3: Never pipe an ungrounded layer's output into grounded layers unchecked. Consultants
   receive no article basket; labeling their text "PERSONAL CONSULTANT TO YOU" launders invention
   into evidence. 4/4 confirmed specimens entered through this channel.
+
+R-S62-1: Claude Code tasks get a POST-RUN mechanical verification block (greps + diff-stat +
+  build) and a one-command revert path. Never assign live watch-duty to the operator --
+  safety lives in commands, not attention.
+R-S62-2: Any placeholder in a command MUST be loudly marked (warning emoji + "PLACEHOLDER" +
+  what to substitute). The operator runs commands verbatim. (S62: <path> and YOUR_KEY both ran literally.)
+R-S62-3: Server-side Supabase reads go through createNoStoreClient (src/lib/supabaseNoStore.ts).
+  New API routes never call createClient directly -- Vercel Data Cache serves fossils otherwise.
