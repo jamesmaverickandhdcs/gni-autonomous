@@ -210,6 +210,20 @@ SOURCES = [
 ]
 
 
+# S64 POOL-FIX: reserve feeds fetch with browser-grade headers. Some reserve
+# hosts (The Register class) WAF-block feedparser's default UA; probe S64
+# proved UA alone is not enough -- Accept/Referer required. Primaries keep
+# bare parse: no diagnosis has convicted any primary of bot-blocking yet.
+RESERVE_FETCH_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/126.0.0.0 Safari/537.36")
+RESERVE_FETCH_HEADERS = {
+    "Accept": "application/rss+xml, application/xml, text/xml, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.google.com/",
+}
+
+
 def _get_active_reserves() -> dict:
     """
     Fetch active reserve sources from Supabase.
@@ -389,7 +403,12 @@ def collect_articles(max_per_source: int = 20) -> tuple[list[dict], dict]:
             try:
                 label = f"{src_name} [RESERVE for {name}]" if is_reserve else src_name
                 print(f"  Fetching: {label}...")
-                feed = feedparser.parse(src["url"])
+                if is_reserve:
+                    feed = feedparser.parse(src["url"],
+                                            agent=RESERVE_FETCH_UA,
+                                            request_headers=RESERVE_FETCH_HEADERS)
+                else:
+                    feed = feedparser.parse(src["url"])
 
                 if feed.bozo and not feed.entries:
                     bozo_exc = getattr(feed, "bozo_exception", "")
