@@ -147,7 +147,14 @@ export async function GET(request: NextRequest) {
     const res = await fetch(`${baseUrl}/api/source-health`, { cache: 'no-store', headers: { 'X-GNI-Key': process.env.GNI_API_KEYS?.split(',')[0] || '' }, signal: AbortSignal.timeout(5000) })
     const data = await res.json()
     const sources = data.sources || []
-    const healthy = sources.filter((s: {status: string}) => s.status === 'healthy').length
+    // S66 W-AUTO-4: healthy-CLASS, not literally 'healthy'. stale-gated and silent
+    // slots have working transport -- the feed answered, the entries just didn't
+    // survive the capture window (or the feed had none). That is a yield fact, not
+    // an outage, so it must not drag the ratio toward CRITICAL. Only transport-down
+    // and reserve-masked (primary dead) are real failures. Legacy 'healthy' rows
+    // from the NULL-column window match this list for free.
+    const HEALTHY_CLASS = ['healthy', 'stale-gated', 'silent']
+    const healthy = sources.filter((s: {status: string}) => HEALTHY_CLASS.includes(s.status)).length
     const total = sources.length
     if (total === 0) {
       checks['source_health'] = { status: 'WARNING', message: 'No source health data available' }
