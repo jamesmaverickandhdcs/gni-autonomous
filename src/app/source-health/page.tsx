@@ -26,10 +26,16 @@ const PILLAR_CONFIG: Record<string, { label: string; color: string; emoji: strin
   tech: { label: 'Technology',   color: 'text-purple-400',  emoji: '💻', bg: 'bg-purple-950 border-purple-800' },
 }
 
-const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string }> = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string; desc?: string }> = {
   healthy:  { label: 'Healthy',  color: 'text-green-400',  dot: 'bg-green-400' },
   degraded: { label: 'Degraded', color: 'text-yellow-400', dot: 'bg-yellow-400' },
   down:     { label: 'Down',     color: 'text-red-400',    dot: 'bg-red-400' },
+  // S66 W-AUTO-4: 5-state taxonomy from /api/source-health. fetch_ok is SLOT
+  // transport truth (primary OR its serving reserve); article_count is yield.
+  'reserve-masked': { label: 'Reserve serving', color: 'text-blue-400',   dot: 'bg-blue-400',   desc: 'Primary feed down; reserve is serving this slot' },
+  'transport-down': { label: 'Transport down',  color: 'text-red-400',    dot: 'bg-red-400',    desc: 'No working feed -- primary and reserve both unreachable' },
+  silent:           { label: 'Silent',          color: 'text-orange-400', dot: 'bg-orange-400', desc: 'Feed reachable but returned zero entries' },
+  'stale-gated':    { label: 'Stale-gated',     color: 'text-yellow-400', dot: 'bg-yellow-400', desc: 'Feed healthy; all entries older than the capture window' },
 }
 
 function MiniChart({ runs }: { runs: SourceRun[] }) {
