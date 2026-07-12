@@ -89,10 +89,10 @@ SOURCES = [
      "content_type": "news", "pillar": "geo", "tier": "opinion", "bias": "Investigative",
      "democracy_score": 92},
 
-    {"name": "Stimson Center",
-     "url": "https://www.stimson.org/feed/",
-     "content_type": "news", "pillar": "geo", "bias": "Peace Research",
-     "democracy_score": 88},
+    {"name": "New York Times",
+     "url": "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+     "content_type": "news", "pillar": "geo", "bias": "Western Liberal",
+     "democracy_score": 81},  # PROMOTE-NYT S67: served Stimson slot 46d clean (C4); Stimson = CF 403 bot-wall, free-tier revival infeasible
 
     {"name": "Amnesty International",
      "url": "https://www.amnesty.org/en/feed/",
