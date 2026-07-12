@@ -123,3 +123,14 @@ R-S65-2: Executor (Claude Code) diffs get chat clearance BEFORE the git trigger,
 R-S65-3: Never blind-wrap keyword lists in word boundaries. Lists contain deliberate
   stems (extremis, geopolit); use an explicit stem convention ('*' suffix) and annotate
   conservatively -- a too-greedy stem is the substring bug wearing a different hat.
+
+R-S66-1: A keyword-level census proves kills; only an article-level comparison
+  proves signal preservation. When a ruling ADDS vocabulary, the keyword census
+  is structurally blind to the rescue -- verify at the article level.
+R-S66-2: Substring bugs can be load-bearing. Before anchoring any matcher,
+  census what REAL signal entered through the bug's side door (demonyms via
+  country names, 'enforced' via 'forced', IranWire via 'iran') and re-admit it
+  deliberately -- silent suppression is worse than the inflation being fixed.
+R-S66-3: A proxy in a vocabulary list (brand-as-actor, source-as-signal) is
+  allowed only if declared in-code AS a proxy, with the honest cost and the
+  proper fix named. Undeclared proxies are future fossils.
