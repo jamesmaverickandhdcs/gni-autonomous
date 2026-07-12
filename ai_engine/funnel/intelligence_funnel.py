@@ -7,6 +7,15 @@ import unicodedata
 from datetime import datetime
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from analysis.source_weights import get_source_weights
+from matching import kw_match, matched_keywords, any_match
+
+# S66 KEY-MAP: every keyword test below is word-boundary matched via kw_match,
+# NOT raw substring. Substring matching fired 'eu' inside 'europe', 'war' inside
+# 'warsaw', 'oil' inside 'turmoil', 'sport' inside 'transport'. A trailing '*'
+# marks a DELIBERATE stem ('sanction*' -> sanctions, sanctions-hit). Default
+# policy: star every pluralizable head noun; exact matching is the exception and
+# carries an inline reason. Irregular plurals (-y/-ies, -is/-es) stay exact --
+# kw_match does not stem them and substring never caught them either.
 
 # ============================================================
 # GNI Intelligence Funnel v3 â€” Day 6
@@ -23,24 +32,26 @@ from analysis.source_weights import get_source_weights
 # (e.g. "pdf" files, "nugget", "memorial day").
 PHI003_FREEDOM_FROM_FEAR = [
     # Universal — repression / civil-resistance signals
-    'political prisoner', 'prisoner of conscience', 'arbitrary detention',
-    'enforced disappearance', 'civil disobedience', 'nonviolent resistance',
-    'pro-democracy protest', 'crackdown', 'internet shutdown', 'censorship',
-    'dissident', 'exile', 'defector', 'junta', 'martial law',
+    'political prisoner*', 'prisoner of conscience', 'arbitrary detention*',
+    'enforced disappearance*', 'civil disobedience', 'nonviolent resistance',
+    'pro-democracy protest*', 'crackdown*', 'internet shutdown*', 'censorship',
+    'dissident*', 'exile*', 'defector*', 'junta*', 'martial law',
     'magnitsky', 'targeted sanctions',
+    # 'prisoner of conscience' stays exact: the plural inflects mid-phrase
+    # ("prisonerS of conscience"), which a trailing stem cannot reach.
     # Myanmar
     'spring revolution', 'national unity government', "people's defence force",
     'civil disobedience movement', 'tatmadaw',
     # China
-    'white paper protest', 'a4 revolution', 'uyghur', 'xinjiang', 'tibet',
+    'white paper protest*', 'a4 revolution', 'uyghur*', 'xinjiang', 'tibet*',
     'hong kong', '709 crackdown',
     # Iran
-    'woman life freedom', 'mahsa amini', 'hijab protest', 'irgc', 'evin prison',
+    'woman life freedom', 'mahsa amini', 'hijab protest*', 'irgc', 'evin prison',
     # Russia
     'navalny', 'anti-corruption foundation', 'foreign agent law',
-    'mobilization protest',
+    'mobilization protest*',
     # North Korea
-    'kwanliso', 'political prison camp', 'forced labor', 'forced labour',
+    'kwanliso', 'political prison camp*', 'forced labor', 'forced labour',
     # Belarus
     'tsikhanouskaya', 'viasna', 'bialiatski', '2020 protests',
 ]
@@ -48,41 +59,58 @@ PHI003_FREEDOM_FROM_FEAR = [
 # Stage 1: Relevance keywords
 GEOPOLITICAL_KEYWORDS = [
     # Tier 4 — Strategic chokepoints and maritime (GNI unique angle)
-    'red sea', 'south china sea', 'strait', 'hormuz', 'malacca',
+    'red sea', 'south china sea', 'strait*', 'hormuz', 'malacca',
     'suez', 'persian gulf', 'bosphorus', 'panama canal', 'arctic',
-    'chokepoint', 'blockade',
+    'chokepoint*', 'blockade*',
     # Tier 5 — New economy conflicts (fastest growing)
-    'ai chips', 'semiconductor', 'critical minerals', 'rare earth',
-    'lithium', 'cobalt', 'export control', 'debt trap', 'belt and road',
+    'ai chips', 'semiconductor*', 'critical minerals', 'rare earth*',
+    'lithium', 'cobalt', 'export control*', 'debt trap*', 'belt and road',
     # Tier 1 — Major powers and flashpoints
-    'china', 'russia', 'iran', 'israel', 'ukraine', 'taiwan',
-    'north korea', 'middle east', 'europe', 'usa',
+    # Demonym stems (S66 census): 'iran*' catches Iranian, 'russia*' Russian,
+    # 'israel*' Israeli, 'taiwan*' Taiwanese, 'europe*' European -- all real GEO
+    # signal that exact matching would drop. 'china'/'ukraine' are NOT stemmable
+    # (Chinese/Ukrainian do not extend the country string) and substring never
+    # caught them either, so they are unchanged.
+    'china', 'russia*', 'iran*', 'israel*', 'ukraine', 'taiwan*',
+    'north korea', 'middle east', 'europe*', 'usa',
     # Tier 2 — Conflict and military
-    'war', 'conflict', 'military', 'attack', 'invasion', 'strike',
-    'missile', 'nuclear', 'troops', 'weapon', 'bomb', 'ceasefire',
-    'sanction', 'embargo', 'terrorism', 'extremis', 'coup', 'crisis', 'threat',
+    # 'war' is EXACT BY DESIGN: 'war*' would re-admit 'warsaw' -- the very bug
+    # this sweep exists to kill. Cost: the plural 'wars' is not matched here.
+    'war', 'conflict*', 'military', 'attack*', 'invasion*', 'strike*',
+    'missile*', 'nuclear', 'troops', 'weapon*', 'bomb*', 'ceasefire*',
+    'sanction*', 'embargo*', 'terrorism', 'extremis*', 'coup*', 'crisis', 'threat*',
     # Tier 3 — Economics and markets
-    'economy', 'trade', 'oil', 'energy', 'inflation', 'tariff',
-    'gdp', 'recession', 'gas', 'commodity', 'dollar', 'currency',
-    'interest rate', 'federal reserve', 'export', 'import', 'opec',
+    # 'economy'/'commodity'/'currency' stay exact: -y/-ies is not a stem kw_match
+    # can reach, and substring never caught those plurals either.
+    'economy', 'trade', 'oil', 'energy', 'inflation', 'tariff*',
+    'gdp', 'recession*', 'gas', 'commodity', 'dollar*', 'currency',
+    'interest rate*', 'federal reserve', 'export*', 'import*', 'opec',
     # Tier 6 — Diplomacy and governance
-    'election', 'government', 'president', 'prime minister',
-    'diplomacy', 'ambassador', 'alliance', 'nato', 'eu',
-    'united nations', 'security council', 'geopolit',
-    'protest', 'revolution', 'riot', 'supply chain',
+    'election*', 'government*', 'president*', 'prime minister*',
+    'diplomacy', 'ambassador*', 'alliance*', 'nato', 'eu',
+    'united nations', 'security council*', 'geopolit*',
+    'protest*', 'revolution*', 'riot*', 'supply chain*',
     # Tier 7 — Humanitarian and global issues
-    'refugee', 'humanitarian', 'famine', 'drought', 'climate',
-    'pandemic', 'vaccine', 'who', 'tension', 'pacific',
+    'refugee*', 'humanitarian', 'famine*', 'drought*', 'climate',
+    'pandemic*', 'vaccine*', 'who', 'tension*', 'pacific',
     # Tier 8 — PHI-003 Freedom From Fear (§5): authoritarian crackdown /
     #   civil-resistance early-warning. Folded into GEO, not a 4th pillar.
     *PHI003_FREEDOM_FROM_FEAR,
 ]
 
+# This list KILLS articles at Stage 1, so a false match is a silent suppression
+# -- the opposite risk polarity from the scoring lists. Under substring matching
+# 'sport' killed every article containing 'transport', and 'dating' killed
+# 'updating' / 'mandating' / 'validating'. Word-boundary matching ends both.
+# EXACT BY DESIGN (no star): 'music', 'travel', 'dating', 'cooking', 'viral',
+# 'golf', 'fashion', 'entertainment', 'tourism' -- their embedded-match victims
+# (musical, travelling, updating, virally, golfing, fashioned) were the bug, not
+# a plural we need to keep catching. 'celebrity' stays exact (-y/-ies).
 IRRELEVANT_KEYWORDS = [
-    'celebrity', 'entertainment', 'movie', 'music', 'sport', 'football',
+    'celebrity', 'entertainment', 'movie*', 'music', 'sport*', 'football',
     'basketball', 'tennis', 'golf', 'oscars', 'grammy', 'fashion',
-    'recipe', 'cooking', 'lifestyle', 'travel', 'tourism', 'wedding',
-    'divorce', 'dating', 'viral', 'meme', 'tiktok', 'instagram',
+    'recipe*', 'cooking', 'lifestyle*', 'travel', 'tourism', 'wedding*',
+    'divorce*', 'dating', 'viral', 'meme*', 'tiktok', 'instagram',
 ]
 
 # Stage 1b: Injection patterns
@@ -198,11 +226,11 @@ def _check_relevance(article: dict) -> tuple[bool, str]:
 
     # Check irrelevant first
     for kw in IRRELEVANT_KEYWORDS:
-        if kw in text:
+        if kw_match(kw, text):
             return False, f"Irrelevant topic: '{kw}'"
 
     # Check relevant
-    matched = [kw for kw in GEOPOLITICAL_KEYWORDS if kw in text]
+    matched = matched_keywords(GEOPOLITICAL_KEYWORDS, text)
     if matched:
         # Item 2 S38: store match count in article for Stage 3 density bonus
         article["stage1_match_count"] = len(matched)
@@ -228,11 +256,14 @@ _SECTARIAN_PATTERNS = [re.compile(p, re.IGNORECASE | re.DOTALL) for p in [
     r'(ethnic|religious|cultural|sectarian)\s+(cleansing|war|conflict|tension)\s+(is|has)\s+(begun|started|erupted|inevitable)',
 ]]
 
+# 'shell company' stays exact (-y/-ies). 'sanctions' is already plural and is
+# left verbatim -- starring it would broaden the stuffing FLAG, which is a
+# detection threshold, not a scoring signal.
 _STUFFING_KW = [
     "sanctions", "dark money", "shell company", "money laundering",
-    "oligarch", "corruption", "energy security", "critical minerals",
-    "food security", "military alliance", "coup", "sovereignty",
-    "debt trap", "financial warfare", "cyber attack", "surveillance",
+    "oligarch*", "corruption", "energy security", "critical minerals",
+    "food security", "military alliance*", "coup*", "sovereignty",
+    "debt trap*", "financial warfare", "cyber attack*", "surveillance",
     "disinformation", "propaganda", "sectarian", "ethnic cleansing",
 ]
 
@@ -306,7 +337,7 @@ def _check_injection(article: dict) -> tuple[str, str]:
     # Check indicator stuffing (short article, too many indicator keywords)
     word_count = len(text.split())
     if word_count < 150:
-        hits = sum(1 for kw in _STUFFING_KW if kw in text)
+        hits = sum(1 for kw in _STUFFING_KW if kw_match(kw, text))
         if hits >= 8:
             return "FLAG", f"Indicator stuffing: {hits} keywords in {word_count}-word article"
 
@@ -372,12 +403,12 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     # High-impact keywords (+3 each, max 15) — Tier 4 + Tier 5 (GNI unique angle)
     high_impact = [
-        'red sea', 'hormuz', 'malacca', 'suez', 'chokepoint',
-        'blockade', 'persian gulf', 'south china sea', 'arctic',
-        'ai chips', 'critical minerals', 'semiconductor', 'rare earth',
-        'lithium', 'cobalt', 'debt trap', 'belt and road', 'export control',
+        'red sea', 'hormuz', 'malacca', 'suez', 'chokepoint*',
+        'blockade*', 'persian gulf', 'south china sea', 'arctic',
+        'ai chips', 'critical minerals', 'semiconductor*', 'rare earth*',
+        'lithium', 'cobalt', 'debt trap*', 'belt and road', 'export control*',
     ]
-    hi_matches = [kw for kw in high_impact if kw in text]
+    hi_matches = matched_keywords(high_impact, text)
     hi_score = min(len(hi_matches) * 3, 15)
     score += hi_score
     if hi_matches:
@@ -385,12 +416,15 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     # Medium-impact keywords (+1 each, max 10) — Tier 1 + Tier 2
     med_impact = [
-        'war', 'nuclear', 'invasion', 'attack', 'crisis',
-        'sanction', 'ceasefire', 'coup', 'collapse', 'embargo',
-        'china', 'russia', 'iran', 'israel', 'ukraine', 'taiwan', 'north korea',
-        'military', 'troops', 'missile', 'tension',
+        # 'war' exact by design (see GEOPOLITICAL_KEYWORDS: 'war*' re-admits 'warsaw').
+        # 'crisis' exact: -is/-es plural is not a stem kw_match can reach.
+        # Demonym stems mirror GEOPOLITICAL_KEYWORDS (Iranian/Russian/Israeli/Taiwanese).
+        'war', 'nuclear', 'invasion*', 'attack*', 'crisis',
+        'sanction*', 'ceasefire*', 'coup*', 'collapse*', 'embargo*',
+        'china', 'russia*', 'iran*', 'israel*', 'ukraine', 'taiwan*', 'north korea',
+        'military', 'troops', 'missile*', 'tension*',
     ]
-    med_matches = [kw for kw in med_impact if kw in text]
+    med_matches = matched_keywords(med_impact, text)
     med_score = min(len(med_matches), 10)
     score += med_score
     if med_matches:
@@ -398,10 +432,12 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     # Major country/region bonus (+5)
     major_regions = [
-        'middle east', 'europe', 'usa', 'pacific',
-        'economy', 'oil', 'trade', 'inflation', 'election',
+        # 'europe*' mirrors GEOPOLITICAL_KEYWORDS/med_impact -- same demonym class,
+        # same left-boundary safety. The lists must agree on European.
+        'middle east', 'europe*', 'usa', 'pacific',
+        'economy', 'oil', 'trade', 'inflation', 'election*',
     ]
-    region_matches = [r for r in major_regions if r in text]
+    region_matches = matched_keywords(major_regions, text)
     if region_matches:
         score += 5
         reasons.append(f"Major region (+5pts): {region_matches[0]}")
@@ -426,26 +462,26 @@ def _score_article(article: dict) -> tuple[float, str]:
     # ── THREAT keywords (+4 each, max 20) ─────────────────────────────
     # Direct aggression, attacks, hostile actions -- global perspective
     WT_THREAT_KEYWORDS = [
-        # Geo threats
-        'war crime', 'genocide', 'ethnic cleansing', 'civilian massacre',
-        'chemical weapon', 'biological weapon', 'nuclear threat',
-        'proxy war', 'false flag', 'covert operation',
-        'assassination', 'targeted killing', 'extrajudicial killing',
-        'ethnic persecution', 'political prisoner', 'forced labour',
-        'child soldier', 'mass detention', 'enforced disappearance',
+        # Geo threats -- 'mass atrocity' exact (-y/-ies).
+        'war crime*', 'genocide', 'ethnic cleansing', 'civilian massacre*',
+        'chemical weapon*', 'biological weapon*', 'nuclear threat*',
+        'proxy war*', 'false flag*', 'covert operation*',
+        'assassination*', 'targeted killing*', 'extrajudicial killing*',
+        'ethnic persecution', 'political prisoner*', 'forced labour',
+        'child soldier*', 'mass detention*', 'enforced disappearance*',
         'torture', 'sexual violence', 'mass atrocity',
         # Financial threats
-        'financial contagion', 'bank run', 'currency attack',
+        'financial contagion', 'bank run*', 'currency attack*',
         'economic coercion', 'financial warfare', 'swift exclusion',
-        'sovereign default', 'speculative attack', 'asset freeze',
-        'economic blockade', 'financial isolation', 'economic weapon',
+        'sovereign default*', 'speculative attack*', 'asset freeze*',
+        'economic blockade*', 'financial isolation', 'economic weapon*',
         # Tech threats
-        'infrastructure cyberattack', 'power grid attack', 'hospital ransomware',
-        'election interference', 'state sponsored hacking', 'zero day exploit',
-        'autonomous weapon', 'deepfake propaganda', 'satellite attack',
-        'information warfare', 'influence operation', 'disinformation campaign',
+        'infrastructure cyberattack*', 'power grid attack*', 'hospital ransomware',
+        'election interference', 'state sponsored hacking', 'zero day exploit*',
+        'autonomous weapon*', 'deepfake propaganda', 'satellite attack*',
+        'information warfare', 'influence operation*', 'disinformation campaign*',
     ]
-    threat_matches = [kw for kw in WT_THREAT_KEYWORDS if kw in text]
+    threat_matches = matched_keywords(WT_THREAT_KEYWORDS, text)
     threat_score = min(len(threat_matches) * 4, 20)
     score += threat_score
     if threat_matches:
@@ -454,25 +490,25 @@ def _score_article(article: dict) -> tuple[float, str]:
     # ── WEAKNESS keywords (+3 each, max 15) ───────────────────────────
     # Vulnerabilities, failures, fragilities -- global perspective
     WT_WEAKNESS_KEYWORDS = [
-        # Geo weakness
-        'state collapse', 'failed state', 'governance failure',
-        'democratic backsliding', 'authoritarian crackdown',
-        'institutional breakdown', 'alliance fracture', 'diplomatic breakdown',
-        'peace deal collapse', 'ceasefire violation', 'power vacuum',
+        # Geo weakness -- '...crisis' entries exact (-is/-es).
+        'state collapse', 'failed state*', 'governance failure*',
+        'democratic backsliding', 'authoritarian crackdown*',
+        'institutional breakdown*', 'alliance fracture*', 'diplomatic breakdown*',
+        'peace deal collapse', 'ceasefire violation*', 'power vacuum*',
         'press suppression', 'judicial independence', 'corruption crisis',
         # Financial weakness
         'food insecurity', 'supply chain collapse', 'hyperinflation',
-        'foreign reserve depletion', 'fiscal crisis', 'currency devaluation',
-        'commodity shock', 'harvest failure', 'poverty trap',
-        'inequality crisis', 'wage suppression', 'remittance cut',
+        'foreign reserve depletion', 'fiscal crisis', 'currency devaluation*',
+        'commodity shock*', 'harvest failure*', 'poverty trap*',
+        'inequality crisis', 'wage suppression', 'remittance cut*',
         'energy poverty', 'import dependency',
-        # Tech weakness
+        # Tech weakness -- '...vulnerability'/'tech monopoly' exact (-y/-ies).
         'critical infrastructure vulnerability', 'chip dependency',
         'internet fragmentation', 'digital divide', 'single point of failure',
-        'data sovereignty', 'legacy system', 'cyber vulnerability',
+        'data sovereignty', 'legacy system*', 'cyber vulnerability',
         'platform dependency', 'tech monopoly', 'algorithmic discrimination',
     ]
-    weakness_matches = [kw for kw in WT_WEAKNESS_KEYWORDS if kw in text]
+    weakness_matches = matched_keywords(WT_WEAKNESS_KEYWORDS, text)
     weakness_score = min(len(weakness_matches) * 3, 15)
     score += weakness_score
     if weakness_matches:
@@ -483,26 +519,28 @@ def _score_article(article: dict) -> tuple[float, str]:
     # Responsible civic intelligence -- surface dual-use harm
     WT_DARK_SIDE_KEYWORDS = [
         # Geo dark side -- humanitarian and diplomatic systems weaponised
+        # 'shell company'/'kleptocracy' exact (-y/-ies). 'food as weapon' and
+        # 'water as weapon' exact: fixed idioms, never pluralised in print.
         'debt trap diplomacy', 'energy blackmail', 'food as weapon',
-        'water as weapon', 'refugee weaponisation', 'migration weapon',
+        'water as weapon', 'refugee weaponisation', 'migration weapon*',
         'sanctions evasion', 'money laundering', 'human trafficking',
-        'golden passport', 'citizenship scheme', 'shell company',
+        'golden passport*', 'citizenship scheme*', 'shell company',
         'aid conditionality', 'cultural suppression',
         # Financial dark side -- finance created for growth, used for harm
-        'crypto terrorism', 'ransomware payment', 'dark money',
+        'crypto terrorism', 'ransomware payment*', 'dark money',
         'illicit finance', 'predatory lending', 'development aid corruption',
-        'infrastructure debt trap', 'offshore tax evasion',
-        'financial crime', 'kleptocracy', 'oligarch wealth',
+        'infrastructure debt trap*', 'offshore tax evasion',
+        'financial crime*', 'kleptocracy', 'oligarch wealth',
         # Tech dark side -- technology created for good, weaponised
         'mass surveillance', 'facial recognition abuse', 'social credit',
-        'internet shutdown', 'digital authoritarianism', 'spyware abuse',
-        'pegasus', 'stalker software', 'surveillance state',
+        'internet shutdown*', 'digital authoritarianism', 'spyware abuse',
+        'pegasus', 'stalker software', 'surveillance state*',
         'social media manipulation', 'algorithmic suppression',
         'biometric persecution', 'drone surveillance abuse',
-        'predictive policing abuse', 'vpn ban', 'encrypted communication ban',
+        'predictive policing abuse', 'vpn ban*', 'encrypted communication ban*',
         'deepfake abuse', 'ai generated propaganda',
     ]
-    dark_matches = [kw for kw in WT_DARK_SIDE_KEYWORDS if kw in text]
+    dark_matches = matched_keywords(WT_DARK_SIDE_KEYWORDS, text)
     dark_score = min(len(dark_matches) * 4, 20)
     score += dark_score
     if dark_matches:
@@ -514,29 +552,31 @@ def _score_article(article: dict) -> tuple[float, str]:
     # Rewards balanced reporting, not just threat detection
     WT_OPPORTUNITY_KEYWORDS = [
         # Diplomatic breakthroughs
-        'peace agreement', 'peace deal signed', 'ceasefire agreement',
-        'diplomatic breakthrough', 'diplomatic progress', 'peace talks progress',
+        # Verb-final entries ('sanctions lifted', 'treaty signed') stay exact --
+        # the head is a participle, not a pluralisable noun.
+        'peace agreement*', 'peace deal signed', 'ceasefire agreement*',
+        'diplomatic breakthrough*', 'diplomatic progress', 'peace talks progress',
         'alliance strengthened', 'alliance formed', 'treaty signed',
         'sanctions lifted', 'sanctions removed', 'embargo lifted',
         'normalisation', 'normalization', 'diplomatic ties restored',
         # Trade and economic progress
-        'trade agreement', 'trade deal', 'trade framework',
-        'tariff reduction', 'tariff cut', 'tariff eliminated',
+        'trade agreement*', 'trade deal*', 'trade framework*',
+        'tariff reduction*', 'tariff cut*', 'tariff eliminated',
         'debt relief', 'debt forgiven', 'aid delivered',
-        'investment agreement', 'economic partnership',
+        'investment agreement*', 'economic partnership*',
         # Humanitarian progress
-        'humanitarian corridor', 'aid corridor opened',
+        'humanitarian corridor*', 'aid corridor opened',
         'food security improved', 'famine averted',
-        'refugee return', 'displaced persons return',
+        'refugee return*', 'displaced persons return',
         'reconstruction begins', 'rebuilding begins',
         # Technology and governance advances
-        'technology transfer', 'technology cooperation',
+        'technology transfer*', 'technology cooperation',
         'digital rights protected', 'press freedom restored',
-        'democratic election', 'election certified',
+        'democratic election*', 'election certified',
         'accountability established', 'justice served',
-        'renewable energy', 'clean energy agreement',
+        'renewable energy', 'clean energy agreement*',
     ]
-    opp_matches = [kw for kw in WT_OPPORTUNITY_KEYWORDS if kw in text]
+    opp_matches = matched_keywords(WT_OPPORTUNITY_KEYWORDS, text)
     opp_score = min(len(opp_matches) * 3, 15)
     score += opp_score
     if opp_matches:
@@ -549,24 +589,27 @@ def _score_article(article: dict) -> tuple[float, str]:
     WT_HUMAN_SECURITY_KEYWORDS = [
         # Civilian impact
         'civilian casualties', 'civilian deaths', 'civilian harm',
-        'civilian population', 'civilian infrastructure',
-        # Humanitarian
-        'humanitarian crisis', 'humanitarian aid', 'humanitarian corridor',
+        'civilian population*', 'civilian infrastructure',
+        # Humanitarian -- 'crisis'/'emergency' exact (-is/-es, -y/-ies).
+        'humanitarian crisis', 'humanitarian aid', 'humanitarian corridor*',
         'humanitarian access', 'humanitarian emergency',
         # Rights and freedoms
-        'human rights violation', 'arbitrary detention',
-        'political prisoner', 'freedom of press', 'internet shutdown',
-        'censorship', 'forced disappearance',
+        'human rights violation*', 'arbitrary detention*',
+        'political prisoner*', 'freedom of press', 'internet shutdown*',
+        # 'enforced disappearance*' is the canonical UN term and already lives in
+        # PHI003_FREEDOM_FROM_FEAR and WT_THREAT -- the lists must agree. Substring
+        # matching only ever caught it here by accident ('forced' inside 'enforced').
+        'censorship', 'forced disappearance*', 'enforced disappearance*',
         # Displacement
         'refugee crisis', 'internally displaced', 'displacement crisis',
         # Protection
-        'war crime', 'ethnic cleansing', 'genocide',
-        'hospital attack', 'school attack', 'medical access blocked',
+        'war crime*', 'ethnic cleansing', 'genocide',
+        'hospital attack*', 'school attack*', 'medical access blocked',
         # Health and basic needs
-        'disease outbreak', 'famine', 'food insecurity',
+        'disease outbreak*', 'famine', 'food insecurity',
         'clean water access', 'medical humanitarian',
     ]
-    hs_matches = [kw for kw in WT_HUMAN_SECURITY_KEYWORDS if kw in text]
+    hs_matches = matched_keywords(WT_HUMAN_SECURITY_KEYWORDS, text)
     hs_score = min(len(hs_matches) * 3, 12)
     score += hs_score
     if hs_matches:
@@ -620,15 +663,15 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     if pillar == "geo":
         GEO_BONUS = [
-            "ceasefire", "peace deal", "peace talks", "diplomatic",
-            "ambassador", "state actor", "proxy war", "occupation",
+            "ceasefire*", "peace deal*", "peace talks", "diplomatic",
+            "ambassador*", "state actor*", "proxy war*", "occupation*",
             "territorial", "sovereignty", "humanitarian crisis",
-            "civilian", "refugee", "displacement", "airstrike",
-            "ground offensive", "siege", "blockade", "military operation",
-            "nato", "alliance", "security council", "united nations",
-            "coup", "revolution", "protest", "uprising", "civil war",
+            "civilian*", "refugee*", "displacement", "airstrike*",
+            "ground offensive*", "siege*", "blockade*", "military operation*",
+            "nato", "alliance*", "security council", "united nations",
+            "coup*", "revolution*", "protest*", "uprising*", "civil war*",
         ]
-        geo_matches = [kw for kw in GEO_BONUS if kw in text]
+        geo_matches = matched_keywords(GEO_BONUS, text)
         geo_score = min(len(geo_matches) * 2, 10)
         score += geo_score
         if geo_matches:
@@ -636,17 +679,19 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     elif pillar == "tech":
         TECH_BONUS = [
+            # 'chip' is EXACT BY DESIGN -- stem decision deferred to G-TUNE.
+            # 'vulnerability'/'platform monopoly' exact (-y/-ies).
             "artificial intelligence", "machine learning", "deep learning",
-            "large language model", "generative ai", "ai regulation",
-            "semiconductor", "chip", "nvidia", "tsmc", "intel",
-            "export control", "chip ban", "advanced chips",
-            "cyberattack", "ransomware", "zero day", "vulnerability",
+            "large language model*", "generative ai", "ai regulation*",
+            "semiconductor*", "chip", "nvidia", "tsmc", "intel",
+            "export control*", "chip ban*", "advanced chips",
+            "cyberattack*", "ransomware", "zero day", "vulnerability",
             "cyber espionage", "state sponsored hacking", "critical infrastructure",
-            "digital sovereignty", "internet shutdown", "surveillance",
+            "digital sovereignty", "internet shutdown*", "surveillance",
             "facial recognition", "quantum computing", "5g", "6g",
-            "tech regulation", "data privacy", "platform monopoly",
+            "tech regulation*", "data privacy", "platform monopoly",
         ]
-        tech_matches = [kw for kw in TECH_BONUS if kw in text]
+        tech_matches = matched_keywords(TECH_BONUS, text)
         tech_score = min(len(tech_matches) * 2, 10)
         score += tech_score
         if tech_matches:
@@ -654,18 +699,21 @@ def _score_article(article: dict) -> tuple[float, str]:
 
     elif pillar == "fin":
         FIN_BONUS = [
-            "stock market", "equity", "bond", "yield", "interest rate",
-            "federal reserve", "central bank", "monetary policy",
-            "inflation", "deflation", "recession", "gdp growth",
-            "tariff", "trade war", "trade deal", "import duty",
-            "sanction", "asset freeze", "swift", "currency",
-            "dollar", "yuan", "euro", "exchange rate",
-            "oil price", "energy market", "opec", "crude",
-            "capital flow", "foreign investment", "fdi",
-            "sovereign debt", "bond yield", "credit rating",
-            "commodity", "gold", "copper", "lithium price",
+            # 'equity'/'monetary policy'/'import duty'/'currency'/'commodity'
+            # exact (-y/-ies). 'euro' exact: under substring it fired inside
+            # 'europe' -- a FIN bonus on a pure GEO story.
+            "stock market*", "equity", "bond*", "yield*", "interest rate*",
+            "federal reserve", "central bank*", "monetary policy",
+            "inflation", "deflation", "recession*", "gdp growth",
+            "tariff*", "trade war*", "trade deal*", "import duty",
+            "sanction*", "asset freeze*", "swift", "currency",
+            "dollar*", "yuan", "euro", "exchange rate*",
+            "oil price*", "energy market*", "opec", "crude",
+            "capital flow*", "foreign investment*", "fdi",
+            "sovereign debt", "bond yield*", "credit rating*",
+            "commodity", "gold", "copper", "lithium price*",
         ]
-        fin_matches = [kw for kw in FIN_BONUS if kw in text]
+        fin_matches = matched_keywords(FIN_BONUS, text)
         fin_score = min(len(fin_matches) * 2, 10)
         score += fin_score
         if fin_matches:
