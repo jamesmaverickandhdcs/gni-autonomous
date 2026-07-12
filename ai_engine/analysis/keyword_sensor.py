@@ -9,6 +9,7 @@
 
 import os
 import re
+import sys
 import json
 import html
 import unicodedata
@@ -17,6 +18,17 @@ from collections import Counter
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 load_dotenv()
+
+# matching.py lives in ai_engine/; this module sits in ai_engine/analysis/.
+# Mirror the sibling-import pattern intelligence_funnel.py already uses.
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from matching import kw_match, matched_keywords
+
+# S66 KEY-MAP C3: Layer 4 matched its NER vocabulary by raw substring, the same
+# disease the funnel had -- 'usa' fired inside 'thoUSAnds', 'eu' inside 'reuters',
+# 'fed' inside 'federal', 'ban' inside 'urban'/'Lebanon', 'cut' inside 'executive'.
+# Same cure: word-boundary matching via kw_match, with '*' marking a deliberate
+# stem. Star policy matches the funnel exactly (see intelligence_funnel.py).
 
 GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
 GROQ_MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')
@@ -64,38 +76,70 @@ INVISIBLE_CHARS = {
 }
 
 # NER dictionaries - deterministic only (GNI-R-077)
+# Country names stay EXACT where their demonym is already carried as its own entry
+# (china/chinese, russia/russian, israel/israeli, ukraine/ukrainian). The demonyms
+# themselves are STARRED so they reach the plural (Russians, Israelis).
+# 'india*', 'america*', 'taiwan*' are starred because they have NO demonym entry --
+# Indian / American / Taiwanese were only ever reached by substring accident.
+# 'chinese' stays exact. 'indiana' noise from 'india*' is accepted (G-TUNE note).
+# 'eu' and 'fed' stay exact: substring fired them inside reuters/europe/federal --
+# 'european union' and 'federal reserve' are separate entries and still match.
+#
+# 'iran*' is the one deliberate BRAND PROXY. It reaches Iranian and Iranians, and
+# it also reaches the IranWire masthead. That is a proxy, and an honest one for this
+# source: IranWire's entire beat IS Iranian state conduct, so its byline is a
+# truthful actor signal -- without it, four IranWire repression stories per window
+# carry no actor at all and die at the Layer 4 gate. It is still a proxy, not a fact:
+# source-aware actor hinting is the correct fix, deferred to G-TUNE.
+# It also makes the sensor agree with the funnel, which already rules 'iran*'.
+# A separate 'iranian*' entry would now be redundant -- kw_match('iran*') covers
+# everything it did -- so it is REMOVED. One token, one home.
 KNOWN_ACTORS = {
-    'united states', 'usa', 'america', 'washington',
+    'united states', 'usa', 'america*', 'washington',
     'china', 'beijing', 'prc', 'chinese',
-    'russia', 'moscow', 'kremlin', 'russian',
-    'iran', 'tehran', 'iranian',
-    'israel', 'jerusalem', 'israeli',
-    'ukraine', 'kyiv', 'ukrainian',
+    'russia', 'moscow', 'kremlin', 'russian*',
+    'iran*', 'tehran',
+    'israel', 'jerusalem', 'israeli*',
+    'ukraine', 'kyiv', 'ukrainian*',
     'north korea', 'pyongyang',
-    'taiwan', 'taipei',
+    'taiwan*', 'taipei',
     'nato', 'united nations', 'european union', 'eu',
     'imf', 'world bank', 'opec', 'iaea', 'fed',
     'federal reserve', 'tsmc', 'nvidia', 'huawei',
-    'saudi arabia', 'riyadh', 'india', 'japan', 'turkey',
+    'saudi arabia', 'riyadh', 'india*', 'japan', 'turkey',
 }
 
+# These are VERBS, so the star carries verb inflection (launched / launches /
+# launching), not just plurals -- the S66 census showed exact matching losing the
+# very action the sensor exists to detect ("Trump imposes new sanctions" yielded no
+# action at all). Truncated stems follow the funnel's 'extremis*' convention:
+# 'occup*' reaches occupy/occupied/occupation, 'negotiat*' negotiate/negotiating.
+# EXACT BY DESIGN, each for a named reason:
+#   'ban'    -- 'ban*' re-admits bank / banking / Bangladesh / Lebanon / abandon.
+#               Substring 'ban' matched "bank" 23x in one window: the Layer 4 action
+#               gate was passing on the word BANK. Cost: banned/bans not matched.
+#   'fire'   -- 'fire*' re-admits fireworks / firefighters / firearms.
+#   'supply' -- -y/-ies is not a stem kw_match can reach.
+#   'invade' -- 'invasion' is separate funnel vocab; no stem needed here.
 KNOWN_ACTIONS = {
-    'attack', 'strike', 'invade', 'blockade', 'siege',
-    'deploy', 'launch', 'fire', 'bomb', 'occupy',
-    'sanction', 'embargo', 'expel', 'threaten', 'impose',
-    'withdraw', 'ban', 'restrict', 'halt', 'seize',
-    'freeze', 'default', 'devalue', 'nationalize',
-    'export', 'tariff', 'cut', 'supply', 'intercept',
-    'escalate', 'mobilize', 'retaliate', 'negotiate',
-    'collapse', 'detain', 'arrest', 'expropriate',
+    'attack*', 'strike*', 'invade', 'blockade*', 'siege*',
+    'deploy*', 'launch*', 'fire', 'bomb*', 'occup*',
+    'sanction*', 'embargo*', 'expel*', 'threaten*', 'impose*',
+    'withdraw*', 'ban', 'restrict*', 'halt*', 'seize*',
+    'freeze*', 'default*', 'devalu*', 'nationaliz*',
+    'export*', 'tariff*', 'cut*', 'supply', 'intercept*',
+    'escalate*', 'mobiliz*', 'retaliat*', 'negotiat*',
+    'collapse*', 'detain*', 'arrest*', 'expropriate',
 }
 
+# 'taiwan*' mirrors KNOWN_ACTORS (Taiwanese). The rest are proper nouns with no
+# plural or demonym in play.
 KNOWN_LOCATIONS = {
     'hormuz', 'malacca', 'suez', 'bosphorus', 'taiwan strait',
     'south china sea', 'red sea', 'persian gulf', 'black sea',
     'middle east', 'eastern europe', 'indo-pacific',
     'arctic', 'sahel', 'horn of africa', 'gaza',
-    'ukraine', 'taiwan', 'kosovo', 'kashmir',
+    'ukraine', 'taiwan*', 'kosovo', 'kashmir',
 }
 
 STOP_WORDS = {
@@ -179,9 +223,9 @@ def _enforce_context_boundary(article: dict) -> dict:
 # ── LAYER 4: NER event signature (GNI-R-077 deterministic) ──────────────────
 def _extract_event_signature(text: str) -> dict | None:
     text_lower = text.lower()
-    actors = [a for a in KNOWN_ACTORS if a in text_lower]
-    actions = [a for a in KNOWN_ACTIONS if a in text_lower]
-    locations = [l for l in KNOWN_LOCATIONS if l in text_lower]
+    actors = matched_keywords(KNOWN_ACTORS, text_lower)
+    actions = matched_keywords(KNOWN_ACTIONS, text_lower)
+    locations = matched_keywords(KNOWN_LOCATIONS, text_lower)
     has_actor = len(actors) > 0
     has_action = len(actions) > 0
     has_location = len(locations) > 0
@@ -497,9 +541,16 @@ def _get_client():
         return None
 
 def _get_existing_keywords() -> set:
+    """Funnel vocabulary the sensor must NOT re-propose as 'emerging'.
+
+    S66 KEY-MAP C3: GEOPOLITICAL_KEYWORDS now carries '*' stem markers. This set is
+    compared against sanitised phrases (which never contain '*'), so the marker MUST
+    be stripped -- otherwise 'sanction' stops matching 'sanction*' and the sensor
+    re-proposes keywords the funnel already has.
+    """
     try:
         from funnel.intelligence_funnel import GEOPOLITICAL_KEYWORDS
-        return set(kw.lower() for kw in GEOPOLITICAL_KEYWORDS)
+        return set(kw.lower().rstrip('*') for kw in GEOPOLITICAL_KEYWORDS)
     except Exception:
         return set()
 
