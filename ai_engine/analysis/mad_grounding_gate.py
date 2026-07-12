@@ -44,12 +44,81 @@ COMMON_SKIP = {
 }
 _SKIP_PHRASES = ROLE_NAMES | VERDICT_VOCAB | TICKERS
 
+# ---- Dialect allowlist (GT-1, S67) ----
+# MAD prompt vocabulary + contentless filler. These spans carry zero attribution
+# content, so they are NOT fabrication: they are reported as kind='dialect' hits
+# for observability but never count toward hit_count and never flip `grounded`.
+# Normalized forms (lowercase, punctuation stripped) -- compare against _norm().
+DIALECT_PREFIXES = (
+    'hidden pattern', 'second order', 'third order', 'invisible link',
+    'silo gap', 'far reaching',
+)
+# Reachable today only via Title-Case (_CAP_RE): these are lowercase unhyphenated
+# bigrams, which no current extractor pass emits as a candidate span. Becomes fully
+# reachable when the G-GAP-1 lowercase-phrase pass lands (GT-3). Kept deliberately.
+DIALECT_EXACT = {
+    'invisible broker', 'cascading effects', 'knock on effects',
+}
+# Single abstract nouns from arbitrator list-style output (digest-proven).
+ARB_LIST_NOUNS = {
+    'cascading', 'contagion', 'erosion', 'emergence', 'diversification',
+    'disruption', 'cooperation', 'potential', 'establishment',
+}
+
+
+def _is_dialect(norm: str) -> bool:
+    return (norm in DIALECT_EXACT
+            or norm in ARB_LIST_NOUNS
+            or norm.startswith(DIALECT_PREFIXES))
+
+
+# ---- Alias groups (GT-2, S67) ----
+# All 10 groups verified live against the 513-article 24h corpus (S67 Supabase
+# check, R-S66-2 satisfied). Normalized forms. Expansion is CONDITIONAL: see
+# _expand_aliases -- a group only becomes grounded vocabulary when the basket
+# already contains one of its members.
+ALIAS_GROUPS = [
+    {'federal reserve', 'the fed', 'us federal reserve', 'fed'},
+    {'treasury', 'us treasury', 'us treasury department', 'treasury department'},
+    {'european union', 'eu'},
+    {'united states', 'us', 'usa', 'u s'},
+    {'us iran conflict', 'us iran', 'conflict between the us and iran', 'us iran war'},
+    {'iran', 'iranian', 'iranians'},
+    {'russia', 'russian', 'russians'},
+    {'israel', 'israeli', 'israelis'},
+    {'taiwan', 'taiwanese'},
+    {'europe', 'european', 'europeans'},
+]
+
+
+def _expand_aliases(basket_norm: str) -> str:
+    """Conditionally widen the grounded corpus with alias variants (GT-2).
+
+    If ANY member of a group is present in the basket as a whole token/phrase,
+    every member of that group is appended. CONDITIONAL BY DESIGN: a Fed span
+    checked against a Fed-free basket must STILL fire, so we never expand
+    unconditionally. Quantities are unaffected (they ground against basket_raw).
+    """
+    padded = ' ' + basket_norm + ' '
+    extra = []
+    for group in ALIAS_GROUPS:
+        if any((' ' + member + ' ') in padded for member in group):
+            extra.extend(sorted(group))
+    if not extra:
+        return basket_norm
+    return basket_norm + ' ' + ' '.join(extra)
+
+
 # ---- Extraction patterns ----
 # 1. Proper-noun sequences: one or more consecutive Capitalized words.
 _CAP_RE = re.compile(r'[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)*')
 # 2. Hyphenated / compound noun phrases: a hyphen-joined token, optionally
 #    followed by ONE lowercase head noun ("dollar-depegging", "rare-earth broker").
 _COMPOUND_RE = re.compile(r'[A-Za-z]+(?:-[A-Za-z]+)+(?:\s+[a-z]+)?')
+# Function words wrongly captured as that optional head noun ("silo-gap between"):
+# strip them off the span before normalization (GT-2 item 3).
+STOP_HEADS = {'between', 'and', 'of', 'with', 'to', 'in', 'on', 'for',
+              'that', 'which'}
 # 3a. Quantity: number (+/- currency) followed by a unit/scale token.
 _QTY_RE = re.compile(
     r'\$?\s?\d[\d,]*(?:\.\d+)?\s*'
@@ -143,12 +212,17 @@ def check_grounding(text, basket, whitelist_extra=None, location=''):
     Returns:
         {"hits": [{"span","kind","location"}], "hit_count", "checked_spans",
          "grounded"}  (grounded == hit_count == 0)
+
+    kind=='dialect' hits (GT-1 allowlist) are reported in `hits` but excluded
+    from `hit_count` and `grounded` -- they are prompt vocabulary/filler, not
+    fabrication. `checked_spans` still counts them.
     """
     result = {'hits': [], 'hit_count': 0, 'checked_spans': 0, 'grounded': True}
     if not text or not isinstance(text, str) or text.startswith('[Agent error'):
         return result
 
     basket_norm, basket_raw = _basket_corpus(basket, whitelist_extra)
+    basket_norm = _expand_aliases(basket_norm)
     sent_starts = _sentence_starts(text)
 
     # candidates: OrderedDict norm_span -> (raw_span, kind)  (dedup, keep first)
@@ -158,6 +232,9 @@ def check_grounding(text, basket, whitelist_extra=None, location=''):
     compound_spans = []
     for m in _COMPOUND_RE.finditer(text):
         raw = m.group(0).strip()
+        words = raw.split()
+        if len(words) > 1 and words[-1].lower() in STOP_HEADS:
+            raw = ' '.join(words[:-1])
         norm = _norm(raw)
         if not norm or norm in _SKIP_PHRASES:
             continue
@@ -207,6 +284,10 @@ def check_grounding(text, basket, whitelist_extra=None, location=''):
     # -- grounding test --
     for key, (raw, kind) in candidates.items():
         result['checked_spans'] += 1
+        if kind == 'entity' and _is_dialect(_norm(raw)):
+            result['hits'].append(
+                {'span': raw, 'kind': 'dialect', 'location': location})
+            continue
         if kind == 'quantity':
             grounded = _qty_grounded(raw, basket_norm, basket_raw)
         else:
@@ -214,7 +295,8 @@ def check_grounding(text, basket, whitelist_extra=None, location=''):
         if not grounded:
             result['hits'].append({'span': raw, 'kind': kind, 'location': location})
 
-    result['hit_count'] = len(result['hits'])
+    # GT-1: dialect hits are reported but never counted / never flip `grounded`.
+    result['hit_count'] = sum(1 for h in result['hits'] if h['kind'] != 'dialect')
     result['grounded'] = result['hit_count'] == 0
     return result
 
@@ -281,6 +363,67 @@ if __name__ == '__main__':
           f'grounded -> hits={[h["span"] for h in rn["hits"]]}')
     if not fp_ok:
         failures.append('false-positive')
+
+    # Dialect allowlist (GT-1): MAD prompt vocab / filler is REPORTED but never
+    # counted -- hit_count stays 0 and grounded stays True.
+    rd = check_grounding(
+        'The hidden-pattern connection implies second-order effects via an '
+        'invisible broker.',
+        basket, whitelist, location='test')
+    dialect_hits = [h['span'] for h in rd['hits'] if h['kind'] == 'dialect']
+    # >=2, not >=3: "invisible broker" is a lowercase unhyphenated bigram, so no
+    # current extractor pass emits it as a candidate (see DIALECT_EXACT note).
+    dok = (len(rd['hits']) >= 2
+           and all(h['kind'] == 'dialect' for h in rd['hits'])
+           and rd['hit_count'] == 0
+           and rd['grounded'] is True)
+    print(f'[{"PASS" if dok else "FAIL"}] dialect allowlist -> dialect={dialect_hits} '
+          f'all_hits={[(h["span"], h["kind"]) for h in rd["hits"]]} '
+          f'hit_count={rd["hit_count"]} grounded={rd["grounded"]}')
+    if not dok:
+        failures.append('dialect')
+
+    # ---- GT-2 (S67): conditional alias expansion + compound head-noun fix ----
+
+    # (a) Superstring: a Fed-bearing basket grounds the "US Federal Reserve" alias.
+    fed_basket = [{
+        'title': 'Federal Reserve holds rates steady',
+        'summary': 'The Federal Reserve left policy unchanged at its meeting.',
+        'entities': ['Federal Reserve'],
+    }]
+    ra = check_grounding('The US Federal Reserve signalled a pause.',
+                         fed_basket, [], location='test')
+    aok = ra['hit_count'] == 0
+    print(f'[{"PASS" if aok else "FAIL"}] alias superstring (Fed basket) -> '
+          f'hits={[(h["span"], h["kind"]) for h in ra["hits"]]} '
+          f'hit_count={ra["hit_count"]}')
+    if not aok:
+        failures.append('alias-superstring')
+
+    # (b) Negative control: Fed-free basket -> the alias group must NOT expand,
+    #     so a Federal Reserve span still fires as an entity hit.
+    rb = check_grounding('The Federal Reserve will hike rates.',
+                         basket, whitelist, location='test')
+    bok = any(h['kind'] == 'entity' and 'federal reserve' in h['span'].lower()
+              for h in rb['hits'])
+    print(f'[{"PASS" if bok else "FAIL"}] alias negative control (Fed-free basket) -> '
+          f'hits={[(h["span"], h["kind"]) for h in rb["hits"]]} '
+          f'hit_count={rb["hit_count"]}')
+    if not bok:
+        failures.append('alias-negative-control')
+
+    # (c) Head-noun fix: the trailing function word is stripped, so the span
+    #     normalizes to 'silo gap' (GT-1 dialect) and not 'silo gap between'.
+    rc = check_grounding('The silo-gap between the agencies persists.',
+                         basket, whitelist, location='test')
+    cok = (any(_norm(h['span']) == 'silo gap' and h['kind'] == 'dialect'
+               for h in rc['hits'])
+           and rc['hit_count'] == 0)
+    print(f'[{"PASS" if cok else "FAIL"}] compound head-noun fix -> '
+          f'hits={[(h["span"], h["kind"]) for h in rc["hits"]]} '
+          f'hit_count={rc["hit_count"]}')
+    if not cok:
+        failures.append('head-noun-fix')
 
     print('\n' + ('ALL SPECIMEN TESTS PASSED' if not failures
                   else 'FAILURES: ' + ', '.join(failures)))

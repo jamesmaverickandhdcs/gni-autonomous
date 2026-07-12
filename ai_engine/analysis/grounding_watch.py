@@ -24,8 +24,27 @@ load_dotenv()
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_ADMIN_ID  = os.getenv('TELEGRAM_ADMIN_ID', '') or os.getenv('TELEGRAM_QSChannel_ID', '')
 
-WINDOW_DAYS = 7
-TOP_SPANS   = 10
+WINDOW_DAYS  = 7
+TOP_SPANS    = 10
+DIALECT_TOP  = 5
+
+
+def _split_dialect(hits) -> tuple:
+    """Split a hits list into (non_dialect, dialect).
+
+    GT-1: kind=='dialect' spans are allowlisted MAD prompt vocab / filler --
+    they are tracked separately and never drive counts or the RED trigger.
+    Legacy rows whose hits carry no `kind` count as NON-dialect (fail-loud).
+    """
+    non_dialect, dialect = [], []
+    for hit in (hits or []):
+        if not isinstance(hit, dict):
+            continue
+        if hit.get('kind') == 'dialect':
+            dialect.append(hit)
+        else:
+            non_dialect.append(hit)
+    return non_dialect, dialect
 
 
 def _safe_print(text: str) -> None:
@@ -92,30 +111,41 @@ def _aggregate(rows: list) -> dict:
     stats = {
         'runs_total':      len(rows),
         'runs_checked':    0,      # rows that actually carry a grounding_hits payload
-        'consultant_hits': 0,
-        'arb_hits':        0,
+        'consultant_hits': 0,      # non-dialect only
+        'arb_hits':        0,      # non-dialect only -- drives the RED trigger
+        'dialect_cons':    0,
+        'dialect_arb':     0,
         'arb_flagged':     [],     # (report_id, spans) with arbitrator-level hits
         'top_spans':       [],
+        'dialect_top':     [],
     }
     span_counter = Counter()
+    dialect_counter = Counter()
     for row in rows:
         gh = row.get('grounding_hits')
         if not isinstance(gh, dict):
             continue
         stats['runs_checked'] += 1
-        cons = gh.get('consultant_hits') or []
-        arb  = gh.get('arb_hits') or []
-        stats['consultant_hits'] += len(cons)
-        stats['arb_hits'] += len(arb)
-        for hit in cons + arb:
-            span = (hit or {}).get('span', '') if isinstance(hit, dict) else ''
+        cons_nd, cons_dl = _split_dialect(gh.get('consultant_hits'))
+        arb_nd,  arb_dl  = _split_dialect(gh.get('arb_hits'))
+        stats['consultant_hits'] += len(cons_nd)
+        stats['arb_hits'] += len(arb_nd)
+        stats['dialect_cons'] += len(cons_dl)
+        stats['dialect_arb'] += len(arb_dl)
+        for hit in cons_nd + arb_nd:
+            span = hit.get('span', '')
             if span:
                 span_counter[span.strip().lower()] += 1
-        if arb:
-            arb_spans = [(h or {}).get('span', '') for h in arb if isinstance(h, dict)]
+        for hit in cons_dl + arb_dl:
+            span = hit.get('span', '')
+            if span:
+                dialect_counter[span.strip().lower()] += 1
+        if arb_nd:
+            arb_spans = [h.get('span', '') for h in arb_nd]
             stats['arb_flagged'].append(
                 (row.get('report_id', '?'), [s for s in arb_spans if s]))
     stats['top_spans'] = span_counter.most_common(TOP_SPANS)
+    stats['dialect_top'] = dialect_counter.most_common(DIALECT_TOP)
     return stats
 
 
@@ -134,6 +164,11 @@ def _build_digest(stats: dict) -> tuple:
     if stats['top_spans']:
         top = ', '.join(f'{span} x{n}' for span, n in stats['top_spans'])
         lines.append('Top fabricated spans: ' + top)
+    if stats['dialect_cons'] or stats['dialect_arb']:
+        dtop = ', '.join(f'{span} x{n}' for span, n in stats['dialect_top'])
+        lines.append(
+            f'Dialect (allowlisted): {stats["dialect_cons"]} consultant / '
+            f'{stats["dialect_arb"]} arb - top: ' + (dtop or '-'))
     if is_red:
         lines.append('')
         lines.append('ARB HITS (fabrication reached the verdict):')
