@@ -65,3 +65,4 @@ check_about2.py
 fix_about_cards.py
 !ai_engine/tests/test_*.py
 exports/
+*_GNI_Forensic_Trace_*.xlsx
