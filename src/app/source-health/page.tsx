@@ -27,9 +27,9 @@ const PILLAR_CONFIG: Record<string, { label: string; color: string; emoji: strin
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string; desc?: string }> = {
-  healthy:  { label: 'Healthy',  color: 'text-green-400',  dot: 'bg-green-400' },
-  degraded: { label: 'Degraded', color: 'text-yellow-400', dot: 'bg-yellow-400' },
-  down:     { label: 'Down',     color: 'text-red-400',    dot: 'bg-red-400' },
+  healthy:  { label: 'Healthy',  color: 'text-green-400',  dot: 'bg-green-400',  desc: 'Feed reachable and yielding at or above its rolling average' },
+  degraded: { label: 'Degraded', color: 'text-yellow-400', dot: 'bg-yellow-400', desc: 'Feed reachable; yield is under half its rolling average' },
+  down:     { label: 'Down',     color: 'text-red-400',    dot: 'bg-red-400',    desc: 'Legacy status from runs recorded before transport health was tracked' },
   // S66 W-AUTO-4: 5-state taxonomy from /api/source-health. fetch_ok is SLOT
   // transport truth (primary OR its serving reserve); article_count is yield.
   'reserve-masked': { label: 'Reserve serving', color: 'text-blue-400',   dot: 'bg-blue-400',   desc: 'Primary feed down; reserve is serving this slot' },
@@ -37,6 +37,22 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; dot: string;
   silent:           { label: 'Silent',          color: 'text-orange-400', dot: 'bg-orange-400', desc: 'Feed reachable but returned zero entries' },
   'stale-gated':    { label: 'Stale-gated',     color: 'text-yellow-400', dot: 'bg-yellow-400', desc: 'Feed healthy; all entries older than the capture window' },
 }
+
+// Every status the route can emit -- new taxonomy and legacy alike -- maps into
+// exactly one summary tile. Grouped on the status string alone, so the legacy
+// NULL-column window (healthy/degraded/down) is covered without extra branches.
+const STATUS_GROUP: Record<string, 'healthy' | 'attention' | 'down'> = {
+  healthy:          'healthy',
+  silent:           'attention',
+  'stale-gated':    'attention',
+  degraded:         'attention',
+  'transport-down': 'down',
+  'reserve-masked': 'down',
+  down:             'down',
+}
+
+// Legend order: transport truth first, then yield truth, legacy last.
+const LEGEND_ORDER = ['healthy', 'reserve-masked', 'transport-down', 'silent', 'stale-gated', 'degraded', 'down']
 
 function MiniChart({ runs }: { runs: SourceRun[] }) {
   if (!runs.length) return null
@@ -77,9 +93,9 @@ export default function SourceHealthPage() {
 
   const filtered = sources.filter(s => pillarFilter === 'all' || s.pillar === pillarFilter)
   const counts = {
-    healthy:  sources.filter(s => s.status === 'healthy').length,
-    degraded: sources.filter(s => s.status === 'degraded').length,
-    down:     sources.filter(s => s.status === 'down').length,
+    healthy:   sources.filter(s => STATUS_GROUP[s.status] === 'healthy').length,
+    attention: sources.filter(s => STATUS_GROUP[s.status] === 'attention').length,
+    down:      sources.filter(s => STATUS_GROUP[s.status] === 'down').length,
   }
   const totalSources = sources.length
 
@@ -107,8 +123,8 @@ export default function SourceHealthPage() {
               <div className="text-xs text-green-600">● Healthy</div>
             </div>
             <div className="bg-yellow-950 border border-yellow-800 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-yellow-400">{counts.degraded}</div>
-              <div className="text-xs text-yellow-600">◐ Degraded</div>
+              <div className="text-2xl font-bold text-yellow-400">{counts.attention}</div>
+              <div className="text-xs text-yellow-600">◐ Needs attention</div>
             </div>
             <div className="bg-red-950 border border-red-800 rounded-lg p-3 text-center">
               <div className="text-2xl font-bold text-red-400">{counts.down}</div>
@@ -157,8 +173,8 @@ export default function SourceHealthPage() {
             return (
               <div key={src.name}
                 className={`bg-gray-900 border rounded-xl p-4 ${
-                  src.status === 'down' ? 'border-red-800' :
-                  src.status === 'degraded' ? 'border-yellow-800' : 'border-gray-700'
+                  STATUS_GROUP[src.status] === 'down' ? 'border-red-800' :
+                  STATUS_GROUP[src.status] === 'attention' ? 'border-yellow-800' : 'border-gray-700'
                 }`}>
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -203,23 +219,29 @@ export default function SourceHealthPage() {
         {/* Legend */}
         <div className="mt-8 bg-gray-900 border border-gray-700 rounded-xl p-5">
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">How Source Health Works</div>
+          <p className="text-xs text-gray-400 mb-4">
+            Two independent truths per slot. <span className="text-gray-200 font-bold">Transport</span> — could we reach a feed at all,
+            counting the reserve that stands in for a dead primary. <span className="text-gray-200 font-bold">Yield</span> — how many
+            of the entries it delivered survived dedup and the capture window. A slot with working transport can still yield nothing,
+            so the article count alone never tells you whether a feed is up.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-            <div className="bg-gray-800 rounded-lg p-3">
-              <div className="text-green-400 font-bold mb-1">● Healthy</div>
-              <p className="text-gray-400">Source is returning articles at or above its rolling average. No action needed.</p>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-3">
-              <div className="text-yellow-400 font-bold mb-1">◐ Degraded</div>
-              <p className="text-gray-400">Source is returning fewer than 50% of its average articles. Monitor closely.</p>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-3">
-              <div className="text-red-400 font-bold mb-1">○ Down</div>
-              <p className="text-gray-400">Source returned 0 articles. Admin alerted via Telegram. RSS URL may have changed.</p>
-            </div>
+            {LEGEND_ORDER.map(key => {
+              const cfg = STATUS_CONFIG[key]
+              return (
+                <div key={key} className="bg-gray-800 rounded-lg p-3">
+                  <div className={`font-bold mb-1 flex items-center gap-1.5 ${cfg.color}`}>
+                    <span className={`w-2 h-2 rounded-full ${cfg.dot} shrink-0`} />
+                    {cfg.label}
+                  </div>
+                  <p className="text-gray-400">{cfg.desc}</p>
+                </div>
+              )
+            })}
           </div>
           <div className="mt-3 text-xs text-gray-600">
-            Mini chart: last 10 runs. Green = healthy, Yellow = degraded, Red = down, Dark red = 0 articles.
-            ⚠ History badge = source has gone down at least once.
+            Mini chart: last 10 runs, plotting delivered articles only — it is a yield trend, not a transport signal.
+            Red bar = a run that alerted the admin. ⚠ History badge = this slot has alerted at least once.
           </div>
         </div>
 
