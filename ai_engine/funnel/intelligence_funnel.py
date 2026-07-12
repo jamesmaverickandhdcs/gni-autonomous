@@ -1026,12 +1026,18 @@ def _classify_content_type(article: dict) -> dict:
         # Layer 3b: Enhanced heuristics before LLM
         title_lower = article.get("title", "").lower()
         url_lower = article.get("link", "").lower()
+        # S66 KEY-MAP C4 fix 1: this was `"by " + title_lower[:3] in title_lower`, a
+        # precedence accident -- it concatenated FIRST, so a title beginning "The..."
+        # was tested for the string "by the". It never detected a byline. The S64 GN
+        # author-page class is a title that STARTS with one.
+        # Fix 2: the opinion phrases are matched on word boundaries over the same
+        # lowered title+summary the sibling Layer 3 check uses, not a re-derived copy.
+        # They stay exact -- fixed idioms, nothing to stem.
         l3b_review = (
             title_lower.startswith(("opinion:", "analysis:", "commentary:", "column:", "perspective:"))
             or "/opinion/" in url_lower or "/analysis/" in url_lower
-            or "by " + title_lower[:3] in title_lower
-            or sum(1 for w in ["i think", "i believe", "in my view", "we must", "we should"]
-                  if w in (article.get("title","") + " " + article.get("summary","")).lower()) >= 1
+            or title_lower.startswith("by ")
+            or any_match(["i think", "i believe", "in my view", "we must", "we should"], text)
         )
         if l3b_review:
             ct = "news_with_review"
