@@ -792,7 +792,7 @@ def _score_article(article: dict) -> tuple[float, str]:
             # Item 14 S38: context-sensitive recency
             # CRITICAL/HIGH escalation: fresh articles matter much more
             # Normal: mild recency bonus only
-            _escalation_level = art.get('escalation_level', '')
+            _escalation_level = article.get('escalation_level', '')
             _is_critical = 'CRITICAL' in str(_escalation_level).upper() or 'HIGH' in str(_escalation_level).upper()
             # Change C: cap recency bonus for thin content (PHI-003 depth over speed)
             content_score = hi_score + med_score + threat_score + weakness_score + dark_score + opp_score
@@ -812,8 +812,9 @@ def _score_article(article: dict) -> tuple[float, str]:
                 score += vel_bonus
                 reasons.append(f"Velocity (+{vel_bonus}pts): breaking story signal")
 
-        except Exception:
-            pass  # never let recency calc break scoring
+        except Exception as _rec_e:
+            # never let recency calc break scoring -- but never silently either
+            print('  [RECENCY-WARN] bonus skipped: ' + str(_rec_e)[:80])
 
     reason_str = " | ".join(reasons) if reasons else "Base score only"
     return round(score, 2), reason_str
