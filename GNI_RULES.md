@@ -134,3 +134,10 @@ R-S66-2: Substring bugs can be load-bearing. Before anchoring any matcher,
 R-S66-3: A proxy in a vocabulary list (brand-as-actor, source-as-signal) is
   allowed only if declared in-code AS a proxy, with the honest cost and the
   proper fix named. Undeclared proxies are future fossils.
+R-S67-1: When a change spans code and DB/live state, hand over the steps as
+  NUMBERED GATES with the code push explicitly first -- commands delivered
+  together get executed in paste order, and paste order becomes system state.
+R-S67-2: Before trusting any statistic from an instrument, verify the
+  instrument's RANGE (caps, truncation, short-circuits). A metric that cannot
+  move is not evidence of stability -- the trace's 3-keyword cap censored the
+  match-count deflation K-WATCH was built to observe.
