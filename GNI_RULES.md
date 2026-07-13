@@ -141,3 +141,6 @@ R-S67-2: Before trusting any statistic from an instrument, verify the
   instrument's RANGE (caps, truncation, short-circuits). A metric that cannot
   move is not evidence of stability -- the trace's 3-keyword cap censored the
   match-count deflation K-WATCH was built to observe.
+
+R-S68-1: A model/secret swap plan is incomplete until a BARE-HARDCODE census runs -- grep call-site literals and workflow YAML, not just os.getenv defaults. The funnel L4 call and gni_adaptive.yml both hid from the secrets-only view.
+R-S68-2: GitHub Actions masks secret values as *** in CI logs -- a log can prove a secret is SET, never what it contains. Don't burn session time trying; only the keyfile ritual resolves values.
