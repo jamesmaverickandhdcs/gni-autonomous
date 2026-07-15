@@ -704,7 +704,7 @@ def reserve_lifecycle(sources: list, source_stats: dict = None) -> None:
         served_by_reserve = bool(stat.get("is_reserve", False))
 
         # C2 -- primary recovered (it served this run with real entries)
-        if ok and raw > 0 and not served_by_reserve:
+        if ok and int(stat.get("yield", 0)) > 0 and not served_by_reserve:
             try:
                 client.table("source_reserves").update(
                     {"status": "recovered"}).eq("id", row["id"]).execute()
