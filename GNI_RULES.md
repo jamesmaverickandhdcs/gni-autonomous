@@ -97,14 +97,6 @@ R-S63-2: Fallback resources (reserves, backups, secondaries) are guilty-until-ve
 R-S63-3: No protection may permanently mute its own alert path. Any "already handled ->
   skip alert" state needs an escalation branch for re-failure.
 
-R-S63-1: Any option list whose reply-number maps to list POSITION in a consumer (Telegram
-  webhook class) must preserve numbering across changes -- annotate bad options, never
-  filter, until every consumer is read and updated in the same commit.
-R-S63-2: Fallback resources (reserves, backups, secondaries) are guilty-until-verified:
-  live-check + dedupe-against-primaries before they may be offered as safety. A dead
-  reserve is worse than none -- it converts an outage into a silent one.
-R-S63-3: No protection may permanently mute its own alert path. Any "already handled ->
-  skip alert" state needs an escalation branch for re-failure.
 R-S64-1: "Success. No rows returned" (any silent DB response) proves nothing. Every
   UPDATE gets a SELECT verify, and state audits census the WHOLE table (no LIMIT) --
   a LIMIT hid a live PRIMARY-DUP row in S64.
@@ -144,3 +136,13 @@ R-S67-2: Before trusting any statistic from an instrument, verify the
 
 R-S68-1: A model/secret swap plan is incomplete until a BARE-HARDCODE census runs -- grep call-site literals and workflow YAML, not just os.getenv defaults. The funnel L4 call and gni_adaptive.yml both hid from the secrets-only view.
 R-S68-2: GitHub Actions masks secret values as *** in CI logs -- a log can prove a secret is SET, never what it contains. Don't burn session time trying; only the keyfile ritual resolves values.
+R-S69-1: A byte-census says what IS; only session history says which side is canonical.
+  No public-copy fix ships without reading the claim's design lineage first -- the S59
+  sweep and the S69 near-sweep pointed OPPOSITE directions off the same bytes.
+R-S69-2: Any mid-session fallback substitution ("simpler approach for now") and any
+  James-deferral must leave an instrument in the same message: a queue row, a date or
+  trigger, and a scheduled verify. Close docs mark "DONE (fallback: X deferred)" --
+  never bare DONE. Substitution without a debt record launders itself into fact.
+R-S69-3: Protections-guilty extends to WIRING: a security module's first BEV question
+  is "who imports me?" A green self-test on an orphan module is a false positive.
+  Run the orphan-import census at every model-change re-audit.
