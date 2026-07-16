@@ -105,3 +105,13 @@ grep -c "R-S63-1" GNI_RULES.md; grep -c "R-S63-2" GNI_RULES.md; grep -c "R-S63-3
 grep -rn "Fox News" ai_engine/ --include="*.py" | head -5
 ```
 (D-8 verify is a Lens-side `ls`: does the S63 L-CLIFF analysis doc exist in C:/school/lens?)
+
+## S70 STATUS APPENDS (2026-07-16)
+- D-7 CORRECTED: NOT paid. FLOOR_HIT lives only in mad_budget_solver.py; mad_runner has zero
+  solver references. Import census result (above grep) determines: wired-elsewhere vs orphan
+  (R-S69-3 class). Commit-2 (surface to MAD path) remains OPEN, load-bearing soon.
+- F-TILES DISSOLVED into SRC-INTEGRITY I-9: Stimson deliberately dead (CF 403 bot-wall,
+  PROMOTE-NYT S67 comment, rss_collector:95); frozen tile = fossil source_health DB row;
+  fix = graveyard purge SQL + roster-filtered display. L762 tuple = test fixture, harmless.
+- S70 morning: D-9 dead, F4 paid, Fox World lineage closed (60, ritual satisfied),
+  I-8 (writer B silent-dead since Jul 8) + I-9 (fossil graveyard) added to integrity scope.
