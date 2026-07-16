@@ -112,7 +112,7 @@ export default function ComparisonPage() {
             <div className="grid grid-cols-3 gap-3 mt-4">
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-white">{reports.length}</div>
-                <div className="text-xs text-gray-500">Total Runs</div>
+                <div className="text-xs text-gray-500">Last 10 Runs</div>
               </div>
               <div className="bg-green-950 border border-green-800 rounded-lg p-3 text-center">
                 <div className="text-2xl font-bold text-green-400">{agreeCount}</div>

@@ -65,7 +65,7 @@ export default function ResearchPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Key Research Metrics — IEEE Paper Evidence</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Total Reports', value: reports.length, color: 'text-white', desc: 'Intelligence reports generated' },
+              { label: 'Last 10 Reports', value: reports.length, color: 'text-white', desc: 'Intelligence reports generated' },
               { label: 'Avg Quality Score', value: avgQuality, color: 'text-green-400', desc: 'Out of 10.0 (5 dimensions)' },
               { label: 'Avg CI Width', value: avgCI, color: 'text-blue-400', desc: '95% confidence interval' },
               { label: 'Multi-Run Reports', value: multiRunReports, color: 'text-purple-400', desc: '3-run CI analysis' },

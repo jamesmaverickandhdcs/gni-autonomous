@@ -292,7 +292,7 @@ export default function ScenariosPage() {
               </div>
               <div className="flex gap-2">
                 {([
-                  { key: 'all', label: 'All Runs' },
+                  { key: 'all', label: 'Last 10 Runs' },
                   { key: 'high', label: 'High+ Risk' },
                   { key: 'critical', label: 'Critical Only' },
                 ] as const).map(({ key, label }) => (
