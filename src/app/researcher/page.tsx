@@ -96,7 +96,7 @@ export default function ResearcherHub() {
               <polyline
                 points={last7.map((r, i) => {
                   const x = (i / (last7.length - 1)) * 400
-                  const y = 60 - ((r.escalation_score || 0) / 10) * 60
+                  const y = 54 - ((r.escalation_score || 0) / 10) * 48
                   return `${x},${y}`
                 }).join(' ')}
                 fill="none"
