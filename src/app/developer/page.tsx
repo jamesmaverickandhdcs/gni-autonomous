@@ -78,7 +78,7 @@ export default function DeveloperPage() {
             <div className="text-xs text-gray-500 mt-1">Autonomy Level</div>
           </div>
           <div className="bg-purple-950 border border-purple-800 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-purple-300">21</div>
+            <div className="text-2xl font-bold text-purple-300">28</div>
             <div className="text-xs text-gray-500 mt-1">API Endpoints</div>
           </div>
         </div>

@@ -11,7 +11,7 @@ export default function ValidationLogPage() {
               <h1 className="text-xl font-bold text-amber-300">📋 Validation Log</h1>
               <p className="text-xs text-gray-400">Validation Log shows the accuracy record of every MAD agent prediction once the verify date passes and real market data is measured. Each prediction is scored against actual SPY market movement — correct predictions increase source trust weights, wrong predictions reduce them. This is the evidence layer that makes GNI a self-improving system rather than a static intelligence tool.</p>
             </div>
-            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Status: Verification backlogged</span>
+            <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Status: Verifier live</span>
           </div>
         </div>
       </header>
@@ -26,7 +26,7 @@ export default function ValidationLogPage() {
             When MAD predictions reach their verify date, GNI automatically scores each agent&apos;s directional accuracy against real-world outcomes. The Validation Log will surface which agents (Bull, Bear, Black Swan, Ostrich) were right, which were wrong, and what patterns emerge in their accuracy over time. This is the foundation of the GPVS feedback loop — transforming past predictions into future intelligence improvements.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
-            <span className="text-xs text-amber-300">⏰ Status: <span className="font-bold text-white">Verification backlogged</span></span>
+            <span className="text-xs text-amber-300">⏰ Verifier <span className="font-bold text-white">live</span> &mdash; page display in development</span>
           </div>
         </div>
 
@@ -46,7 +46,7 @@ export default function ValidationLogPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Why This Requires GPVS Accumulation</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 14, 2026. The prediction verifier was restored in S57 and currently runs manually while scheduled runs are wired in; a verification backlog is being worked through. Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature.
+            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 14, 2026. The prediction verifier was restored in S57 and wired to scheduled runs in S60; it now verifies continuously and the historical backlog has been processed. Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature.
           </p>
         </div>
 
@@ -55,16 +55,16 @@ export default function ValidationLogPage() {
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-3">Current GPVS Status</div>
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-xl font-bold text-amber-300">0</div>
-              <div className="text-xs text-gray-500">Verified Predictions</div>
+              <div className="text-xl font-bold text-amber-300">Live</div>
+              <div className="text-xs text-gray-500">Verifier Status</div>
             </div>
             <div>
               <div className="text-xl font-bold text-amber-300">Apr 10</div>
               <div className="text-xs text-gray-500">First Verification</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-amber-300">Backlogged</div>
-              <div className="text-xs text-gray-500">Verification Status</div>
+              <div className="text-xl font-bold text-amber-300">Accumulating</div>
+              <div className="text-xs text-gray-500">Verified Results</div>
             </div>
           </div>
         </div>

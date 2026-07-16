@@ -138,7 +138,7 @@ export default function ReportsHub() {
               <div className="text-sm font-bold text-amber-200">Validation Log</div>
               <span className="text-xs bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full ml-auto">FUTURE</span>
             </div>
-            <div className="text-xs text-amber-600 mb-2">Status: Verification backlogged</div>
+            <div className="text-xs text-amber-600 mb-2">Status: Verifier live &mdash; display in development</div>
             <p className="text-xs text-gray-500 leading-relaxed">When predictions verify accurately — which agent was right, which was wrong, and what patterns emerge in their accuracy over time. The GPVS scorecard in full detail.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-amber-300 bg-amber-950 border border-amber-800 rounded-lg px-3 py-1.5">Preview →</span>

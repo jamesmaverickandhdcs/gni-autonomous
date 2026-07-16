@@ -109,9 +109,9 @@ export default function MethodologyPage() {
           <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
             {[
               ['Python 3.10+', 'Pipeline scripts', 'main.py, mad_runner.py, monitoring_pipeline.py, adaptive_pipeline.py'],
-              ['Next.js 14 + TypeScript', 'Web app + API routes', '33 pages live on Vercel'],
+              ['Next.js 14 + TypeScript', 'Web app + API routes', '35 pages live on Vercel'],
               ['Groq API', 'LLM inference', 'llama-3.3-70b-versatile — 100K tokens/day free'],
-              ['Supabase', 'PostgreSQL database', '15 tables — reports, predictions, audit_trail, groq_daily_usage...'],
+              ['Supabase', 'PostgreSQL database', '37 tables — reports, predictions, audit_trail, groq_daily_usage...'],
               ['GitHub Actions', 'Cron + CI/CD', '4 workflows — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive'],
               ['Telegram Bot API', 'Alert notifications', 'Sacred completion, CRITICAL escalation, NYSE alerts, divergence'],
               ['Vercel', 'Deployment + CDN', 'Auto-deploy on git push to main'],

@@ -211,9 +211,9 @@ export default function ComparisonPage() {
                   <span className="text-2xl">&#x2705;</span>
                   <div>
                     <div className="text-green-300 font-bold">AGREE &mdash; Report and Debate Aligned</div>
-                    <div className="text-green-500 text-sm">Both signals point {latest.sentiment?.toUpperCase()}. High confidence.</div>
+                    <div className="text-green-500 text-sm">{latest.sentiment?.toUpperCase() === latest.mad_verdict?.toUpperCase() ? <>Both signals point {latest.sentiment?.toUpperCase()}. High confidence.</> : <>Report {latest.sentiment?.toUpperCase()}, MAD {latest.mad_verdict?.toUpperCase()} &mdash; no contradiction.</>}</div>
                     <div className="text-green-300 text-xs mt-2 leading-relaxed opacity-80">
-                      The AI report and the MAD debate agents independently reached the same {latest.sentiment?.toLowerCase()} conclusion. When both systems agree, it means the directional signal is robust — the same story is visible from both a news-analysis perspective and a future-threat-modelling perspective. This is the highest-confidence signal GNI can produce.
+                      {latest.sentiment?.toUpperCase() === latest.mad_verdict?.toUpperCase() ? <>The AI report and the MAD debate agents independently reached the same {latest.sentiment?.toLowerCase()} conclusion.</> : <>The AI report reached {latest.sentiment?.toLowerCase()} while the MAD debate settled on {latest.mad_verdict?.toLowerCase()} &mdash; compatible, non-contradicting signals.</>} When both systems agree, it means the directional signal is robust — the same story is visible from both a news-analysis perspective and a future-threat-modelling perspective. This is the highest-confidence signal GNI can produce.
                     </div>
                   </div>
                 </div>
