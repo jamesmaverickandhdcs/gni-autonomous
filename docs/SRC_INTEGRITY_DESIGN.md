@@ -58,3 +58,9 @@ FT-GAP-A -> SRC-INTEGRITY -> FT-GAP-B -> DET-DEAD). All findings byte-verified S
 R-S70-1: Shared DB state gets shared-route discipline (R-S55-1 kin): any table gaining a new
 writer triggers a WRITERS census — name every function writing each column; two writers with
 different formulas for one column is a design review, not a merge. Audit the seam, not the files.
+
+## EVIDENCE ADDENDUM (Supabase live-state, 2026-07-16)
+- I-3 CONFIRMED: gpvs_total identical across sources (86 current era / 290 fossil era) — global count as per-source stat, live on /health.
+- I-4 CONFIRMED: full case-dup table; divergence example BBC 0.8793 (ema, fresh) vs 1.47 (cred, frozen) = -1.2 vs +4.7 pts nondeterministic.
+- I-8 NEW: writer B frozen since 2026-07-08 05:33:43 (all Title-Case rows one batch instant; lowercase rows fresh thru Jul 15). Called every run (main.py:252) but not landing — silent-exception class. Root-cause trace at ship time. NYT (promoted post-Jul 8) exists only lowercase — consistent.
+- I-9 NEW: fossil graveyard — Middle East Eye/Bloomberg/Fox News/SCMP/Straits Times/The Hindu/Reuters-GN/Stimson etc. still in both tables; /health credibility board TOPPED by departed sources (MEE 0.929, Bloomberg 0.833, Fox News 0.738). Departed sources still receive EMA updates when old predictions verify (stimson fresh Jul 15) — dedupe SQL must also archive-or-purge ex-roster rows, and /health display should filter to live roster.
