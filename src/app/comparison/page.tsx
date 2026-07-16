@@ -317,7 +317,7 @@ export default function ComparisonPage() {
                         : 'bg-gray-900 border-gray-700 text-gray-400 hover:border-gray-500'
                     }`}
                   >
-                    All Runs
+                    Last 10 Runs
                   </button>
                   <button
                     onClick={() => setFilter('disagree')}
