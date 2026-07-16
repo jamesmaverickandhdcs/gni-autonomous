@@ -6,10 +6,14 @@
 # ============================================================
 
 import os
+import sys
 import json
 from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 load_dotenv()
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from analysis.source_weights import norm
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "")
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY", "")
@@ -35,7 +39,10 @@ def calculate_credibility_scores() -> dict:
     3. If the report was accurate (direction_correct_3d=True), credit those sources
     4. Score = gpvs_wins / gpvs_total (with smoothing)
 
-    Returns dict of {source: credibility_score}
+    Returns dict of {norm(source): {"score": float, "wins": int, "total": int}}.
+    wins/total are the REAL per-source counts. They used to be computed here and
+    then discarded, with the caller substituting a GLOBAL outcome count as each
+    source's per-source stat (I-3) — which /health then displayed.
     """
     client = _get_client()
     if not client:
@@ -69,7 +76,10 @@ def calculate_credibility_scores() -> dict:
             articles = client.table("pipeline_articles")                 .select("source")                 .eq("run_id", run_id)                 .eq("stage4_selected", True)                 .execute()
 
             for art in (articles.data or []):
-                source = art["source"]
+                raw_source = art.get("source")
+                if not raw_source:
+                    continue
+                source = norm(raw_source)
                 if source not in source_stats:
                     source_stats[source] = {"wins": 0, "total": 0}
                 source_stats[source]["total"] += 1
@@ -87,7 +97,11 @@ def calculate_credibility_scores() -> dict:
             total = stats["total"]
             # Laplace smoothing: add 1 win and 2 total to avoid 0/0
             score = (wins + 1) / (total + 2)
-            scores[source] = round(score, 3)
+            scores[source] = {
+                "score": round(score, 3),
+                "wins": wins,
+                "total": total,
+            }
 
         return scores
 
@@ -170,7 +184,10 @@ def calculate_topic_scores() -> dict:
                 .execute()
 
             for art in (articles.data or []):
-                source = art["source"]
+                raw_source = art.get("source")
+                if not raw_source:
+                    continue
+                source = norm(raw_source)
 
                 # Topic tracking
                 if source not in source_topics:
@@ -236,57 +253,45 @@ def calculate_topic_scores() -> dict:
 
 def update_credibility_scores() -> bool:
     """
-    Calculate and save credibility scores to source_credibility table.
-    Also updates source_weights table to reflect credibility.
-    Called weekly or on demand.
+    Calculate and save credibility scores to the source_credibility table.
+    Called every 10th pipeline run (main.py) or on demand.
+
+    Writes source_credibility ONLY. The weight column is owned exclusively by
+    the GPVS EMA path in analysis.source_weights (single-writer principle,
+    bridge (a)): this function used to overwrite weight with 0.5 + cred*1.5,
+    a memoryless formula that erased the EMA's learning on whichever run
+    landed last. Credibility is dashboard evidence, not a weight mover — both
+    signals derive from the same GPVS outcomes, so feeding one into the other
+    double-counts the same evidence.
     """
     client = _get_client()
     if not client:
         return False
 
     print("  📊 Calculating source credibility scores...")
-    scores = calculate_credibility_scores()
+    stats = calculate_credibility_scores()
 
-    if not scores:
+    if not stats:
         print("  ⚠️  No scores to update — insufficient GPVS data")
         return False
 
     try:
         now = datetime.now(timezone.utc).isoformat()
 
-        for source, score in scores.items():
-            # Get raw stats for this source
-            outcomes = client.table("prediction_outcomes")                 .select("direction_correct_3d")                 .execute()
-
-            total = sum(1 for o in (outcomes.data or []) if o)
-            wins = round(score * total)
-
+        for source, stat in stats.items():
+            # Real per-source wins/total, straight from the contribution scan
+            # (I-3). No global outcome re-fetch: the old loop refetched the
+            # whole prediction_outcomes table once per source (~51 fetches)
+            # only to store the same global count on every row.
             client.table("source_credibility").upsert({
                 "source": source,
-                "credibility_score": score,
-                "gpvs_wins": wins,
-                "gpvs_total": total,
+                "credibility_score": stat["score"],
+                "gpvs_wins": stat["wins"],
+                "gpvs_total": stat["total"],
                 "last_calculated": now,
             }).execute()
 
-        print(f"  ✅ Credibility scores updated for {len(scores)} sources")
-
-        # Update source_weights based on credibility
-        for source, score in scores.items():
-            # Map credibility (0-1) to weight (0.5-2.0)
-            # 0.5 credibility → weight 0.75 (below average)
-            # 0.75 credibility → weight 1.0 (neutral)
-            # 1.0 credibility → weight 1.5 (highly trusted)
-            new_weight = round(0.5 + (score * 1.5), 2)
-
-            client.table("source_weights").upsert({
-                "source": source,
-                "weight": new_weight,
-                "gpvs_contribution": score,
-                "last_updated": now,
-            }).execute()
-
-        print(f"  ✅ Source weights updated based on credibility")
+        print(f"  ✅ Credibility scores updated for {len(stats)} sources")
 
         # Update topic and location scores
         print("  📍 Calculating per-topic accuracy...")
@@ -327,26 +332,33 @@ def get_credibility_status() -> list:
 
 def seed_initial_credibility() -> bool:
     """
-    Seed source_credibility table with neutral scores for all known sources.
-    Called once on first run.
+    Seed BOTH trust tables from the collector's canonical roster (I-6) at
+    neutral: 0.75 credibility / 1.0 weight. Called on every pipeline run.
+
+    The old hand-maintained 13-source list was a fossil — it had drifted to
+    name sources long since departed (Bloomberg, Wired, Straits Times) while
+    missing ~30 live ones, so most of the roster had no seeded row anywhere.
+    The roster is imported from the collector, never copied, so it cannot
+    drift again.
+
+    INSERT-if-missing only: an existing row carries learned history and is
+    never reset to neutral. The source_weights half is delegated to
+    analysis.source_weights, which owns the weight column — this module does
+    not write that table (single-writer principle, bridge (a)).
     """
     client = _get_client()
     if not client:
         return False
 
     try:
-        existing = client.table("source_credibility").select("source").execute()
-        existing_sources = {r["source"] for r in (existing.data or [])}
+        from analysis.source_weights import get_roster_sources, seed_roster_weights
+        roster = {norm(s) for s in get_roster_sources()}
 
-        known_sources = [
-            "Al Jazeera", "CNN", "Fox News", "BBC", "DW News",
-            "Bloomberg Markets", "Nikkei Asia", "USNI News",
-            "Straits Times", "Eye on the Arctic", "Wired",
-            "MIT Technology Review", "France 24",
-        ]
+        existing = client.table("source_credibility").select("source").execute()
+        existing_sources = {norm(r["source"]) for r in (existing.data or [])}
 
         now = datetime.now(timezone.utc).isoformat()
-        new_sources = [s for s in known_sources if s not in existing_sources]
+        new_sources = sorted(roster - existing_sources)
 
         if new_sources:
             client.table("source_credibility").insert([
@@ -361,6 +373,7 @@ def seed_initial_credibility() -> bool:
             ]).execute()
             print(f"  ✅ Seeded credibility for {len(new_sources)} sources")
 
+        seed_roster_weights(client)
         return True
 
     except Exception as e:
