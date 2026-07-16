@@ -30,7 +30,7 @@ export default function AboutFeedbackPage() {
 
   const swot = {
     strengths: [
-      'Free-forever architecture — .00/month with zero compromise on capability',
+      'Free-forever architecture — $0.00/month with zero compromise on capability',
       'Multi-agent MAD Protocol eliminates single-point-of-failure in threat assessment',
       'GPVS creates an empirical accuracy record — not theoretical claims',
       'Self-improving source weights via EMA — gets smarter every verified prediction',
@@ -147,7 +147,7 @@ export default function AboutFeedbackPage() {
         <div className="bg-gray-900 border border-amber-800 rounded-xl p-6">
           <div className="text-xs text-amber-600 uppercase tracking-wider mb-3">The Feedback Loop Conclusion</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">GNI&apos;s greatest strength is also its greatest research contribution: the feedback loop itself. Most AI systems produce outputs and stop. GNI produces outputs, measures them against reality, and uses that measurement to improve future outputs. This self-correcting mechanism is what separates a static intelligence tool from a genuinely autonomous one.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">The weaknesses identified here are not failures — they are the honest boundaries of what a .00/month system can achieve in Sprint 1. Each weakness maps directly to a Phase 2 improvement on the development roadmap.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">The weaknesses identified here are not failures — they are the honest boundaries of what a $0.00/month system can achieve in Sprint 1. Each weakness maps directly to a Phase 2 improvement on the development roadmap.</p>
         </div>
 
       </main>

@@ -71,7 +71,7 @@ export default function AboutDevopsPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
           <h1 className="text-2xl font-bold text-purple-400">Dev Console — Autonomous Architecture</h1>
-          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the 4 GitHub Actions pipelines to the self-healing heartbeat to the 70-pattern injection security layer. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the .00/month evidence.</p>
+          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the 4 GitHub Actions pipelines to the self-healing heartbeat to the 70-pattern injection security layer. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the $0.00/month evidence.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
@@ -80,7 +80,7 @@ export default function AboutDevopsPage() {
           <div className="text-xs text-purple-400 uppercase tracking-wider mb-3">The Autonomy Philosophy</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { title: '.00/Month Forever', desc: 'Every component uses free tiers: Groq (100K tokens/day), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero vendor lock-in. Zero credit card required. Zero maintenance cost.' },
+              { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (100K tokens/day), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero vendor lock-in. Zero credit card required. Zero maintenance cost.' },
               { title: 'Zero Human Intervention', desc: 'Once deployed, GNI runs 2x daily without any human action. The frequency controller adjusts run intervals based on world escalation score. The adaptive pipeline responds to breaking threats automatically without any trigger from a human.' },
               { title: 'Self-Healing by Design', desc: 'Mission Control monitors 6 health dimensions every 30 minutes. Telegram alerts fire before failures cascade. The heartbeat detects anomalies and triggers corrective pipelines autonomously. The system fixes itself.' },
             ].map(item => (
@@ -97,7 +97,7 @@ export default function AboutDevopsPage() {
 
         {!loading && quota && (
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Live Token Quota — .00/Month Proof</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Live Token Quota — $0.00/Month Proof</div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {[
                 { label: 'Tokens Today (All Accounts)', value: quota.today_tokens?.toLocaleString() || '0', color: 'text-white' },
@@ -155,7 +155,7 @@ export default function AboutDevopsPage() {
 
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
           <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — L7 Autonomy Proof</div>
-          <p className="text-sm text-gray-300 leading-relaxed mb-3">The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at .00/month. This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes.</p>
+          <p className="text-sm text-gray-300 leading-relaxed mb-3">The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes.</p>
           <p className="text-sm text-gray-400 leading-relaxed">The 4-pipeline architecture, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment.</p>
         </div>
 
