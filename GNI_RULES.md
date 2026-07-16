@@ -146,3 +146,10 @@ R-S69-2: Any mid-session fallback substitution ("simpler approach for now") and 
 R-S69-3: Protections-guilty extends to WIRING: a security module's first BEV question
   is "who imports me?" A green self-test on an orphan module is a false positive.
   Run the orphan-import census at every model-change re-audit.
+R-S70-1: Shared DB state gets shared-route discipline (R-S55-1 kin): any table gaining a
+  new writer triggers a WRITERS census -- name every function writing each column. Two
+  writers with different formulas for one column is a design review, not a merge; audit
+  the seam, not the files.
+R-S70-2: Chat-generated docs get a landing gate before first commit: wc -l on disk vs
+  expected, STOP on mismatch. A cat >> to a never-saved path silently creates a stub --
+  the D-8 disease in commit form.
