@@ -369,7 +369,6 @@ SOURCE_TIERS = {
     'Human Rights Watch': 'TIER1',
     'Bellingcat': 'TIER1',
     'EFF Deeplinks': 'TIER1',
-    'The Diplomat': 'TIER1',
     'DW News': 'TIER1',
     'France 24': 'TIER1',
     'The Conversation': 'TIER1',
@@ -384,7 +383,6 @@ SOURCE_TIERS = {
     'New York Times': 'TIER1',
     # TIER2 — Solid credibility
     'Al Jazeera': 'TIER2',
-    'MIT Technology Review': 'TIER2',
     'Krebs on Security': 'TIER2',
     'Rest of World': 'TIER2',
     'Washington Post': 'TIER2',   # reserve source
