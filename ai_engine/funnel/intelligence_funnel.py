@@ -6,7 +6,7 @@ import html
 import unicodedata
 from datetime import datetime
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from analysis.source_weights import get_source_weights
+from analysis.source_weights import get_source_weights, norm
 from matching import kw_match, matched_keywords, any_match
 
 # S66 KEY-MAP: every keyword test below is word-boundary matched via kw_match,
@@ -366,18 +366,23 @@ SOURCE_TIERS = {
     'AP News via Google News': 'STATE',
     # TIER1 — Highest credibility
     'BBC': 'TIER1',
-    'The Economist': 'TIER1',
     'Human Rights Watch': 'TIER1',
     'Bellingcat': 'TIER1',
     'EFF Deeplinks': 'TIER1',
-    'Foreign Policy': 'TIER1',
     'The Diplomat': 'TIER1',
     'DW News': 'TIER1',
     'France 24': 'TIER1',
     'The Conversation': 'TIER1',
+    # R2/R3 S71 — ratified TIER1. Exact roster spellings; all three are
+    # opinion-tier investigative/rights outlets already carrying the roster's
+    # top democracy scores (Crisis Group 92, Amnesty 91, ICIJ 92).
+    'Crisis Group': 'TIER1',
+    'Amnesty International': 'TIER1',
+    'ICIJ': 'TIER1',
+    # PROMOTE-NYT S67/S68 (a95bd67): primary since it took the Stimson slot —
+    # no longer a reserve, and TIER2 understated it.
+    'New York Times': 'TIER1',
     # TIER2 — Solid credibility
-    'Project Syndicate': 'TIER2',
-    'Financial Times': 'TIER2',
     'Al Jazeera': 'TIER2',
     'MIT Technology Review': 'TIER2',
     'Krebs on Security': 'TIER2',
@@ -387,7 +392,6 @@ SOURCE_TIERS = {
     'Mail and Guardian': 'TIER2',  # reserve source
     'The Independent': 'TIER2',    # reserve source
     'Radio Free Europe': 'TIER2',  # reserve source
-    'New York Times': 'TIER2',     # reserve source
     # TIER3 — Specialist / regional (good content, lower editorial baseline)
     # All unlisted sources default to TIER3 (0 pts)
 }
@@ -443,8 +447,11 @@ def _score_article(article: dict) -> tuple[float, str]:
         reasons.append(f"Major region (+5pts): {region_matches[0]}")
 
     # Dynamic source weight bonus (replaces hardcoded credibility)
+    # norm() is the shared key discipline (I-4): the reader must spell a source
+    # exactly the way the writer stored it, or the lookup silently misses and
+    # the source rides the 1.0 default.
     weights = get_source_weights()
-    source_key = article.get('source', '').lower()
+    source_key = norm(article.get('source', ''))
     weight = weights.get(source_key, 1.0)
     weight_bonus = round((weight - 1.0) * 10, 2)  # 1.3 weight = +3pts, 0.9 = -1pt
     if weight_bonus != 0:
