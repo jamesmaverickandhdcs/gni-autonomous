@@ -153,3 +153,9 @@ R-S70-1: Shared DB state gets shared-route discipline (R-S55-1 kin): any table g
 R-S70-2: Chat-generated docs get a landing gate before first commit: wc -l on disk vs
   expected, STOP on mismatch. A cat >> to a never-saved path silently creates a stub --
   the D-8 disease in commit form.
+R-S71-1: Dual-writer dedupe merges by OWNERSHIP, not timestamp: when two writers fought over rows,
+  the owning writer's row wins even when the stomper's is fresher. "Keep freshest" enshrines
+  whoever stomped last. Preview-before-delete is what catches this -- never skip the preview.
+R-S71-2: Census the CLASS, not the named list: a spec that names 4 ghosts gets a sweep of the WHOLE
+  dict against the roster (found 6); a relabel of 4 "Total X" strings gets a sweep for every
+  totality-implying label over a LIMIT query (found 6). The named instances are leads, not the set.
