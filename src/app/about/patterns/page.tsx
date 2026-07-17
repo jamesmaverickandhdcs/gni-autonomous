@@ -30,8 +30,8 @@ export default function AboutPatternsPage() {
     }).catch(() => setError('Failed to load live data.')).finally(() => setLoading(false))
   }, [])
 
-  const acc3d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_3d).length / outcomes.length * 100) : 100
-  const acc7d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_7d).length / outcomes.length * 100) : 100
+  const acc3d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_3d).length / outcomes.length * 100) : null
+  const acc7d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_7d).length / outcomes.length * 100) : null
   const avgQ = runs.length > 0 ? (runs.reduce((a, r) => a + (r.quality_score || 0), 0) / runs.length).toFixed(1) : 'N/A'
 
   return (
@@ -69,8 +69,8 @@ export default function AboutPatternsPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { label: 'Pipeline Runs', value: String(runs.length) + '+', color: 'text-green-400', desc: 'Total runs archived' },
-                { label: '3-Day Accuracy', value: String(acc3d) + '%', color: acc3d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: 'GPVS verified' },
-                { label: '7-Day Accuracy', value: String(acc7d) + '%', color: acc7d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: 'GPVS verified' },
+                { label: '3-Day Accuracy', value: acc3d === null ? 'N/A' : String(acc3d) + '%', color: acc3d === null ? 'text-gray-400' : acc3d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc3d === null ? 'No verified outcomes yet' : 'GPVS verified' },
+                { label: '7-Day Accuracy', value: acc7d === null ? 'N/A' : String(acc7d) + '%', color: acc7d === null ? 'text-gray-400' : acc7d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc7d === null ? 'No verified outcomes yet' : 'GPVS verified' },
                 { label: 'Avg Quality', value: String(avgQ) + '/10', color: 'text-blue-400', desc: 'Pipeline quality score' },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center">
