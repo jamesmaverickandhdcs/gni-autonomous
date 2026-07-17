@@ -53,6 +53,18 @@ MODEL = os.getenv('GROQ_MAD_MODEL',
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
+# ---- GT-5 E-2 (S73): consultant gating ----
+# A consultant reply carrying >= T ungrounded spans is withheld from the agent it
+# coaches. T=3 by ratified design: GT-1 dialect vocabulary is already excluded from
+# hit_count, and shadow data puts storm chatter at ~1-2 -- so 3 is the floor that
+# fires on fabrication without starving agents in a storm. One week of
+# grounding_watch digest observation before considering T=2.
+GROUNDING_GATE_T = 3
+# Neutral stand-in: the round's prompt structure survives the withholding -- the
+# agent still sees its consultant slot, just with no fabricated claim inside it.
+# NEVER a re-prompt (quota 87%, cliff 31d): withholding is the whole remedy.
+GROUNDING_WITHHELD_MARKER = '[consultant reply withheld: ungrounded]'
+
 # COMMIT 2 / Decision B: 3 attempts -- one extra chance, since waiting the real
 # token-reset window (vs the old flat 40s that undershot the ~56s bucket) makes
 # the later attempt actually likely to succeed.
@@ -713,13 +725,43 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     grounding_shadow = {'consultant_hits': [], 'arb_hits': [], 'total': 0}
 
     def _shadow_check(reply, label, bucket):
-        """Run the grounding gate on one reply; never break the pipeline."""
+        """Run the grounding gate on one reply; never break the pipeline.
+
+        Recording is UNCHANGED from S61: every hit still lands in grounding_shadow
+        regardless of what the gate later does with the verdict. Now also returns
+        the non-dialect hit_count so E-2 can act on it, or None if the check could
+        not run (=> caller must fail open).
+        """
         try:
             _g = check_grounding(reply, _grounding_basket, _grounding_whitelist,
                                  location=label)
             grounding_shadow[bucket].extend(_g['hits'])
+            return _g['hit_count']
         except Exception as _ge:
             print('  Grounding gate (shadow) skipped ' + label + ': ' + str(_ge)[:60])
+            return None
+
+    def _gate_consultant(reply, label):
+        """GT-5 E-2: withhold an ungrounded consultant reply from the agent it coaches.
+
+        Returns the text the AGENT should see -- the reply itself, or the neutral
+        marker when the shadow verdict says >= GROUNDING_GATE_T ungrounded spans.
+        The gate acts ON the shadow verdict; it never suppresses the recording of it.
+
+        FAIL-OPEN throughout: an unrunnable check (None) or ANY exception passes the
+        reply through ungated and logs. Starving an agent on a gate bug is worse than
+        one ungrounded reply reaching it -- the save-time scorer and the history
+        filter are still downstream of this.
+        """
+        try:
+            _n = _shadow_check(reply, label, 'consultant_hits')
+            if _n is not None and _n >= GROUNDING_GATE_T:
+                print('  GATED ' + label + ' ' + str(_n) + ' hits')
+                return GROUNDING_WITHHELD_MARKER
+            return reply
+        except Exception as _ge:
+            print('  Grounding gate (E-2) failed open for ' + label + ': ' + str(_ge)[:60])
+            return reply
 
     dominant_pillar = _detect_dominant_pillar(all_articles)
     pillar_instruction = _get_pillar_arb_instruction(dominant_pillar)
@@ -784,11 +826,16 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     c1_ost  = _call_agent(OSTRICH_CONS, r1_cons_ctx + '\n\nCoach Ostrich. Push harder for Round 2.', 250)
     arb_c1 = {'bull': c1_bull, 'bear': c1_bear, 'black_swan': c1_swan, 'ostrich': c1_ost}
 
-    # SEAM 1 (S61 SHADOW): grounding gate on R1 consultant replies (the infection vector).
-    _shadow_check(c1_bull, 'c1_bull', 'consultant_hits')
-    _shadow_check(c1_bear, 'c1_bear', 'consultant_hits')
-    _shadow_check(c1_swan, 'c1_swan', 'consultant_hits')
-    _shadow_check(c1_ost,  'c1_ost',  'consultant_hits')
+    # SEAM 1 (S61 SHADOW + GT-5 E-2 GATE): R1 consultant replies -- the infection vector.
+    # arb_c1 above stays RAW on purpose: it is the public /debate exhibit
+    # (mad_arb_feedbacks) and mad_quality's scoring input. Only arb_c1_gated -- what
+    # the AGENTS are prompted with -- is sanitized. Exhibits public, loop clean.
+    arb_c1_gated = {
+        'bull':       _gate_consultant(c1_bull, 'c1_bull'),
+        'bear':       _gate_consultant(c1_bear, 'c1_bear'),
+        'black_swan': _gate_consultant(c1_swan, 'c1_swan'),
+        'ostrich':    _gate_consultant(c1_ost,  'c1_ost'),
+    }
 
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
@@ -807,22 +854,22 @@ def run_mad_protocol(report: dict, all_articles: list = None,
 
     bull_r2 = _call_agent(BULL,
         bull_ctx + round1_summary
-        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bull', '')
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('bull', '')
         + '\n\nROUND 2: Write a FRESH argument. Address feedback.', 500)
 
     bear_r2 = _call_agent(BEAR,
         bear_ctx + round1_summary
-        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('bear', '')
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('bear', '')
         + '\n\nROUND 2: Respond. Address feedback.', 500)
 
     swan_r2 = _call_agent(SWAN,
         swan_ctx + round1_summary
-        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('black_swan', '')
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('black_swan', '')
         + '\n\nROUND 2: Challenge Bull and Bear. Go deeper on your weak signal.', 500)
 
     ost_r2 = _call_agent(OSTRICH,
         ost_ctx + round1_summary
-        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1.get('ostrich', '')
+        + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('ostrich', '')
         + '\n\nROUND 2: Name who is in denial and the cost.', 500)
 
     round2 = {'bull': bull_r2, 'bear': bear_r2, 'black_swan': swan_r2, 'ostrich': ost_r2}
@@ -851,11 +898,15 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     c2_ost  = _call_agent(OSTRICH_CONS, r2_cons_ctx + '\n\nPush Ostrich to maximum for Round 3 final.', 250)
     arb_c2 = {'bull': c2_bull, 'bear': c2_bear, 'black_swan': c2_swan, 'ostrich': c2_ost}
 
-    # SEAM 2 (S61 SHADOW): grounding gate on R2 consultant replies.
-    _shadow_check(c2_bull, 'c2_bull', 'consultant_hits')
-    _shadow_check(c2_bear, 'c2_bear', 'consultant_hits')
-    _shadow_check(c2_swan, 'c2_swan', 'consultant_hits')
-    _shadow_check(c2_ost,  'c2_ost',  'consultant_hits')
+    # SEAM 2 (S61 SHADOW + GT-5 E-2 GATE): R2 consultant replies -- the last coaching
+    # that reaches an agent before R3, and R3 is what the Arbitrator reads. arb_c2
+    # stays RAW for the exhibit; arb_c2_gated is what the AGENTS see.
+    arb_c2_gated = {
+        'bull':       _gate_consultant(c2_bull, 'c2_bull'),
+        'bear':       _gate_consultant(c2_bear, 'c2_bear'),
+        'black_swan': _gate_consultant(c2_swan, 'c2_swan'),
+        'ostrich':    _gate_consultant(c2_ost,  'c2_ost'),
+    }
 
     print('  Waiting 45s between rounds (Groq rate limit protection)...')
     time.sleep(45)
@@ -878,22 +929,22 @@ def run_mad_protocol(report: dict, all_articles: list = None,
 
     bull_r3 = _call_agent(BULL,
         bull_ctx + round_history
-        + 'FINAL COACHING: ' + arb_c2.get('bull', '')
+        + 'FINAL COACHING: ' + arb_c2_gated.get('bull', '')
         + '\n\nROUND 3 FINAL: Write a FRESH sharpest argument in 5-7 sentences. Changed view?', 600)
 
     bear_r3 = _call_agent(BEAR,
         bear_ctx + round_history
-        + 'FINAL COACHING: ' + arb_c2.get('bear', '')
+        + 'FINAL COACHING: ' + arb_c2_gated.get('bear', '')
         + '\n\nROUND 3 FINAL: Sharpest position in 5-7 sentences. Changed view?', 600)
 
     swan_r3 = _call_agent(SWAN,
         swan_ctx + round_history
-        + 'FINAL COACHING: ' + arb_c2.get('black_swan', '')
+        + 'FINAL COACHING: ' + arb_c2_gated.get('black_swan', '')
         + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching. 5-7 sentences.', 600)
 
     ost_r3 = _call_agent(OSTRICH,
         ost_ctx + round_history
-        + 'FINAL COACHING: ' + arb_c2.get('ostrich', '')
+        + 'FINAL COACHING: ' + arb_c2_gated.get('ostrich', '')
         + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction. 5-7 sentences.', 600)
 
     round3 = {'bull': bull_r3, 'bear': bear_r3, 'black_swan': swan_r3, 'ostrich': ost_r3}
@@ -942,9 +993,16 @@ def run_mad_protocol(report: dict, all_articles: list = None,
 
     arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)
 
-    # SEAM 3 (S61 SHADOW): grounding gate on the Arbitrator's final output. The
-    # W-02 retry machinery lives INSIDE _call_arbitrator; we gate AFTER it returns.
-    # Arbitrator-level hits are the alarm class (fabrication reached the verdict).
+    # SEAM 3 (S61 SHADOW -- OBSERVE/LOG ONLY, ratified): grounding gate on the
+    # Arbitrator's final output. The W-02 retry machinery lives INSIDE
+    # _call_arbitrator; we check AFTER it returns.
+    # DELIBERATELY NOT GATED (GT-5 design): arb output is never withheld or altered.
+    # It is the verdict itself -- withholding it would destroy the run's product,
+    # and there is no downstream consumer to protect (nothing reads it but the JSON
+    # parser). Arbitrator-level hits are the ALARM class: they mean fabrication
+    # already reached the verdict, which is grounding_watch's signal to raise RED,
+    # not something to paper over here. E-2 gates the consultant->agent seam so this
+    # seam has less to alarm about. Return value intentionally ignored.
     _shadow_check(arb_final_raw, 'arb_final', 'arb_hits')
     grounding_shadow['total'] = (len(grounding_shadow['consultant_hits']) +
                                  len(grounding_shadow['arb_hits']))
