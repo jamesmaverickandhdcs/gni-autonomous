@@ -637,8 +637,11 @@ def _escalate_reserve_down(client, src: dict, failing_reserve: str) -> None:
 
 
 def _auto_activate_reserve(client, src: dict, hours_down: float) -> bool:
-    """C3 (flag-gated): pick the top pillar reserve that is not the primary
-    itself, mark the record active, announce. Returns True if activated."""
+    """C3 (flag-gated): pick the highest-priority pillar reserve (roster
+    order = priority, R-S63-1 load-bearing) that is not the primary and is
+    not already actively serving another slot; mark active, announce.
+    All-busy falls back to full pool with a loud DOUBLE-VOICE confession.
+    Returns True if activated. (FT-GAP-B, S74)"""
     if client is None:
         return False
     name = src["name"]
@@ -646,7 +649,25 @@ def _auto_activate_reserve(client, src: dict, hours_down: float) -> bool:
             if r["name"] != name]
     if not pool:
         return False
-    choice = pool[0]
+    # FT-GAP-B (S74): exclude reserves already serving ANOTHER slot --
+    # two dead primaries must not double one reserve's voice (R-S64-3 kin).
+    # Roster order = deliberate priority; NEVER reorder (R-S63-1 webhook).
+    busy = set()
+    try:
+        act = client.table("source_reserves") \
+            .select("reserve_source") \
+            .eq("status", "active") \
+            .neq("primary_source", name) \
+            .execute()
+        busy = {r["reserve_source"] for r in (act.data or [])}
+    except Exception as e:
+        print("  Warning: busy-reserve check failed, using full pool: " + str(e)[:60])
+    avail = [r for r in pool if r["name"] not in busy]
+    if not avail:
+        print("  DOUBLE-VOICE: all " + src.get("pillar", "geo")
+              + " reserves busy -- falling back to full pool (declared, not silent)")
+        avail = pool
+    choice = avail[0]
     try:
         rec = client.table("source_reserves") \
             .select("id") \
