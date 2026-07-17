@@ -30,8 +30,9 @@ export default function ResearchPage() {
     ? (reports.filter(r => r.quality_score > 0).reduce((s, r) => s + r.quality_score, 0) / reports.filter(r => r.quality_score > 0).length).toFixed(2)
     : 'N/A'
 
-  const avgCI = reports.filter(r => r.confidence_interval_width > 0).length > 0
-    ? (reports.filter(r => r.confidence_interval_width > 0).reduce((s, r) => s + r.confidence_interval_width, 0) / reports.filter(r => r.confidence_interval_width > 0).length).toFixed(3)
+  const ciRows = reports.filter(r => r.analysis_runs > 1 && r.confidence_interval_width != null)
+  const avgCI = ciRows.length > 0
+    ? (ciRows.reduce((s, r) => s + r.confidence_interval_width, 0) / ciRows.length).toFixed(3)
     : 'N/A'
 
   const multiRunReports = reports.filter(r => r.analysis_runs > 1).length
@@ -138,14 +139,14 @@ export default function ResearchPage() {
                     </span>
                   </div>
                   <div className="text-center text-blue-400 font-mono">
-                    {r.confidence_interval_width > 0 ? r.confidence_interval_width.toFixed(3) : '—'}
+                    {r.analysis_runs > 1 && r.confidence_interval_width != null ? r.confidence_interval_width.toFixed(3) : '—'}
                   </div>
                   <div className="text-center text-gray-400">{r.analysis_runs || 1}</div>
                 </div>
               ))}
             </div>
             <div className="mt-2 text-xs text-gray-600 leading-relaxed">
-              Quality score requires 3 independent pipeline runs for CI analysis (t-distribution, n=3). Single-run reports show N/A until re-analysed.
+              Quality score requires 3 independent pipeline runs for CI analysis (t-distribution, n=3). Single-run reports show N/A until re-analysed. CI Width 0.000 = full inter-run agreement (score saturation across the 3 temperature runs) - a real measurement, not missing data.
             </div>
           </section>
         )}
