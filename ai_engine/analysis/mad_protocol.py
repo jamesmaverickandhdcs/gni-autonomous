@@ -513,6 +513,30 @@ OSTRICH = (
 )
 
 
+# ---- ONE grounding-whitelist contract (GT-5, S73) ----
+# Strings that are grounded BY CONSTRUCTION, handed to check_grounding as
+# whitelist_extra. Two kinds:
+#   1. the report framing the debate (title / summary / location);
+#   2. the Swan FALLOUT chain headers -- SWAN's prompt above MANDATES that exact
+#      numbered template ("FALLOUT RULE"), so they are scaffolding the model was
+#      ORDERED to emit, not claims it invented. Scoring them as fabrication would
+#      flag every compliant Swan case.
+# Defined here, next to the prompt that mandates it, and imported by every caller
+# (run_mad_protocol's shadow seams + mad_runner's save-time scoring) so there is
+# exactly ONE definition -- a hand-copy per site is how the two drift apart.
+SWAN_FALLOUT_HEADERS = ('Detection Failure', 'Escalation', 'Geopolitical Retaliation')
+
+
+def build_grounding_whitelist(report: dict) -> list:
+    """Grounded-by-construction strings for check_grounding(whitelist_extra=...)."""
+    return [
+        report.get('title', ''),
+        report.get('summary', ''),
+        report.get('location_name', ''),
+        *SWAN_FALLOUT_HEADERS,
+    ]
+
+
 def _consultant(lens_name: str, lens_desc: str, develop_line: str) -> str:
     """Build an equal-rank, same-lens insight-developer consultant prompt.
 
@@ -643,14 +667,10 @@ def run_mad_protocol(report: dict, all_articles: list = None,
 
     # S61 GROUNDING GATE (SHADOW): detect + log only -- zero behaviour change.
     # Basket = every article the debate was grounded in (scored + weak). Whitelist =
-    # report framing the caller supplies (title/summary/location) + Swan FALLOUT
-    # template headers that legitimately recur in Swan output.
+    # the shared build_grounding_whitelist() contract (GT-5 S73) -- mad_runner's
+    # save-time scoring calls the SAME builder, so shadow and save cannot drift.
     _grounding_basket = list(all_articles or []) + list(weak_articles or [])
-    _grounding_whitelist = [
-        report.get('title', ''), report.get('summary', ''),
-        report.get('location_name', ''),
-        'Detection Failure', 'Escalation', 'Geopolitical Retaliation',
-    ]
+    _grounding_whitelist = build_grounding_whitelist(report)
     grounding_shadow = {'consultant_hits': [], 'arb_hits': [], 'total': 0}
 
     def _shadow_check(reply, label, bucket):
