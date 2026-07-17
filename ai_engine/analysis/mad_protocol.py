@@ -290,6 +290,30 @@ def _get_pillar_arb_instruction(pillar: str) -> str:
         )
 
 
+def _grounding_hit_count(grounding, field):
+    """Recorded save-time hit_count for one mad_*_case field, or None if unknown.
+
+    None means 'unscored / unreadable' and the caller INCLUDES the snippet
+    (fail-open). None is returned when: the column is NULL or absent (every row
+    written before GT-5 scoring landed), the value is not a dict, the field key
+    is missing, the per-field entry is malformed, or hit_count is not an integer.
+
+    A malformed or missing value must never starve history: an unscored row is an
+    honest unknown, not a conviction. Only a value we can actually READ and that
+    actually says hit_count > 0 is allowed to drop a snippet.
+    """
+    if not isinstance(grounding, dict):
+        return None
+    entry = grounding.get(field)
+    if not isinstance(entry, dict):
+        return None
+    n = entry.get('hit_count')
+    # bool is a subclass of int -- True must not read as hit_count 1.
+    if isinstance(n, bool) or not isinstance(n, int):
+        return None
+    return n
+
+
 def _get_debate_history() -> dict:
     history = {'bull': [], 'bear': [], 'black_swan': [], 'ostrich': [], 'verdict_trend': ''}
     try:
@@ -300,7 +324,7 @@ def _get_debate_history() -> dict:
             return history
         sb = create_client(url, key)
         result = sb.table('reports') \
-            .select('mad_bull_case,mad_bear_case,mad_black_swan_case,mad_ostrich_case,short_focus_threats,long_shoot_threats,mad_verdict,mad_confidence,created_at') \
+            .select('id,mad_bull_case,mad_bear_case,mad_black_swan_case,mad_ostrich_case,short_focus_threats,long_shoot_threats,mad_verdict,mad_confidence,created_at,mad_grounding_hits') \
             .not_.is_('mad_black_swan_case', 'null') \
             .neq('mad_verdict', 'pending') \
             .order('created_at', desc=True) \
@@ -324,10 +348,25 @@ def _get_debate_history() -> dict:
             history['verdict_trend'] = 'Last ' + str(len(trend_parts)) + ' verdicts: ' + ' | '.join(trend_parts) + streak_note
         for row in rows[:3]:
             d = row.get('created_at', '')[:10]
+            # GT-5 E-1b: per-row save-time grounding verdicts (NULL on pre-GT-5 rows).
+            _grounding = row.get('mad_grounding_hits')
+            _rid = row.get('id', '')
             for agent in ['bull', 'bear', 'black_swan', 'ostrich']:
                 key_name = 'mad_' + agent + '_case'
-                if row.get(key_name):
-                    history[agent].append(f"[{d}] {row[key_name][:150]}")
+                if not row.get(key_name):
+                    continue
+                # GT-5 E-1b -- break the recurrence loop at the point of re-entry.
+                # A case that scored ungrounded when it was SAVED is exactly the
+                # text that returns as "prior authority" and gets repeated. Drop
+                # the snippet WHOLE: masking would leave ellipsis rubble inside a
+                # [:150] window, which reads to an agent as garbage rather than as
+                # absence. Unscored/unreadable rows fall through and are included.
+                _n = _grounding_hit_count(_grounding, key_name)
+                if _n is not None and _n > 0:
+                    print('  HISTORY-SKIP ' + key_name + ' ' + str(_n)
+                          + ' hits (report ' + str(_rid) + ')')
+                    continue
+                history[agent].append(f"[{d}] {row[key_name][:150]}")
     except Exception as e:
         print('  Warning: debate history: ' + str(e)[:60])
     return history
