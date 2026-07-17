@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     ])
     const runs = runsRes.data || []
     const reports = reportsRes.data || []
-    const weights = weightsRes.data || []
+    const allWeights = weightsRes.data || []
     // Live roster = every source named by the most recent health run. One run's
     // rows all share a single run_at (save_source_counts stamps it once), so the
     // newest batch is a complete roster snapshot, not a partial one.
@@ -58,6 +58,11 @@ export async function GET(request: NextRequest) {
     const credibility = liveRoster.size > 0
       ? allCredibility.filter(r => liveRoster.has(normSource(r.source)))
       : allCredibility
+    // HEALTH-W: weights board gets the same live-roster filter as the cred board
+    // (C3 sibling). Same fail-open rule: unknowable roster serves unfiltered.
+    const weights = liveRoster.size > 0
+      ? allWeights.filter(r => liveRoster.has(normSource(r.source)))
+      : allWeights
     const prompts = promptsRes.data || []
     const alerts = alertsRes.data || []
     const freqLog = freqRes.data || []
