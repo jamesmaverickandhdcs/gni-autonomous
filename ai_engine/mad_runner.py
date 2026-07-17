@@ -135,6 +135,58 @@ def _fetch_run_id_for_report(client, report_id):
     return None
 
 
+# ============================================================
+# GT-5 E-1a (S73) -- save-time grounding scoring.
+# The fabrication loop is: save -> history -> prior authority -> repeat.
+# _get_debate_history reads reports.mad_*_case, so an ungrounded case saved
+# today comes back tomorrow as prior authority and the Arbitrator repeats it.
+# Scoring HERE -- at the real write site, on the exact strings being written
+# (post-_validate_mad_output) -- is what lets COMMIT 2 skip a poisoned snippet
+# at read time. Detect-only: no text altered, no other field touched.
+# ============================================================
+_MAD_CASE_FIELDS = ('mad_bull_case', 'mad_bear_case',
+                    'mad_black_swan_case', 'mad_ostrich_case')
+
+
+def _score_mad_grounding(report: dict, mad_result: dict,
+                         scored_arts: list, weak_arts: list):
+    """Score each mad_*_case against the basket the debate was grounded in.
+
+    Returns {field: {'hit_count': n, 'hits': [...]}}, or None on ANY failure.
+
+    FAIL-OPEN BY CONTRACT: None means the caller writes no column value at all,
+    leaving mad_grounding_hits NULL. NULL reads downstream as 'unscored / honest
+    unknown', never as 'scored clean' -- so a scoring failure can never silently
+    certify a fabricated case as grounded.
+    """
+    try:
+        from analysis.mad_grounding_gate import check_grounding
+        from analysis.mad_protocol import build_grounding_whitelist
+        # Same basket AND same whitelist the debate's own shadow seams used.
+        # Basket: scored pool + Swan's weak-signal pool. Whitelist: the shared
+        # build_grounding_whitelist() contract -- NOT a hand-copy, so a change to
+        # the Swan FALLOUT template can never leave save-time scoring behind
+        # flagging every compliant Swan case as fabrication.
+        basket = list(scored_arts or []) + list(weak_arts or [])
+        whitelist = build_grounding_whitelist(report)
+        hits = {}
+        for field in _MAD_CASE_FIELDS:
+            text = mad_result.get(field, '') or ''
+            agent = field[len('mad_'):-len('_case')]
+            _g = check_grounding(text, basket, whitelist, location='save_' + agent)
+            hits[field] = {'hit_count': _g['hit_count'], 'hits': _g['hits']}
+        _total = sum(v['hit_count'] for v in hits.values())
+        print('  GT-5 save-time grounding: '
+              + ', '.join(f.replace('mad_', '').replace('_case', '')
+                          + '=' + str(hits[f]['hit_count']) for f in _MAD_CASE_FIELDS)
+              + ' (total ' + str(_total) + ' hit(s))')
+        return hits
+    except Exception as e:
+        print('  Warning: save-time grounding scoring failed -- fail-open, '
+              'mad_grounding_hits left unscored: ' + str(e)[:80])
+        return None
+
+
 def _update_report_with_mad(client, report_id, mad_result):
     """Update the existing report row with MAD fields."""
     update_fields = {
@@ -163,6 +215,13 @@ def _update_report_with_mad(client, report_id, mad_result):
         'consensus_path':            mad_result.get('consensus_path', ''),
         'mad_risk_case':             mad_result.get('mad_risk_case', ''),
     }
+    # GT-5 E-1a: additive jsonb. Key ABSENT when scoring failed or did not run --
+    # an omitted key leaves the column NULL (= unscored), whereas writing an
+    # explicit null would look identical to a real 'no hits' result. Never claim
+    # 'scored clean' on a scoring failure.
+    _grounding = mad_result.get('mad_grounding_hits')
+    if _grounding is not None:
+        update_fields['mad_grounding_hits'] = _grounding
     try:
         client.table('reports').update(update_fields).eq('id', report_id).execute()
         print('  OK Report updated: verdict=' + update_fields['mad_verdict'] +
@@ -511,6 +570,13 @@ def run_mad_pipeline():
 
     debate_fields = _build_debate_summary(mad_result)
     mad_result.update(debate_fields)
+
+    # GT-5 E-1a: score the exact case strings about to be written, with the
+    # debate's own basket still in hand. Runs regardless of mad_succeeded -- a
+    # failed-Arbitrator run still writes agent cases that history will read back.
+    _grounding_hits = _score_mad_grounding(report, mad_result, scored_arts, weak_arts)
+    if _grounding_hits is not None:
+        mad_result['mad_grounding_hits'] = _grounding_hits
 
     print('\n?? Step 4: Updating report with MAD fields...')
     success = _update_report_with_mad(client, report_id, mad_result)
