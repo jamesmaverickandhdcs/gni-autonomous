@@ -159,3 +159,7 @@ R-S71-1: Dual-writer dedupe merges by OWNERSHIP, not timestamp: when two writers
 R-S71-2: Census the CLASS, not the named list: a spec that names 4 ghosts gets a sweep of the WHOLE
   dict against the roster (found 6); a relabel of 4 "Total X" strings gets a sweep for every
   totality-implying label over a LIMIT query (found 6). The named instances are leads, not the set.
+
+R-S72-1: Multi-line patch anchors join on the file's DETECTED newline ('\r\n' if '\r\n' in d
+  else '\n'); an LF-joined anchor against a CRLF working copy counts 0 and dies clean but wastes
+  the round. Single-line anchors are immune. Print NEWLINE=%r before asserting.
