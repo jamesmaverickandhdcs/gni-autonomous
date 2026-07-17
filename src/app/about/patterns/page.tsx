@@ -5,9 +5,7 @@ import { useEffect, useState } from 'react'
 interface PipelineRun {
   id: string
   created_at: string
-  escalation_score: number
-  sentiment: string
-  quality_score: number
+  reports: { escalation_score: number | null; quality_score: number | null; sentiment: string | null } | null
 }
 interface Outcome {
   direction_correct_3d: boolean
@@ -32,7 +30,8 @@ export default function AboutPatternsPage() {
 
   const acc3d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_3d).length / outcomes.length * 100) : null
   const acc7d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_7d).length / outcomes.length * 100) : null
-  const avgQ = runs.length > 0 ? (runs.reduce((a, r) => a + (r.quality_score || 0), 0) / runs.length).toFixed(1) : 'N/A'
+  const qScores = runs.map(r => r.reports?.quality_score).filter((q): q is number => typeof q === 'number')
+  const avgQ = qScores.length > 0 ? (qScores.reduce((a, q) => a + q, 0) / qScores.length).toFixed(1) : null
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -71,7 +70,7 @@ export default function AboutPatternsPage() {
                 { label: 'Pipeline Runs', value: String(runs.length) + '+', color: 'text-green-400', desc: 'Total runs archived' },
                 { label: '3-Day Accuracy', value: acc3d === null ? 'N/A' : String(acc3d) + '%', color: acc3d === null ? 'text-gray-400' : acc3d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc3d === null ? 'No verified outcomes yet' : 'GPVS verified' },
                 { label: '7-Day Accuracy', value: acc7d === null ? 'N/A' : String(acc7d) + '%', color: acc7d === null ? 'text-gray-400' : acc7d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc7d === null ? 'No verified outcomes yet' : 'GPVS verified' },
-                { label: 'Avg Quality', value: String(avgQ) + '/10', color: 'text-blue-400', desc: 'Pipeline quality score' },
+                { label: 'Avg Quality', value: avgQ === null ? 'N/A' : avgQ + '/10', color: avgQ === null ? 'text-gray-400' : 'text-blue-400', desc: avgQ === null ? 'No scored runs yet' : 'Pipeline quality score' },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center">
                   <div className={"text-3xl font-bold mb-1 " + item.color}>{item.value}</div>
@@ -90,10 +89,10 @@ export default function AboutPatternsPage() {
                       <div className="text-xs text-gray-500 w-6">{i + 1}</div>
                       <div className="text-xs text-gray-400 w-36 shrink-0">{new Date(run.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
                       <div className="flex-1">
-                        <span className={"text-xs px-2 py-0.5 rounded " + (run.sentiment?.toLowerCase() === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-green-900 text-green-300')}>{run.sentiment}</span>
+                        <span className={"text-xs px-2 py-0.5 rounded " + (run.reports?.sentiment ? (run.reports.sentiment.toLowerCase() === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-green-900 text-green-300') : 'bg-gray-700 text-gray-500')}>{run.reports?.sentiment || 'N/A'}</span>
                       </div>
-                      <div className="text-xs text-gray-400">ESC: {run.escalation_score?.toFixed(1)}/10</div>
-                      <div className="text-xs text-gray-400">Q: {run.quality_score?.toFixed(1) || 'N/A'}</div>
+                      <div className="text-xs text-gray-400">ESC: {run.reports?.escalation_score != null ? run.reports.escalation_score.toFixed(1) + '/10' : 'N/A'}</div>
+                      <div className="text-xs text-gray-400">Q: {run.reports?.quality_score?.toFixed(1) || 'N/A'}</div>
                     </div>
                   ))}
                 </div>
