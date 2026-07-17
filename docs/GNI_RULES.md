@@ -180,3 +180,13 @@ R-S74-2: A frontend interface declaring DB fields is a HYPOTHESIS -- verify ever
 R-S74-3: Certifying shipped code via CI logs starts at the run's CHECKOUT SHA -- a missing
   feature line proves nothing until you know which commit executed. (Morning NULL was
   pre-GT5 state, not a failed seam.)
+
+R-S75-1: Counting items in a code literal (pattern lists, configs) is an AST job, never a
+  regex-over-text job -- regex stops at the first nested bracket and censors the count.
+  (Funnel patterns: regex said 16, AST said 81; the public claim was true all along.)
+R-S75-2: A grep hit showing ONE condition of a chained query/filter is not the filter --
+  read the full call site before classifying a lead. (GRAPH-S2 false alarm: the .eq
+  stage2 line had two conjoined siblings just above it.)
+R-S75-3: When a sequential funnel persists per-stage flags with default-True 'not evaluated'
+  semantics, every aggregate over the trace must conjoin ALL prior stage flags --
+  counting one flag alone reports the default, not the funnel. (TRANS-COUNT: 360 > 262.)
