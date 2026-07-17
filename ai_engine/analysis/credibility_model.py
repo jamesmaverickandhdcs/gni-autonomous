@@ -333,7 +333,7 @@ def get_credibility_status() -> list:
 def seed_initial_credibility() -> bool:
     """
     Seed BOTH trust tables from the collector's canonical roster (I-6) at
-    neutral: 0.75 credibility / 1.0 weight. Called on every pipeline run.
+    neutral: 0.5 credibility (Laplace prior at 0/0) / 1.0 weight. Called on every pipeline run.
 
     The old hand-maintained 13-source list was a fossil — it had drifted to
     name sources long since departed (Bloomberg, Wired, Straits Times) while
@@ -364,7 +364,7 @@ def seed_initial_credibility() -> bool:
             client.table("source_credibility").insert([
                 {
                     "source": s,
-                    "credibility_score": 0.75,
+                    "credibility_score": 0.5,
                     "gpvs_wins": 0,
                     "gpvs_total": 0,
                     "last_calculated": now,
