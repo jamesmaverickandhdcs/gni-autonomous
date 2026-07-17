@@ -115,3 +115,17 @@ grep -rn "Fox News" ai_engine/ --include="*.py" | head -5
   fix = graveyard purge SQL + roster-filtered display. L762 tuple = test fixture, harmless.
 - S70 morning: D-9 dead, F4 paid, Fox World lineage closed (60, ritual satisfied),
   I-8 (writer B silent-dead since Jul 8) + I-9 (fossil graveyard) added to integrity scope.
+## S74 STATUS APPENDS (2026-07-17)
+- D-11 BORN: escalation_scorer recalibration (June Option B) never executed -- deferred
+  half laundered itself (R-S69-2 disease, no queue row existed). Evidence: 109/110 scored
+  reports = 10.0, lone 5.0 is the PHI-003 gate's single firing in 17 calm-sentiment
+  opportunities (sentiment 93 Bearish / 12 Neutral / 5 Bullish -- NOT pinned).
+  Saturation is 3-LAYER: base caps (5+5+4=14 vs cap 10), diversity bonus guaranteed
+  by S39 14/4/4 quota, CRITICAL_COMBOS fire near-daily (hormuz+iran=+3) which also
+  mutes the gate's combo_bonus<3 condition. score_breakdown not persisted to reports,
+  so combo theory unverifiable by SQL -- B design must add persistence.
+  Feeds: frequency controller, CRITICAL alerts (>8 = always true), escalation_level,
+  historical_correlations.avg_escalation_score. Architectural -> SWOT-gated session,
+  POST-Groq-cliff (keyword-deterministic, not model-coupled; August belongs to cliff).
+- D-9 re-verified at new path docs/GNI_RULES.md after S74 move: 1/1/1, stays dead.
+- D-10 (Mar 23 staging checker): still UNKNOWN, likely extinct -- untouched this session.
