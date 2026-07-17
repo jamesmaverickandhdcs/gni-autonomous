@@ -163,3 +163,10 @@ R-S71-2: Census the CLASS, not the named list: a spec that names 4 ghosts gets a
 R-S72-1: Multi-line patch anchors join on the file's DETECTED newline ('\r\n' if '\r\n' in d
   else '\n'); an LF-joined anchor against a CRLF working copy counts 0 and dies clean but wastes
   the round. Single-line anchors are immune. Print NEWLINE=%r before asserting.
+
+R-S73-1: One semantic contract = ONE definition. When two sites need the same list/whitelist/
+  threshold, extract a shared builder placed next to its source of truth and import it --
+  hand-copies drift silently and the drift ships as divergent behavior.
+R-S73-2: Before gating/sanitizing a value in place, census ALL its consumers first. A value
+  feeding both a feedback loop and a public exhibit/metric gets a GATED COPY for the loop;
+  the raw original stays for everything else. In-place gating erases exhibits silently.
