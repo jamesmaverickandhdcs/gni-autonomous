@@ -170,3 +170,13 @@ R-S73-1: One semantic contract = ONE definition. When two sites need the same li
 R-S73-2: Before gating/sanitizing a value in place, census ALL its consumers first. A value
   feeding both a feedback loop and a public exhibit/metric gets a GATED COPY for the loop;
   the raw original stays for everything else. In-place gating erases exhibits silently.
+
+R-S74-1: Registry appends assert ID-uniqueness against FILE BYTES before writing -- the next
+  free ID is a read result, never a memory. (D-10 collision: assert caught a duplicate the
+  handoff-informed guess would have shipped.)
+R-S74-2: A frontend interface declaring DB fields is a HYPOTHESIS -- verify every field against
+  information_schema before trusting any page's type. (F23: three phantom fields rendered
+  fossils for weeks; the March sprint doc warned this verbatim.)
+R-S74-3: Certifying shipped code via CI logs starts at the run's CHECKOUT SHA -- a missing
+  feature line proves nothing until you know which commit executed. (Morning NULL was
+  pre-GT5 state, not a failed seam.)
