@@ -13,14 +13,14 @@ export async function GET(request: NextRequest) {
   const authError = validateApiKey(request)
   if (authError) return authError
   try {
-    const { data, error } = await supabase
+    const { data, error, count } = await supabase
       .from('pipeline_runs')
-      .select('*, reports(escalation_score, quality_score, sentiment)')
+      .select('*, reports(escalation_score, quality_score, sentiment)', { count: 'exact' })
       .eq('pipeline_type', 'main')
       .order('run_at', { ascending: false })
       .limit(200)
     if (error) throw error
-    return NextResponse.json({ runs: data }, { headers: { 'Cache-Control': 'no-store' } })
+    return NextResponse.json({ runs: data, total: count }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json({ error: 'Failed to fetch pipeline runs' }, { status: 500 })
   }

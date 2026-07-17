@@ -15,6 +15,7 @@ interface Outcome {
 export default function AboutPatternsPage() {
   const [runs, setRuns] = useState<PipelineRun[]>([])
   const [outcomes, setOutcomes] = useState<Outcome[]>([])
+  const [totalRuns, setTotalRuns] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -24,6 +25,7 @@ export default function AboutPatternsPage() {
       fetch('/api/prediction-outcomes', { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json()),
     ]).then(([runsData, outcomesData]) => {
       setRuns((runsData.runs || []).slice(0, 7))
+      setTotalRuns(typeof runsData.total === 'number' ? runsData.total : null)
       setOutcomes(outcomesData.outcomes || [])
     }).catch(() => setError('Failed to load live data.')).finally(() => setLoading(false))
   }, [])
@@ -67,7 +69,7 @@ export default function AboutPatternsPage() {
           <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
-                { label: 'Pipeline Runs', value: String(runs.length) + '+', color: 'text-green-400', desc: 'Total runs archived' },
+                { label: 'Pipeline Runs', value: totalRuns === null ? String(runs.length) + '+' : String(totalRuns), color: 'text-green-400', desc: 'Total runs archived' },
                 { label: '3-Day Accuracy', value: acc3d === null ? 'N/A' : String(acc3d) + '%', color: acc3d === null ? 'text-gray-400' : acc3d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc3d === null ? 'No verified outcomes yet' : 'GPVS verified' },
                 { label: '7-Day Accuracy', value: acc7d === null ? 'N/A' : String(acc7d) + '%', color: acc7d === null ? 'text-gray-400' : acc7d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc7d === null ? 'No verified outcomes yet' : 'GPVS verified' },
                 { label: 'Avg Quality', value: avgQ === null ? 'N/A' : avgQ + '/10', color: avgQ === null ? 'text-gray-400' : 'text-blue-400', desc: avgQ === null ? 'No scored runs yet' : 'Pipeline quality score' },
