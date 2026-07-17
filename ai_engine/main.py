@@ -174,7 +174,7 @@ def run_pipeline():
         articles_after_funnel = len(top_articles)
 
         total_after_relevance = len([a for a in trace if a.get("stage1_passed")])
-        total_after_dedup = len([a for a in trace if a.get("stage2_passed")])
+        total_after_dedup = len([a for a in trace if a.get("stage1_passed") and a.get("stage1b_passed", True) and a.get("stage2_passed")])
 
         if articles_after_funnel < 3:
             raise Exception(f"Too few after funnel: {articles_after_funnel}")
