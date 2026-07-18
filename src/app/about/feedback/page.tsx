@@ -34,7 +34,7 @@ export default function AboutFeedbackPage() {
       'Multi-agent MAD Protocol eliminates single-point-of-failure in threat assessment',
       'GPVS creates an empirical accuracy record — not theoretical claims',
       'Self-improving source weights via EMA — gets smarter every verified prediction',
-      '70-pattern injection detection layer — adversarially robust pipeline',
+      'Layered injection detection with NFKC normalization and sanitization — adversarially robust pipeline',
       'L7 autonomous operation — zero human intervention required after deployment',
     ],
     weaknesses: [
@@ -58,7 +58,7 @@ export default function AboutFeedbackPage() {
       'Geopolitical escalation exceeding Groq quota ceiling could cause analysis gaps during crises',
       'RSS feed quality degradation if news sources change their feed structure or paywall content',
       'Market regime change could break GPVS calibration (prolonged low-volatility environment)',
-      'Adversarial prompt injection evolving faster than the 70-pattern detection layer',
+      'Adversarial prompt injection evolving faster than the pattern-based detection layer',
       'Vercel free-tier bandwidth limits under high-traffic scenarios',
     ]
   }
