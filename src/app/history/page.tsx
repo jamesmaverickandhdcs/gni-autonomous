@@ -126,7 +126,7 @@ function GpvsTimelineChart({ entries }: { entries: GpvsTimelineEntry[] }) {
   return (
     <div className='bg-gray-900 border border-gray-700 rounded-xl p-5 mb-6'>
       <div className='text-xs text-gray-500 uppercase tracking-wider mb-3'>
-        📈 GPVS Accuracy Timeline — {entries.length} verified predictions
+        📈 GPVS Accuracy Timeline — {entries.length} verified report outcomes
       </div>
       <div className='flex items-end gap-1 h-24'>
         {entries.map((e, i) => {

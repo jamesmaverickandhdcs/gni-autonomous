@@ -53,8 +53,8 @@ export default function PredictionsPage() {
           <a href="/reports" className="inline-flex items-center gap-1.5 bg-amber-900 hover:bg-amber-700 border border-amber-700 text-amber-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">← Feedback Loop</a>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-white">GPVS Predictions</h1>
-              <p className="text-sm text-gray-400">GNI Prediction Validation Standard — all predictions with verify dates</p>
+              <h1 className="text-2xl font-bold text-white">MAD Debate Predictions</h1>
+              <p className="text-sm text-gray-400">MAD debate risk calls — each flagged threat verified against market movement (materialized = market fell 2% or more in its verify window)</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3 mt-4">
@@ -122,7 +122,7 @@ export default function PredictionsPage() {
                     <span>Verify by: <span className="text-yellow-400">{p.verify_by ? new Date(p.verify_by).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD'}</span></span>
                     {p.verified_at && p.accurate !== null && (
                       <span className={`font-bold ${p.accurate === true ? 'text-green-400' : 'text-red-400'}`}>
-                        {p.accurate === true ? '✅ ACCURATE' : '❌ INACCURATE'}
+                        {p.accurate === true ? '✅ MATERIALIZED' : '❌ DID NOT MATERIALIZE'}
                       </span>
                     )}
                     {!p.verified_at && (
