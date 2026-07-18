@@ -171,7 +171,7 @@ export default function AboutPage() {
             <a href="/about/devops" className="bg-purple-950 border border-purple-800 hover:border-purple-600 rounded-xl p-5 transition-colors group">
               <div className="text-lg font-bold text-purple-400 mb-1 group-hover:text-purple-300">Dev Console</div>
               <div className="text-xs text-purple-600 uppercase tracking-wider mb-2">Autonomous Architecture</div>
-              <p className="text-xs text-gray-400 leading-relaxed">How GNI runs itself. All 4 GitHub Actions pipelines, the self-healing heartbeat, the 70-pattern security layer, and live token quota data proving $0.00/month L7 autonomous operation.</p>
+              <p className="text-xs text-gray-400 leading-relaxed">How GNI runs itself. All 4 GitHub Actions pipelines, the self-healing heartbeat, the 81-pattern security layer, and live token quota data proving $0.00/month L7 autonomous operation.</p>
               <div className="mt-3 text-xs text-purple-500 font-bold">View Architecture --&gt;</div>
             </a>
           </div>
