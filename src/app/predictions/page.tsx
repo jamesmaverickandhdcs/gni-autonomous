@@ -134,10 +134,10 @@ export default function PredictionsPage() {
             </div>
 
             <div className="mt-6 bg-gray-900 border border-gray-700 rounded-xl p-4 text-xs text-gray-400">
-              <span className="text-white font-bold">How GPVS works: </span>
+              <span className="text-white font-bold">How debate verification works: </span>
               Every MAD debate generates short (7d), medium (30d), and long (180d) horizon predictions.
-              After the verify date passes, actual SPY market movement is compared to the prediction direction.
-              Correct predictions increase source trust weights. Wrong predictions reduce them.
+              After the verify date passes, actual SPY movement decides the verdict: a fall of 2% or more
+              means the flagged threat materialized (accurate); a move staying above -1% means it did not; between is inconclusive.
               Earliest verification: April 10, 2026.
             </div>
           </>
@@ -155,7 +155,7 @@ export default function PredictionsPage() {
       </div>
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          GNI Autonomous | GPVS Predictions | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
+          GNI Autonomous | MAD Debate Predictions | Higher Diploma in Computer Science | Spring University Myanmar (SUM)
         </div>
       </footer>
     </div>
