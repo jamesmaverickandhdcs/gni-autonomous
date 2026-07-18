@@ -74,7 +74,7 @@ export default function AboutPatternsPage() {
                 { label: 'Pipeline Runs', value: totalRuns === null ? String(runs.length) + '+' : String(totalRuns), color: 'text-green-400', desc: 'Total runs archived' },
                 { label: '3-Day Accuracy', value: acc3d === null ? 'N/A' : String(acc3d) + '%', color: acc3d === null ? 'text-gray-400' : acc3d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc3d === null ? 'No verified outcomes yet' : 'GPVS verified' },
                 { label: '7-Day Accuracy', value: acc7d === null ? 'N/A' : String(acc7d) + '%', color: acc7d === null ? 'text-gray-400' : acc7d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc7d === null ? 'No verified outcomes yet' : 'GPVS verified' },
-                { label: 'Avg Quality', value: avgQ === null ? 'N/A' : avgQ + '/10', color: avgQ === null ? 'text-gray-400' : 'text-blue-400', desc: avgQ === null ? 'No scored runs yet' : 'Pipeline quality score' },
+                { label: 'Avg Quality (Last 7 Runs)', value: avgQ === null ? 'N/A' : avgQ + '/10', color: avgQ === null ? 'text-gray-400' : 'text-blue-400', desc: avgQ === null ? 'No scored runs yet' : 'Quality score, last 7 runs' },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center">
                   <div className={"text-3xl font-bold mb-1 " + item.color}>{item.value}</div>
