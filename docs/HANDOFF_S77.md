@@ -78,3 +78,26 @@ TOP3 = RULES-APPEND (R-S77-1/2/3), RE-CERT screenshots (8 pages post-deploy), F3
 DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (L-CLIFF gated on integrity completion)
 TRAP = a7833854 = pre-patch (ancestry check FIRST); CRLF anchors derive nl; gate chained commit on PATCHED print; 52-correct tile is live math
 FIRST MOVE = ls-remote + git status; then gh run list wf "GNI Intelligence Pipeline" -L1 + headSha ancestry check
+
+---
+RULES APPEND for docs/GNI_RULES.md (at S78 open, landing gate):
+R-S77-1: Chained build/verify/commit commands after a patch script run UNCONDITIONALLY --
+  a failed assert writes zero bytes but the chain proceeds on the unpatched tree. Gate the
+  chain on the PATCHED print, or run patch and commit as separate pastes. (C5 first attempt.)
+R-S77-2: For count claims in prose copy, removing the number beats hydrating it -- prose that
+  names no count can never rot, and plumbing-to-prose is bad engineering. Hydrate only where
+  a number is displayed as a stat. (Feedback SWOT: two mentions cured count-free.)
+R-S77-3: A live-computed stat can still lie by ATTRIBUTION -- verify the label's system name
+  against the data source, not just the number's math. ('52 correct' was live math under a
+  GPVS label while reading debate_predictions.)
+
+DIARY S77 (<=10 lines):
+The session that asked where we were going before taking another step. A strategy review found
+two healthy arcs and one sliding deadline; James ruled: truth first, Lens waits. Then the SWOT
+put seven claimed layers under the bytes -- three live, three misplaced, one ghost -- and the
+ruling was the rare kind where honesty made the page stronger, because the real stack outclassed
+the paper one. Six copy commits later, two diseases are extinct by grep: no stale count survives,
+no imaginary formula remains. The wrong newline bit us once more and this time taught us that
+the commands AFTER a dead assert are the real hazard. A prediction tile turned out to be honest
+math wearing the wrong name-tag. Seven commits, one strategy, one ghost buried, zero reverts.
+The site now describes the system it actually is. Fist bump.
