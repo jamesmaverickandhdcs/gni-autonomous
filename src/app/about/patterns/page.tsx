@@ -8,8 +8,8 @@ interface PipelineRun {
   reports: { escalation_score: number | null; quality_score: number | null; sentiment: string | null } | null
 }
 interface Outcome {
-  direction_correct_3d: boolean
-  direction_correct_7d: boolean
+  direction_correct_3d: boolean | null
+  direction_correct_7d: boolean | null
 }
 
 export default function AboutPatternsPage() {
@@ -30,8 +30,10 @@ export default function AboutPatternsPage() {
     }).catch(() => setError('Failed to load live data.')).finally(() => setLoading(false))
   }, [])
 
-  const acc3d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_3d).length / outcomes.length * 100) : null
-  const acc7d = outcomes.length > 0 ? Math.round(outcomes.filter(o => o.direction_correct_7d).length / outcomes.length * 100) : null
+  const valid3d = outcomes.filter(o => o.direction_correct_3d != null)
+  const acc3d = valid3d.length > 0 ? Math.round(valid3d.filter(o => o.direction_correct_3d).length / valid3d.length * 100) : null
+  const valid7d = outcomes.filter(o => o.direction_correct_7d != null)
+  const acc7d = valid7d.length > 0 ? Math.round(valid7d.filter(o => o.direction_correct_7d).length / valid7d.length * 100) : null
   const qScores = runs.map(r => r.reports?.quality_score).filter((q): q is number => typeof q === 'number')
   const avgQ = qScores.length > 0 ? (qScores.reduce((a, q) => a + q, 0) / qScores.length).toFixed(1) : null
 
