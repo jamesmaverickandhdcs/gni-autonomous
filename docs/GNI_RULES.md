@@ -190,3 +190,7 @@ R-S75-2: A grep hit showing ONE condition of a chained query/filter is not the f
 R-S75-3: When a sequential funnel persists per-stage flags with default-True 'not evaluated'
   semantics, every aggregate over the trace must conjoin ALL prior stage flags --
   counting one flag alone reports the default, not the funnel. (TRANS-COUNT: 360 > 262.)
+
+R-S76-1: Multi-line patch anchors must derive the newline from the target file's own bytes (nl = CRLF if in file else LF) -- hardcoded \n silently matches zero on CRLF working copies. Single-line anchors are immune. (C1 first attempt: a1 count 0, zero bytes written.)
+R-S76-2: A handoff oracle spec must record the exact workflow name AND the print format as bytes, not paraphrase -- 'Stage 2: X -> Y' matched nothing because the real print is 'Stage 2 (Deduplication): X -> Y articles' in a different workflow. Grep the phenomenon, not the report of it.
+R-S76-3: A uniform denominator across rows with varying numerators is arithmetically impossible from a per-item counting loop -- treat it as an instant fossil-or-bug tell. (39 sources, wins 28-70, every total exactly 102 = pre-fix global-count fossils.)
