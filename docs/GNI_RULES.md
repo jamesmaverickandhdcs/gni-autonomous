@@ -197,3 +197,9 @@ R-S76-3: A uniform denominator across rows with varying numerators is arithmetic
 R-S77-1: Chained build/verify/commit commands after a patch script run UNCONDITIONALLY -- a failed assert writes zero bytes but the chain proceeds on the unpatched tree. Gate the chain on the PATCHED print, or run patch and commit as separate pastes. (C5 first attempt.)
 R-S77-2: For count claims in prose copy, removing the number beats hydrating it -- prose that names no count can never rot, and plumbing-to-prose is bad engineering. Hydrate only where a number is displayed as a stat. (Feedback SWOT: two mentions cured count-free.)
 R-S77-3: A live-computed stat can still lie by ATTRIBUTION -- verify the label's system name against the data source, not just the number's math. ('52 correct' was live math under a GPVS label while reading debate_predictions.)
+R-S78-1: A UI write (secret, setting) interrupted by an auth challenge must be treated like a
+  failed patch assert -- zero bytes until the "Updated now" timestamp is read back. Never
+  dispatch a verify run before reading it. (GROQ_MODEL "update" that never saved; 2 dispatches burned.)
+R-S78-2: A green run proves the pipeline completed, not WHICH path served it -- grep the
+  probe/fallback prints before crediting the primary. (4 greens ran entirely on the 8b fallback
+  while the primary 404'd all week.)
