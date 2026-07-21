@@ -31,3 +31,4 @@ Warm long-term partnership ("my buddy", the fist-bump), rigorous underneath. Ans
 
 ## VERSION LOG
 - v1 - born at S55 close (2026-07-06). Edit this file only when a rule of engagement changes; log each edit here.
+- v2 - S79 (2026-07-22): daily-driver model Fable 5 -> Opus 4.8; MODEL_TRANSITION_BRIEF.md born (read after CONTRACT, before first handoff).
