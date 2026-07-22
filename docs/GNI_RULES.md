@@ -203,3 +203,9 @@ R-S78-1: A UI write (secret, setting) interrupted by an auth challenge must be t
 R-S78-2: A green run proves the pipeline completed, not WHICH path served it -- grep the
   probe/fallback prints before crediting the primary. (4 greens ran entirely on the 8b fallback
   while the primary 404'd all week.)
+R-S79-1: Browser-UI steps are not executable in this partnership — every action ships as a runnable
+  command; config writes go through gh CLI with byte receipts (gh secret list before/after). Never
+  ship a gated command block in the same message as its gate. (S78's dispatch mistake repeated at S79.)
+R-S79-2: A deprecation list proves the list, not the runtime. Grep live logs before declaring a
+  component dead or alive. (Lens-1 served HTTP 200 all week with a "shut down" model configured;
+  MAD's byte-level comment beat a remembered search claiming gpt-oss adoption.)
