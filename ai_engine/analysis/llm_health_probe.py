@@ -3,7 +3,7 @@
 # Pre-run check: verify Groq responds with valid JSON
 # before the full pipeline attempts expensive analysis.
 # L23: Model name from env var — never hardcoded
-# L33: llama-3.3-70b-versatile as Groq default
+# L33: openai/gpt-oss-120b as Groq default
 # ============================================================
 
 import os
@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
 GROQ_MODEL_FALLBACK = os.getenv("GROQ_MODEL_FALLBACK", "llama-3.1-8b-instant")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 

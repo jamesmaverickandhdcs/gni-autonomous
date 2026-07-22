@@ -25,7 +25,7 @@ load_dotenv()
 OLLAMA_URL = "http://localhost:11434/api/generate"
 OLLAMA_MODEL = "llama3:8b"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")  # L23: never hardcode model names
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")  # L23: never hardcode model names
 GROQ_MODEL_FALLBACK = os.getenv("GROQ_MODEL_FALLBACK", "llama-3.1-8b-instant")  # automatic failover
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 CEREBRAS_API_KEY = os.getenv("CEREBRAS_API_KEY", "")

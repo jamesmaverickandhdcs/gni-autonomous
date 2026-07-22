@@ -31,7 +31,7 @@ from matching import kw_match, matched_keywords
 # stem. Star policy matches the funnel exactly (see intelligence_funnel.py).
 
 GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
-GROQ_MODEL = os.getenv('GROQ_MODEL', 'llama-3.3-70b-versatile')
+GROQ_MODEL = os.getenv('GROQ_MODEL', 'openai/gpt-oss-120b')
 GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
 TELEGRAM_ADMIN_CHAT_ID = os.getenv('TELEGRAM_ADMIN_CHAT_ID', '') or os.getenv('TELEGRAM_QSChannel_ID', '')
