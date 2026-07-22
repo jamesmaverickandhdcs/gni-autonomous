@@ -35,7 +35,7 @@ def _call_probe(model, timeout=10):
                 "model": model,
                 "messages": [{"role": "user", "content": _PROBE_PROMPT}],
                 "temperature": 0.0,
-                "max_tokens": 50,
+                "max_tokens": 1024,  # L-S79: reasoning models (gpt-oss) spend tokens thinking before content; 50 starved the probe -> empty content -> parse fail
             },
             timeout=timeout,
         )
