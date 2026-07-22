@@ -124,7 +124,7 @@ def generate_pillar_summary(pillar: str, reports: list[dict]) -> str:
                      "Content-Type": "application/json"},
             json={"model": GROQ_MODEL,
                   "messages": [{"role": "user", "content": prompt}],
-                  "max_tokens": 200, "temperature": 0.4},
+                  "max_tokens": 1024, "temperature": 0.4},
             timeout=30,
         )
 
@@ -177,7 +177,7 @@ def generate_digest_summary(reports: list[dict]) -> str:
                      "Content-Type": "application/json"},
             json={"model": GROQ_MODEL,
                   "messages": [{"role": "user", "content": prompt}],
-                  "max_tokens": 300, "temperature": 0.4},
+                  "max_tokens": 1024, "temperature": 0.4},
             timeout=30,
         )
 

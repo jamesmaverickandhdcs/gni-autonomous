@@ -269,7 +269,7 @@ def _call_groq_hardened(keyword: str, contexts: list) -> dict:
                     {'role': 'user', 'content': user_content},
                 ],
                 'temperature': 0.1,
-                'max_tokens': 120,
+                'max_tokens': 1024,
             },
             timeout=15,
         )
@@ -422,7 +422,7 @@ def _run_agent_vote(agent_name: str, keyword: str, signature: dict,
                     {'role': 'user', 'content': structured_input},
                 ],
                 'temperature': 0.3,
-                'max_tokens': 150,
+                'max_tokens': 1024,
             },
             timeout=20,
         )

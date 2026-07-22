@@ -241,7 +241,7 @@ def _call_groq_for_fix(bug_class, error_message, affected_file):
                      "Content-Type": "application/json"},
             json={"model": GROQ_MODEL,
                   "messages": [{"role": "user", "content": prompt}],
-                  "temperature": 0.2, "max_tokens": 300},
+                  "temperature": 0.2, "max_tokens": 1024},
             timeout=15,
         )
         if response.status_code == 200:
