@@ -1067,8 +1067,9 @@ def _classify_content_type(article: dict) -> dict:
                     )
                     _resp = _req.post(_groq_url,
                         headers={"Authorization": f"Bearer {_groq_key}", "Content-Type": "application/json"},
-                        json={"model": "llama-3.1-8b-instant", "messages": [{"role": "user", "content": _l4_prompt}],
-                              "max_tokens": 5, "temperature": 0},
+                        json={"model": _os.getenv("GROQ_MODEL_FALLBACK", "openai/gpt-oss-20b"),  # S80: env-fed, was hardcoded 8b (dies Aug 16)
+                              "messages": [{"role": "user", "content": _l4_prompt}],
+                              "max_tokens": 1024, "temperature": 0},  # S80: 5 starves reasoning models (probe lesson L-S79)
                         timeout=10)
                     if _resp.status_code == 200:
                         _l4_ans = _resp.json()["choices"][0]["message"]["content"].strip().upper()

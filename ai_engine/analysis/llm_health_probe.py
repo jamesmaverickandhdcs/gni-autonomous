@@ -14,7 +14,7 @@ load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
-GROQ_MODEL_FALLBACK = os.getenv("GROQ_MODEL_FALLBACK", "llama-3.1-8b-instant")
+GROQ_MODEL_FALLBACK = os.getenv("GROQ_MODEL_FALLBACK", "openai/gpt-oss-20b")  # S80: 8b dies Aug 16
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 _PROBE_PROMPT = 'You are a JSON API. Respond ONLY with this exact JSON, nothing else: {"status": "ok", "model": "ready"}'
