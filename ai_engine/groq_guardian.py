@@ -42,21 +42,29 @@ REFUSAL_SIGNALS = [
     'this request cannot',
 ]
 
-INJECTION_SIGNALS = [
+INJECTION_HARD_SIGNALS = [
     'ignore previous instructions',
     'ignore all previous',
     'disregard previous',
     'override instructions',
     'new instructions:',
+    'do anything now',
+    '\x00',
+]
+
+# S80 GUARDIAN-QUIRK: topic vocabulary -- legitimate in TECH-pillar AI
+# reporting; needs 2+ distinct hits (KEY-MAP kin: substring-over-prose
+# caused phantom rejection, run 29982482799 TECH pillar).
+INJECTION_SOFT_SIGNALS = [
     'system prompt:',
     'act as',
     'you are now',
     'jailbreak',
-    'do anything now',
     'dan mode',
-    '\x00',
     'prompt injection',
 ]
+INJECTION_SIGNALS = INJECTION_HARD_SIGNALS + INJECTION_SOFT_SIGNALS  # back-compat
+
 
 AGENT_ERROR_PREFIX = '[agent error'
 
@@ -117,7 +125,9 @@ def is_injection_attempt(raw: str) -> bool:
     if not raw:
         return False
     lower = raw.lower()
-    return any(signal in lower for signal in INJECTION_SIGNALS)
+    if any(s in lower for s in INJECTION_HARD_SIGNALS):
+        return True
+    return len([s for s in INJECTION_SOFT_SIGNALS if s in lower]) >= 2
 
 
 def is_quality_response(raw: str, max_length: int | None = MAX_RESPONSE_LENGTH) -> bool:
@@ -250,7 +260,8 @@ def validate_response(raw: str, expect_json: bool = True,
         }
 
     if checks['is_injection']:
-        _tg_guardian_alert('injection attempt detected in response')
+        _hits = [s for s in INJECTION_SIGNALS if s in sanitized.lower()]
+        _tg_guardian_alert('injection attempt detected in response (' + ', '.join(_hits[:3]) + ')')
         return {
             'valid': False,
             'sanitized': sanitized,
