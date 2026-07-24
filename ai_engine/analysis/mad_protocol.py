@@ -95,7 +95,7 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
                     {'role': 'system', 'content': system_prompt},
                     {'role': 'user', 'content': user_prompt},
                 ],
-                max_tokens=max(max_tokens, 3000),  # S80 MAD-MIGRATE: reasoning-model floor.
+                max_tokens=max(768, min(max(max_tokens, 3000), 7500 - (len(system_prompt) + len(user_prompt)) // 3)),  # S80.2: budget-aware floor -- prompt+max_tokens must stay under Groq 8K TPM ceiling or 413s (evening Jul 24 debate); chars//3 over-estimates prompt for safety; floor 768 keeps giant-prompt calls alive.
                 # Probe-derived (probe_results.jsonl): gpt-oss-120b reasoning ~1500-1600 tok
                 # + content ~550; 600/1200 both starved (0/3 parse), 3000 clean (finish=stop,
                 # 12/12 fields). Covers ALL tiers: arbitrator routes via _call_agent (L153).
