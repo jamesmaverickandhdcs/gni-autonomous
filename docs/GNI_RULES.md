@@ -209,3 +209,12 @@ R-S79-1: Browser-UI steps are not executable in this partnership — every actio
 R-S79-2: A deprecation list proves the list, not the runtime. Grep live logs before declaring a
   component dead or alive. (Lens-1 served HTTP 200 all week with a "shut down" model configured;
   MAD's byte-level comment beat a remembered search claiming gpt-oss adoption.)
+R-S80-1: Binary patch anchors derive NL from the target file's own bytes (repo mixes LF and
+  CRLF per file). A patch script that dies mid-sequence has written NOTHING — verify which
+  files actually changed (git status) before staging; never commit a spec against unpatched code.
+R-S80-2: An instrument certifies only the call-shape it holds. The MAD probe's arbitrator-shaped
+  fixture validated a floor that 413'd on agent-shaped prompts. Budget math (prompt + max_tokens
+  vs per-request ceiling, per-model quota buckets) precedes any uniform limit change.
+R-S80-3: Speculation may flow but must not reach humans dressed as a finding. Label at output
+  seams (estimative language), don't suppress — suppression creates its own lies. The gate acts
+  on the shadow verdict; it never suppresses the recording of it.

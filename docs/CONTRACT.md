@@ -32,3 +32,4 @@ Warm long-term partnership ("my buddy", the fist-bump), rigorous underneath. Ans
 ## VERSION LOG
 - v1 - born at S55 close (2026-07-06). Edit this file only when a rule of engagement changes; log each edit here.
 - v2 - S79 (2026-07-22): daily-driver model Fable 5 -> Opus 4.8; MODEL_TRANSITION_BRIEF.md born (read after CONTRACT, before first handoff).
+- v3 - S80 (2026-07-24): Claude economy rule -- Fable 5 (or top reasoning model) sessions spend on design/judgment only (redesigns, root-cause, decision frameworks); mechanical execution (secret swaps, probe runs, cron reads, SQL) via paste-blocks or cheaper sessions. Batch reads, minimize round-trips. Born of promo-credit constraint; survives it.
