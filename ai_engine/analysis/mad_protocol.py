@@ -95,7 +95,11 @@ def _call_agent(system_prompt: str, user_prompt: str, max_tokens: int = 400, exp
                     {'role': 'system', 'content': system_prompt},
                     {'role': 'user', 'content': user_prompt},
                 ],
-                max_tokens=max_tokens,
+                max_tokens=max(max_tokens, 3000),  # S80 MAD-MIGRATE: reasoning-model floor.
+                # Probe-derived (probe_results.jsonl): gpt-oss-120b reasoning ~1500-1600 tok
+                # + content ~550; 600/1200 both starved (0/3 parse), 3000 clean (finish=stop,
+                # 12/12 fields). Covers ALL tiers: arbitrator routes via _call_agent (L153).
+                # Revert = restore max_tokens=max_tokens. Legacy tier values untouched above.
                 temperature=0.7,
             )
             _u = getattr(response, 'usage', None)
