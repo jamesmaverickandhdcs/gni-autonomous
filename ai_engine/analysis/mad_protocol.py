@@ -1066,6 +1066,22 @@ def run_mad_protocol(report: dict, all_articles: list = None,
             mad_blind_spot = arb_json.get('blind_spot_quadrant', '')
             blind_exp = arb_json.get('blind_spot_explanation', '')
             if blind_exp:
+                # S80 E-3: estimative-language label. Speculation may flow (Swan's
+                # job) but must not reach humans dressed as a finding. FAIL-OPEN:
+                # an unrunnable check labels nothing. check_grounding is pure --
+                # no shadow-bucket writes, GT-5 digest counts unaffected.
+                try:
+                    _bl = check_grounding(blind_exp, _grounding_basket,
+                                          _grounding_whitelist,
+                                          location='blind_spot_label')
+                    _bn = _bl.get('hit_count')
+                    if _bn:
+                        blind_exp = ('[LOW GROUNDING -- ' + str(_bn)
+                                     + ' unverified span(s); hypothesis, not finding] '
+                                     + blind_exp)
+                        print('  LABELED blind_spot ' + str(_bn) + ' hits')
+                except Exception as _le:
+                    print('  Blind-spot label skipped: ' + str(_le)[:60])
                 mad_blind_spot = mad_blind_spot + ' -- ' + blind_exp
             mad_action_recommendation = arb_json.get('action_recommendation', '')
             short_focus_threats = arb_json.get('short_focus_threats', '')
