@@ -961,22 +961,19 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     # Uses arb_ctx (scored articles, highest significance)
     # ============================================================
     print('   Arbitrator final synthesis...')
-    arb_final_user = (
-        arb_ctx + '\n\n'
-        '=== R1 [summary] ===\nBull: ' + _compress(bull_r1) + '\nBear: ' + _compress(bear_r1) +
-        '\nSwan: ' + _compress(swan_r1) + '\nOstrich: ' + _compress(ost_r1) + '\n\n'
-        '=== R2 [summary] ===\nBull: ' + _compress(bull_r2) + '\nBear: ' + _compress(bear_r2) +
-        '\nSwan: ' + _compress(swan_r2) + '\nOstrich: ' + _compress(ost_r2) + '\n\n'
-        '=== R3 [final] ===\nBull: ' + bull_r3 + '\nBear: ' + bear_r3
-        + '\nSwan: ' + swan_r3 + '\nOstrich: ' + ost_r3 + '\n\n'
-        + ('Weakness: ' + weakness + '\n' if weakness else '')
-        + ('Dark side: ' + dark_side + '\n' if dark_side and dark_side != 'None' else '')
-        + 'Escalation: ' + escalation + ' | Risk: ' + risk_level + '\n\n'
-        + 'PILLAR WEIGHTING: ' + pillar_instruction + '\n\n'
-        + 'Deliver final synthesis as JSON only.'
-    )
+    # S81 PATCH B: ARB GUARANTEED-FIT -- the verdict-bearing call must never 413.
+    # Budget in L98-formula units (chars//3): prompt est must leave >= ARB_MIN_OUT
+    # of the 7500-unit request budget for output (probe_results.jsonl: gpt-oss
+    # reasoning ~1500-1600 tok + JSON content ~550). The L98 formula is UNCHANGED --
+    # once the prompt fits, it yields the viable max_tokens (2500-3000) on its own.
+    # The arb synthesizes the AGENTS (who read the articles deep); it needs an
+    # anchor slice of intelligence, not the full base. Run-level arb_ctx (built
+    # with the agent set above) is superseded here for the arb call only.
+    ARB_MIN_OUT = 2500
+    arb_ctx_fit = _build_news_context(report, all_articles, agent='arbitrator',
+                                      depth=min(_depth, 100))
 
-    # NN-5: Hard constraints for high escalation
+    # NN-5 (logic unchanged, moved pre-fit so constraints are INSIDE the budget).
     _hard_constraints = []
     _high_escalation = (risk_level.upper() in ('HIGH', 'CRITICAL') or
                         'CRITICAL' in escalation.upper() or 'HIGH' in escalation.upper())
@@ -989,11 +986,56 @@ def run_mad_protocol(report: dict, all_articles: list = None,
             _hard_constraints.append(
                 'OSTRICH MANDATORY CONSTRAINT (ignored reality -- cannot be dismissed): '
                 + _compress(ost_r3, 60))
+    constraint_block = ''
     if _hard_constraints:
         constraint_block = ('HARD CONSTRAINTS -- YOU MUST ADDRESS THESE IN YOUR VERDICT:\n'
                             + '\n'.join(_hard_constraints) + '\n\n')
-        arb_final_user = constraint_block + arb_final_user
         print(f'  NN-5: {len(_hard_constraints)} hard constraint(s) prepended to Arbitrator prompt')
+
+    _arb_tail = (
+        ('Weakness: ' + weakness + '\n' if weakness else '')
+        + ('Dark side: ' + dark_side + '\n' if dark_side and dark_side != 'None' else '')
+        + 'Escalation: ' + escalation + ' | Risk: ' + risk_level + '\n\n'
+        + 'PILLAR WEIGHTING: ' + pillar_instruction + '\n\n'
+        + 'Deliver final synthesis as JSON only.'
+    )
+
+    def _assemble_arb(_ctx, _with_r1, _r3_words):
+        _r3 = round3 if _r3_words is None else {
+            _k: _compress(_v, _r3_words) for _k, _v in round3.items()}
+        return (
+            constraint_block + _ctx + '\n\n'
+            + (('=== R1 [summary] ===\nBull: ' + _compress(bull_r1)
+                + '\nBear: ' + _compress(bear_r1)
+                + '\nSwan: ' + _compress(swan_r1)
+                + '\nOstrich: ' + _compress(ost_r1) + '\n\n') if _with_r1 else '')
+            + '=== R2 [summary] ===\nBull: ' + _compress(bull_r2)
+            + '\nBear: ' + _compress(bear_r2)
+            + '\nSwan: ' + _compress(swan_r2)
+            + '\nOstrich: ' + _compress(ost_r2) + '\n\n'
+            + '=== R3 [final] ===\nBull: ' + _r3['bull'] + '\nBear: ' + _r3['bear']
+            + '\nSwan: ' + _r3['black_swan'] + '\nOstrich: ' + _r3['ostrich'] + '\n\n'
+            + _arb_tail
+        )
+
+    _arb_budget_chars = (7500 - ARB_MIN_OUT) * 3 - len(ARB_FINAL)
+    _fit_steps = []
+    arb_final_user = _assemble_arb(arb_ctx_fit, True, None)
+    if len(arb_final_user) > _arb_budget_chars:
+        _fit_steps.append('drop-R1')
+        arb_final_user = _assemble_arb(arb_ctx_fit, False, None)
+    if len(arb_final_user) > _arb_budget_chars:
+        _fit_steps.append('R3@110w')
+        arb_final_user = _assemble_arb(arb_ctx_fit, False, 110)
+    if len(arb_final_user) > _arb_budget_chars:
+        _keep = max(0, _arb_budget_chars - (len(arb_final_user) - len(arb_ctx_fit)) - 40)
+        _fit_steps.append('ctx-trim@' + str(_keep))
+        arb_final_user = _assemble_arb(
+            arb_ctx_fit[:_keep] + '\n[ctx trimmed to fit]\n', False, 110)
+    print('  ARB-FIT: ctx_depth=' + str(min(_depth, 100))
+          + ' est=' + str((len(ARB_FINAL) + len(arb_final_user)) // 3)
+          + '/' + str(7500 - ARB_MIN_OUT)
+          + ' steps=' + (','.join(_fit_steps) if _fit_steps else 'none'))
 
     arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)
 
