@@ -719,6 +719,17 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     swan_ctx = _build_news_context(report, all_articles, weak_articles, agent='swan', depth=_depth)
     ost_ctx  = _build_news_context(report, all_articles, agent='ostrich', depth=_depth)
     arb_ctx  = _build_news_context(report, all_articles, agent='arbitrator', depth=_depth)
+    # S81 C1 TRANSCRIPT-CARRY: agents deep-read the library ONCE (R1). R2/R3
+    # argue from the debate itself + a headline-only anchor (depth=0) -- same
+    # per-role pillar routing, no summaries. Kills the ctx re-send that starved
+    # R2/R3 into the 768 band and billed each article ~3x per agent. R1 keeps
+    # the full solver-depth read (its starvation fix = S82 solver per-request
+    # constraint). Solver est is now conservative-high until C2 recalibration.
+    bull_ctx_slim = _build_news_context(report, all_articles, agent='bull', depth=0)
+    bear_ctx_slim = _build_news_context(report, all_articles, agent='bear', depth=0)
+    swan_ctx_slim = _build_news_context(report, all_articles, weak_articles, agent='swan', depth=0)
+    ost_ctx_slim  = _build_news_context(report, all_articles, agent='ostrich', depth=0)
+
 
     # S61 GROUNDING GATE (SHADOW): detect + log only -- zero behaviour change.
     # Basket = every article the debate was grounded in (scored + weak). Whitelist =
@@ -857,22 +868,22 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     )
 
     bull_r2 = _call_agent(BULL,
-        bull_ctx + round1_summary
+        bull_ctx_slim + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('bull', '')
         + '\n\nROUND 2: Write a FRESH argument. Address feedback.', 500)
 
     bear_r2 = _call_agent(BEAR,
-        bear_ctx + round1_summary
+        bear_ctx_slim + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('bear', '')
         + '\n\nROUND 2: Respond. Address feedback.', 500)
 
     swan_r2 = _call_agent(SWAN,
-        swan_ctx + round1_summary
+        swan_ctx_slim + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('black_swan', '')
         + '\n\nROUND 2: Challenge Bull and Bear. Go deeper on your weak signal.', 500)
 
     ost_r2 = _call_agent(OSTRICH,
-        ost_ctx + round1_summary
+        ost_ctx_slim + round1_summary
         + 'PERSONAL CONSULTANT TO YOU: ' + arb_c1_gated.get('ostrich', '')
         + '\n\nROUND 2: Name who is in denial and the cost.', 500)
 
@@ -925,29 +936,29 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         '\nR1 Bear: ' + _compress(bear_r1) +
         '\nR1 Swan: ' + _compress(swan_r1) +
         '\nR1 Ostrich: ' + _compress(ost_r1) +
-        '\n\nR2 Bull: ' + bull_r2 +
-        '\nR2 Bear: ' + bear_r2 +
-        '\nR2 Swan: ' + swan_r2 +
-        '\nR2 Ostrich: ' + ost_r2 + '\n\n'
+        '\n\nR2 Bull: ' + _compress(bull_r2, 150) +
+        '\nR2 Bear: ' + _compress(bear_r2, 150) +
+        '\nR2 Swan: ' + _compress(swan_r2, 150) +
+        '\nR2 Ostrich: ' + _compress(ost_r2, 150) + '\n\n'
     )
 
     bull_r3 = _call_agent(BULL,
-        bull_ctx + round_history
+        bull_ctx_slim + round_history
         + 'FINAL COACHING: ' + arb_c2_gated.get('bull', '')
         + '\n\nROUND 3 FINAL: Write a FRESH sharpest argument in 5-7 sentences. Changed view?', 600)
 
     bear_r3 = _call_agent(BEAR,
-        bear_ctx + round_history
+        bear_ctx_slim + round_history
         + 'FINAL COACHING: ' + arb_c2_gated.get('bear', '')
         + '\n\nROUND 3 FINAL: Sharpest position in 5-7 sentences. Changed view?', 600)
 
     swan_r3 = _call_agent(SWAN,
-        swan_ctx + round_history
+        swan_ctx_slim + round_history
         + 'FINAL COACHING: ' + arb_c2_gated.get('black_swan', '')
         + '\n\nROUND 3 FINAL: Name the ONE thing nobody else is watching. 5-7 sentences.', 600)
 
     ost_r3 = _call_agent(OSTRICH,
-        ost_ctx + round_history
+        ost_ctx_slim + round_history
         + 'FINAL COACHING: ' + arb_c2_gated.get('ostrich', '')
         + '\n\nROUND 3 FINAL: Name the institution in denial and cost of inaction. 5-7 sentences.', 600)
 
