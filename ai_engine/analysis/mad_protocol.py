@@ -1048,6 +1048,39 @@ def run_mad_protocol(report: dict, all_articles: list = None,
           + '/' + str(7500 - ARB_MIN_OUT)
           + ' steps=' + (','.join(_fit_steps) if _fit_steps else 'none'))
 
+    # S82 ROOT 1.2 -- ARB-ARRIVAL instrument. PRINT ONLY, behaviour unchanged.
+    # ARB-FIT above logs SIZE (chars that fit). This logs CONTENT: what survived,
+    # what did not, and by name. R-S81-2 (log INCLUDED against AVAILABLE) +
+    # R-S81-3 (a count says the tier shrank; a name says which perspective was lost).
+    _arb_ctx_sent = arb_ctx_fit
+    for _fs in _fit_steps:
+        if _fs.startswith('ctx-trim@'):
+            _arb_ctx_sent = arb_ctx_fit[:int(_fs.split('@')[1])]
+    _arb_asm = [_l for _l in arb_ctx_fit.split('\n') if _l.startswith('  - [')]
+    _arb_arr = [_l for _l in _arb_ctx_sent.split('\n') if _l.startswith('  - [')]
+    _arb_trunc = 0
+    if _arb_arr and not _arb_ctx_sent.endswith('\n'):
+        _arb_trunc = 1
+        _arb_arr = _arb_arr[:-1]
+    _arb_drop = _arb_asm[len(_arb_arr):]
+    _arb_names = [_d.split(' (score:')[0].strip() for _d in _arb_drop]
+    _arb_err = arb_final_user.count('[Agent error')
+    print('  ARB-ARRIVAL: articles available=' + str(len(all_articles))
+          + ' assembled=' + str(len(_arb_asm))
+          + ' arrived=' + str(len(_arb_arr))
+          + ' truncated=' + str(_arb_trunc)
+          + ' dropped=' + str(len(_arb_drop)))
+    print('  ARB-ARRIVAL: ctx_chars=' + str(len(_arb_ctx_sent)) + '/' + str(len(arb_ctx_fit))
+          + ' R1=' + ('DROPPED' if 'drop-R1' in _fit_steps else 'included')
+          + ' R3=' + ('110w' if 'R3@110w' in _fit_steps else 'full')
+          + ' transcript_errors=' + str(_arb_err))
+    if _arb_names:
+        print('  ARB-ARRIVAL: dropped_by_name: ' + ' | '.join(_arb_names[:6])
+              + (' | +' + str(len(_arb_names) - 6) + ' more' if len(_arb_names) > 6 else ''))
+    if len(_arb_arr) == 0 and len(all_articles) > 0:
+        print('  WARNING: ARB-ARRIVAL zero articles reached the arbitrator '
+              '(available=' + str(len(all_articles)) + ') -- verdict is ungrounded')
+
     arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)
 
     # SEAM 3 (S61 SHADOW -- OBSERVE/LOG ONLY, ratified): grounding gate on the
