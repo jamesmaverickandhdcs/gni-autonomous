@@ -218,3 +218,63 @@ R-S80-2: An instrument certifies only the call-shape it holds. The MAD probe's a
 R-S80-3: Speculation may flow but must not reach humans dressed as a finding. Label at output
   seams (estimative language), don't suppress — suppression creates its own lies. The gate acts
   on the shadow verdict; it never suppresses the recording of it.
+
+## S81 EARNED RULES (2026-08-17)
+
+- R-S81-1 (Zero-match indicts the pattern first): A filter that returns no rows prints a BLANK
+  line, which is indistinguishable from a broken filter, a bad field name, or an empty fetch.
+  Prove the instrument saw data before reading silence as absence — count first
+  (`gh run list -L 40 --json conclusion --jq 'length'`), then group. Born Aug 17: a cliff-survival
+  check returned two spaces and was almost read as "zero failures". It was correct, but nothing
+  in the output said so.
+
+- R-S81-2 (Verify what ARRIVED, not what was fetched): Any consumer that assembles inputs under
+  a budget must log what was INCLUDED against what was AVAILABLE. A guard that tests the fetched
+  list passes whenever the fetch succeeds, and cannot detect its own starvation. Zero inclusion
+  of a required input is a FAILURE, not a quiet loop break. Corollary: a failure that grows with
+  upstream health does not look like a failure. Mirrors Lens LR-141, adopted by reference;
+  GNI's own evidence pending the ROOT 1 audit.
+
+- R-S81-3 (Absolute allotments, never leftover budgeting): No consumer's share may be defined by
+  what another consumer left over. Each tier gets an absolute allotment measured exclusive of
+  every other tier; a total cap may exist as a backstop but must not be the allocator. When a
+  tier drops content, log WHICH item was dropped by name — a count says the tier shrank, a name
+  says which perspective was lost. Mirrors Lens's Mission Analyst finding.
+
+- R-S81-4 (One load-bearing block per message; rollbacks never travel with applies): When a
+  message contains a patch block, multi-block pastes get PARTIALLY executed — a commit block can
+  run while its patch block does not, committing nothing and looking like success. And a rollback
+  command sitting in the same message WILL eventually be pasted along with everything else.
+  Offer recovery separately, on request, only after the apply is verified. Assume any block may
+  run twice, out of order, or not at all. Mirrors Lens LR-140.
+
+- R-S81-5 (A guard's expected value must be derived, not hand-counted): Any assertion whose
+  expected number was counted by eye is a banked estimate living inside a tool built to stop
+  banked estimates. Derive it from the same data the change is made from (sum the deltas across
+  the edit list, do not count lines). Assert RELATIVE to the file's state read at the start of
+  the patch, never absolutely — a hardcoded "this file must be LF" starts failing on files
+  nobody touched the first time autocrlf converts them. Extends R-S80-1. Mirrors Lens LR-139.
+
+- R-S81-6 (Grep the agreement, not the message): `git log --stat` proves message-vs-contents. It
+  cannot prove contents-vs-agreement. Before committing a change agreed in conversation, grep ONE
+  DISTINGUISHING PHRASE PER AGREED ELEMENT and report the hits; absence of a hit means that
+  element did not land. The phrase must be unique by construction — a commit SHA proves nothing
+  because SHAs legitimately recur in a document. Presence alone is not enough: assert UNIQUENESS
+  whenever an ordered list gains an item. The trap stated plainly: producing text in conversation
+  FEELS like shipping it, and the same illusion works on the reader. Mirrors Lens LR-138.
+
+- R-S81-7 (Record requested time and observed time separately): The trap book recorded when crons
+  FIRED and called it the schedule. YAML holds the request; run history holds reality; the delay
+  is its own measurement and it drifts. S80 banked "1-3 hours late"; by Aug 17 the same crons
+  fired 13-60 minutes late, and a wait anchored on the stale figure wastes a session. Requests:
+  pipeline 02:13/10:13, MAD 02:43/10:43, grounding-watch 11:13 UTC.
+
+- R-S81-8 (Groq refills continuously; there is no daily reset): TPD is a leaky bucket refilling at
+  Limit/86400 per second — about 8,333 tokens/hour at a 200K limit, with no midnight anywhere.
+  Recovering 50,000 tokens costs roughly six hours of wall clock. A live 200 carries exactly six
+  x-ratelimit headers, all per-MINUTE; there is NO daily token header, so TPD is observable only
+  from a 429 body or the console, and a 404 carries no rate headers at all (so any pre-flight
+  reading them fails open on a dead model name). Any reasoning of the form "the quota resets and
+  we start fresh" is reasoning about a fiction. Measured in Lens to the millisecond across seven
+  readings; adopted here by reference, and GNI's per-account-day reservation model is unaudited
+  against it (order item 4.3).
