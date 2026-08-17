@@ -278,3 +278,46 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   we start fresh" is reasoning about a fiction. Measured in Lens to the millisecond across seven
   readings; adopted here by reference, and GNI's per-account-day reservation model is unaudited
   against it (order item 4.3).
+
+## S82 EARNED RULES (2026-08-17)
+
+- R-S82-1 (To find an artifact, grep its STRUCTURE, not its name): A phrase-grep for a
+  document's contents returns every file that MENTIONS it and hides the one that IS it.
+  S82 ran `grep -rln "LOAD CHECK"`, got 30 handoffs back, and concluded from that noise
+  that GNI's opening and closing prompts did not exist as artifacts. They existed the
+  whole time, as PART C and PART D of `docs/GNI_Session_Transfer_Protocol.md`, and a
+  heading-grep (`grep -nE "^#{1,4} "`) found them in one call. Sibling of R-S81-1: there
+  a zero-match indicted the pattern, here a HIGH match count did. Match volume is not
+  evidence in either direction; only the shape of the match is.
+
+- R-S82-2 (An instrument dumps the whole category, not the expected field): When adding
+  measurement, log every member of the category under test, not the one the hypothesis
+  names. S82's ARB-ARRIVAL instrument measured the article tier and skipped the four
+  sibling tiers (constraint_block, R1, R2, R3, tail) that compete for the same budget --
+  so when the arb prompt grows, the log will show articles shrinking without naming which
+  tier ate the room, which is the very question the next item must answer. Corollary from
+  Lens: a measurement that FALSIFIES the instruction that requested it is a success, not a
+  failed mission. Design for that outcome.
+
+- R-S82-3 (A stopgap never closes a root): Capacity freed by a stopgap flows wherever the
+  system routes it, not where the fix intended, so a stopgap's own cert cannot close the
+  root it was aimed at. Evidence: C1 transcript-carry (S81) freed prompt room, certified
+  PASS on its own terms (zero 413, zero empties, bill down) -- and the arbitrator gained
+  nothing, still riding the FULL fit ladder to `ctx-trim@4983` three weeks later. A root
+  closes on a measurement OF THE ROOT. Extends R-S69-2: a substitution without a debt
+  record launders itself into fact; a stopgap without a root-measurement does the same.
+
+- R-S82-4 (When law changes, sweep the TEMPLATES): A template is law that executes itself
+  in the next session. CONTRACT v4 moved the queue out of the handoff and into the order
+  file; HANDOFF_S81 obeyed, but PART B of the Transfer Protocol still instructed the next
+  session to build a `QUEUE (<=25 lines)`. Two closes would have restored the queue by
+  template alone, silently undoing the change. R-S55-1's sibling sweep applies to docs:
+  after any rule-of-engagement change, grep every template that encodes the old rule.
+
+- R-S82-5 (Apply the law-vs-state test to the version log itself): "Law edited most
+  sessions means target-level content leaked in" is a test that must be run against the
+  contract's OWN edit history, not only its sections. GNI's CONTRACT reached v4 in six
+  weeks; reading the log, v2 was a model roster (pure state, and already false -- it named
+  Opus 4.8 while S82 ran on Opus 5) and v3 mixed a genuine rule of engagement with the
+  model names that dated it. The leak was visible in the version log for three weeks and
+  went unread because every review looked at the newest SECTION instead.
