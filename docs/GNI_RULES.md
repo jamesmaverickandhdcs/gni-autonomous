@@ -321,3 +321,79 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   Opus 4.8 while S82 ran on Opus 5) and v3 mixed a genuine rule of engagement with the
   model names that dated it. The leak was visible in the version log for three weeks and
   went unread because every review looked at the newest SECTION instead.
+
+## S83 EARNED RULES (2026-08-24)
+
+- R-S83-1 (A disclosed limitation is a CLAIM, not a fact): A limitation stated at ship time
+  carries the same trust as any other unverified assertion, and it must be checked against
+  the instrument's FIRST real output. S82 disclosed that ARB-ARRIVAL's `truncated=` would
+  always read 0, reasoning that ctx-trim appends `'\n[ctx trimmed to fit]\n'` after slicing.
+  It read 1 on the first run. The instrument never touches the assembled prompt -- it
+  RE-DERIVES the slice as `arb_ctx_fit[:_keep]`, so the appended marker was never in the
+  string the `endswith` test sees. The trap built on that disclosure said `dropped=N` means
+  "at least N"; the bytes say it is EXACT and conservative-HIGH by one, because a partially
+  delivered article is trimmed from `arrived` and counted as fully dropped. Carried into the
+  ruling, the trap would have inverted it. A self-reported weakness is a lead like any other.
+
+- R-S83-2 (Novelty is an identity question; a content check cannot answer it): To prove an
+  artifact is NEW, compare its IDENTITY against what has already been read -- never its
+  contents. S83 issued a guard that accepted a fetched run if `ARB-FIT` appeared once. That
+  test distinguishes the debate from the grounding-watch flavor and says nothing about
+  freshness, so when `-L 1` returned the run already read that morning, every check passed
+  and the block would have been logged as a second sample. Sibling of R-S81-1 and R-S82-1:
+  there a zero-match and a high match count misled; here a CORRECT match on a stale artifact
+  did. Compare ids, and print the id next to the claim.
+
+- R-S83-3 (Read the clock in the block that makes the claim): Never state elapsed time, a
+  schedule position, or "the next run is due about now" from turn count, from conversational
+  distance, or from memory. S83 did it twice, calling a run late that was sixteen minutes
+  early, and then called a run "this evening's" when six days had passed since the previous
+  message. Both were resolved by one `date -u` that had not been asked for. Pair every wait
+  estimate, deadline, and freshness claim with a clock read in the SAME command block --
+  and the same for a repo: `gh` resolves its target from the git remote, so a `cd` out of
+  the repo silently removes the world the command was meant to query.
+
+- R-S83-4 (A cert that measures mechanics has not certified the instrument): Passing on
+  finish_reason, absence of 413s, absence of empties, and "the output arrived" proves the
+  PLUMBING survived a change; it says nothing about whether what flows through the plumbing
+  is the same. Evidence from Project Lens: a July migration certified clean on mechanics, and
+  three weeks later the same positions were extracting twice the actors and THREE TIMES the
+  claims per row, while the headline consistency metric moved 0.834 -> 0.853 and hid it. GNI
+  owns the same debt: the S80 MAD migration was certified on 413s and empties, and ROOT 2.3
+  has been asking since July whether the arbitrator's verdicts changed. A behaviour cert
+  needs a BAND measured before the change and re-measured after, from stored rows.
+
+- R-S83-5 (A ritual document needs a path into the session that begins with a READ): A prompt,
+  template, or checklist that reaches a session only by being pasted has no single source of
+  truth -- the pasted copy and the repo copy drift, and nothing can detect the drift because
+  nothing ever compares them. Byte evidence: `sed -n '/PART D/,/PART E/p' | grep -c
+  "Transfer_Protocol"` returned 0. GNI's CONTRACT cited the prompts by path since v5, the
+  protocol file existed and was correct, and no artifact in the repo ever instructed anyone
+  to open it. Lens shipped the identical fix after discovering its pasted close prompt had
+  silently lost two clauses present in the repo. Extends R-S82-4: sweeping templates when law
+  changes is worthless if no template is ever read.
+
+- R-S83-6 (Flow discipline does not protect a stock): Rate limits, per-minute pacers and
+  per-day reservations all govern a FLOW, and a system fluent in flow control can be entirely
+  blind to accumulation. Storage only grows; nothing consumes it back; and its failure is not
+  a slow degradation but a hard refusal of every read at once. Project Lens ran sophisticated
+  token-per-minute and token-per-day governors while its database grew unmetered to 287% of a
+  free-tier quota, and went fully offline for nineteen days. GNI_Autonomous has `quota_guard.py`
+  and ZERO retention code -- `grep -rn "\.delete()"` returns nothing. For every free-tier
+  resource, ask whether it is spent or ACCUMULATED, and meter the accumulated ones. Corollary
+  amending R-S81-6: read the METER, not the mail -- Lens missed two announcement emails a
+  month apart and lost five positions to one and its whole database to the other.
+
+## AMENDMENT TO AN EXISTING RULE (no new number -- R-S83 deliberately does not re-mint)
+
+- R-S81-3 (AMENDED 2026-08-24): the existing rule says a count tells you the tier shrank while
+  a NAME tells you which perspective was lost. Amended: the count must be of DISTINCT IDENTITY,
+  not of rows. Project Lens's arrival check reported `s1=4/4` on a wave where all four rows
+  were the same lens produced four times -- a perfect score over a single perspective. GNI's
+  ARB-ARRIVAL has the identical blind spot: `arrived=20` counts lines beginning `'  - ['`, so
+  fifteen geopolitical articles and five financial ones report exactly as four pillars would.
+  Count the distinct category, then name the losses.
+  *(This is an amendment rather than R-S83-7 on purpose: Lens re-minted a rule it already held
+  and paid for the duplicate. Before minting a number, search the register for the rule that
+  already says it -- and search BOTH ID schemes, `GNI-R-###` and `R-S##-#`, since a grep for
+  one is blind to the other.)*

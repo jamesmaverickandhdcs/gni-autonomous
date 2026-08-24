@@ -1,7 +1,8 @@
-# GNI SESSION TRANSFER PROTOCOL v2
+# GNI SESSION TRANSFER PROTOCOL v3
 **Purpose:** lossless session-to-session transfer at ~25-35% of the old token cost.
 **Principle:** every fact lives in ONE file (SSOT); the handoff carries STATE only; the ORDER carries work; caps force density.
 **This file is a TEMPLATE, and a template is law that executes itself next session.** v1 said it was "written once and never regenerated" and then sat unread for 27 sessions while the contract changed underneath it. It is regenerated whenever a rule of engagement changes (R-S82-4).
+**v3's core change: THIS FILE IS NOW READ FROM THE REPO AT EVERY OPEN.** Before v3 the closing prompt reached a session only by James pasting it from outside — a prompt living in two places is a dual source of truth, and the pasted copy is free to drift from the repo copy with nothing able to detect it. Mirrored from Project Lens, which shipped the identical fix after its own pasted close prompt was found to have silently lost two clauses.
 
 ---
 
@@ -12,9 +13,15 @@
 | `docs/CONTRACT.md` | LAW — roles, gates, workflow, tone, discovery policy | Only when a rule of engagement changes; log every edit | no line cap, but see the law-vs-state test below |
 | `docs/GNI_RULES.md` | LEARNED — all rules by ID (GNI-R-###, R-S##-#) | Append-only; 1-3 lines per rule; never leave a number gap | n/a |
 | `docs/GNI_TARGET_AND_ORDER.md` | WORK + DECISIONS — current target, definition of done, ranked order | REGENERATED every close, dated, superseding. NEVER appended | n/a |
+| `docs/GNI_Session_Transfer_Protocol.md` | THE PROMPTS — Part C (close) and Part D (open) as artifacts | Regenerated when a rule of engagement changes | n/a |
 | `docs/HANDOFF_S{N}.md` | STATE — what is true right now. NO QUEUE | Every close, from the Part B template | 120 lines |
 | `docs/DIARY.md` | Feelings/reflection (optional) | Append <=10 lines, only if the session earned it | 10/entry |
 | `docs/AUDIT_S{N}.md` | Deep archive | ONLY milestone sessions | n/a |
+
+**FIXED PATH vs SESSION-NUMBERED — get this right or the next session reads a fossil (v3).**
+- **Session-numbered BY DESIGN:** `HANDOFF_S{N}.md`. There is one per session and they accumulate; that is the history.
+- **FIXED PATH, NEVER numbered:** `CONTRACT.md`, `GNI_RULES.md`, `GNI_TARGET_AND_ORDER.md`, this protocol. The opening prompt names these paths literally, so a numbered copy leaves the STALE file sitting where the next session will read it. Archived orders get a descriptive name under `docs/archive/`; only the live one keeps the path. Versioning comes from `git log -p`, not from filenames.
+- Lens shipped a session-numbered order to its fixed path in August and would have opened its next session on the superseded file. Do not repeat it.
 
 **LAW-VS-STATE TEST:** if CONTRACT.md is edited most sessions, target-level or state-level content has leaked into it. Run this against its VERSION LOG, not only its sections — that is where the leak hid until S82 (R-S82-5).
 
@@ -75,50 +82,113 @@ Deep detail if needed: {file:line / audit doc / past-handoff}
 
 ---
 
-## PART C — STANDARD CLOSING PROMPT (paste at session end)
+## PART C — STANDARD CLOSING PROMPT (v3: INVOKED BY NAME, READ FROM THE REPO)
 
-**This prompt is the highest-leverage object in the protocol.** A close that folds items
-forward without regenerating an order grows the list BY CONSTRUCTION — that is the loop.
+**From v3, James does not paste this text.** He says **"CLOSE S{N}, my buddy"** and the session reads these steps from `docs/GNI_Session_Transfer_Protocol.md`, which Part D already had it open. A pasted prompt drifts from the repo copy and nothing can detect the drift; that is the dual-source-of-truth failure this whole protocol exists to prevent.
+
+**This prompt is the highest-leverage object in the protocol.** A close that folds items forward without regenerating an order grows the list BY CONSTRUCTION — that is the loop.
 
 ```
 CLOSE S{N}, my buddy.
+
+0. READ THIS FILE'S PART C FROM THE REPO before doing anything else. If what you are
+   about to run differs from these bytes, the bytes win, and the difference is a FINDING.
+
 1. MISSION: did we complete the DECLARED mission? Yes or no, in one line. Not "did we fix
    everything we found" — a session that ships one thing and logs six is a SUCCESS.
+
 2. FINDINGS: list every weak point found this session with its evidence, whatever the
    mission was. Suppressing a finding is worse than acting on it out of order.
+
 3. WRONG: list every claim that turned out false this session, and what caught it.
+   Include claims made by CLAUDE about its own instruments and its own commands, not only
+   claims about the system.
+
 4. ROOTS: re-analyse. Is each finding an existing root or a NEW root? A new root may
    re-rank everything above it.
-5. REGENERATE docs/GNI_TARGET_AND_ORDER.md — dated, superseding, NEVER appended. Include
-   CHANGED THIS REGENERATION: one line per item closed / merged / retired / re-ranked,
-   plus a DECISION line for every ruling made this session (what we chose, over what, why).
+
+5. REGENERATE docs/GNI_TARGET_AND_ORDER.md — dated, superseding, NEVER appended, and
+   written to the FIXED PATH with NO session number in the filename. Include CHANGED THIS
+   REGENERATION: one line per item closed / merged / retired / re-ranked, plus a DECISION
+   line for every ruling made this session (what we chose, over what, why).
    Apply the retire clause: below the line for three regenerations = closed as accepted or
    promoted with a written reason. Dropping one silently is neither.
+   ASSERT ITEM NUMBERS ARE UNIQUE before delivering — a presence-only check has shipped a
+   duplicate before. State the expected count IN ADVANCE, then grep.
+
 6. DECLARE next session's mission, from the TOP of the regenerated order.
+
 7. Build docs/HANDOFF_S{N}.md from Protocol Part B. Caps are HARD. STATE ONLY, no queue.
+   This file IS session-numbered — that is the one filename that carries a number.
+
 8. TRAPS: promote each durable trap into docs/GNI_RULES.md with an ID, or give it an expiry
    condition and keep it. No trap rides forward unchanged twice.
+
 9. RULES: append only what S{N} EARNED (1-3 lines each, with ID, no number gaps).
+   BEFORE claiming a gap or a count, check BOTH ID schemes — GNI_RULES.md carries
+   `GNI-R-###` and `R-S##-#`, and a grep for one scheme is blind to the other. A count that
+   sees only half the register has invented a hole. And before minting a NEW number, search
+   the register for an existing rule that already says it — amend that one instead. Lens
+   paid for re-minting a rule it already had.
+
 10. CONTRACT.md: edit ONLY if a rule of engagement changed. Log it in the version log.
-11. Diary: <=10 lines, only if the session earned it.
-12. End by printing the LOAD CHECK block. Then stop — no summary essay after it.
+    One earned rule does not justify a version bump; RULES is its home.
+
+11. PROTOCOL: if a rule of engagement changed, sweep THIS FILE too (R-S82-4) and regenerate
+    it. A template that still encodes the old rule will restore it by itself.
+
+12. Diary: <=10 lines, only if the session earned it.
+
+13. DELIVERY: long documents go out as DOWNLOADS, never heredocs — they contain literal
+    backticks. Name each file exactly as it must land in the repo. Do NOT emit `cp` commands
+    with invented source paths. James places them; Claude then verifies BY BYTES
+    (`stat -c%s` repo vs Downloads, side by side) — never by `ls` succeeding.
+
+14. End by printing the LOAD CHECK block. Then stop — no summary essay after it.
 ```
 
-## PART D — STANDARD OPENING PROMPT (paste at session start)
+---
+
+## PART D — STANDARD OPENING PROMPT (paste at session start; v3)
 
 ```
 OPEN S{N+1}, my buddy — warm as always, lean on tokens.
+
 0. The handoff is ATTACHED (container is empty; repo is private — never try to clone).
-1. Read docs/HANDOFF_S{N}.md ONCE, carefully. Then read docs/GNI_TARGET_AND_ORDER.md —
-   that file holds the declared mission and the ranked order. If this is a new model's
-   first GNI session, also read docs/CONTRACT.md (attached in that case).
-2. Echo ONLY the LOAD CHECK block. Max 12 lines total.
-3. Do NOT re-explain history, re-audit closed items, or re-derive a queue — the order file
+
+1. FIRST BLOCK, before any reading: establish WHEN and WHERE you are.
+   `date -u` AND `date` · `git status --short` · `git rev-parse HEAD` ·
+   `git ls-remote origin -h refs/heads/main`.
+   Never state a clock position, an elapsed time, or "the next run is due about now" from
+   turn count or from memory. Read the clock in the same block as the claim.
+
+2. Read docs/GNI_Session_Transfer_Protocol.md (this file). Part C is the close and it is
+   invoked by name later — it is NOT pasted. Then read docs/HANDOFF_S{N}.md ONCE, carefully.
+   Then read docs/GNI_TARGET_AND_ORDER.md — that file holds the declared mission and the
+   ranked order. If this is a new model's first GNI session, also read docs/CONTRACT.md.
+
+3. The handoff's HEAD line is STALE BY CONSTRUCTION — it was written before its own close
+   commit existed. `ls-remote` is the truth; a mismatch is expected, not a loss.
+
+4. COUNT WHAT RAN WHILE NOBODY WAS WATCHING. List MAD runs since the handoff's date and say
+   how many carry unread evidence. A gap is a GIFT: it converts a two-sample ruling into a
+   distribution, and it has already done so once.
+   `gni_mad.yml` carries BOTH the debate and the 11:13 grounding-watch — distinguish them by
+   the presence of `ARB-FIT`, never by time alone.
+   Judge NOVELTY BY RUN ID against the ids already read. A content grep proves the log has
+   content, not that the run is new; `-L 1` will hand back a run you have already read and
+   every content check will pass.
+
+5. Echo ONLY the LOAD CHECK block. Max 12 lines total.
+
+6. Do NOT re-explain history, re-audit closed items, or re-derive a queue — the order file
    IS the queue. Handoff claims are LEADS; BEV before acting on any of them.
-4. WORK THE TOP OF THE ORDER. Not the newest finding, not the most interesting one.
+
+7. WORK THE TOP OF THE ORDER. Not the newest finding, not the most interesting one.
    FRESHNESS CONFERS NO PRIORITY. If you believe the order is wrong, say so and propose a
    re-order — do not silently work something else.
-5. Then wait for my go.
+
+8. Then wait for my go.
 ```
 
 ---
@@ -136,6 +206,8 @@ OPEN S{N+1}, my buddy — warm as always, lean on tokens.
    the right state in 5 lines.
 7. **Being wrong is recorded** — the WRONG section makes correction a normal artifact of a
    session instead of something quietly overwritten.
+8. **The prompts can't drift (v3)** — they live in ONE place and are read from the repo, so a
+   remembered or pasted variant can be compared against the bytes and the difference caught.
 
 ## PART F — EXPECTED SAVINGS
 Old: close ~8-12K output + open ~30-40K input + ~2-3K re-explanation.
@@ -146,10 +218,19 @@ and buys the only thing that stops the list growing by construction.
 ## VERSION LOG
 - v1 — S55 (2026-07-06). Born with the Transfer Protocol; queue lived in the handoff.
 - v2 — S82 (2026-08-17). Rebuilt against CONTRACT v4/v5 after a full read showed the prompts
-  had never been updated: Part B's `QUEUE (<=25)` removed (it contradicted v4 and would have
-  restored the queue by template alone) and replaced by an ORDER pointer, plus new WRONG and
-  expiring-TRAPS sections; Part C rewritten from 4 steps to 12, now the order-regenerating
-  close the loop-hole diagnosis calls for; Part D now reads the order file and states
-  work-the-top / freshness-confers-no-priority; Part A gains the order file, fixes the
-  `GNI_RULES.md` path to `docs/`, and marks `STATUS.md` a fossil. Mirrored from Project Lens
-  by reference-and-mirror, never blind copy; logged on both sides.
+  had never been updated: Part B's `QUEUE (<=25)` removed and replaced by an ORDER pointer,
+  plus new WRONG and expiring-TRAPS sections; Part C rewritten from 4 steps to 12; Part D now
+  reads the order file and states work-the-top / freshness-confers-no-priority; Part A gains
+  the order file, fixes the `GNI_RULES.md` path to `docs/`, and marks `STATUS.md` a fossil.
+- v3 — S83 (2026-08-24). **The close stops being pasted.** Part D step 2 now reads THIS FILE,
+  and Part C is invoked by name, closing the dual-source-of-truth hole that let Lens's pasted
+  close prompt silently lose two clauses. Part A gains the FIXED PATH vs SESSION-NUMBERED
+  rule (Lens shipped a numbered order to its fixed path and would have opened on the stale
+  one). Part D gains a clock-and-HEAD first block (S83 twice stated a schedule position from
+  turn count, and mistook a six-day gap for minutes), an unread-run count with the
+  debate-vs-grounding-watch distinction, and NOVELTY BY RUN ID (S83's content-grep guard
+  passed on a run already read). Part C gains: wrongness covers Claude's own instruments;
+  the order goes to the FIXED path; item numbers asserted unique with counts stated in
+  advance; the register's TWO ID schemes must both be checked before claiming a gap, and an
+  existing rule amended rather than re-minted; one rule does not justify a CONTRACT version;
+  a protocol sweep step; and delivery-by-download with byte verification.
