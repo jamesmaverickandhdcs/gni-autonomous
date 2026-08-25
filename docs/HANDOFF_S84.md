@@ -71,7 +71,7 @@ NEXT SESSION'S MISSION is declared at the top of that file.
 ## 7. LOAD CHECK — next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = the S84 docs commit (verify by ls-remote; `5a20277` was HEAD before it) TREE CLEAN
 TARGET = TRUTHFULNESS OF OUTPUT; MISSION = ROOT 1 — harvest ARB-DRYRUN n>=3, then ship the 1.3 fix
-ORDER = `docs/GNI_TARGET_AND_ORDER.md` generation 4 is the queue — regenerate, never fold forward
+ORDER = `docs/GNI_TARGET_AND_ORDER_S84.md` (highest number = live) is the queue — regenerate, never fold forward
 TRAP = `gh run view --log` fails on this network AND `2>&1` hides it; `wc -l` before any grep
 FIRST MOVE = `date -u` + git status + ls-remote; then count unread DRYRUN runs by RUN ID
 
