@@ -30,6 +30,24 @@ BIRD-EYE (GNI-R-037) -> DEEP ANALYSIS -> SWOT if architectural -> PROPOSE (lette
 - CLOSE IS A CHECKPOINT, NOT A HARD STOP (v5 ruling): work may continue after a close, but ONLY if the order is regenerated again before the session ends and the amendment is logged in the next CHANGED THIS REGENERATION. An unlogged amendment to a closed session is the loop restarting under a different name. *(James to confirm or flip; recorded as Claude's lean pending his word.)*
 - Begin close at ~80% context OR 2nd compaction. James works marathons and self-reports state accurately.
 
+## CLOSE DELIVERY (v6 - ruled by James at the S84 close)
+- EVERY file a close produces is SESSION-NUMBERED, in the download AND in the repo:
+  `HANDOFF_S{N}.md`, `GNI_TARGET_AND_ORDER_S{N}.md`, `CONTRACT_S{N}.md`, `GNI_RULES_S{N}.md`,
+  `GNI_Session_Transfer_Protocol_S{N}.md`. No bare names, no renaming on copy, no exceptions.
+  James copies them into `docs/` exactly as delivered and ATTACHES the same set at the next
+  open. Filename negotiation at close is BANNED - it has cost tokens session after session
+  and buys nothing.
+- **THE LIVE FILE IS THE HIGHEST SESSION NUMBER.** That is the entire disambiguation rule.
+  `docs/` carries the history in plain sight instead of only inside `git log -p`.
+- FAIL-LOUD BY DESIGN: a numbered file that never got copied is VISIBLY ABSENT, while a
+  fixed-path file whose copy silently failed keeps serving stale content under exactly the
+  right name. The S84 close hit the second failure twice before `stat` caught it.
+- The close ENDS WITH A FILE MANIFEST - every file produced, with its byte size. That manifest
+  IS the completeness check. **A later session that needs to know whether it has the full set
+  re-reads the END OF THE PREVIOUS SESSION'S RECORD** - never a directory listing, never a
+  guess, never a question back to James.
+- Verification stays BY BYTES (`stat -c%s` both sides), never by `ls` succeeding, and
+  `git status --short` must print NOTHING before the LOAD CHECK is issued.
 ## TONE
 Warm long-term partnership ("my buddy", the fist-bump), rigorous underneath. Answer first, cut preamble. One-question rule. Honest leans, honest self-critique. Celebrate real wins; own mistakes plainly and fix them.
 
@@ -51,3 +69,12 @@ Warm long-term partnership ("my buddy", the fist-bump), rigorous underneath. Ans
 - v3 - S80 (2026-07-24): Claude economy rule. **KEPT AT v5 as a model-agnostic principle** in CORE DISCIPLINE - the principle is a rule of engagement; the model names in it were state.
 - v4 - S81 (2026-08-17): target/order separation adopted. MISSION stays here; CURRENT TARGET and WORKING ORDER move to docs/GNI_TARGET_AND_ORDER.md (fixed path). Discovery policy, one-mission-per-session, same-session-fix bar, routing, retire clause and phase transition added. Mirrored from Project Lens by reference-and-mirror, never blind copy - Lens adopted GNI CONTRACT v3's shared discipline the same way, and both sides log the mirror.
 - v5 - S82 (2026-08-17): second-pass adoption of the Lens transfer, from the two documents read IN FULL rather than from a summary. Added: the wrongness ledger at close (M1) · traps promote-or-expire (M2) · decisions homed in the order file with the no-fifth-document cost accepted in writing (M3) · close-is-a-checkpoint ruling, pending James's confirmation (M4) · roster evicted from law, economy principle de-rostered and kept (M5) · prompts cited BY PATH as artifacts (Parts C/D) instead of named as folklore · the sibling sweep extended to templates · measurement-dumps-everything, stopgap-never-closes-a-root, and the two non-trigger rationalisations, all stated in GNI's own terms against GNI's own evidence.
+- v6 - S84 (2026-08-25): CLOSE DELIVERY added; ruled by James. Every close artifact is
+  session-numbered in the repo as well as in the download, the live file is the highest number,
+  and the close ends with a FILE MANIFEST that a later session re-reads to check completeness.
+  This REVERSES Protocol v3's fixed-path rule, and Protocol was swept to v4 the same close
+  (R-S82-4). The reversal is justified by a fact v3 overlooked: no session reads the repo - it
+  is private and the container is empty, so every file arrives as an attachment. v3 protected
+  a read that never happens. It also inverts the failure mode in the safe direction: a missing
+  numbered file is visible, a silently-failed fixed-path copy is not. Supersedes DECISION
+  S84-4's "no Protocol v4".

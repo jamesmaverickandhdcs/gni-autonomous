@@ -1,8 +1,7 @@
 # GNI TARGET + WORKING ORDER
-**FIXED PATH — `docs/GNI_TARGET_AND_ORDER.md`. Always this path. Archived orders get descriptive
-names; only the live one keeps the path, so no session ever hunts for the current version.
-NEVER put a session number in this filename (Protocol v3 Part A).**
-
+**SESSION-NUMBERED BY DESIGN (Protocol v4).** This file ships and lands as
+`docs/GNI_TARGET_AND_ORDER_S{N}.md`. **THE LIVE ORDER IS THE HIGHEST SESSION NUMBER.**
+Every close artifact carries its number; nothing is renamed on copy.
 GENERATED: 2026-08-25 (S84 close) · SUPERSEDES: the S83-close generation · HEAD `5a20277`
 GENERATION: 4
 
@@ -319,6 +318,22 @@ the new count above.
 
 ---
 
+**DECISION S84-6 (post-close amendment, logged per CONTRACT v5's checkpoint rule):** EVERY
+close artifact is session-numbered, in the repo as well as the download, and the live file is
+the HIGHEST NUMBER. Ruled by James. Why: filename negotiation at close has burned tokens across
+many sessions and buys nothing. Claude first argued for renaming fixed-path files on copy and
+was WRONG - v3's rule exists to stop the opening prompt reading a stale literal path, but no
+session reads the repo at all; it is private, the container is empty, and every file arrives as
+an attachment. The failure also inverts in the safe direction: a missing numbered file is
+visible, a silently-failed fixed-path copy is not, and S84 hit exactly that twice. Completeness
+is now checked by re-reading the END of the previous session's record, where the close prints a
+FILE MANIFEST. **Supersedes DECISION S84-4.** Shipped as CONTRACT v6 + Protocol v4.
+
+**AMENDS THIS REGENERATION (checkpoint rule, not a silent edit):** the S84 close continued past
+its own LOAD CHECK to ship the above. Three strays were removed from `docs/` and
+`docs/HANDOFF_S83.md` was restored with `git checkout --`; the restored copy carries the
+wrongness row "R-S81-3 is the wrong rule to amend -- I RETRACTED A CORRECT CLAIM", which the
+working draft had silently dropped.
 ## HOW THIS FILE IS MAINTAINED
 1. **FIND** — record every weak point with its evidence immediately, whatever the mission.
 2. **CLASSIFY** — a silent live failure is urgent under any target. Everything else ranks by

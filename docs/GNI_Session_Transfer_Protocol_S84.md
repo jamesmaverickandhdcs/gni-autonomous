@@ -1,4 +1,4 @@
-# GNI SESSION TRANSFER PROTOCOL v3
+# GNI SESSION TRANSFER PROTOCOL v4
 **Purpose:** lossless session-to-session transfer at ~25-35% of the old token cost.
 **Principle:** every fact lives in ONE file (SSOT); the handoff carries STATE only; the ORDER carries work; caps force density.
 **This file is a TEMPLATE, and a template is law that executes itself next session.** v1 said it was "written once and never regenerated" and then sat unread for 27 sessions while the contract changed underneath it. It is regenerated whenever a rule of engagement changes (R-S82-4).
@@ -18,11 +18,21 @@
 | `docs/DIARY.md` | Feelings/reflection (optional) | Append <=10 lines, only if the session earned it | 10/entry |
 | `docs/AUDIT_S{N}.md` | Deep archive | ONLY milestone sessions | n/a |
 
-**FIXED PATH vs SESSION-NUMBERED — get this right or the next session reads a fossil (v3).**
-- **Session-numbered BY DESIGN:** `HANDOFF_S{N}.md`. There is one per session and they accumulate; that is the history.
-- **FIXED PATH, NEVER numbered:** `CONTRACT.md`, `GNI_RULES.md`, `GNI_TARGET_AND_ORDER.md`, this protocol. The opening prompt names these paths literally, so a numbered copy leaves the STALE file sitting where the next session will read it. Archived orders get a descriptive name under `docs/archive/`; only the live one keeps the path. Versioning comes from `git log -p`, not from filenames.
-- Lens shipped a session-numbered order to its fixed path in August and would have opened its next session on the superseded file. Do not repeat it.
-
+**EVERY CLOSE ARTIFACT IS SESSION-NUMBERED (v4) - this REVERSES v3's fixed-path rule.**
+- `HANDOFF_S{N}.md`, `GNI_TARGET_AND_ORDER_S{N}.md`, `CONTRACT_S{N}.md`, `GNI_RULES_S{N}.md`,
+  `GNI_Session_Transfer_Protocol_S{N}.md` - all of them, download and repo alike, copied under
+  the name they were delivered with. No renaming step exists any more.
+- **THE LIVE FILE IS THE HIGHEST SESSION NUMBER.** That is the whole disambiguation rule.
+- WHY v3 WAS WRONG HERE: it forbade numbering because "the opening prompt names these paths
+  literally, so a numbered copy leaves the STALE file where the next session will read it."
+  But NO SESSION READS THE REPO. It is private, the container is empty, and every file reaches
+  a session because James ATTACHES it. v3 protected a read that never happens, and charged a
+  filename negotiation at every close for the privilege.
+- The failure v3 feared INVERTS under numbering: a numbered file that was never copied is
+  VISIBLY ABSENT, while a fixed-path file whose copy silently failed keeps serving stale
+  content under exactly the right name - which happened twice at the S84 close.
+- COMPLETENESS IS CHECKED BY RE-READING THE END OF THE PREVIOUS SESSION'S RECORD, where the
+  close printed its FILE MANIFEST. Not by a directory listing. Not by asking.
 **LAW-VS-STATE TEST:** if CONTRACT.md is edited most sessions, target-level or state-level content has leaked into it. Run this against its VERSION LOG, not only its sections — that is where the leak hid until S82 (R-S82-5).
 
 **Retired as separate files:** Next_Session_Brief (-> HANDOFF), collaboration file (-> HANDOFF + CONTRACT), FILE_UPDATES bundles (-> each file updated directly, once). `STATUS.md` was retired at v1 but still sits in `docs/` frozen at S46 (2026-06-21) — a fossil, not a source. Delete or archive it; never read it as state.
@@ -139,12 +149,15 @@ CLOSE S{N}, my buddy.
 
 12. Diary: <=10 lines, only if the session earned it.
 
-13. DELIVERY: long documents go out as DOWNLOADS, never heredocs — they contain literal
-    backticks. Name each file exactly as it must land in the repo. Do NOT emit `cp` commands
-    with invented source paths. James places them; Claude then verifies BY BYTES
-    (`stat -c%s` repo vs Downloads, side by side) — never by `ls` succeeding.
-
-14. End by printing the LOAD CHECK block. Then stop — no summary essay after it.
+13. DELIVERY (v4): long documents go out as DOWNLOADS, never heredocs - they contain literal
+    backticks. EVERY file carries the session number, in the download and in the repo alike
+    (`GNI_TARGET_AND_ORDER_S{N}.md`, `CONTRACT_S{N}.md`, ...). Do NOT rename on copy, do NOT
+    negotiate filenames, do NOT emit `cp` with an unverified source path. James copies them
+    into `docs/` as delivered; Claude then verifies BY BYTES (`stat -c%s` both sides), never
+    by `ls` succeeding, and requires an EMPTY `git status --short`.
+14. FILE MANIFEST, then the LOAD CHECK block, then STOP - no summary essay after either. The
+    manifest lists EVERY file this close produced with its byte size, because it is what a
+    later session re-reads to confirm it has the full set.
 ```
 
 ---
@@ -162,11 +175,12 @@ OPEN S{N+1}, my buddy — warm as always, lean on tokens.
    Never state a clock position, an elapsed time, or "the next run is due about now" from
    turn count or from memory. Read the clock in the same block as the claim.
 
-2. Read docs/GNI_Session_Transfer_Protocol.md (this file). Part C is the close and it is
-   invoked by name later — it is NOT pasted. Then read docs/HANDOFF_S{N}.md ONCE, carefully.
-   Then read docs/GNI_TARGET_AND_ORDER.md — that file holds the declared mission and the
-   ranked order. If this is a new model's first GNI session, also read docs/CONTRACT.md.
-
+2. The whole S{N} close set is ATTACHED - handoff, order, rules, contract, protocol, every one
+   session-numbered. Read this protocol first (Part C is the close; it is invoked BY NAME and
+   never pasted), then the handoff ONCE, carefully, then the order file, which holds the
+   declared mission and the ranked order. **THE LIVE FILE IS THE HIGHEST SESSION NUMBER.** If
+   the set looks incomplete, re-read the END of the previous session's record, where the close
+   printed its file manifest - do not ask James to hunt for it.
 3. The handoff's HEAD line is STALE BY CONSTRUCTION — it was written before its own close
    commit existed. `ls-remote` is the truth; a mismatch is expected, not a loss.
 
@@ -234,3 +248,12 @@ and buys the only thing that stops the list growing by construction.
   advance; the register's TWO ID schemes must both be checked before claiming a gap, and an
   existing rule amended rather than re-minted; one rule does not justify a CONTRACT version;
   a protocol sweep step; and delivery-by-download with byte verification.
+- v4 - S84 (2026-08-25). **Every close artifact is session-numbered; v3's fixed-path rule is
+  REVERSED.** Ruled by James after filename negotiation at close proved to be a recurring token
+  sink. Part A's FIXED PATH section replaced; Part C step 13 rewritten and step 14 gains a FILE
+  MANIFEST; Part D step 2 now says the close set is ATTACHED and the live file is the highest
+  number. The reversal rests on a fact v3 missed: no session reads the repo, so the literal
+  paths v3 protected are never read by anyone. Born from S84's own close, which reached its
+  LOAD CHECK with `docs/` holding a stray `GNI_TARGET_AND_ORDER_S83.md`, a byte-identical
+  duplicate Protocol, and a CLOSED handoff overwritten in the working tree by a pre-cap draft
+  (restored from git).
