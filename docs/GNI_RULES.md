@@ -397,3 +397,66 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   and paid for the duplicate. Before minting a number, search the register for the rule that
   already says it -- and search BOTH ID schemes, `GNI-R-###` and `R-S##-#`, since a grep for
   one is blind to the other.)*
+
+## S84 EARNED RULES (2026-08-25)
+
+- R-S84-1 (A pure function is a free simulator -- do not derive a formula you can measure):
+  Before writing a formula with a constant in it, check whether the code that produces the
+  thing is PURE. If it is, call it again with the arguments you were about to model and take
+  `len()`. S84 was about to size the arbitrator's context with an assumed ~138-char per-article
+  overhead; the byte read gave the real cost as
+  `21 + len(src) + len(title[:80]) + len(str(score)) + len(summary[:depth])`, which varies
+  114-130 chars per article with source and title length -- so every fixed-overhead formula is
+  wrong on every run. `_build_news_context` and `_assemble_arb` are pure, so ARB-DRYRUN
+  measures four candidate depths per run at zero API cost. Satisfies R-S81-5 by construction:
+  a guard value that was BUILT cannot have been hand-derived.
+
+- R-S84-2 (When two meters disagree, calibrate against the one that ENFORCES): A self-built
+  meter must read the same number the platform bills and blocks on, not the number that is
+  convenient to query. GNI's `pg_database_size` reports 93 MB; the Supabase panel reports
+  113 MB against the 500 MB quota; the ~20 MB gap is platform-side and invisible from inside
+  the database. Table-level figures agree EXACTLY (63.29 MB both ways), which is what makes the
+  disagreement dangerous -- the instrument looks correct everywhere you can check it and is
+  wrong precisely where it decides. A meter built on the internal number would have reported
+  healthy headroom while the platform returned 402 on every read. Corollary to R-S83-6: read
+  the meter -- and read the ENFORCING meter.
+
+- R-S84-3 (A conclusion that was corrected but never WRITTEN DOWN as corrected will re-form):
+  GNI-R-233 says reset to zero when corrected. S84 found the gap: a reset that lives only in a
+  session's memory is not durable, and the same wrong conclusion re-forms in a later session
+  with fresh confidence. S84 re-derived "the grounding gate is grounding against material the
+  pipeline rejected" from `weak_articles` being in the basket -- a conclusion this project had
+  already reset once, having established that score:0 -> Swan is BY DESIGN (the Johari
+  weak-signal pool). Recidivism is worse than the original error because it consumes the
+  correction's credibility. When a conclusion is reset, the reset itself is an artifact: write
+  it where the next session will read it, or expect to pay for it twice.
+
+- R-S84-4 (PROMOTED FROM A TRAP carried unchanged twice -- `gni_mad.yml` holds two flavors):
+  One workflow file runs BOTH the MAD debate and the 11:13 grounding-watch, so a run list shows
+  two kinds of run under one name. Distinguish by the presence of `ARB-FIT`, never by time
+  alone. S84 adds a second, WEAKER distinguisher observed 8/8: elapsed time separates them
+  cleanly (~18-21s watch vs 11-14m debate), and the job list shows `grounding-watch` skipping
+  in `0s` on a debate run. Use elapsed as a hint, never as the authority. Promoted rather than
+  carried a third time, per CONTRACT v5: a trap copied forward unchanged twice has become an
+  unregistered rule.
+
+## AMENDMENTS TO EXISTING RULES (no new numbers -- search before minting)
+
+- R-S81-1 (AMENDED 2026-08-25): the rule says a zero-match indicts the pattern first, and that
+  a filter returning nothing prints a blank line indistinguishable from a broken one. Amended:
+  a REDIRECTED FAILURE is not silence, and is worse, because it produces a corpus.
+  `gh run view --log > file 2>&1` writes the error message INTO the file, so the artifact
+  exists, is non-empty, opens cleanly, and reads as valid text -- while every `grep -c` against
+  it returns 0. S84 came one command away from reading "ARB-DRYRUN fired 0 times" off a
+  one-line file containing a TLS handshake timeout, and would have gone looking for a bug in a
+  correct instrument. `wc -l` BEFORE grep, on any cached or redirected artifact, always.
+
+- R-S67-2 (AMENDED 2026-08-25): the rule says verify an instrument's RANGE (caps, truncation,
+  short-circuits) before trusting its statistic. Amended: verify its EPOCH too. A cumulative
+  counter and the data it counts can start at different times.
+  `pg_stat_user_tables.stats_reset` read 2026-02-12 identically for every table in every schema
+  -- the signature of a platform-side reset, not of first insert -- while `pipeline_articles`
+  data began 2026-05-24, three hours after a TRUNCATE. Dividing live rows by the counter's
+  192-day window instead of the data's own 92-day span understated growth by 2.1x and
+  overstated the runway by 40%. A rate is rows divided by the DATA's span, never by the
+  counter's.
