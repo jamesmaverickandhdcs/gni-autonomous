@@ -58,7 +58,7 @@ export default function MethodologyPage() {
               { stage: 'Stage 1b', title: 'Injection Detection', desc: 'Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain. Flagged articles written to audit_trail table.' },
               { stage: 'Stage 2', title: 'Deduplication', desc: 'MD5 hash of first 6 title words. Articles with same hash within 6 hours are deduplicated. Prevents duplicate reporting on same event.' },
               { stage: 'Stage 3', title: 'Intelligence Funnel', desc: 'Each article scored on geopolitical significance (0-20). Top N articles selected with source diversity enforced (max 3 per source). Pillar routing: geo/tech/fin tags assigned.' },
-              { stage: 'Stage 4a', title: 'Primary Analysis + CI', desc: 'Groq llama-3.3-70b-versatile analyzes top articles. 3 independent runs at temperatures 0.1, 0.3, 0.7 generate 95% confidence intervals using t-distribution (t=4.303 for n=3).' },
+              { stage: 'Stage 4a', title: 'Primary Analysis + CI', desc: 'Groq LLM (model set by the GROQ_MODEL secret) analyzes top articles. 3 independent runs at temperatures 0.1, 0.3, 0.7 generate 95% confidence intervals using t-distribution (t=4.303 for n=3).' },
               { stage: 'Stage 4b', title: 'Three Pillar Reports', desc: 'Three separate AI analyses for Geopolitical, Technology, Financial domains. Same top articles, domain-specific prompts. Runs after 120s rate limit reset.' },
               { stage: 'Stage 5', title: 'Save + Telegram', desc: 'Report saved to Supabase reports table with SHA-256 audit chain. Telegram notification sent with escalation level, sentiment, and MAD verdict.' },
               { stage: 'Stage 6', title: 'GPVS Verify', desc: 'After verify_date passes, actual SPY market movement compared to prediction direction. Accuracy logged. Source weights updated via EMA: correct=weight×1.1, wrong=weight×0.9.' },
@@ -110,7 +110,7 @@ export default function MethodologyPage() {
             {[
               ['Python 3.10+', 'Pipeline scripts', 'main.py, mad_runner.py, monitoring_pipeline.py, adaptive_pipeline.py'],
               ['Next.js 14 + TypeScript', 'Web app + API routes', '35 pages live on Vercel'],
-              ['Groq API', 'LLM inference', 'llama-3.3-70b-versatile — 100K tokens/day free'],
+              ['Groq API', 'LLM inference', 'model set by GROQ_MODEL secret — 100K tokens/day free'],
               ['Supabase', 'PostgreSQL database', '37 tables — reports, predictions, audit_trail, groq_daily_usage...'],
               ['GitHub Actions', 'Cron + CI/CD', '4 workflows — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive'],
               ['Telegram Bot API', 'Alert notifications', 'Sacred completion, CRITICAL escalation, NYSE alerts, divergence'],
