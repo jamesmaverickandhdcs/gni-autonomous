@@ -1081,6 +1081,73 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         print('  WARNING: ARB-ARRIVAL zero articles reached the arbitrator '
               '(available=' + str(len(all_articles)) + ') -- verdict is ungrounded')
 
+    # S84 ROOT 1.4 + 1.3 -- ARB-DRYRUN. PRINT ONLY, behaviour unchanged.
+    # Assigns only _dry* locals; nothing downstream reads them. Every number is
+    # BUILT AND MEASURED (len of a real string), never derived from an assumed
+    # per-article overhead -- overhead varies with source and title length
+    # (R-S81-5). _build_news_context and _assemble_arb are pure: zero API cost.
+    # Caveat: on a ctx-trim run the last line may be a partial article, so the
+    # per-pillar arrived counts can exceed len(_arb_arr) by one -- same
+    # conservative direction as ARB-ARRIVAL's own _arb_trunc handling.
+    try:
+        _dry_r1on = len(_assemble_arb('', True, None))
+        _dry_full = len(_assemble_arb('', False, None))
+        _dry_110 = len(_assemble_arb('', False, 110))
+        _dry_room = _arb_budget_chars - _dry_110 - 40
+        _dry_scaf = _dry_110 - len(constraint_block) - len(_arb_tail)
+        print('  ARB-DRYRUN: tiers budget=' + str(_arb_budget_chars)
+              + ' ctx=' + str(len(arb_ctx_fit))
+              + ' constraint=' + str(len(constraint_block))
+              + ' R1delta=' + str(_dry_r1on - _dry_full)
+              + ' R3full_minus_110w=' + str(_dry_full - _dry_110)
+              + ' R2_R3_scaffold=' + str(_dry_scaf)
+              + ' tail=' + str(len(_arb_tail))
+              + ' ctx_room=' + str(_dry_room))
+
+        def _dry_pillars(_drys):
+            _dryout = {}
+            _drycur = '?'
+            for _dryl in _drys.split('\n'):
+                if (_dryl.startswith('[') and ' -- ' in _dryl
+                        and _dryl.endswith('articles]')):
+                    _drycur = _dryl[1:_dryl.find(' -- ')]
+                elif _dryl.startswith('  - ['):
+                    _dryout[_drycur] = _dryout.get(_drycur, 0) + 1
+            return _dryout
+
+        _dry_asm_p = _dry_pillars(arb_ctx_fit)
+        _dry_arr_p = _dry_pillars(_arb_ctx_sent)
+        print('  ARB-DRYRUN: pillars ' + ' '.join(
+            _dryk + '=' + str(_dry_arr_p.get(_dryk, 0)) + '/'
+            + str(_dry_asm_p[_dryk]) for _dryk in _dry_asm_p))
+
+        for _dry_d in (100, 50, 20, 0):
+            _dry_c = _build_news_context(report, all_articles,
+                                         agent='arbitrator', depth=_dry_d)
+            _dry_used = 0
+            _dry_fit = 0
+            _dry_fp = {}
+            _dry_cur = '?'
+            for _dry_l in _dry_c.split('\n'):
+                if (_dry_l.startswith('[') and ' -- ' in _dry_l
+                        and _dry_l.endswith('articles]')):
+                    _dry_cur = _dry_l[1:_dry_l.find(' -- ')]
+                if _dry_used + len(_dry_l) + 1 > _dry_room:
+                    break
+                _dry_used += len(_dry_l) + 1
+                if _dry_l.startswith('  - ['):
+                    _dry_fit += 1
+                    _dry_fp[_dry_cur] = _dry_fp.get(_dry_cur, 0) + 1
+            print('  ARB-DRYRUN: greedy depth=' + str(_dry_d)
+                  + ' ctx_len=' + str(len(_dry_c))
+                  + ' fits=' + str(_dry_fit) + '/' + str(len(_arb_asm))
+                  + ' chars=' + str(_dry_used) + '/' + str(_dry_room)
+                  + ' pillars=' + ','.join(
+                      _dryk + ':' + str(_dry_fp.get(_dryk, 0))
+                      for _dryk in _dry_asm_p))
+    except Exception as _dry_e:
+        print('  ARB-DRYRUN skipped: ' + str(_dry_e)[:80])
+
     arb_final_raw = _call_arbitrator(ARB_FINAL, arb_final_user, 600, expect_json=True)
 
     # SEAM 3 (S61 SHADOW -- OBSERVE/LOG ONLY, ratified): grounding gate on the
