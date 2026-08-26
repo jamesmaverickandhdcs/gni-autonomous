@@ -982,7 +982,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
     # with the agent set above) is superseded here for the arb call only.
     ARB_MIN_OUT = 2500
     arb_ctx_fit = _build_news_context(report, all_articles, agent='arbitrator',
-                                      depth=min(_depth, 100))
+                                      depth=0)  # S85 ROOT 1.3: breadth over depth, DECISION S83-1
 
     # NN-5 (logic unchanged, moved pre-fit so constraints are INSIDE the budget).
     _hard_constraints = []
@@ -1043,7 +1043,7 @@ def run_mad_protocol(report: dict, all_articles: list = None,
         _fit_steps.append('ctx-trim@' + str(_keep))
         arb_final_user = _assemble_arb(
             arb_ctx_fit[:_keep] + '\n[ctx trimmed to fit]\n', False, 110)
-    print('  ARB-FIT: ctx_depth=' + str(min(_depth, 100))
+    print('  ARB-FIT: ctx_depth=' + str(0)
           + ' est=' + str((len(ARB_FINAL) + len(arb_final_user)) // 3)
           + '/' + str(7500 - ARB_MIN_OUT)
           + ' steps=' + (','.join(_fit_steps) if _fit_steps else 'none'))
