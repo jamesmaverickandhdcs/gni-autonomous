@@ -307,6 +307,12 @@ def run_pipeline():
         report['escalation_score'] = escalation['escalation_score']
         report['escalation_level'] = escalation['escalation_level']
         report['combo_bonus'] = escalation.get('combo_bonus', 0)
+        # R-S82-2: publish EVERY field the scorer computes, not the three we happened to need
+        report['pillar_scores']   = escalation.get('pillar_scores', {})
+        report['active_pillars']  = escalation.get('active_pillars', 0)
+        report['signals_found']   = escalation.get('signals_found', {})
+        report['score_breakdown'] = escalation.get('score_breakdown', {})
+        report['factors']         = escalation.get('factors', [])
         recommended_interval = get_recommended_interval(escalation['escalation_level'], escalation['escalation_score'])
         log_frequency_decision(escalation['escalation_score'], escalation['escalation_level'], recommended_interval, f"Escalation {escalation['escalation_level']} {escalation['escalation_score']}/10")
         print(f"   ?  Next run recommended in {recommended_interval:.1f}h ({escalation['escalation_level']})")
