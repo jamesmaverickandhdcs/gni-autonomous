@@ -20,6 +20,7 @@ interface PromptVariant {
 
 interface EscalationData {
   escalation_score: number
+  escalation_score_raw: number | null
   escalation_score_lower: number | null
   escalation_score_upper: number | null
   title: string
@@ -173,9 +174,9 @@ export default function AutonomyPage() {
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-blue-400">
-                      {health.latest_escalation.escalation_score_lower?.toFixed(1) ?? '--'}
+                      {health.latest_escalation.escalation_score_raw?.toFixed(1) ?? '--'}
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">Lower Bound</div>
+                    <div className="text-xs text-gray-500 mt-1">Raw Magnitude (uncapped)</div>
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-orange-400">

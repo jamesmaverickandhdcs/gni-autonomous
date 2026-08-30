@@ -160,6 +160,7 @@ def save_report(report: dict, articles: list[dict], quality_score: float = 0, qu
             "mad_arb_feedbacks": report.get("mad_arb_feedbacks", {}),
             "escalation_score": float(report.get("escalation_score", 0.0)),
             "escalation_level": report.get("escalation_level", ""),
+            "escalation_score_raw": float((report.get("score_breakdown") or {}).get("raw_score", report.get("escalation_score", 0.0))),
             "combo_bonus": float(report.get("combo_bonus", 0.0)),
             "deception_level": report.get("deception_level", ""),
             "weakness_identified": report.get("weakness_identified", ""),

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     // Latest report
     const { data: reports } = await supabase
       .from('reports')
-      .select('id,title,summary,sentiment,sentiment_score,escalation_score,escalation_level,mad_verdict,mad_confidence,mad_action_recommendation,mad_blind_spot,tickers_affected,risk_level,created_at')
+      .select('id,title,summary,sentiment,sentiment_score,escalation_score,escalation_score_raw,escalation_level,mad_verdict,mad_confidence,mad_action_recommendation,mad_blind_spot,tickers_affected,risk_level,created_at')
       .order('created_at', { ascending: false })
       .limit(1)
     const latest = reports?.[0] || null
