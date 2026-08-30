@@ -38,8 +38,8 @@ def div(h, sub=None):
     a = sum(1 for p in P if (sub[p] if sub else h[p]))
     return (a - 1) * 1.5 if a > 1 else 0
 def level(s):
-    return ('CRITICAL' if s >= 8 else 'HIGH' if s >= 6 else 'ELEVATED' if s >= 4
-            else 'MODERATE' if s >= 2 else 'LOW')
+    return ('CRITICAL' if s >= 9 else 'HIGH' if s >= 7 else 'ELEVATED' if s >= 5
+            else 'MODERATE' if s >= 3 else 'LOW')
 
 def d_live(t):
     h = hits(t); return sum(min(len(h[p])*W[p], CAP[p]) for p in P) + div(h) + combo(t)
@@ -60,7 +60,10 @@ GRAVEYARD = [
     ("rupture-tier   invasion/war weighted", d_rupture),
 ]
 # ---- ADD YOUR DESIGN HERE: ("my design", my_fn) ----------------------------
-CANDIDATES = []
+def d_nocease(t):
+    h = hits(t, frozenset(['ceasefire']))
+    return sum(min(len(h[p])*W[p], CAP[p]) for p in P) + div(h) + combo(t)
+CANDIDATES = [("8.7 polarity   drop ceasefire ONLY", d_nocease)]
 
 def load():
     c = get_client(); assert c, "NO CLIENT -- STOP"
