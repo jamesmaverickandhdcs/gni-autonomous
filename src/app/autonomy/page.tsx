@@ -186,7 +186,7 @@ export default function AutonomyPage() {
                   </div>
                 </div>
                 <div className="text-xs text-gray-600 text-center">
-                  Score breakdown and signal evidence stored in pipeline — visible in Transparency page
+                  Final score is capped at 10 and has been at the cap on every measured run. Raw magnitude is the uncapped signal.
                 </div>
               </div>
             )}
