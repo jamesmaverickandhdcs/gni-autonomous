@@ -122,6 +122,8 @@ Each line is an INDEX ENTRY. The rule is its full text in PART 3.
 - **R-S81-3** Absolute allotments, never leftover budgeting — *and count DISTINCT IDENTITY, not rows* (2026-08-24 amendment).
 - **R-S87-1** An ABSOLUTE threshold cannot measure a PRE-SELECTED set — ask WHO SELECTED the set being scored.
 - **R-S88-5** A pillar at its CAP cannot be moved by editing its word list; measure headroom before proposing any list edit.
+- **R-S90-4** A rule invoked to defer ONE item binds every item of the same class in the same session.
+- **R-S90-2** An id cited by a live document is law only if the register holds it; a citation followed by inferred meaning is a banked pointer.
 - **R-S82-3** A stopgap never closes a root. **R-S69-2** a deferral without an instrument is a debt that launders itself into fact.
 - **Before minting a rule number**, search BOTH ID schemes — a grep for one is blind to the other (S83 amendment note).
 
@@ -145,7 +147,7 @@ Each line is an INDEX ENTRY. The rule is its full text in PART 3.
 - **R-S89-3** A newly added column renders the SAME empty marker a failed ship would. Name the run that will clear it.
 - **R-S86-5** A refuted prediction may be naming a missing CONDITION, not a wrong fix — diff the runs for the variable that moved.
 - **R-S54-4** The browser is the only live-verify. **R-S60-1** hard-refresh first; a stale bundle mimics a code bug perfectly.
-- **NEW, S90 — A CERT MUST DISCRIMINATE.** Before reading a page as proof, ask what it would look like if the change had NOT shipped. `/autonomy` renders `30 min` from the hardcoded map and from the measured `0.5` identically, so the screenshot certified nothing. A cert whose PASS and FAIL states are visually identical is a ceremony (kin of R-S85-6 and R-S89-3).
+- **R-S90-1 — A CERT MUST DISCRIMINATE.** Before reading a page as proof, ask what it would look like if the change had NOT shipped. `/autonomy` renders `30 min` from the hardcoded map and from the measured `0.5` identically, so the screenshot certified nothing. A cert whose PASS and FAIL states are visually identical is a ceremony (kin of R-S85-6 and R-S89-3).
 
 ## TRIGGER 7 — I am about to DELETE, RETIRE, OR CALL SOMETHING DEAD
 - **R-S89-2** "No query filters on it" is not "nobody needs it" — find the PUBLISHED CLAIM the data supports first.
@@ -163,6 +165,8 @@ Each line is an INDEX ENTRY. The rule is its full text in PART 3.
 - **R-S62-2** Any placeholder is loudly marked; James runs commands verbatim.
 - **R-S67-1** When a change spans code and live state, hand over NUMBERED GATES with the code push explicitly first — paste order becomes system state.
 - **R-S62-1** Claude Code tasks get a post-run mechanical verification block and a one-command revert path.
+- **R-S90-3** A REVISED procedure must re-emit its preconditions; one left in the superseded message is not part of the block.
+- **R-S78-1 (amended S90)** A receipt proves the WRITE, not the VALUE — dispatch and grep the env dump for `***`.
 - **R-S65-2** Executor diffs get chat clearance BEFORE the git trigger, every time.
 
 ## TRIGGER 9 — I am about to say something about TIME, SCHEDULES, OR RUNS
@@ -963,3 +967,66 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   `ee813c0` until a pipeline run writes the first row — the identical `--` the never-written
   Lower Bound showed for months. State this in the ship note, name the run that will clear it,
   and never read the marker as evidence either way until that run exists.
+
+---
+
+## S90 EARNED RULES (2026-08-31)
+
+**R-S90-1** — A CERT MUST DISCRIMINATE. Before reading any output as proof, ask what it would
+look like if the change had NOT shipped. `/autonomy` renders `30 min` identically from the
+hardcoded map and from the measured `0.5`, so the browser certified nothing; 9.9 and 9.10 are
+shipped-not-certified for that reason alone. A cert whose PASS and FAIL states are
+indistinguishable on live data is a ceremony. Kin of R-S85-6 and R-S89-3, and the reason 8.5
+became the S91 mission: the system's own constant makes verification impossible.
+
+**R-S90-2** — An ID cited by a live document is law ONLY if the register contains it. S90
+measured eight IDs cited by CONTRACT / order / handoff / protocol that appear in no
+`GNI_RULES` file, and two of them — `GNI-R-037`, `GNI-R-076` — were being obeyed with each
+other's meanings for 35 sessions, because both inferred meanings happened to be good practice.
+A citation followed from inferred meaning is a banked pointer (R-S54-2) wearing the clothes of
+law. Standing check at every close, five seconds:
+`for id in $(cat <live docs> | grep -oE 'GNI-R-[0-9]+|R-S[0-9]+-[0-9]+|LR-[0-9]+' | sort -u); do grep -q -- "$id" GNI_RULES_S*.md || echo "CITED BUT NOT REGISTERED: $id"; done`
+
+**R-S90-3** — When a procedure is REVISED mid-session, re-emit its PRECONDITIONS with it. S90
+wrote a keyfile rotation whose step 1 was "create the key in the dashboard and copy it", then
+replaced the mechanism after finding the real ritual in the record and shipped only the three
+commands — the precondition stayed in the superseded message. With no key in hand, a bare
+Enter at the hidden prompt wrote an EMPTY secret, printed `✓ Set`, and took `gni_pipeline`
+down. R-S79-1 forbids shipping a gate apart from its block; this is its mirror — a revision
+that silently drops one.
+
+**R-S90-4** — A rule invoked to DEFER one item binds every item of the same class in the same
+session. S90 cited `LR-104` (production/schema/credential work needs a session opening, not a
+tail) to defer item 3.2, and then, ten minutes later, urged a credential rotation that the
+same rule covers. This is not forgetfulness; it is applying a rule as an argument for one
+decision instead of as a constraint on all of them. When you reach for a rule to justify a
+"no", check what else in view it says no to.
+
+## AMENDMENTS TO EXISTING RULES (no new numbers — search before minting)
+
+**R-S57-1 — SECOND AMENDMENT (S90).** The rule's own first sentence says line endings are
+per-file AND PER-REGION; five later rules quietly narrowed it to per-file, and S90 read the
+narrowed version. A single ten-line block in `autonomy/page.tsx` held THREE `\n` lines
+followed by seven `\r\n` lines, so a multi-line anchor joined with either newline matched
+zero times — twice, in two consecutive attempts. **The correct form: locate a multi-line
+region STRUCTURALLY — match the first line, scan forward to the closing token — and never
+join remembered text with any newline at all.** Single-line anchors remain immune and are
+always preferred. This is CLUSTER A's tenth rule and its second live failure in one session;
+the cluster, not the rule, is what must be read.
+
+**R-S78-1 — AMENDMENT (S90).** The rule requires reading back the "Updated now" timestamp
+before trusting a secret write. S90 did exactly that and was still wrong: the timestamp proves
+a WRITE occurred, never WHAT was written, and `gh secret set` prints `✓ Set` for an empty
+paste. **The discriminating check costs one dispatch: a workflow's env block prints
+`GROQ_API_KEY: ***` when the secret is set and `GROQ_API_KEY: ` when it is empty, so
+`gh run view <id> --log | grep -m1 'GROQ_API_KEY:'` distinguishes the two states that the
+receipt cannot.** R-S68-2 said a log can prove a secret is SET but not what it contains — this
+is the seam inside that rule: SET vs EMPTY is exactly what the log CAN prove, and it is the
+only failure mode a rotation actually has.
+
+**R-S81-5 — INSTANCE (S90), no amendment needed.** The rule already says a guard's expected
+count is DERIVED from the edit list, never hand-counted. S90 copied `formatInterval == 3` from
+the `/autonomy` patch into the `/health` patch, where one render site rather than two makes 2
+correct; the assert aborted before any bytes were written. The rule worked. Recording the
+instance because the same session ALSO hand-counted "62 unique item ids" for the order file
+when the measured answer was 60 — same error, a document instead of a patch.
