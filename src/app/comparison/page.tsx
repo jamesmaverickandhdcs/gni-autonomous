@@ -281,9 +281,9 @@ export default function ComparisonPage() {
                         <span className="text-gray-500">Escalation Level</span>
                         <span className={`font-bold ${escalationColor(latest.escalation_score)}`}>
                           {latest.escalation_level?.toUpperCase() ||
-                            (latest.escalation_score >= 8 ? 'CRITICAL' :
-                             latest.escalation_score >= 6 ? 'HIGH' :
-                             latest.escalation_score >= 4 ? 'ELEVATED' : 'MODERATE')}
+                            (latest.escalation_score >= 9 ? 'CRITICAL' :
+                             latest.escalation_score >= 7 ? 'HIGH' :
+                             latest.escalation_score >= 5 ? 'ELEVATED' : latest.escalation_score >= 3 ? 'MODERATE' : 'LOW')}
                         </span>
                       </div>
                       <div className="flex justify-between text-xs">

@@ -36,12 +36,14 @@ interface HealthData {
   latest_escalation: EscalationData | null
 }
 
-// Derive level label from escalation_score (FT-11: no escalation_level column in DB)
+// Fallback level label, mirroring escalation_scorer.py:118-127 (9/7/5/3).
+// The DB DOES store escalation_level (supabase_saver.py:162); preferring it
+// here is item 9.10, deferred until ee813c0 is certified. FT-11 was false.
 function scoreToLevel(score: number): string {
-  if (score >= 8) return 'CRITICAL'
-  if (score >= 6) return 'HIGH'
-  if (score >= 4) return 'ELEVATED'
-  if (score >= 2) return 'MODERATE'
+  if (score >= 9) return 'CRITICAL'
+  if (score >= 7) return 'HIGH'
+  if (score >= 5) return 'ELEVATED'
+  if (score >= 3) return 'MODERATE'
   return 'LOW'
 }
 
