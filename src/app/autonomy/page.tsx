@@ -8,6 +8,7 @@ interface FrequencyEntry {
   run_at: string
   escalation_score: number
   recommended_interval_hours: number
+  escalation_level: string
   reason: string
 }
 
@@ -36,16 +37,10 @@ interface HealthData {
   latest_escalation: EscalationData | null
 }
 
-// Fallback level label, mirroring escalation_scorer.py:118-127 (9/7/5/3).
-// The DB DOES store escalation_level (supabase_saver.py:162); preferring it
-// here is item 9.10, deferred until ee813c0 is certified. FT-11 was false.
-function scoreToLevel(score: number): string {
-  if (score >= 9) return 'CRITICAL'
-  if (score >= 7) return 'HIGH'
-  if (score >= 5) return 'ELEVATED'
-  if (score >= 3) return 'MODERATE'
-  return 'LOW'
-}
+// No score->level ladder lives here. escalation_level is READ from frequency_log,
+// written by frequency_controller.py:104. Item 9.10 (S90) - this was the last
+// frontend copy of the 9/7/5/3 ladder. A blank level hides the card rather than
+// publishing a derived guess; that is deliberate.
 
 export default function AutonomyPage() {
   const [health, setHealth] = useState<HealthData | null>(null)
@@ -80,7 +75,7 @@ export default function AutonomyPage() {
   ]
 
   const latest = health?.frequency_log?.[0]
-  const latestLevel = latest ? scoreToLevel(latest.escalation_score) : null
+  const latestLevel = latest?.escalation_level || null
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -199,7 +194,7 @@ export default function AutonomyPage() {
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Recent Frequency Log</div>
                 <div className="space-y-2">
                   {health.frequency_log.map(entry => {
-                    const entryLevel = scoreToLevel(entry.escalation_score)
+                    const entryLevel = entry.escalation_level
                     return (
                       <div key={entry.id} className="flex items-center justify-between bg-gray-800 rounded-lg px-4 py-2">
                         <span className="text-xs text-gray-500">{new Date(entry.run_at).toLocaleString()}</span>
