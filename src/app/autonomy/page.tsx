@@ -72,11 +72,11 @@ export default function AutonomyPage() {
   }
 
   const levels = [
-    { level: 'CRITICAL', score: '8–10', interval: '30 min', color: 'text-red-400 border-red-700' },
-    { level: 'HIGH',     score: '6–8',  interval: '2h',     color: 'text-orange-400 border-orange-700' },
-    { level: 'ELEVATED', score: '4–6',  interval: '4h',     color: 'text-yellow-400 border-yellow-700' },
-    { level: 'MODERATE', score: '2–4',  interval: '6h',     color: 'text-blue-400 border-blue-700' },
-    { level: 'LOW',      score: '0–2',  interval: '12h',    color: 'text-green-400 border-green-700' },
+    { level: 'CRITICAL', score: '9–10', interval: '30 min', color: 'text-red-400 border-red-700' },
+    { level: 'HIGH',     score: '7–9',  interval: '2h',     color: 'text-orange-400 border-orange-700' },
+    { level: 'ELEVATED', score: '5–7',  interval: '4h',     color: 'text-yellow-400 border-yellow-700' },
+    { level: 'MODERATE', score: '3–5',  interval: '6h',     color: 'text-blue-400 border-blue-700' },
+    { level: 'LOW',      score: '0–3',  interval: '12h',    color: 'text-green-400 border-green-700' },
   ]
 
   const latest = health?.frequency_log?.[0]
