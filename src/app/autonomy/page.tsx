@@ -55,6 +55,13 @@ export default function AutonomyPage() {
       .finally(() => setLoading(false))
   }, [])
 
+  // The MEASURED interval, as frequency_controller.py:104 stored it. Sub-hour
+  // values render as minutes so 0.5 reads '30 min'. intervalMap below is only a
+  // fallback for a missing value - it is the SCHEDULER's band table, not a
+  // measurement, and at 9.0-9.4 it says '30 min' where the stored value is 1h.
+  const formatInterval = (h: number): string =>
+    h < 1 ? `${Math.round(h * 60)} min` : `${h}h`
+
   const intervalMap: Record<string, string> = {
     'CRITICAL': '30 min', 'HIGH': '2h', 'ELEVATED': '4h', 'MODERATE': '6h', 'LOW': '12h'
   }
@@ -126,7 +133,7 @@ export default function AutonomyPage() {
                   </div>
                   <div className="bg-gray-800 border border-blue-800 rounded-xl p-4 text-center">
                     <div className="text-3xl font-bold text-blue-400">
-                      {intervalMap[latestLevel] || `${latest.recommended_interval_hours}h`}
+                      {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : intervalMap[latestLevel]}
                     </div>
                     <div className="text-xs text-gray-500 mt-1">Run Interval</div>
                   </div>
@@ -202,7 +209,7 @@ export default function AutonomyPage() {
                           {entryLevel}
                         </span>
                         <span className="text-white">{entry.escalation_score.toFixed(1)}/10</span>
-                        <span className="text-blue-400">{intervalMap[entryLevel]}</span>
+                        <span className="text-blue-400">{entry.recommended_interval_hours != null ? formatInterval(entry.recommended_interval_hours) : intervalMap[entryLevel]}</span>
                       </div>
                     )
                   })}
