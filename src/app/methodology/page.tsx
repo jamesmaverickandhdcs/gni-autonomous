@@ -29,7 +29,7 @@ export default function MethodologyPage() {
             <div className="space-y-3">
               {[
                 { pipeline: 'gni_pipeline', cron: '02:13 + 10:13 UTC', tokens: '~17,780/run (measured avg, 61 runs, Aug 2026)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → pillar reports → save → verify' },
-                { pipeline: 'gni_mad', cron: '02:43 + 10:43 UTC', tokens: '~80,000/run (varies with load)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
+                { pipeline: 'gni_mad', cron: '02:43 + 10:43 UTC', tokens: '~68,509/run (measured avg, 61 runs, Aug 2026; range 7.4K-97K)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
                 { pipeline: 'gni_heartbeat', cron: 'Every 30 min', tokens: '0 (zero)', desc: 'Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection' },
                 { pipeline: 'gni_adaptive', cron: 'On trigger', tokens: '0 (Cerebras path)', desc: 'Fresh analysis when escalation spikes — CRITICAL=0 Groq, HIGH=4 calls, LOW=19 calls' },
               ].map(p => (
@@ -111,7 +111,7 @@ export default function MethodologyPage() {
               ['Python 3.10+', 'Pipeline scripts', 'main.py, mad_runner.py, monitoring_pipeline.py, adaptive_pipeline.py'],
               ['Next.js 14 + TypeScript', 'Web app + API routes', '35 pages live on Vercel'],
               ['Groq API', 'LLM inference', 'model set by GROQ_MODEL secret — 100K tokens/day free'],
-              ['Supabase', 'PostgreSQL database', '37 tables — reports, predictions, audit_trail, groq_daily_usage...'],
+              ['Supabase', 'PostgreSQL database', '33 tables — reports, predictions, audit_trail, groq_daily_usage...'],
               ['GitHub Actions', 'Cron + CI/CD', '8 workflows; 4 core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; plus graph, market, self-bias, mission control'],
               ['Telegram Bot API', 'Alert notifications', 'Sacred completion, CRITICAL escalation, NYSE alerts, divergence'],
               ['Vercel', 'Deployment + CDN', 'Auto-deploy on git push to main'],
