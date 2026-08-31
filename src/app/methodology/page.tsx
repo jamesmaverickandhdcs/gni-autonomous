@@ -22,7 +22,7 @@ export default function MethodologyPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Pipeline Architecture</div>
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
             <div className="text-sm text-gray-300 leading-relaxed mb-4">
-              GNI_Autonomous runs 4 autonomous pipelines via GitHub Actions cron jobs. No human intervention required.
+              GNI_Autonomous runs 8 autonomous GitHub Actions workflows -- 4 core intelligence pipelines plus 4 support workflows -- on cron schedules. No human intervention required.
               Every day it collects global news, analyzes it with AI, produces sentiment reports with 95% confidence intervals,
               runs a 4-agent multi-perspective debate, and publishes everything to this live web app.
             </div>
@@ -112,7 +112,7 @@ export default function MethodologyPage() {
               ['Next.js 14 + TypeScript', 'Web app + API routes', '35 pages live on Vercel'],
               ['Groq API', 'LLM inference', 'model set by GROQ_MODEL secret — 100K tokens/day free'],
               ['Supabase', 'PostgreSQL database', '37 tables — reports, predictions, audit_trail, groq_daily_usage...'],
-              ['GitHub Actions', 'Cron + CI/CD', '4 workflows — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive'],
+              ['GitHub Actions', 'Cron + CI/CD', '8 workflows; 4 core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; plus graph, market, self-bias, mission control'],
               ['Telegram Bot API', 'Alert notifications', 'Sacred completion, CRITICAL escalation, NYSE alerts, divergence'],
               ['Vercel', 'Deployment + CDN', 'Auto-deploy on git push to main'],
             ].map(([tech, role, detail], i) => (

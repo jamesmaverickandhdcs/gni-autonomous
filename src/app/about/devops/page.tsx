@@ -38,7 +38,7 @@ export default function AboutDevopsPage() {
     : '~80,000/run'
 
   const pipelines = [
-    { name: 'gni_pipeline', schedule: '02:13 + 10:13 UTC', tokens: '~6,175/run (reservation estimate)', color: 'blue', desc: 'Core intelligence pipeline. RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. The sacred run that never fails.' },
+    { name: 'gni_pipeline', schedule: '02:13 + 10:13 UTC', tokens: '~16,144/run (measured avg, 129 runs)', color: 'blue', desc: 'Core intelligence pipeline. RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. The sacred run that never fails.' },
     { name: 'gni_mad', schedule: '02:43 + 10:43 UTC', tokens: madTokens, color: 'purple', desc: 'Quadratic MAD Protocol. Four AI agents (Bull, Bear, Black Swan, Ostrich) debate the latest report across 3 rounds with Arbitrator coaching after each round. Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction.' },
     { name: 'gni_heartbeat', schedule: 'Every 30 min', tokens: '0 tokens', color: 'green', desc: 'Escalation monitoring and NYSE alert system. Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold.' },
     { name: 'gni_adaptive', schedule: 'On trigger', tokens: '0 (Cerebras path -- logs 0 Groq)', color: 'amber', desc: 'Emergency fresh analysis when world escalation spikes. CRITICAL level = 0 Groq calls (cached data only). HIGH = 4 calls. LOW = 19 calls. Frequency controller adjusts run interval autonomously: CRITICAL=30min, HIGH=2h, ELEVATED=4h, MODERATE=6h, LOW=12h.' },
@@ -71,7 +71,7 @@ export default function AboutDevopsPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
           <h1 className="text-2xl font-bold text-purple-400">Dev Console — Autonomous Architecture</h1>
-          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the 4 GitHub Actions pipelines to the self-healing heartbeat to the multi-layer injection security stack. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the $0.00/month evidence.</p>
+          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the 8 GitHub Actions workflows (4 core pipelines, 4 support) to the self-healing heartbeat to the multi-layer injection security stack. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the $0.00/month evidence.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
@@ -121,7 +121,7 @@ export default function AboutDevopsPage() {
         )}
 
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">The 4 Autonomous Pipelines</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">The 4 Core Autonomous Pipelines</div>
           <div className="space-y-4">
             {pipelines.map(p => (
               <div key={p.name} className={"border rounded-xl p-5 " + colorMap[p.color]}>
@@ -156,7 +156,7 @@ export default function AboutDevopsPage() {
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
           <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — L7 Autonomy Proof</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">The 4-pipeline architecture, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">The 4-pipeline core, its 4 supporting workflows, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment.</p>
         </div>
 
       </main>

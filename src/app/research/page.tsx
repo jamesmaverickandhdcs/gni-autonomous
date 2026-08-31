@@ -102,7 +102,7 @@ export default function ResearchPage() {
               },
               {
                 num: '4', title: '$0.00/month Autonomous Operation',
-                desc: 'Full geopolitical intelligence platform running 4 autonomous pipelines (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) entirely on free tiers. Groq 100K tokens/day + Supabase 500MB + Vercel + GitHub Actions. Zero cost, unlimited operation. Challenges assumption that AI research requires paid infrastructure.',
+                desc: 'Full geopolitical intelligence platform running 8 autonomous GitHub Actions workflows -- 4 core (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) plus 4 support (entity graph, market, self-bias, mission control) -- entirely on free tiers. Groq 100K tokens/day + Supabase 500MB + Vercel + GitHub Actions. Zero cost, unlimited operation. Challenges assumption that AI research requires paid infrastructure.',
                 color: 'border-yellow-800 bg-yellow-950', accent: 'text-yellow-400'
               },
             ].map(c => (
