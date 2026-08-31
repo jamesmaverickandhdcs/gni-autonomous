@@ -153,6 +153,12 @@ export default function HealthPage() {
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">⚡ Frequency Controller — Autonomous Run Scheduling</div>
                 {(() => {
                   const latest = health.frequency_log[0]
+                  // The MEASURED interval from frequency_log (frequency_controller.py:104).
+                  // intervalMap below is the SCHEDULER's band table, not a measurement: it
+                  // says '30 min' at 9.0-9.4 where the stored value is 1h. Item 9.9 (S90),
+                  // sibling of the /autonomy fix (R-S55-1).
+                  const formatInterval = (h: number): string =>
+                    h < 1 ? `${Math.round(h * 60)} min` : `${h}h`
                   const intervalMap: Record<string, string> = {
                     'CRITICAL': '30 min', 'HIGH': '2h', 'ELEVATED': '4h', 'MODERATE': '6h', 'LOW': '12h'
                   }
@@ -176,7 +182,7 @@ export default function HealthPage() {
                       </div>
                       <div className="bg-gray-800 rounded-lg p-3 text-center">
                         <div className="text-2xl font-bold text-blue-400">
-                          {intervalMap[latest.escalation_level] || `${latest.recommended_interval_hours}h`}
+                          {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : intervalMap[latest.escalation_level]}
                         </div>
                         <div className="text-xs text-gray-500 mt-1">Run Interval</div>
                       </div>
