@@ -2,7 +2,7 @@ name: GNI Intelligence Pipeline
 on:
   schedule:
     - cron: '13 2 * * *'   # 02:13 UTC -- off :00 to reduce GitHub scheduler drift
-    - cron: '13 10 * * *'  # 10:13 UTC -- off :00; 8h spacing preserved
+    - cron: '13 10 * * *'  # 10:13 UTC -- off :00; gap is 8h then 16h, NOT even spacing
   workflow_dispatch:
 
 env:
