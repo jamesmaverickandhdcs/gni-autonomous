@@ -200,7 +200,7 @@ export default function AutonomyPage() {
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Recent Frequency Log</div>
                 <div className="space-y-2">
-                  {health.frequency_log.map(entry => {
+                  {health.frequency_log.slice(0, 10).map(entry => {
                     const entryLevel = entry.escalation_level
                     return (
                       <div key={entry.id} className="flex items-center justify-between bg-gray-800 rounded-lg px-4 py-2">
