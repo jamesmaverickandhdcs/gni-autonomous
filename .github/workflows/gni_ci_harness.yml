@@ -1,0 +1,44 @@
+name: GNI CI -- Harnesses
+# S93. GNI's FIRST push-triggered workflow. Layer 0 detector (ARCHITECTURE 8.4).
+# NO SECRETS ARE PASSED. Deliberate and load-bearing: a hard boundary against
+# quota spend, not a grep-based guess (R-S91-4).
+# Exit codes are captured with '&& rc=0 || rc=$?' so the loop survives 'bash -e'
+# and every harness reports, even after an earlier one fails.
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  harnesses:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install \
+            feedparser==6.0.12 \
+            geopy==2.4.1 \
+            supabase \
+            python-dotenv \
+            groq \
+            requests
+      - name: Run dry-run harnesses
+        run: |
+          rm -f /tmp/harness_exits.txt
+          fail=0
+          for f in ai_engine/tests/dryrun_*.py; do
+            echo "===== HARNESS $f ====="
+            timeout 120 python "$f" && rc=0 || rc=$?
+            echo "----- EXIT $f = $rc -----"
+            echo "$f = $rc" >> /tmp/harness_exits.txt
+            if [ "$rc" -ne 0 ]; then fail=1; fi
+          done
+          echo "===== PER-FILE EXIT CODES ====="
+          cat /tmp/harness_exits.txt
+          echo "===== JOB RESULT: fail=$fail ====="
+          exit $fail
