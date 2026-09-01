@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       supabase.from('source_credibility').select('*').order('credibility_score', { ascending: false }),
       supabase.from('prompt_variants').select('version, avg_quality_score, run_count, active').order('version'),
       supabase.from('health_alerts').select('*').order('created_at', { ascending: false }).limit(10),
-      supabase.from('frequency_log').select('id, run_at, escalation_score, escalation_level, recommended_interval_hours').order('run_at', { ascending: false }).limit(332),
+      supabase.from('frequency_log').select('id, run_at, escalation_score, escalation_level, recommended_interval_hours').order('run_at', { ascending: false }).limit(1000),
       supabase.from('reports').select('escalation_score, escalation_score_raw, escalation_score_lower, escalation_score_upper, title, created_at').not('escalation_score', 'is', null).order('created_at', { ascending: false }).limit(1),
       supabase.from('source_health').select('source_name, run_at').order('run_at', { ascending: false }).limit(200),
     ])

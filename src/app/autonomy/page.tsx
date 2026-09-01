@@ -217,6 +217,26 @@ export default function AutonomyPage() {
               </div>
             )}
 
+            {/* Divergent intervals: measured value differs from the published band.
+                Selected by divergence, not position - an absolute window decays as the
+                table grows. Uses intervalMap, the existing published table; no new ladder. */}
+            {health.frequency_log.filter(e => e.recommended_interval_hours != null && formatInterval(e.recommended_interval_hours) !== intervalMap[e.escalation_level]).length > 0 && (
+              <div className="bg-gray-900 border border-yellow-800 rounded-xl p-5">
+                <div className="text-xs text-yellow-500 uppercase tracking-wider mb-4">Measured Interval Differs From Published Band</div>
+                <div className="space-y-2">
+                  {health.frequency_log.filter(e => e.recommended_interval_hours != null && formatInterval(e.recommended_interval_hours) !== intervalMap[e.escalation_level]).slice(0, 5).map(entry => (
+                    <div key={entry.id} className="flex items-center justify-between bg-gray-800 rounded-lg px-4 py-2">
+                      <span className="text-xs text-gray-500">{new Date(entry.run_at).toLocaleString()}</span>
+                      <span className={`font-bold ${levelColor[entry.escalation_level]?.split(' ')[0] || 'text-gray-400'}`}>{entry.escalation_level}</span>
+                      <span className="text-white">{entry.escalation_score.toFixed(1)}/10</span>
+                      <span className="text-blue-400">{formatInterval(entry.recommended_interval_hours)}</span>
+                      <span className="text-xs text-gray-600">band says {intervalMap[entry.escalation_level]}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 text-xs text-gray-600 text-center">Measured by the frequency controller and stored. The band table above is a summary; these runs are the measurement.</div>
+              </div>
+            )}
             {/* A/B Prompt Testing */}
             {health.prompt_variants.length > 0 && (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
