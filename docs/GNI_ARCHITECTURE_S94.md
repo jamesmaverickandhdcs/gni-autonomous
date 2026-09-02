@@ -253,7 +253,7 @@ measures this ratio.
 
 **MEASURED AT S93, and the number needs a scope.** Read from each generation's own
 `**CLOSED:**` and `**NEW ITEMS:**` lines: S90 = 6 in / 8 out (rho 0.75); S91 = 3 in /
-3 out (rho 1.00); S93 = 9 in / 1 out (rho 9.00). D1's estimate of "Out: 1" came from
+3 out (rho 1.00); S93 = 9 in / 1 out (rho 9.00); S94 = 4 in / 1 out (rho 4.00). D1's estimate of "Out: 1" came from
 "one mission closes per session" - true of missions, false of items, because certs and
 disproven premises close items too.
 
@@ -319,7 +319,7 @@ with the system and produces no lasting value (SRE).
 | Session | Work | Which layer it builds |
 |---|---|---|
 | S93 | ✅ **DONE** — `gni_ci_harness.yml`, commit `944c4f0`, cert run `33529254247` (RED, discriminating) | Layer 0 detector — first brick |
-| S94 | `tools/gni_state.py` generating §5, §6, §7 | the world model Layer 2 needs |
+| S94 | ✅ **DONE** — `tools/gni_state.py`, commit `44a3cba`, §7 only; discriminating cert passed | the world model Layer 2 needs |
 | S95 | Classify all 134 rules checkable / not; make the top 5 executable | reduces agent dependence |
 | S96 | Time-series macro map (X=session, Y=White Paper layer, Z=Vision→Executable) | measures the gap instead of estimating it |
 
