@@ -42,3 +42,18 @@ jobs:
           cat /tmp/harness_exits.txt
           echo "===== JOB RESULT: fail=$fail ====="
           exit $fail
+  rule_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Run document rule checks
+        run: |
+          python tools/gni_rule_checks.py . && rc=0 || rc=$?
+          echo "===== rule_checks exit = $rc ====="
+          exit $rc
+
