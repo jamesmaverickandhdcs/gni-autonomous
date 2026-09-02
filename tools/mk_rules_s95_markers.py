@@ -203,7 +203,10 @@ def definition_lines(text):
     """Same locator tools/gni_rule_checks.py uses. PART 1 and PART 2 are an
     index and a cluster map; their mentions are citations, not definitions.
     Boundaries are found by heading text, never by line number."""
-    lines = text.split("\n")
+    # splitlines(), NOT split("\n"): on a CRLF file the latter leaves a \r on
+    # every line, and re-joining with \r\n then writes \r\r\n everywhere.
+    # Shipped that corruption once; the diff was the only witness.
+    lines = text.splitlines()
     def heading(prefix):
         for i, ln in enumerate(lines):
             if ln.startswith(prefix):
