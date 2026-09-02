@@ -87,6 +87,7 @@ tool with EXIT 2 rather than silently passing every citation. Statuses are close
 | `GNI-R-037` | UNMIGRATED-DOCX | cited as BEV law; text lives in the un-migrated DOCX register |
 | `GNI-R-064` | DISCUSSION-ONLY | named only while CONTRACT describes the S90 citation defect |
 | `GNI-R-076` | UNMIGRATED-DOCX | cited with the wrong meaning for ~35 sessions; text unmigrated |
+| `GNI-R-114` | DANGLING-LAW | order item 6.8 rests on it; no recoverable text |
 | `GNI-R-122` | DANGLING-LAW | cited as law by order and handoff; unfound |
 | `GNI-R-180` | DISCUSSION-ONLY | named only while CONTRACT describes the S90 citation defect |
 | `GNI-R-233` | DEFINED-IN-CONTRACT | CONTRACT_S94.md:24 defines it inline; routing debt |
