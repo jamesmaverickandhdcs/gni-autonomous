@@ -1,0 +1,155 @@
+id	checkable	reason
+GNI-R-240	yes	grep ai_engine/mad_runner.py for the polling gate constants (60s, 25 attempts)
+GNI-R-241	yes	SQL: rows past Stage 1 with content_type IS NULL must be zero
+GNI-R-242	no	governs when a claim may be CALLED done; the claim lives in prose
+LR-078	no	patch scripts live in /tmp and are never committed - nothing to scan
+LR-091	yes	every os.getenv name must resolve to a stored secret or a workflow env (section 7.2 emits the join)
+LR-092	yes	python -m py_compile over changed .py files in CI
+LR-095	no	governs how a human diagnoses an HTTP error, not the shape of code
+LR-096	no	no truncation convention exists to assert prompt fields against
+LR-098	yes	every package in a workflow inline pip list must be imported by a reachable module
+LR-099	no	an audit obligation on the agent; no artifact records whether it happened
+LR-102	no	a cognitive tell; confidence is not stored anywhere
+LR-103	no	governs the CHOICE of test input, which the test file does not record
+LR-104	no	ranks candidate work by risk before it exists; no artifact to rank
+LR-105	no	forbids cosmetic green; distinguishing cosmetic from real needs the intent
+LR-106	yes	AST: every _parse_json_response-class function's return paths yield dict or None
+LR-107	no	governs trust in a prior session's claim; trust has no byte form
+NN-PHI-1	no	a value statement about who GNI serves; no measurable predicate
+NN-PHI-2	no	requires judging whether coverage is direction-balanced; needs a labelled corpus
+NN-PHI-3	no	detecting manipulation in output requires reading the output for meaning
+NN-PHI-4	yes	SQL: reports rows with fff_human_path IS NULL must be zero (needs DB, not CI)
+NN-PHI-5	no	OPEN since S37; 'coverage gap' has no operational definition to assert
+NN-PHI-6	no	requires weighing a source's authority - a judgement about content
+NN-PHI-7	no	a policy about when to reset data; the trigger is a human decision
+R-S54-1	no	governs how a write is DELIVERED in chat; the repo records no delivery method
+R-S54-2	no	a judgement about which source to trust when two disagree
+R-S54-3	no	about terminal state after a paste; no committed artifact holds it
+R-S54-4	no	chooses a verification tool for a human; nothing to assert against
+R-S54-5	no	a cognitive tell - felt familiarity has no representation in bytes
+R-S55-1	no	'all consumers of a shared route' has no mechanical boundary
+R-S55-2	no	widening a pattern is an act of imagination; there is no wider-pattern oracle
+R-S55-3	no	about the ORDER of two steps in a terminal session; no artifact
+R-S55-4	no	bundling policy for model-coupled fixes; scope lives in the plan, not the tree
+R-S55-5	no	records the adoption of Protocol v1 - a historical fact, not a predicate
+R-S56-1	yes	grep every Telegram send site: an HTML-mode send interpolating external text must call the escape helper
+R-S57-1	no	governs patch scripts in /tmp; the repo keeps no copy of them
+R-S58-1	no	same as R-S57-1 - the banned open() lives in uncommitted patch scripts
+R-S59-1	no	'census before sweep' is an ordering of two human acts; no artifact
+R-S60-1	no	about a browser hard-refresh before verifying; nothing in the repo
+R-S60-2	no	a design principle: structure is not grounding. No predicate over bytes
+R-S60-3	no	'ungrounded into grounded' requires knowing which layer is grounded - a judgement
+R-S62-1	no	governs how a Claude Code task is handed over; no committed artifact
+R-S62-2	no	placeholder marking lives in a chat message, not in the tree
+R-S62-3	yes	SHIPPED C4: git grep createClient under src/app/api must be empty
+R-S63-1	no	'reply-number maps to list POSITION' needs the consumer's semantics
+R-S63-2	no	'guilty until verified' is a stance toward a resource, not a code shape
+R-S63-3	no	requires proving a branch can be reached again - a reachability proof, not a grep
+R-S64-1	yes	grep audit/census scripts for .limit( - a whole-table audit may not truncate
+R-S64-2	no	about what an aggregate CANNOT answer; absence of an answer is not greppable
+R-S64-3	yes	assert the fallback dedupe key is a parsed feed domain, not a display name
+R-S65-1	no	'consult yield or serve-path' requires reading what a criterion MEANS
+R-S65-2	no	chat clearance before a git trigger; the clearance is a chat turn
+R-S65-3	yes	assert no \\b wrapper is applied to entries in the stem keyword lists
+R-S66-1	no	which census proves which claim - an epistemic distinction, not a byte one
+R-S66-2	no	requires measuring what real signal entered through a bug - needs the corpus
+R-S66-3	no	no in-code proxy-declaration convention exists to assert against
+R-S67-1	no	numbered gates with the push first - about message structure
+R-S67-2	no	verifying an instrument's RANGE means reasoning about caps and short-circuits
+R-S68-1	yes	grep workflow YAML and call-site literals for model-name strings not sourced from env
+R-S68-2	no	a platform fact about log masking, not a rule the repo can violate
+R-S69-1	no	'history says which side is canonical' - the evidence is conversation records
+R-S69-2	no	requires deciding whether a queue row genuinely instruments a deferral
+R-S69-3	yes	assert every module under ai_engine/analysis is imported by an entrypoint-reachable module
+R-S70-1	yes	emit writers-per-table from the tree and fail when the set changes (snapshot)
+R-S70-2	yes	wc -l on disk against the expected count before first commit
+R-S71-1	no	'the owning writer wins' requires knowing who owns a row
+R-S71-2	no	'census the CLASS' - naming the class is the judgement being asked for
+R-S72-1	no	patch-script rule; those scripts are never committed
+R-S73-1	yes	detect the same literal list or threshold defined in two files (duplicate-constant lint)
+R-S73-2	no	requires knowing which consumers are feedback loops and which are exhibits
+R-S74-1	yes	SHIPPED C3: every repeated definition id must declare AMENDMENT/INSTANCE
+R-S74-2	yes	compare TypeScript interface fields against information_schema.columns
+R-S74-3	yes	assert every cert record names the checkout SHA it was read from
+R-S75-1	yes	assert count guards over code literals derive expected values via ast, not regex
+R-S75-2	no	'read the full call site' is an instruction to a reader, not a predicate
+R-S75-3	yes	grep funnel aggregates for counts conditioned on one stage flag only
+R-S76-1	no	patch-script rule; not committed
+R-S76-2	no	an oracle spec's fidelity to bytes is judged by comparing meanings
+R-S76-3	no	an arithmetic tell about a suspicious table; needs the numbers in hand
+R-S77-1	no	about chaining commands in a paste block; no artifact
+R-S77-2	yes	grep live docs for a bare numeric count that no generator emits
+R-S77-3	no	verifying a label's ATTRIBUTION requires knowing what the system is called
+R-S78-1	no	about a UI write interrupted by auth; the platform holds no record
+R-S78-2	no	'which path served it' requires reading run logs for probe prints, per run
+R-S79-1	no	about the deliverable form of an instruction in chat
+R-S79-2	no	requires grepping live logs, which vary per run
+R-S80-1	no	patch-script rule; not committed
+R-S80-2	no	'the call-shape it holds' requires comparing a fixture's shape to production's
+R-S80-3	no	labelling speculation at output seams needs to know which claims are speculative
+R-S81-1	yes	assert every guard proves its input was non-empty before reporting a zero
+R-S81-2	yes	grep budget assemblers for a paired INCLUDED-vs-AVAILABLE print
+R-S81-3	yes	grep budget code for a share computed from another consumer's remainder
+R-S81-4	no	one load-bearing block per message - a property of a chat turn
+R-S81-5	yes	SHIPPED C5: AST lint - no check function may hold a hand-written integer
+R-S81-6	no	'contents vs agreement' requires knowing what was agreed
+R-S81-7	yes	assert no live doc states a cron time as a start time; the band must be emitted
+R-S81-8	no	a fact about how Groq refills; violating it means holding a wrong mental model
+R-S82-1	yes	assert artifact searches grep a structural marker, not a phrase
+R-S82-2	no	'the whole category' requires naming the category under test
+R-S82-3	no	'a stopgap never closes a root' - classifying a fix as stopgap is judgement
+R-S82-4	yes	assert the Protocol's template fields match what the live HANDOFF contains
+R-S82-5	yes	git log: count sessions in which CONTRACT was edited over a window
+R-S83-1	no	a disclosed limitation is a claim - trust level has no byte form
+R-S83-2	no	novelty is identity; no artifact records which runs have been read
+R-S83-3	no	about reading a clock inside the block that makes a claim
+R-S83-4	no	distinguishing mechanics from instrument is the same counterfactual as R-S90-1
+R-S83-5	no	requires the pasted opening prompt, which reaches no file
+R-S83-6	no	flow vs stock - a modelling distinction, not a code shape
+R-S84-1	no	'measure instead of deriving' - the choice happens before code exists
+R-S84-2	no	which meter ENFORCES is a fact about the platform, not the repo
+R-S84-3	yes	assert every entry in a session's WRONG ledger has a home in a live doc
+R-S84-4	yes	assert MAD run classification keys on the ARB-FIT marker, never on run time
+R-S85-1	yes	grep every lettered proposal block in a close doc for a LINEAGE: line
+R-S85-2	yes	assert copy sweeps run case-insensitively and code sweeps case-sensitively
+R-S85-3	no	the guard string must be unique to the PATCHED state - needs both states
+R-S85-4	no	'folded into another arc' requires tracing a finding's routing history
+R-S85-5	yes	assert every docs/*REGISTER*.md is referenced by a live doc or a workflow
+R-S85-6	yes	git log: a feature commit's message must contain a FAILURE TEST line
+R-S86-1	no	'recent runs are not a baseline' - window width is a statistical judgement
+R-S86-2	no	two instruments printing one word - requires knowing what each counts
+R-S86-3	yes	measure over stored runs whether a conditional ever evaluated False
+R-S86-4	no	a prompt from bytes not transcript - about where a human read from
+R-S86-5	no	a refuted prediction naming a missing condition - interpretive
+R-S86-6	no	commit subjects carry intent - intent is not checkable
+R-S87-1	no	'pre-selected set' requires knowing the selection that produced the set
+R-S87-2	yes	measure over stored runs: a published metric constant at its cap
+R-S87-3	no	'single-regime corpus' requires knowing the regimes in the data
+R-S87-4	yes	same detector as R-S69-3: a shipped field with no consumer in the chain
+R-S87-5	no	MSYS argument translation - a shell fact, not a repo predicate
+R-S87-6	yes	same check as R-S81-7: lateness must be emitted from observation, not recalled
+R-S87-7	yes	grep ratio print sites and assert the denominator variable is named
+R-S88-1	no	about paste blocks in chat
+R-S88-2	no	'read a gate literally' - narrowing scope is a reading, not a byte
+R-S88-3	no	requires reading the generations between two files to see what moved
+R-S88-4	no	design the extraction for the question - about command design before running
+R-S88-5	yes	measure GEO pillar hits against its cap over stored runs
+R-S89-1	yes	same grep as R-S85-1, widened to every finding block
+R-S89-2	yes	before a deletion proposal, assert the column has zero consumers in src/
+R-S89-3	yes	DB: a rendered column must have at least one non-null row before its blank is read as a defect
+R-S90-1	no	a counterfactual - what the output would look like had the change NOT shipped. No script can evaluate it, and it is the most load-bearing rule GNI holds
+R-S90-2	yes	SHIPPED C1: cited ids diffed against registered + PART 0 manifest
+R-S90-3	no	're-emit preconditions' - about how a revision is communicated
+R-S90-4	no	binds a class of items within one session; the class is named by judgement
+R-S91-1	yes	the harness job already runs this: a wiring commit whose test callers were not swept fails on import
+R-S91-2	no	verifying each item of a bundle separately - the bundling is a claim in prose
+R-S91-3	yes	lint count-producing greps: an ORed pattern may not be used as a count
+R-S91-4	no	premise disproven at S91 (item 5.19); a classification grep's status is interpretive
+R-S91-5	yes	SHIPPED C2: workflow/trigger counts derived from YAML vs section 7.1
+R-S92-1	no	a deadline's originating evidence lives in session history, not beside the date
+R-S92-2	no	position-decay lives in HOW the constant was derived, not in the call site. limit(1000) and limit(332) are byte-identical in shape and both carry .order(). Three check designs died against measurement this session
+R-S93-1	yes	assert every tool in tools/ has a control-probe or selftest path
+R-S94-1	no	a review is a lead - trust level again, with no byte form
+R-S94-2	yes	assert identifier comparisons fold case the way the platform stores the name
+R-S94-3	yes	assert CLI parsers do not depend on TTY-only output shape (no header assumption)
+R-S94-4	no	build against a fixture first - an ordering of two acts, not a repo state
