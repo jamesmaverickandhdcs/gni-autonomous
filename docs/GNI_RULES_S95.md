@@ -1383,3 +1383,58 @@ session early. CHECKABLE means a script can decide it without a model reading pr
 breaking one regex on purpose produced `EXIT=2` with nothing written, and two of its seven
 probes encode errors made during S94 itself, so they are regression tests rather than
 hypotheticals.
+
+# S95 APPENDIX (2026-09-03) — RULES EARNED
+
+Five rules, all earned from instrument errors made inside this session. Six of
+the seven were caught before the real tree; two reached the operator's terminal.
+
+**R-S95-1 — VERIFICATION IS COMPUTED BEFORE THE WRITE, NEVER AFTER IT.** A patch
+  script whose report runs after the mutation is not a report. S95's YAML patcher
+  crashed on a `%`-precedence bug in its own `print` — AFTER the file was already
+  written. The mutation succeeded and the verification died; had the mutation been
+  wrong, the same crash would have hidden it. Compute the expected delta, compare
+  it, refuse on mismatch, and only then open the file for writing. Kin to R-S55-3,
+  which required confirming a patch RAN before trusting a verify; this requires
+  confirming it will be CORRECT before it runs.
+  **CHECKABLE: yes** — AST-lint patch scripts: no write call may precede the last assert
+
+**R-S95-2 — ACCEPTING A CORRECTION REQUIRES READING A BYTE, NOT THE CORRECTOR'S
+  CONFIDENCE.** S95 accepted a review's correction about `sort -V`, wrote a
+  self-criticism, and was then told the correction had itself been a misreading.
+  Four times in one session a review reasoned from an assumed tree rather than the
+  live one — and each time it also carried something true, so neither deference nor
+  dismissal was safe. R-S94-1 says a review is a lead; this says its CORRECTION is
+  a lead too. Over-confession is as false as over-confidence and is harder to catch
+  because it wears good manners.
+  **CHECKABLE: no** — whether a byte was read before agreeing leaves no trace in any artifact
+
+**R-S95-3 — A DOCUMENT THAT RECORDS A DEFECT IS INDISTINGUISHABLE, TO A DETECTOR,
+  FROM ONE THAT COMMITS IT.** Item 9.16 records the wrong workflow count as a
+  finding; a grep hunting wrong counts cannot tell it from a document making the
+  claim. CONTRACT names `GNI-R-064` while describing the citation defect; a grep
+  hunting dangling citations flags it. Every check that runs over DOCUMENTS needs a
+  citation escape, or its remedy becomes "delete the record of the defect" — and
+  GNI is built entirely on records of past defects. The escape must not be an
+  inline convention: backticks were proposed and disproven within the hour, because
+  `GNI-R-114` is backticked AND load-bearing. The escape is a MANIFEST with a
+  status per id, in the register.
+  **CHECKABLE: yes** — assert every document-scanning check declares an escape source
+
+**R-S95-4 — A CONSTANT COUNT IS NOT A CONSTANT STATE.** S90 measured eight rule ids
+  cited but unregistered. S95 measured eight. Four of S90's eight were fixed and
+  four new ones accrued: the number held while HALF the membership rotated. A
+  metric compared across sessions must be compared as a SET, not as an integer, or
+  a fully-rotated population reads as stability. Kin to R-S54-2: the live byte beats
+  the banked number, and here even a live number that MATCHES the banked one is
+  concealing a change.
+  **CHECKABLE: yes** — store the members, not the count, and diff the sets between generations
+
+**R-S95-5 — THE TOOL THAT WRITES A FILE BECOMES THE INPUT TO EVERY TOOL THAT READS
+  IT.** S95's marker script wrote `\r\r\n` on every line of the register. All five
+  new checks stayed GREEN, `git status` said nothing, markdown rendered identically
+  — and `tools/gni_state.py` died with an `IndexError` that took three probes to
+  trace back. One reader's green proves nothing about another reader's input. After
+  any write to a shared artifact, run every tool that consumes it, not only the one
+  that motivated the write.
+  **CHECKABLE: yes** — CI runs every tool in tools/ against the tree after any docs/ change
