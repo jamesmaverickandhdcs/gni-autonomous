@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""tools/gni_rule_checks.py - S95. Layer 0 detector for DOCUMENT law.
+"""tools/gni_rule_checks.py - S95, sixth check added S98. Layer 0 detector
+for DOCUMENT law.
 
-Converts five GNI engineering rules from prose into executable checks.
+Converts six GNI engineering rules from prose into executable checks.
 
   C1  R-S90-2   every rule ID cited by a live doc is registered, or carries a
                 status row in the PART 0 UNREGISTERED MANIFEST
@@ -11,6 +12,8 @@ Converts five GNI engineering rules from prose into executable checks.
   C4  R-S62-3   no direct createClient under src/app/api/ (no-store only)
   C5  R-S81-5   self-lint: no check may hold a hand-written expected integer,
       R-S81-1   and every check must prove its input was non-empty first
+  C6  R-S95-4   the macro map's stamped marker count AND the register's
+                EOL-normalised md5 both match the live register (item 5.26)
 
 CONSTRAINTS THIS SCRIPT HONOURS, ON PURPOSE:
   - stdlib only. No pip install step is needed or wanted (item 6.9).
@@ -286,12 +289,60 @@ def check_c5_self_lint(ctx):
     return True, "%d checks derive every expected value" % len(checks)
 
 
+def check_c6_macro_map_fresh(ctx):
+    """Item 5.26 (C6). The macro map is GENERATED from the register, and until
+    now nothing went red when the register moved underneath it: S96 committed a
+    map reading 159 markers and closed the same session with 164 registered.
+    Count alone will not do -- a constant count is not a constant state
+    (R-S95-4) -- so the register's EOL-normalised md5 is compared as well,
+    using the generator's OWN parse_rules and norm_md5. A second parser here
+    would be a second opinion, not a check (R-S96-3)."""
+    import gni_macro_map as gm
+    docs = os.path.join(ctx["root"], "docs")
+    if not os.path.isdir(docs):
+        raise InstrumentError("missing dir: " + docs)
+    pat = re.compile(r"^GNI_MACRO_MAP_S(\d+)\.md$")
+    gens = [(int(m.group(1)), n) for n in os.listdir(docs) for m in [pat.match(n)] if m]
+    require_nonempty("macro map generations", gens)
+    map_path = os.path.join(docs, max(gens)[-1])
+    body = require_nonempty("macro map text", read(map_path))
+    reg_path = require_nonempty("live register", ctx["docs"]["GNI_RULES"])
+    stamp = re.search(r"GENERATED from `(?P<src>[^`]+)` -- (?P<n>\d+) CHECKABLE "
+                      r"markers, register generation (?P<gen>\d+)\.", body)
+    if not stamp:
+        raise InstrumentError("no GENERATED-from stamp in " + map_path)
+    md5line = re.search(r"INPUT `" + re.escape(stamp.group("src")) +
+                        r"` md5 `(?P<h>[0-9a-f]+)`", body)
+    if not md5line:
+        raise InstrumentError("no INPUT md5 line for the register in " + map_path)
+    try:
+        raw, bound, unbound = gm.parse_rules(reg_path)
+    except SystemExit:
+        raise InstrumentError("the generator's own parser refused " + reg_path)
+    live_n = len(bound) + len(unbound)
+    live_h = gm.norm_md5(raw)
+    problems = []
+    if os.path.basename(stamp.group("src")) != os.path.basename(reg_path):
+        problems.append("map generated from %s; live register is %s"
+                        % (stamp.group("src"), reg_path))
+    if int(stamp.group("n")) != live_n:
+        problems.append("map stamps %s markers; register holds %d"
+                        % (stamp.group("n"), live_n))
+    if md5line.group("h") != live_h:
+        problems.append("register md5 %s; map stamped %s" % (live_h, md5line.group("h")))
+    if problems:
+        return False, "; ".join(problems)
+    return True, "%s stamps %d markers and the register md5 matches" % (
+        os.path.basename(map_path), live_n)
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
     ("C3 R-S74-1  register uniqueness", check_c3_register_uniqueness),
     ("C4 R-S62-3  no-store client", check_c4_nostore_client),
     ("C5 R-S81-5  self-lint", check_c5_self_lint),
+    ("C6 R-S95-4  macro map fresh", check_c6_macro_map_fresh),
 )
 
 

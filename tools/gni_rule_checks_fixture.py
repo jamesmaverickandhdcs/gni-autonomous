@@ -23,8 +23,11 @@ RULES = """# GNI RULES
 
 # PART 3 - HISTORICAL REGISTER
 - R-S90-2: an ID cited by a live doc is law only if the register contains it
+**CHECKABLE: yes**
 - R-S92-2: select on a relation, never a position
+**CHECKABLE: yes**
 - LR-092: py_compile every modified file before commit
+**CHECKABLE: no**
 **R-S81-1** - a zero result indicts the instrument first
 """
 
@@ -34,7 +37,26 @@ ARCH_OK = """## §7 DEPLOYMENT VIEW
 ## §8 CROSSCUTTING
 """
 
-def base(root, arch=ARCH_OK, rules=RULES, contract=None):
+def _map_text(reg_path, n_delta=0):
+    """Built from the register AS WRITTEN, so the fixture is self-consistent on
+    any platform: open(mode="w") emits CRLF on Windows and LF elsewhere, and
+    the stamped md5 must survive that. Uses the generator's own functions."""
+    import gni_macro_map as gm
+    raw, bound, unbound = gm.parse_rules(reg_path)
+    n = len(bound) + len(unbound) + n_delta
+    return ("# GNI MACRO MAP -- S94\n\n"
+            "INPUT `%s` md5 `%s` (EOL-normalised)\n"
+            "GENERATED from `%s` -- %d CHECKABLE markers, register generation 94.\n"
+            % (reg_path, gm.norm_md5(raw), reg_path, n))
+
+
+def ap(p, s):
+    with open(p, "a", encoding="utf-8") as fh:
+        fh.write(s)
+
+
+def base(root, arch=ARCH_OK, rules=RULES, contract=None,
+         map_n_delta=0, map_present=True):
     if os.path.isdir(root):
         shutil.rmtree(root)
     w(root + "/docs/GNI_RULES_S94.md", rules)
@@ -49,6 +71,9 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None):
     w(root + "/.github/workflows/b.yml", "on:\n  push:\njobs:\n  y:\n")
     w(root + "/ai_engine/ok.py", "rows = q.order('created_at', desc=True).execute().data\n")
     w(root + "/src/app/api/r/route.ts", "const s = createNoStoreClient()\n")
+    if map_present:
+        w(root + "/docs/GNI_MACRO_MAP_S94.md",
+          _map_text(root + "/docs/GNI_RULES_S94.md", map_n_delta))
     return root
 
 CASES = {}
@@ -74,6 +99,11 @@ CASES["10-undeclared-duplicate"] = lambda r: base(r, rules=RULES.replace(
 CASES["11-declared-amendment"] = lambda r: base(r, rules=RULES.replace(
     "**R-S81-1** - a zero result indicts the instrument first",
     "**R-S81-1** - a zero result indicts the instrument first\n**R-S90-2** - AMENDMENT (S95): widened"))
+CASES["12-map-stale-count"] = lambda r: base(r, map_n_delta=1)
+CASES["13-map-stale-md5"] = lambda r: (
+    base(r), ap(r + "/docs/GNI_RULES_S94.md",
+                "\nprose line carrying no id and no marker\n"), r)[-1]
+CASES["14-map-missing"] = lambda r: base(r, map_present=False)
 CASES["9-direct-createClient"] = lambda r: (
     base(r), w(r + "/src/app/api/z/route.ts", "const s = createClient(url, key)\n"), r)[-1]
 
@@ -86,6 +116,7 @@ EXPECT = {
     "5-stale-generator": 1, "6-family-stem-missing": 2,
     "7-manifest-marker-renamed": 2, "9-direct-createClient": 1,
     "10-undeclared-duplicate": 1, "11-declared-amendment": 0,
+    "12-map-stale-count": 1, "13-map-stale-md5": 1, "14-map-missing": 2,
 }
 
 if __name__ == "__main__":
