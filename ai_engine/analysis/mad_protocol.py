@@ -6,7 +6,7 @@
 # Short Focus (7-30 days) + Long Shoots (3-24 months)
 # Predictions saved to debate_predictions table
 # 21 Groq calls per run
-# GNI-R-237: MAD uses GROQ_MAD_MODEL (confirmed secret = llama-3.3-70b-versatile),
+# GNI-R-237: MAD uses GROQ_MAD_MODEL (value UNCONFIRMED -- S98, run 33768475533),
 #            falling back to GROQ_MODEL then GROQ_MODEL_FALLBACK. All 21 calls, one model.
 # GROQ_API_KEY_2 removed -- same account = same pool, no isolation benefit.
 # S37 PROMPT PATCHES:
@@ -49,7 +49,7 @@ from analysis.mad_grounding_gate import check_grounding  # S61 -- Layer-1 ground
 client = Groq(api_key=os.getenv('GROQ_API_KEY'), max_retries=0)
 MODEL = os.getenv('GROQ_MAD_MODEL',
         os.getenv('GROQ_MODEL',
-        os.getenv('GROQ_MODEL_FALLBACK', 'llama-3.3-70b-versatile')))
+        os.getenv('GROQ_MODEL_FALLBACK', 'openai/gpt-oss-120b')))
 
 VALID_VERDICTS = ['bullish', 'bearish', 'neutral']
 
