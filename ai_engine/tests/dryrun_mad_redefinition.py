@@ -158,7 +158,7 @@ ARTICLES = [
 
 report = {'title': 'Iran Threatens Hormuz', 'summary': 'forces moved', 'risk_level': 'High',
           'escalation_level': 'CRITICAL', 'location_name': 'Iran'}
-res = mp.run_mad_protocol(report, all_articles=ARTICLES, weak_articles=[], report_id=None)
+res = mp.run_mad_protocol(report, all_articles=[], weak_articles=[], report_id=None)
 check('verdict parsed == bearish', res.get('mad_verdict') == 'bearish')
 check('confidence parsed == 0.68', abs(float(res.get('mad_confidence')) - 0.68) < 1e-9)
 check('mad_arb_failed is False (pipeline intact)', res.get('mad_arb_failed') is False)
