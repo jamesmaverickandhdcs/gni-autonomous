@@ -136,9 +136,29 @@ def fake_create(**kw):
 mp.client = type('FC', (), {'chat': type('CH', (), {
     'completions': type('CP', (), {'create': staticmethod(fake_create)})()})()})()
 
+# --- S98 item 5.14 (DECISION S98-1, option C): the article pool this
+# --- harness had before c3ce662 (2026-06-27) wired compute_depth in at
+# --- mad_protocol:714. Byte-copied from dryrun_nn5_gate.py, never retyped.
+# --- 8 articles, 2 per pillar -> _eff_n=8 -> D=400/OK. Stubs unchanged,
+# --- so no assertion in this file depends on the pool.
+ARTICLES = [
+    {'id': 'a%d' % i,
+     'title': 'Article %d on shipping and supply exposure' % i,
+     'summary': ('Regional carriers report rerouting and higher premiums; '
+                 'two refiners flagged near-term supply exposure. ' * 3),
+     'content': 'Body text for article %d.' % i,
+     'pillar': pillar,
+     'stage3_score': 9 - i,
+     'source_name': 'TestWire',
+     'url': 'https://example.invalid/%d' % i,
+     'published_at': '2026-06-22T12:00:00+00:00'}
+    for i, pillar in enumerate(['geo', 'geo', 'fin', 'fin',
+                                'tech', 'tech', 'other', 'other'])
+]
+
 report = {'title': 'Iran Threatens Hormuz', 'summary': 'forces moved', 'risk_level': 'High',
           'escalation_level': 'CRITICAL', 'location_name': 'Iran'}
-res = mp.run_mad_protocol(report, all_articles=[], weak_articles=[], report_id=None)
+res = mp.run_mad_protocol(report, all_articles=ARTICLES, weak_articles=[], report_id=None)
 check('verdict parsed == bearish', res.get('mad_verdict') == 'bearish')
 check('confidence parsed == 0.68', abs(float(res.get('mad_confidence')) - 0.68) < 1e-9)
 check('mad_arb_failed is False (pipeline intact)', res.get('mad_arb_failed') is False)
