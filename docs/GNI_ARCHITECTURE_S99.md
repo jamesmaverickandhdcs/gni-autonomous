@@ -419,7 +419,7 @@ DEGRADE-SILENT open beneath it. What ended is the ROADMAP, not the target (CONTR
 | Session | Mission | What it buys |
 |---|---|---|
 | S98 | ✅ **DONE** — 5.14+5.17 `98a9bc3`, 9.15 `173bce9`, M4 `a5f2813`, C6 `1d5bcab`; cert pair `447ce55` RED / `328be08` GREEN, read at job level | the detector goes GREEN, so RED carries information again |
-| S99 | ARCHITECTURE §6 Runtime View, GENERATED | what calls what, without a grep |
+| S99 | ✅ **DONE** -- `2bfef91`, CI run `33851242047` green at JOB level (roadmap 2 row 2 shipped at S99) | delivered cadence measured against declared cadence, regenerating byte-identically from a tracked snapshot |
 | S100 | ARCHITECTURE §5 Building Block View, GENERATED (AST) | what imports what, without a grep |
 | S101 | SLO + error budget + policy | a published number that says whether the system met its own promise |
 
@@ -460,7 +460,7 @@ asked in four commands.
 | # | Holds? | Evidence |
 |---|---|---|
 | 1 | **YES** | run `33810361813` at `328be08` - a push whose tree is byte-identical to `98a9bc3` (`git diff HEAD~2 --stat` empty) reached `conclusion: success` with `rule_checks success` and `harnesses success` read at JOB level. Re-confirmed at `1d5bcab`, run `33812669304`. |
-| 2 | **NO** | only §7 is generated (`tools/gni_state.py`, S94). §5 and §6 are S100 and S99. |
+| 2 | **NO** | §6 is generated and byte-identical (`tools/gni_runtime.py`, S99, md5 `fb6e3f1e0e96e6a696af988b08bb6143` on two renders). §5 is S100. **AND §7 FAILS THIS ROW ON ITS OWN ACCOUNT** -- `gni_state.py` renders `datetime.now()` into its own stamp, so two runs two seconds apart differ (`06:14:00Z` vs `06:14:04Z`). Item **5.33**. The S98 status recorded this row as failing only because §5 and §6 were missing; that was incomplete. |
 | 3 | **NO** | no SLO is written. S101. |
 | 4 | **PARTIAL** | `rule_checks` exits 0 clean and RED on a stale macro map (C6, item 5.26, `1d5bcab`) and on a stale §7 (C2, fixture family `5-stale-generator`). §5 and §6 cannot be stale because they do not exist. |
 
