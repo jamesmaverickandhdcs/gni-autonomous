@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""tools/gni_rule_checks.py - S95, sixth check added S98. Layer 0 detector
+"""tools/gni_rule_checks.py - S95, seventh check added S101. Layer 0 detector
 for DOCUMENT law.
 
-Converts six GNI engineering rules from prose into executable checks.
+Converts seven GNI engineering rules from prose into executable checks.
 
   C1  R-S90-2   every rule ID cited by a live doc is registered, or carries a
                 status row in the PART 0 UNREGISTERED MANIFEST
@@ -14,6 +14,9 @@ Converts six GNI engineering rules from prose into executable checks.
       R-S81-1   and every check must prove its input was non-empty first
   C6  R-S95-4   the macro map's stamped marker count AND the register's
                 EOL-normalised md5 both match the live register (item 5.26)
+  C7  SLO-2+3   the freshness bound published in ARCHITECTURE section 10 is the
+                smallest whole hour inside the error budget, and the published
+                window holds ONE regime, not two averaged together
 
 CONSTRAINTS THIS SCRIPT HONOURS, ON PURPOSE:
   - stdlib only. No pip install step is needed or wanted (item 6.9).
@@ -336,6 +339,156 @@ def check_c6_macro_map_fresh(ctx):
         os.path.basename(map_path), live_n)
 
 
+
+SLO_KEYS = ("BOUND_HOURS", "EXCEEDANCE_MAX", "WINDOW_FROM", "WINDOW_TO",
+            "SPLIT_RATIO", "WORKFLOW", "SNAPSHOT")
+SLO_RE = re.compile(r"^- SLO-CFG ([A-Z_]+): `([^`]+)`", re.M)
+DAY_FMT = "%Y-%m-%d"
+
+
+def slo_cfg(arch_text):
+    """Section 10 IS the configuration. C5 forbids this file from holding the
+    numbers (R-S81-5), so every constant is parsed out of the committed
+    document and a missing key halts rather than defaults."""
+    cfg = dict(SLO_RE.findall(require_nonempty("architecture text", arch_text)))
+    missing = [k for k in SLO_KEYS if k not in cfg]
+    if missing:
+        raise InstrumentError("SLO-CFG missing: " + ", ".join(missing))
+    return cfg
+
+
+def protection_windows(root):
+    """R-S96-3: the watcher's own bytes are the only source for its standdown.
+    Read by AST, because counting a code literal is never a regex job
+    (R-S75-1)."""
+    path = os.path.join(root, "ai_engine", "monitoring_pipeline.py")
+    if not os.path.isfile(path):
+        raise InstrumentError("missing watcher: " + path)
+    for node in ast.walk(ast.parse(read(path))):
+        if not isinstance(node, ast.Assign):
+            continue
+        for tgt in node.targets:
+            if isinstance(tgt, ast.Name) and tgt.id == "PROTECTION_WINDOWS":
+                return [tuple(w) for w in ast.literal_eval(node.value)]
+    raise InstrumentError("no PROTECTION_WINDOWS assignment in " + path)
+
+
+def in_protection(when, windows):
+    now = (when.hour, when.minute)
+    for oh, om, ch, cm in windows:
+        lo, hi = (oh, om), (ch, cm)
+        if lo <= hi:
+            if lo <= now < hi:
+                return True
+        elif now >= lo or now < hi:
+            return True
+    return False
+
+
+def effective_gaps(runs, windows, lo, hi):
+    """The gap between CHECKS, not between runs: a run inside a protection
+    window returns before it opens a connection and checks nothing."""
+    kept = [t for t in runs
+            if lo <= t.strftime(DAY_FMT) <= hi and not in_protection(t, windows)]
+    return sorted(kept[i + 1] - kept[i] for i in range(len(kept) - 1))
+
+
+def check_c7_slo_freshness(ctx):
+    """SLO-2 and SLO-3 of ARCHITECTURE section 10.
+
+    (a) The published bound must be the smallest whole hour that keeps
+        exceedance inside the published budget. Too low fails on exceedance;
+        too high fails because a smaller hour would also have passed. A bound
+        that is compared rather than derived can be padded until it is always
+        green, which is the disease this whole section was written against.
+    (b) The published window must hold one regime. A p90 across a step change
+        describes no day that happened (DECISION S90-3). A split is only
+        counted when both halves hold at least 1 / EXCEEDANCE_MAX gaps --
+        derived, not chosen: below that a p90 does not exist and a one-gap
+        half reports its own gap as a median.
+
+    Constants come from the document, protection windows from the watcher's
+    AST, the quantile from the section 6 generator rather than a second
+    implementation (R-S96-3). A window the snapshot cannot cover raises
+    INSTRUMENT ERROR: "this data cannot answer this question" is a different
+    answer from "the promise was kept" (R-S81-1)."""
+    import json
+    from datetime import timedelta
+    import gni_runtime as gr
+
+    cfg = slo_cfg(read(require_nonempty("live architecture",
+                                        ctx["docs"]["GNI_ARCHITECTURE"])))
+    emax = float(cfg["EXCEEDANCE_MAX"])
+    ratio = float(cfg["SPLIT_RATIO"])
+    bound_h = float(cfg["BOUND_HOURS"])
+    frm, to = cfg["WINDOW_FROM"], cfg["WINDOW_TO"]
+
+    snap = os.path.join(ctx["root"], cfg["SNAPSHOT"])
+    if not os.path.isfile(snap):
+        raise InstrumentError("missing snapshot: " + snap)
+    with open(snap, "rb") as fh:
+        data = json.loads(fh.read().decode("utf-8"))
+    wf = data.get("workflows", {}).get(cfg["WORKFLOW"])
+    if not wf:
+        raise InstrumentError("snapshot holds no " + cfg["WORKFLOW"])
+    runs = sorted(gr._dt(r["createdAt"]) for r in wf["runs"])
+    require_nonempty("runs in the snapshot", runs)
+
+    span_lo, span_hi = runs[0].strftime(DAY_FMT), runs[-1].strftime(DAY_FMT)
+    if span_lo > frm or span_hi < to:
+        raise InstrumentError(
+            "snapshot spans %s..%s; the published window is %s..%s"
+            % (span_lo, span_hi, frm, to))
+
+    windows = protection_windows(ctx["root"])
+    gaps = effective_gaps(runs, windows, frm, to)
+    require_nonempty("effective check gaps in the published window", gaps)
+    floor = round(1 / emax)
+    if len(gaps) < floor:
+        raise InstrumentError(
+            "%d gaps in %s..%s; a quantile at %.2f needs at least %d"
+            % (len(gaps), frm, to, 1 - emax, floor))
+
+    hour = timedelta(hours=1)
+    budget = emax * len(gaps)
+    steps = 1
+    while sum(1 for g in gaps if g > hour * steps) > budget:
+        steps += 1
+    over = sum(1 for g in gaps if g > hour * bound_h)
+
+    problems = []
+    if steps != bound_h:
+        problems.append(
+            "BOUND_HOURS is %s; the smallest whole hour inside the budget is %d "
+            "(%d of %d gaps exceed the published bound)"
+            % (cfg["BOUND_HOURS"], steps, over, len(gaps)))
+
+    days = sorted(set(t.strftime(DAY_FMT) for t in runs
+                      if frm <= t.strftime(DAY_FMT) <= to))
+    require_nonempty("days in the published window", days)
+    worst, at = None, None
+    for i in range(1, len(days)):
+        early = effective_gaps(runs, windows, days[0], days[i - 1])
+        late = effective_gaps(runs, windows, days[i], days[-1])
+        if len(early) < floor or len(late) < floor:
+            continue
+        r = gr.quantf(late, 0.5) / gr.quantf(early, 0.5)
+        if r < 1:
+            r = 1 / r
+        if worst is None or r > worst:
+            worst, at = r, days[i]
+    if worst is not None and worst >= ratio:
+        problems.append(
+            "window %s..%s spans a regime boundary at %s: check p50 ratio %.2f"
+            % (frm, to, at, worst))
+
+    if problems:
+        return False, "; ".join(problems)
+    return True, ("%s h is the smallest hour inside a %.2f budget; %d of %d gaps "
+                  "exceed it; worst counted split %s"
+                  % (cfg["BOUND_HOURS"], emax, over, len(gaps),
+                     "none" if worst is None else "%.2f" % worst))
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -343,6 +496,7 @@ CHECKS = (
     ("C4 R-S62-3  no-store client", check_c4_nostore_client),
     ("C5 R-S81-5  self-lint", check_c5_self_lint),
     ("C6 R-S95-4  macro map fresh", check_c6_macro_map_fresh),
+    ("C7 SLO-2+3  freshness bound", check_c7_slo_freshness),
 )
 
 
