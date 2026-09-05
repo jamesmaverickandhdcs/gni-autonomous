@@ -37,6 +37,49 @@ ARCH_OK = """## §7 DEPLOYMENT VIEW
 ## §8 CROSSCUTTING
 """
 
+SLO_FAST = ("2026-01-01", "2026-01-02")
+SLO_SLOW = ("2026-01-03", "2026-01-04")
+WATCHER = ("# synthetic watcher -- C7 reads this by AST, never by regex\n"
+           "PROTECTION_WINDOWS = [\n"
+           "    (23, 0, 1, 30),\n"
+           "]\n")
+
+
+def _snap_text():
+    """A run history with TWO regimes: two days at one run an hour, then two
+    days at one run every three hours. Written out rather than harvested, so
+    the fixture needs no network and no clock."""
+    import json
+    runs = []
+    for d in SLO_FAST:
+        for h in range(2, 23):
+            runs.append("%sT%02d:00:00Z" % (d, h))
+    for d in SLO_SLOW:
+        for h in range(2, 21, 3):
+            runs.append("%sT%02d:00:00Z" % (d, h))
+    return json.dumps({
+        "harvest_limit": 300, "harvested_at": "2026-01-05T00:00:00Z", "schema": 1,
+        "workflows": {"a.yml": {"crons": ["0 * * * *"], "fetched": len(runs),
+                                "truncated": False,
+                                "runs": [{"conclusion": "success", "createdAt": t}
+                                         for t in runs]}}})
+
+
+def _slo_block(bound, frm, to):
+    """The SLO-CFG lines C7 parses. The bound is STATED here and DERIVED by the
+    check: over the fast window the history yields 1 h, over both regimes 3 h.
+    A family that states anything else must go red."""
+    return ("\n### 10.3 SLO\n\n"
+            "- SLO-CFG BOUND_HOURS: `%s`\n"
+            "- SLO-CFG EXCEEDANCE_MAX: `0.10`\n"
+            "- SLO-CFG WINDOW_FROM: `%s`\n"
+            "- SLO-CFG WINDOW_TO: `%s`\n"
+            "- SLO-CFG SPLIT_RATIO: `2.0`\n"
+            "- SLO-CFG WORKFLOW: `a.yml`\n"
+            "- SLO-CFG SNAPSHOT: `docs/gni_runtime_snapshot_S94.json`\n"
+            % (bound, frm, to))
+
+
 def _map_text(reg_path, n_delta=0):
     """Built from the register AS WRITTEN, so the fixture is self-consistent on
     any platform: open(mode="w") emits CRLF on Windows and LF elsewhere, and
@@ -56,7 +99,8 @@ def ap(p, s):
 
 
 def base(root, arch=ARCH_OK, rules=RULES, contract=None,
-         map_n_delta=0, map_present=True):
+         map_n_delta=0, map_present=True,
+         slo_bound="1", slo_from=None, slo_to=None):
     if os.path.isdir(root):
         shutil.rmtree(root)
     w(root + "/docs/GNI_RULES_S94.md", rules)
@@ -74,6 +118,12 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     if map_present:
         w(root + "/docs/GNI_MACRO_MAP_S94.md",
           _map_text(root + "/docs/GNI_RULES_S94.md", map_n_delta))
+    w(root + "/ai_engine/monitoring_pipeline.py", WATCHER)
+    w(root + "/docs/gni_runtime_snapshot_S94.json", _snap_text())
+    ap(root + "/docs/GNI_ARCHITECTURE_S94.md",
+       _slo_block(slo_bound,
+                  slo_from if slo_from else SLO_FAST[0],
+                  slo_to if slo_to else SLO_FAST[-1]))
     return root
 
 CASES = {}
@@ -106,6 +156,9 @@ CASES["13-map-stale-md5"] = lambda r: (
 CASES["14-map-missing"] = lambda r: base(r, map_present=False)
 CASES["9-direct-createClient"] = lambda r: (
     base(r), w(r + "/src/app/api/z/route.ts", "const s = createClient(url, key)\n"), r)[-1]
+CASES["15-slo-bound-not-derived"] = lambda r: base(r, slo_bound="2")
+CASES["16-slo-window-spans-regimes"] = lambda r: base(
+    r, slo_bound="3", slo_from=SLO_FAST[0], slo_to=SLO_SLOW[-1])
 
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
@@ -117,6 +170,7 @@ EXPECT = {
     "7-manifest-marker-renamed": 2, "9-direct-createClient": 1,
     "10-undeclared-duplicate": 1, "11-declared-amendment": 0,
     "12-map-stale-count": 1, "13-map-stale-md5": 1, "14-map-missing": 2,
+    "15-slo-bound-not-derived": 1, "16-slo-window-spans-regimes": 1,
 }
 
 if __name__ == "__main__":
