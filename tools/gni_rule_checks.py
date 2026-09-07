@@ -373,6 +373,24 @@ def protection_windows(root):
     raise InstrumentError("no PROTECTION_WINDOWS assignment in " + path)
 
 
+def heartbeat_stands_down(root):
+    """Does the watcher still consult its own protection windows?
+    Until S102 it did, and a run inside a window returned before it
+    opened a connection while still reporting success (order item 6.12).
+    `GNI-R-122` was amended at S102 to bind ADAPTIVE and MANUAL runs, so
+    the call set IS the rule's subject test -- asked of the tree, never
+    assumed here, because an assumption cannot go red when it stops being
+    true. The window table itself is still read: adaptive still uses it."""
+    path = os.path.join(root, "ai_engine", "monitoring_pipeline.py")
+    if not os.path.isfile(path):
+        raise InstrumentError("missing watcher: " + path)
+    for node in ast.walk(ast.parse(read(path))):
+        if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+                and node.func.id == "is_protection_window"):
+            return True
+    return False
+
+
 def in_protection(when, windows):
     now = (when.hour, when.minute)
     for oh, om, ch, cm in windows:
@@ -386,8 +404,9 @@ def in_protection(when, windows):
 
 
 def effective_gaps(runs, windows, lo, hi):
-    """The gap between CHECKS, not between runs: a run inside a protection
-    window returns before it opens a connection and checks nothing."""
+    """The gap between CHECKS, not between runs. Pass windows=[] when the
+    watcher no longer stands down: every run then performs its check, so
+    the check gap and the run gap are the same number."""
     kept = [t for t in runs
             if lo <= t.strftime(DAY_FMT) <= hi and not in_protection(t, windows)]
     return sorted(kept[i + 1] - kept[i] for i in range(len(kept) - 1))
@@ -440,7 +459,9 @@ def check_c7_slo_freshness(ctx):
             "snapshot spans %s..%s; the published window is %s..%s"
             % (span_lo, span_hi, frm, to))
 
-    windows = protection_windows(ctx["root"])
+    windows = protection_windows(ctx["root"])   # must exist: adaptive uses it
+    if not heartbeat_stands_down(ctx["root"]):
+        windows = []
     gaps = effective_gaps(runs, windows, frm, to)
     require_nonempty("effective check gaps in the published window", gaps)
     floor = round(1 / emax)

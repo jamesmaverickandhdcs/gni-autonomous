@@ -43,6 +43,14 @@ WATCHER = ("# synthetic watcher -- C7 reads this by AST, never by regex\n"
            "PROTECTION_WINDOWS = [\n"
            "    (23, 0, 1, 30),\n"
            "]\n")
+# The pre-S102 shape: the watcher consulted its own windows and a run
+# inside one returned before it opened a connection. Restored here as a
+# perturbation, not invented -- this is the body removed at S102.
+WATCHER_STANDDOWN = WATCHER + ("\n\ndef run_monitoring_pipeline(now):\n"
+                               "    if is_protection_window(now):\n"
+                               "        return True\n"
+                               "    return True\n")
+SLO_PW = ("2026-02-01", "2026-02-05")
 
 
 def _snap_text():
@@ -60,6 +68,23 @@ def _snap_text():
     return json.dumps({
         "harvest_limit": 300, "harvested_at": "2026-01-05T00:00:00Z", "schema": 1,
         "workflows": {"a.yml": {"crons": ["0 * * * *"], "fetched": len(runs),
+                                "truncated": False,
+                                "runs": [{"conclusion": "success", "createdAt": t}
+                                         for t in runs]}}})
+
+
+def _snap_pw_text():
+    """A history that ENTERS the protection window. _snap_text never does
+    -- its runs start at 02:00 -- so until S102 no family exercised the
+    window argument of effective_gaps at all. A run every three hours from
+    00:00 puts exactly one run per day inside 23:00-01:30: 39 gaps and a
+    3 h bound when every run checks, 34 gaps and 6 h when they do not."""
+    import json
+    days = ["2026-02-0%d" % i for i in range(1, 6)]
+    runs = ["%sT%02d:00:00Z" % (d, h) for d in days for h in range(0, 24, 3)]
+    return json.dumps({
+        "harvest_limit": 300, "harvested_at": "2026-02-06T00:00:00Z", "schema": 1,
+        "workflows": {"a.yml": {"crons": ["0 */3 * * *"], "fetched": len(runs),
                                 "truncated": False,
                                 "runs": [{"conclusion": "success", "createdAt": t}
                                          for t in runs]}}})
@@ -100,7 +125,8 @@ def ap(p, s):
 
 def base(root, arch=ARCH_OK, rules=RULES, contract=None,
          map_n_delta=0, map_present=True,
-         slo_bound="1", slo_from=None, slo_to=None):
+         slo_bound="1", slo_from=None, slo_to=None,
+         watcher=WATCHER, snap=None):
     if os.path.isdir(root):
         shutil.rmtree(root)
     w(root + "/docs/GNI_RULES_S94.md", rules)
@@ -118,8 +144,9 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     if map_present:
         w(root + "/docs/GNI_MACRO_MAP_S94.md",
           _map_text(root + "/docs/GNI_RULES_S94.md", map_n_delta))
-    w(root + "/ai_engine/monitoring_pipeline.py", WATCHER)
-    w(root + "/docs/gni_runtime_snapshot_S94.json", _snap_text())
+    w(root + "/ai_engine/monitoring_pipeline.py", watcher)
+    w(root + "/docs/gni_runtime_snapshot_S94.json",
+      snap if snap is not None else _snap_text())
     ap(root + "/docs/GNI_ARCHITECTURE_S94.md",
        _slo_block(slo_bound,
                   slo_from if slo_from else SLO_FAST[0],
@@ -159,6 +186,12 @@ CASES["9-direct-createClient"] = lambda r: (
 CASES["15-slo-bound-not-derived"] = lambda r: base(r, slo_bound="2")
 CASES["16-slo-window-spans-regimes"] = lambda r: base(
     r, slo_bound="3", slo_from=SLO_FAST[0], slo_to=SLO_SLOW[-1])
+CASES["17-standdown-absent"] = lambda r: base(
+    r, watcher=WATCHER, snap=_snap_pw_text(),
+    slo_bound="3", slo_from=SLO_PW[0], slo_to=SLO_PW[-1])
+CASES["18-standdown-reinstated"] = lambda r: base(
+    r, watcher=WATCHER_STANDDOWN, snap=_snap_pw_text(),
+    slo_bound="3", slo_from=SLO_PW[0], slo_to=SLO_PW[-1])
 
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
@@ -171,6 +204,7 @@ EXPECT = {
     "10-undeclared-duplicate": 1, "11-declared-amendment": 0,
     "12-map-stale-count": 1, "13-map-stale-md5": 1, "14-map-missing": 2,
     "15-slo-bound-not-derived": 1, "16-slo-window-spans-regimes": 1,
+    "17-standdown-absent": 0, "18-standdown-reinstated": 1,
 }
 
 if __name__ == "__main__":

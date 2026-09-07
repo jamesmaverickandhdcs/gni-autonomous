@@ -314,11 +314,12 @@ def run_monitoring_pipeline():
     print('Time: ' + now.strftime('%Y-%m-%d %H:%M UTC'))
     print('=' * 60)
 
-    # -- Check protection window first (GNI-R-122)
-    if is_protection_window(now):
-        print('PROTECTION WINDOW ACTIVE -- suspending all checks')
-        print('Sacred pipeline run imminent -- heartbeat standing down')
-        return True
+    # -- GNI-R-122 standdown REMOVED (S102, order item 6.12).
+    #    The windows bind ADAPTIVE and MANUAL runs; the heartbeat is
+    #    neither, and spends zero Groq (GNI-R-114). Suppressing it
+    #    produced a run that performed no check and still exited 0.
+    #    The window table and its helper are UNCHANGED; see line 122:
+    #    adaptive_pipeline.py:26,226 still imports and calls them.
 
     client = _get_supabase_client()
     if not client:
