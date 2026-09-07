@@ -650,7 +650,7 @@ The document is the configuration.
 - SLO-CFG WINDOW_TO: `2026-09-03`
 - SLO-CFG SPLIT_RATIO: `2.0`
 - SLO-CFG WORKFLOW: `gni_heartbeat.yml`
-- SLO-CFG SNAPSHOT: `docs/gni_runtime_snapshot_S99.json`
+- SLO-CFG SNAPSHOT: `docs/gni_runtime_snapshot_S102.json`
 
 **SLO-1 — DECLARED, MEASURED, VIOLATED, AND REMOVED AT S102.**
 `monitoring_pipeline.py:317-321` returned `True` before `_get_supabase_client()`, so a run
