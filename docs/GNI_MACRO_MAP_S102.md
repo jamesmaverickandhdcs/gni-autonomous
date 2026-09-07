@@ -10,7 +10,7 @@ No clock is written into this file, so an unchanged input reproduces it byte-ide
 | Z | vision -> executable | `**CHECKABLE:**` markers in `docs/GNI_RULES_S102.md` |
 
 INPUT `docs/GNI_RULES_S102.md` md5 `c83acc672b5f28ea2d1f67cb82d4793f` (EOL-normalised)
-INPUT `docs/GNI_ARCHITECTURE_S102.md` md5 `a01c3f43763862a5d94fb09586b44ecc` (EOL-normalised)
+INPUT `docs/GNI_ARCHITECTURE_S102.md` md5 `506f8c7296274b6fee264352919f536c` (EOL-normalised)
 GENERATED from `docs/GNI_RULES_S102.md` -- 184 CHECKABLE markers, register generation 102.
 
 ## TOTALS
@@ -68,10 +68,10 @@ and it is not a zero.
 | S90 | 4 | 1 | 3 | 25% | ABSENT | GNI_RULES_S102.md:1182-1208 |
 | S91 | 5 | 3 | 2 | 60% | ABSENT | GNI_RULES_S102.md:1254-1311 |
 | S92 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S102.md:1324-1335 |
-| S93 | 1 | 1 | 0 | 100% | Layer 0 | GNI_RULES_S102.md:1355-1355 + GNI_ARCHITECTURE_S102.md:870 |
-| S94 | 4 | 2 | 2 | 50% | Layer 2 | GNI_RULES_S102.md:1397-1421 + GNI_ARCHITECTURE_S102.md:871 |
-| S95 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S102.md:1440-1481 + GNI_ARCHITECTURE_S102.md:872 |
-| S96 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S102.md:1492-1529 + GNI_ARCHITECTURE_S102.md:873 |
+| S93 | 1 | 1 | 0 | 100% | Layer 0 | GNI_RULES_S102.md:1355-1355 + GNI_ARCHITECTURE_S102.md:872 |
+| S94 | 4 | 2 | 2 | 50% | Layer 2 | GNI_RULES_S102.md:1397-1421 + GNI_ARCHITECTURE_S102.md:873 |
+| S95 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S102.md:1440-1481 + GNI_ARCHITECTURE_S102.md:874 |
+| S96 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S102.md:1492-1529 + GNI_ARCHITECTURE_S102.md:875 |
 | S97 | ABSENT | ABSENT | ABSENT | ABSENT | ABSENT | none |
 | S98 | 6 | 5 | 1 | 83% | ABSENT | GNI_RULES_S102.md:1541-1585 |
 | S99 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S102.md:1608-1618 |
