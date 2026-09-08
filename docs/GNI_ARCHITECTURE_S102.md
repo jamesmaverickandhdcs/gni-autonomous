@@ -927,16 +927,18 @@ Until all four hold, the answer to "is Smart Office finished?" is **NO**, and th
 named. D4 (§11) ran five months with deliverables and no way to ask this question. It can now be
 asked in four commands.
 
-### STATUS OF THE COMPLETION TEST AT THE S98 CLOSE (row 1 of roadmap 2 shipped)
+### STATUS OF THE COMPLETION TEST AT THE S102 CLOSE (three of four rows hold)
 
 | # | Holds? | Evidence |
 |---|---|---|
 | 1 | **YES** | run `33810361813` at `328be08` - a push whose tree is byte-identical to `98a9bc3` (`git diff HEAD~2 --stat` empty) reached `conclusion: success` with `rule_checks success` and `harnesses success` read at JOB level. Re-confirmed at `1d5bcab`, run `33812669304`. |
-| 2 | **NO** | §6 is generated and byte-identical (`tools/gni_runtime.py`, S99, md5 `fb6e3f1e0e96e6a696af988b08bb6143` on two renders). §5 is S100. **AND §7 FAILS THIS ROW ON ITS OWN ACCOUNT** -- `gni_state.py` renders `datetime.now()` into its own stamp, so two runs two seconds apart differ (`06:14:00Z` vs `06:14:04Z`). Item **5.33**. The S98 status recorded this row as failing only because §5 and §6 were missing; that was incomplete. |
-| 3 | **NO** | no SLO is written. S101. |
-| 4 | **PARTIAL** | `rule_checks` exits 0 clean and RED on a stale macro map (C6, item 5.26, `1d5bcab`) and on a stale §7 (C2, fixture family `5-stale-generator`). §5 and §6 cannot be stale because they do not exist. |
+| 2 | **YES** | S102, measured rather than assumed: each generator was rendered TWICE two seconds apart and `cmp` reports the pair identical. `gni_blocks` md5 `8796c4c5522be2dd22db384e50b88531`, `gni_state` `480406a42d19a837f4d1f4ad2885db9c`, `gni_runtime` `e620e7e317ee6f72b9267e26566d8705`. The row flipped at S100, when item **5.33** removed `gni_state.py`'s own clock; nobody re-ran the test for four closes, which is exactly what item **5.46** is about. |
+| 3 | **YES** | S101 wrote SLO-1, SLO-2 and SLO-3 into §10 with an error budget. S102 republished SLO-2's measured value: bound 8 h, DERIVED as the smallest whole hour inside the budget rather than chosen, with the probe that produced it printed beside it in §10.2 and its zero margin disclosed. |
+| 4 | **PARTIAL - THE ONLY ROW LEFT** | `rule_checks` exits 0 on a clean tree and goes RED on a stale §7 (C2, family `5-stale-generator`) and on a stale macro map (C6, families `12-map-stale-count` and `13-map-stale-md5`). But C6 reads ONLY the register's `INPUT` line: the map declares one for the register and one for this document, and an architecture that has moved underneath the map is SILENT. Demonstrated four times at S102, twice by accident. There is no staleness check for §5 or §6 at all. Item **5.50** is what closes this row. |
 
-The failing rows are named, which is the point of the test. Roadmap 2 is **1 of 4**.
+The failing rows are named, which is the point of the test. **Roadmap 2 is 3 of 4**, and the one
+remaining row names the item that closes it. This table was the S98 table for four closes while two
+of its rows had quietly become true; a scoreboard nobody re-runs is a claim, not a measurement.
 
 
 

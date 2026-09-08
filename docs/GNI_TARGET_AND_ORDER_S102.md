@@ -1,40 +1,46 @@
 # GNI TARGET + WORKING ORDER
-**GENERATION 21 - 2026-09-07 (S102 close). SUPERSEDES generation 20 (`GNI_TARGET_AND_ORDER_S101.md`).**
+**GENERATION 22 - 2026-09-08 (S102 close, second regeneration). SUPERSEDES generation 21, written
+earlier in this same close and committed at `1f85483`.**
 Regenerated, never appended. The LIVE order is the HIGHEST session number.
 
 ---
 
 ## NEXT SESSION'S MISSION (S103)
 
-**ITEM 9.21: READ THE PUBLIC PAGES AGAINST THE PUBLISHED BOUND, AND SHIP THE CHECK THAT KEEPS
-READING THEM.**
+**ITEM 5.50: MAKE `C6` READ BOTH OF THE MACRO MAP'S INPUT LINES. IT IS THE LAST ROW OF ROADMAP
+TWO'S COMPLETION TEST.**
 
-WHY THIS IS TOP. ROOT 9 is marked URGENT and TOP and has been for several generations. S102 moved
-the published freshness bound from twelve hours to eight, derived by the check rather than chosen,
-and corrected what GNI says about itself INSIDE the architecture. Nobody has looked at what GNI
-says about itself where readers actually are. The target is TRUTHFULNESS OF OUTPUT; an internal
-document that is now correct and a public page that is still wrong is a worse state than before,
-not a better one, because the repo can now cite a true number while shipping a false one.
+WHY THIS AND NOT ITEM 9.21, WHICH THIS FILE NAMED AN HOUR AGO. Generation 21 ranked 9.21 first on
+the grounds that ROOT 9 outranks ROOT 5 and nothing measured reversed that. Then something
+measured did. Roadmap 2's completion test had not been re-run since the S98 close; running it took
+one command and showed rows two and three now hold. Row four is the only one left, and row four is
+red for exactly one reason - `C6` reads the register's `INPUT` line and never the architecture's.
+The order's own rule allows precisely this and nothing else: freshness confers no priority UNLESS
+A MEASUREMENT SAYS SO. One did. This is not a defect promoted because it was found today; it is a
+roadmap row promoted because the scoreboard was finally read.
 
-WHY NOT THE INSTRUMENT DEFECT FOUND THIS CLOSE. `C6` reading one of two inputs is the more elegant
-mission and it was demonstrated four times in a single session. It is ranked below this because
-ROOT 9 outranks ROOT 5 and no measurement was taken that reverses that. Freshness confers no
-priority: a defect found today does not outrank a defect found in June unless something measured
-says so. It is filed and it will keep.
+WHAT IS ACTUALLY WRONG. The map declares two `INPUT ... md5` lines, one for the register and one
+for `GNI_ARCHITECTURE`. `C6` resolves its source from the map's `GENERATED from` stamp, and that
+stamp names the register by construction, so the architecture line is never read. The unchecked
+input is the one that moves most: the register changes only in rules commits, which regenerate the
+map anyway, while the architecture changes in nearly every mission commit. S102 demonstrated it
+four times - moving the architecture to a new session filename was completely silent, moving the
+register in the same commit went red on three counts, and two later architecture edits also passed
+unseen.
 
-DEFINITION OF DONE, written before the work: every public page that states a monitoring cadence is
-READ and its claim recorded verbatim with its URL; each claim is marked TRUE or FALSE against the
-bound and window in `GNI_ARCHITECTURE` section ten; and a check `C8` ships that reads `SLO-CFG`
-from the document and the claim from the page source in the repo, holds no number of its own
-(`C5`), and goes RED when they disagree. `C8` ships with its own fixture families, one that passes
-and one that fails, in the same commit (Protocol PART C step 9a). A reading without a check is a
-result that dies the moment the bound moves again - and the bound has ZERO margin, so it will move.
+DEFINITION OF DONE, written before the work: `C6` loops over EVERY `INPUT ... md5` line in the map,
+resolves each path, and compares each against the live file, with no hard-coded count of inputs; it
+ships in the same commit as at least one fixture family that goes RED on a stale ARCHITECTURE
+stamp while the register stamp is fresh, which is the case no existing family covers (Protocol PART
+C step 9a); and the S102 close's own evidence is replayed as the cert - an architecture edit with
+no map regeneration must go RED where it was silent. Then row four of the completion test in
+`GNI_ARCHITECTURE` is updated from bytes, and roadmap 2 is four of four or the reason it is not is
+written down.
 
-THE ONE THING TO RULE AT THE OPEN: whether a page that states a cadence in cron form rather than
-in hours is FALSE or merely OUT OF SCOPE. Section ten's promise says every such page states the
-measured bound with its window, never the declared cron, which reads as FALSE; but no page was
-written after that promise, so this may be a promise made about pages nobody has revised yet. That
-is a scope ruling and it is James's.
+THE ONE THING TO RULE AT THE OPEN: whether closing row four CLOSES ROADMAP 2, given that row four
+also asks for staleness detection on sections five and six, for which no check exists at all. The
+row's text says "section 5, 6, 7 or the macro map"; the map half can be finished without the
+section half. That is a scope ruling on a completion test and it is James's.
 
 ## TARGET - UNCHANGED
 
@@ -42,9 +48,10 @@ is a scope ruling and it is James's.
 
 Roadmap 2 is **4 of 4** (Protocol PART C step 4a). Row 4 shipped at this close, and roadmap 2
 is therefore COMPLETE: detector, section 6, section 5, SLO. Its written completion test lives in
-`GNI_ARCHITECTURE` - and that document's per-row status table is still the one the S98 close
-wrote, which is item 5.46. The roadmap's own scoreboard is now the thing that does not match what
-was measured, inside the document that scores it.
+`GNI_ARCHITECTURE`, and it was RE-RUN at this close for the first time since S98. Rows two and
+three hold and had held for a while unnoticed; row four is the only one left, and the item that
+closes row four is the mission below. The roadmap is at three of four - not the one of four its
+own scoreboard had been claiming for four closes.
 
 **DEFINITION OF DONE - status at this regeneration:**
 - the arbitrator reads what it claims to read - ROOT 1, ARCHIVED at S96. Unchanged.
@@ -141,9 +148,10 @@ Every line carries an ISO/IEC 14764 class (DECISION S92-4): **COR**rective (some
 **ADA**ptive (the world moved), **PER**fective (it works, it could be better), **PRE**ventive
 (nothing is broken yet).
 
-**EXPECTED ITEM COUNT: 67 distinct numbered items between `## THE ORDER` and `## ARCHIVED.**
-Generation 20 held 64. This close CLOSED TWO items, both archived below - the watcher that checked
-nothing, and the runtime snapshot whose three stamps disagreed - and opened five. Their ids are
+**EXPECTED ITEM COUNT: 66 distinct numbered items between `## THE ORDER` and `## ARCHIVED.**
+Generation 20 held 64, generation 21 held 67. This close CLOSED THREE items, all archived below -
+the watcher that checked nothing, the runtime snapshot whose three stamps disagreed, and the
+roadmap scoreboard nobody had re-run - and opened five. Their ids are
 deliberately NOT repeated here: a closed id cited in the queue counts as a queue item, which is how
 generation 18's counts first disagreed at 52 and 56 and generation 19's at 61 and 64. The mission
 is again an order item, carried rather than closed, because reading the public pages has not been
@@ -157,7 +165,7 @@ sed -n '/^## THE ORDER/,/^## ARCHIVED/p' docs/GNI_TARGET_AND_ORDER_S102.md \
   | grep -oE '[0-9]+\.[0-9]+' | sort -u | wc -l
 ```
 
-Both must print **67**. If they disagree, an id is unbolded or a decimal has entered the prose,
+Both must print **66**. If they disagree, an id is unbolded or a decimal has entered the prose,
 and the count is not to be trusted until they agree. BOTH WERE RUN ON THE ASSEMBLED BYTES BEFORE
 THIS FILE WAS WRITTEN, by a stand-in script that refuses to write when they disagree with each
 other or with the number above (R-S95-1). It was a stand-in because `tools/mk_order_s101.py`,
@@ -184,7 +192,9 @@ empty segment that counts zero and zero. That was caught this close, by running 
 - **9.21** OPEN (S101) [PROPOSED, not measured] - COR - **NO PUBLIC PAGE HAS BEEN READ AGAINST
   THE PUBLISHED FRESHNESS BOUND. THIS IS THE NEXT MISSION.** `GNI_ARCHITECTURE` section ten
   promises that every public page stating a monitoring cadence states the MEASURED current-regime
-  bound with its window, never the declared cron. Whether any page does is still unmeasured. S102
+  bound with its window, never the declared cron. Whether any page does is still unmeasured. It was
+  named the S103 mission by generation 21 and DEMOTED by generation 22 when the roadmap's own
+  scoreboard was re-run; it remains the top of ROOT 9 and is the clear candidate for S104. S102
   RAISED THE STAKES rather than discharging any of it: the bound moved from twelve hours to eight,
   so any page that was accidentally right is now wrong, and any page that was wrong is wrong by a
   different amount. Kin of **9.11** and **9.12**, with one difference - this one has a written
@@ -358,12 +368,6 @@ writing.** Recorded as a debt so that the next close cannot inherit it silently.
   four generations have carried. The fix is a ruling on which boundary is canonical, then one
   deliberate re-baselining that says so.
 
-- **5.46** **NEW (S101)** [MEASURED] - COR - **ROADMAP TWO'S OWN STATUS TABLE IS TWO CLOSES
-  STALE.** The per-row completion test in `GNI_ARCHITECTURE` still carries the table as it stood at
-  the S98 close: it records row two as failing on the grounds that sections five and six do not
-  exist, and both have since shipped. The close reads that table to declare how many rows are
-  achieved, so the roadmap is scored against a record older than the work. Same class as every
-  published-figure item in ROOT 9, in the one document that scores the roadmap.
 - **5.47** **NEW (S101)** [MEASURED] - PRE - **ONE-SHOT PATCH SCRIPTS HAVE NO POLICY, AND THE TREE
   CURRENTLY SAYS BOTH THINGS.** Four S95 one-shot scripts are committed under `tools/`; S100's
   order generator was deleted after use, and S101 deleted four more. Whichever answer is right,
@@ -390,7 +394,10 @@ writing.** Recorded as a debt so that the next close cannot inherit it silently.
   passed unseen. The unchecked input is the one that moves MOST - the register changes only in
   rules commits, which regenerate the map anyway, while the architecture changes in nearly every
   mission commit. The fix loops over EVERY `INPUT` line and does not hard-code two. It NEEDS ITS
-  OWN FIXTURE FAMILY and must not ship without one (Protocol PART C step 9a).
+  OWN FIXTURE FAMILY and must not ship without one (Protocol PART C step 9a). **THIS IS THE NEXT
+  MISSION**, and not because it was found recently: re-running the roadmap's completion test at this
+  close showed it is the last unmet row. The ROOT it sits in ranks below ROOT 9; the measurement
+  outranks the ROOT, which is the one exception the order allows.
 - **5.51** **NEW (S102)** [MEASURED] - PRE - **THE GENERATOR THAT WROTE THE PREVIOUS GENERATION IS
   NOT IN THE TREE.** `tools/mk_order_s101.py` is credited by the S101 close with running both
   published counting commands on the assembled bytes before writing, and with catching the carried
@@ -447,7 +454,7 @@ and no session may raise an item here as "overdue" until James restarts the cloc
 
 ---
 
-## ARCHIVED - TWO ITEMS CLOSE INTO IT THIS GENERATION
+## ARCHIVED - THREE ITEMS CLOSE INTO IT THIS GENERATION
 
 Archived is not closed and not solved: not worked under this target, not re-ranked each close,
 not re-read at open. Anything here returns only by a new measurement and a ruling.
@@ -465,6 +472,7 @@ not re-read at open. Anything here returns only by a new measurement and a rulin
 | **6.11** the promise and the cadence disagree | CLOSED S101 at `b7eaab4`. ANSWERED rather than fixed, which is what the item asked for: GNI has two cadences and not one, and both are published per regime with their windows in `GNI_ARCHITECTURE` section ten. What GNI promises is now written down, and `C7` fails when the written number stops being true. |
 | **6.8** heartbeat standdown | CLOSED S101 at `b7eaab4` WITH ITS ROOT CAUSE, which the item had asked for since S90: `GNI-R-122` is a protection-window rule justified by token collision and `GNI-R-114` says the heartbeat spends none. Reopened the same close as the fix item, now also closed below - the question was answered at S101, the fix at S102. |
 | **6.12** the watcher that checks nothing | CLOSED S102 at `9e11f57`. The standdown is gone from `ai_engine/monitoring_pipeline.py:317-321`; `GNI-R-122` is AMENDED (S102) with its March-2026 sentence preserved verbatim, bound to the ADAPTIVE or MANUAL runs its own purpose clause names. The published bound FELL from 12 h to 8 h, derived by `C7`, and `C7` no longer assumes the standdown exists - `heartbeat_stands_down()` asks the tree by AST, so the bound rises again if the call returns. Certified by fixture families `17-standdown-absent` and `18-standdown-reinstated`, differing by one call and by nothing else, and re-derived at `608e5ed` against a freshly harvested snapshot that agrees with the committed one digit for digit. Two Groq-based subject tests were disproven first: neither pipeline imports groq, and a text grep captures the watcher on its own `GNI-R-114` citations. |
+| **5.46** the roadmap's stale scoreboard | CLOSED S102. The completion test in `GNI_ARCHITECTURE` was re-run for the first time since the S98 close and its status table rewritten from bytes: row one holds, row two holds (each generator rendered twice two seconds apart, `cmp`-identical, md5s published in the table), row three holds since S101, row four is PARTIAL and names item **5.50** as its fix. **Roadmap 2 is three of four, not one of four.** Two rows had been quietly true for several closes; a scoreboard nobody re-runs is a claim, not a measurement, which is what this item said and why it is closed by reading rather than by building. |
 | **6.14** the snapshot's three stamps | CLOSED S102 at `d9ebebb`. Section six is now generated from `gni_runtime_snapshot_S102.json`, harvested this session at HEAD `8ce57fc`. Filename, `harvested_head` and newest run all name this session; the one-commit lag between harvest and commit is what harvest-then-commit means, not a defect. It could not be closed at `608e5ed`, where the close message claimed it: only `SLO-CFG` had moved, which is section ten's, and the item is section six's. The overclaim is recorded in the S102 handoff. |
 
 **LEFT THE ARCHIVE THIS CLOSE: the lateness band.** It was archived because "a free-tier
@@ -492,7 +500,15 @@ had never been measured. It returned as items **6.10** and **6.11**; the second 
   (`harnesses success` + `rule_checks success`). `9e11f57` the fix and the amendment, `8ce57fc`
   sections 5 and 7 restamped, `608e5ed` the freshly harvested snapshot, `d9ebebb` section 6
   regenerated and the document reduced to ONE cited snapshot.
-- CLOSED: **6.12**, **6.14**. NEW: **5.50**, **5.51**, **5.52**, **5.53**, **6.15**. rho = **2 / 5**.
+- **DECISION S102-4 (Claude, delegated, REVERSING S102-3 on a measurement).** S103's mission is
+  item **5.50**, not **9.21**. Generation 21 ranked 9.21 first because ROOT 9 outranks ROOT 5 and
+  nothing measured reversed it. Re-running roadmap 2's completion test - one command, never run
+  since S98 - showed rows two and three hold and row four is the last, and 5.50 is what closes row
+  four. The order permits exactly this reversal and no other: freshness confers no priority unless
+  a measurement says so. Generation 21 stands in git history; it was not wrong, it was decided
+  without a number that took one command to obtain.
+- CLOSED: **6.12**, **6.14**, **5.46**. NEW: **5.50**, **5.51**, **5.52**, **5.53**, **6.15**.
+  rho = **3 / 5**.
 - WRONG THIS CLOSE, AND WHO CAUGHT IT: **my own commit message** claimed item 6.14 was retired
   when only section ten's pointer had moved - caught by re-reading the item in order to close it,
   after the claim was pushed. **The fixture** was expected to break under the new predicate and did
