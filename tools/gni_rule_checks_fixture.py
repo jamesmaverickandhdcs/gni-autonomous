@@ -105,17 +105,27 @@ def _slo_block(bound, frm, to):
             % (bound, frm, to))
 
 
-def _map_text(reg_path, n_delta=0):
-    """Built from the register AS WRITTEN, so the fixture is self-consistent on
-    any platform: open(mode="w") emits CRLF on Windows and LF elsewhere, and
-    the stamped md5 must survive that. Uses the generator's own functions."""
+def _map_text(reg_path, arch_path, n_delta=0):
+    """Built from the register AND the architecture AS WRITTEN, so the fixture
+    is self-consistent on any platform: open(mode="w") emits CRLF on Windows
+    and LF elsewhere, and the stamped md5s must survive that. Uses the
+    generator's own functions.
+
+    TWO INPUT lines from S103, because the production map declares two and C6
+    now reads every one of them (item 5.50). With one line the fixture could
+    not have gone red on a stale architecture stamp, which is why no family
+    covered that case for four closes."""
     import gni_macro_map as gm
     raw, bound, unbound = gm.parse_rules(reg_path)
     n = len(bound) + len(unbound) + n_delta
+    arch_raw = gm.read(arch_path)[0]
     return ("# GNI MACRO MAP -- S94\n\n"
             "INPUT `%s` md5 `%s` (EOL-normalised)\n"
+            "INPUT `%s` md5 `%s` (EOL-normalised)\n"
             "GENERATED from `%s` -- %d CHECKABLE markers, register generation 94.\n"
-            % (reg_path, gm.norm_md5(raw), reg_path, n))
+            % (reg_path, gm.norm_md5(raw),
+               arch_path, gm.norm_md5(arch_raw),
+               reg_path, n))
 
 
 def ap(p, s):
@@ -141,9 +151,6 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     w(root + "/.github/workflows/b.yml", "on:\n  push:\njobs:\n  y:\n")
     w(root + "/ai_engine/ok.py", "rows = q.order('created_at', desc=True).execute().data\n")
     w(root + "/src/app/api/r/route.ts", "const s = createNoStoreClient()\n")
-    if map_present:
-        w(root + "/docs/GNI_MACRO_MAP_S94.md",
-          _map_text(root + "/docs/GNI_RULES_S94.md", map_n_delta))
     w(root + "/ai_engine/monitoring_pipeline.py", watcher)
     w(root + "/docs/gni_runtime_snapshot_S94.json",
       snap if snap is not None else _snap_text())
@@ -151,6 +158,14 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
        _slo_block(slo_bound,
                   slo_from if slo_from else SLO_FAST[0],
                   slo_to if slo_to else SLO_FAST[-1]))
+    # LAST, and the order is load-bearing: the map stamps the architecture's
+    # md5, and the SLO block above APPENDS to the architecture. Stamping before
+    # that append would leave every family red on a hash the fixture itself had
+    # just invalidated -- the check would look alive while measuring nothing.
+    if map_present:
+        w(root + "/docs/GNI_MACRO_MAP_S94.md",
+          _map_text(root + "/docs/GNI_RULES_S94.md",
+                    root + "/docs/GNI_ARCHITECTURE_S94.md", map_n_delta))
     return root
 
 CASES = {}
@@ -193,6 +208,21 @@ CASES["18-standdown-reinstated"] = lambda r: base(
     r, watcher=WATCHER_STANDDOWN, snap=_snap_pw_text(),
     slo_bound="3", slo_from=SLO_PW[0], slo_to=SLO_PW[-1])
 
+# S103, item 5.50. 19 is what the DoD asked for; 20 and 21 go beyond it.
+# 20 is the DISCRIMINATOR (R-S90-1): a check that compared only hashes passes
+# it, because the file the map names still exists and still hashes correctly.
+# That is precisely the failure S102 suffered and could not see.
+CASES["19-map-stale-arch-md5"] = lambda r: (
+    base(r), ap(r + "/docs/GNI_ARCHITECTURE_S94.md",
+                "\nprose line carrying no id and no marker\n"), r)[-1]
+CASES["20-map-arch-renamed"] = lambda r: (
+    base(r), shutil.copyfile(r + "/docs/GNI_ARCHITECTURE_S94.md",
+                             r + "/docs/GNI_ARCHITECTURE_S95.md"), r)[-1]
+CASES["21-map-third-input"] = lambda r: (
+    base(r), ap(r + "/docs/GNI_MACRO_MAP_S94.md",
+                "INPUT `%s/docs/CONTRACT_S94.md` md5 `%s` (EOL-normalised)\n"
+                % (r, "0" * 32)), r)[-1]
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -205,6 +235,8 @@ EXPECT = {
     "12-map-stale-count": 1, "13-map-stale-md5": 1, "14-map-missing": 2,
     "15-slo-bound-not-derived": 1, "16-slo-window-spans-regimes": 1,
     "17-standdown-absent": 0, "18-standdown-reinstated": 1,
+    "19-map-stale-arch-md5": 1, "20-map-arch-renamed": 1,
+    "21-map-third-input": 1,
 }
 
 if __name__ == "__main__":

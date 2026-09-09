@@ -12,8 +12,10 @@ Converts seven GNI engineering rules from prose into executable checks.
   C4  R-S62-3   no direct createClient under src/app/api/ (no-store only)
   C5  R-S81-5   self-lint: no check may hold a hand-written expected integer,
       R-S81-1   and every check must prove its input was non-empty first
-  C6  R-S95-4   the macro map's stamped marker count AND the register's
-                EOL-normalised md5 both match the live register (item 5.26)
+  C6  R-S95-4   EVERY `INPUT ... md5` line the macro map declares resolves
+                to the LIVE file of its family and matches that file's bytes,
+                and the stamped marker count matches the live register. Until
+                S103 only the register's line was read (items 5.26 + 5.50)
   C7  SLO-2+3   the freshness bound published in ARCHITECTURE section 10 is the
                 smallest whole hour inside the error budget, and the published
                 window holds ONE regime, not two averaged together
@@ -292,52 +294,110 @@ def check_c5_self_lint(ctx):
     return True, "%d checks derive every expected value" % len(checks)
 
 
-def check_c6_macro_map_fresh(ctx):
-    """Item 5.26 (C6). The macro map is GENERATED from the register, and until
-    now nothing went red when the register moved underneath it: S96 committed a
-    map reading 159 markers and closed the same session with 164 registered.
-    Count alone will not do -- a constant count is not a constant state
-    (R-S95-4) -- so the register's EOL-normalised md5 is compared as well,
-    using the generator's OWN parse_rules and norm_md5. A second parser here
-    would be a second opinion, not a check (R-S96-3)."""
-    import gni_macro_map as gm
-    docs = os.path.join(ctx["root"], "docs")
+INPUT_RE = re.compile(
+    r"^INPUT `(?P<src>[^`]+)` md5 `(?P<h>[0-9a-f]+)` \(EOL-normalised\)", re.M)
+STAMP_RE = re.compile(
+    r"GENERATED from `(?P<src>[^`]+)` -- (?P<n>\d+) CHECKABLE "
+    r"markers, register generation (?P<gen>\d+)\.")
+MAP_RE = re.compile(r"^GNI_MACRO_MAP_S(\d+)\.md$")
+
+
+def live_map_path(root):
+    """The highest-numbered macro map. The map is not in LIVE_STEMS because it
+    is GENERATED rather than authored, so it is resolved here -- by the same
+    RELATION rule, never by lexical sort and never by list position
+    (R-S92-2)."""
+    docs = os.path.join(root, "docs")
     if not os.path.isdir(docs):
         raise InstrumentError("missing dir: " + docs)
-    pat = re.compile(r"^GNI_MACRO_MAP_S(\d+)\.md$")
-    gens = [(int(m.group(1)), n) for n in os.listdir(docs) for m in [pat.match(n)] if m]
+    gens = [(int(m.group(1)), n) for n in os.listdir(docs)
+            for m in [MAP_RE.match(n)] if m]
     require_nonempty("macro map generations", gens)
-    map_path = os.path.join(docs, max(gens)[-1])
+    return os.path.join(docs, max(gens)[-1])
+
+
+def map_inputs(body):
+    """Every `INPUT ... md5` line the map DECLARES, in the order written. Zero
+    is an INSTRUMENT ERROR and never an empty list: a renamed INPUT format must
+    halt, not report a map with nothing left to check (R-S81-1)."""
+    rows = [(m.group("src"), m.group("h")) for m in INPUT_RE.finditer(body)]
+    return require_nonempty("map INPUT lines", rows)
+
+
+def stem_of(name):
+    """`docs/GNI_RULES_S102.md` -> `GNI_RULES`. Matched against LIVE_STEMS by
+    RELATION. A name belonging to no live family returns None and is refused by
+    the caller rather than silently skipped."""
+    base = os.path.basename(name)
+    for stem in LIVE_STEMS:
+        if re.match(r"^" + re.escape(stem) + r"_S\d+\.md$", base):
+            return stem
+    return None
+
+
+def check_c6_macro_map_fresh(ctx):
+    """Items 5.26 and 5.50 (C6). The macro map declares one `INPUT ... md5`
+    line per source it read. Until S103 this check built the INPUT pattern from
+    the map's own `GENERATED from` stamp, and that stamp names the REGISTER by
+    construction -- so the ARCHITECTURE line was never read, and an
+    architecture that had moved underneath the map was SILENT. S102
+    demonstrated that four times in one session, twice by accident.
+
+    Every declared INPUT is now checked, and no count of inputs is written
+    anywhere in this file. Each is compared against the LIVE file of its
+    family, NOT against the file the line names: a hash re-read from the named
+    path always agrees with itself, and the failure S102 actually suffered was
+    a RENAME, where the named file still exists and still hashes correctly
+    while no longer being the live one.
+
+    The generator's own read, parse_rules and norm_md5 are imported. A second
+    parser here would be a second opinion, not a check (R-S96-3).
+
+    KNOWN LIMIT, disclosed rather than hidden: this checks what the map
+    DECLARES. A generator that reads a source and emits no INPUT line for it is
+    invisible to this check, and to every other check in this file."""
+    import gni_macro_map as gm
+    docs = require_nonempty("live docs", ctx["docs"])
+    map_path = live_map_path(ctx["root"])
     body = require_nonempty("macro map text", read(map_path))
-    reg_path = require_nonempty("live register", ctx["docs"]["GNI_RULES"])
-    stamp = re.search(r"GENERATED from `(?P<src>[^`]+)` -- (?P<n>\d+) CHECKABLE "
-                      r"markers, register generation (?P<gen>\d+)\.", body)
+    inputs = map_inputs(body)
+    problems = []
+    for src, stamped in inputs:
+        stem = stem_of(src)
+        if stem is None:
+            raise InstrumentError("INPUT names no live family: " + src)
+        live_path = docs[stem]
+        if os.path.basename(src) != os.path.basename(live_path):
+            problems.append("map read %s; the live %s is %s"
+                            % (os.path.basename(src), stem,
+                               os.path.basename(live_path)))
+            continue
+        try:
+            raw = gm.read(live_path)[0]
+        except SystemExit:
+            raise InstrumentError("the generator's own reader refused " + live_path)
+        live_h = gm.norm_md5(raw)
+        if stamped != live_h:
+            problems.append("%s md5 %s; map stamped %s" % (stem, live_h, stamped))
+    stamp = STAMP_RE.search(body)
     if not stamp:
         raise InstrumentError("no GENERATED-from stamp in " + map_path)
-    md5line = re.search(r"INPUT `" + re.escape(stamp.group("src")) +
-                        r"` md5 `(?P<h>[0-9a-f]+)`", body)
-    if not md5line:
-        raise InstrumentError("no INPUT md5 line for the register in " + map_path)
+    reg_path = docs["GNI_RULES"]
+    if os.path.basename(stamp.group("src")) != os.path.basename(reg_path):
+        problems.append("map generated from %s; live register is %s"
+                        % (stamp.group("src"), reg_path))
     try:
         raw, bound, unbound = gm.parse_rules(reg_path)
     except SystemExit:
         raise InstrumentError("the generator's own parser refused " + reg_path)
     live_n = len(bound) + len(unbound)
-    live_h = gm.norm_md5(raw)
-    problems = []
-    if os.path.basename(stamp.group("src")) != os.path.basename(reg_path):
-        problems.append("map generated from %s; live register is %s"
-                        % (stamp.group("src"), reg_path))
     if int(stamp.group("n")) != live_n:
         problems.append("map stamps %s markers; register holds %d"
                         % (stamp.group("n"), live_n))
-    if md5line.group("h") != live_h:
-        problems.append("register md5 %s; map stamped %s" % (live_h, md5line.group("h")))
     if problems:
         return False, "; ".join(problems)
-    return True, "%s stamps %d markers and the register md5 matches" % (
-        os.path.basename(map_path), live_n)
-
+    return True, "%s: %d INPUT lines resolve live and match, %d markers" % (
+        os.path.basename(map_path), len(inputs), live_n)
 
 
 SLO_KEYS = ("BOUND_HOURS", "EXCEEDANCE_MAX", "WINDOW_FROM", "WINDOW_TO",
@@ -525,15 +585,29 @@ def build_ctx(root, self_path):
     return {"root": root, "self_path": self_path, "docs": live_docs(root)}
 
 
-def control_probe(root):
-    """R-S93-1: the instrument checks its own expectations before it reports.
-    A manifest whose marker was renamed must halt, not pass silently."""
-    rules = read(live_docs(root)["GNI_RULES"])
+def _probe_halts(what, fn, arg):
+    """A probe passes only when the parser RAISES. A parser that returned an
+    empty result on perturbed bytes would report a clean tree built from
+    nothing, which is the failure R-S81-1 exists to prevent."""
     try:
-        manifest_ids(rules.replace(MANIFEST_MARKER, "XX-RENAMED-XX"))
+        fn(arg)
     except InstrumentError:
         return
-    raise InstrumentError("control probe FAILED: a renamed manifest still parsed")
+    raise InstrumentError("control probe FAILED: " + what)
+
+
+def control_probe(root):
+    """R-S93-1: the instrument checks its own expectations before it reports.
+    Each probe perturbs the REAL tree's bytes in memory (R-S100-1) and asserts
+    the parser HALTS rather than passing silently. Added at S103: the map's
+    INPUT format became load-bearing when C6 widened to every INPUT line, so a
+    renamed INPUT must halt exactly as a renamed manifest does."""
+    rules = read(live_docs(root)["GNI_RULES"])
+    _probe_halts("a renamed manifest still parsed", manifest_ids,
+                 rules.replace(MANIFEST_MARKER, "XX-RENAMED-XX"))
+    body = read(live_map_path(root))
+    _probe_halts("a renamed INPUT line still parsed", map_inputs,
+                 body.replace("INPUT `", "XX-RENAMED-XX `"))
 
 
 def main(argv):
