@@ -199,6 +199,17 @@ def stored_cell(name: str, stored: list[str]) -> str:
     return "yes" if name.upper() in {x.upper() for x in stored} else "**NOT STORED**"
 
 
+def workflow_manifest(wf_paths: list[Path]) -> str:
+    """The §7 fingerprint: one EOL-normalised md5 over `name<TAB>md5` per
+    workflow file, in the order given. MODULE-LEVEL ON PURPOSE, exactly as
+    gni_blocks.collect and gni_runtime.norm_md5 are, so that C8 recomputes this
+    section's declared value with THIS code rather than with a second opinion
+    (R-S96-3). Lifted out of main() unchanged at S104; the expression is moved,
+    not rewritten."""
+    return norm_md5("\n".join(
+        f"{p.name}\t{norm_md5(p.read_bytes())}" for p in wf_paths).encode("utf-8"))
+
+
 def render(wfs: list[dict], stored: list[str], stored_note: str, head: str,
            manifest: str) -> str:
     o: list[str] = []
@@ -343,8 +354,7 @@ def main() -> int:
     wfs = [parse_workflow(p) for p in wf_paths]
     stored, note = stored_secrets(not args.no_gh)
     _, head = sh(["git", "rev-parse", "--short", "HEAD"])
-    manifest = norm_md5("\n".join(
-        f"{p.name}\t{norm_md5(p.read_bytes())}" for p in wf_paths).encode("utf-8"))
+    manifest = workflow_manifest(wf_paths)
     section = render(wfs, stored, note, head.strip() or "unknown", manifest)
 
     if args.stdout:
