@@ -23,17 +23,27 @@ export async function GET(request: NextRequest) {
 
     let baseline = null
     if (data && data.length > 0) {
-      const latestScore = data[0].escalation_score || 0
-      const scoresRes = await fetch(
-        supabaseUrl + '/rest/v1/reports?select=escalation_score&escalation_score=gt.0',
-        { headers, cache: 'no-store' }
-      )
-      const allScores = await scoresRes.json()
-      if (allScores && allScores.length > 0) {
-        const total = allScores.length
-        const below = allScores.filter((r: { escalation_score: number }) => r.escalation_score <= latestScore).length
-        const percentile = Math.round((below / total) * 100)
-        baseline = { score: latestScore, percentile, total_non_zero: total }
+      // S106: the RANK is by raw magnitude. The capped score sat at 10.0 on 262 of 263 runs, so
+      // ranking by it put every run at 'top 0%'. Runs written before S90 carry no raw value and
+      // are not ranked; with no raw value on the latest report, no rank is published.
+      // total_non_zero keeps its pre-S106 meaning (reports with a non-zero capped score):
+      // /developer-hub reads it as its report count.
+      const [cappedRes, rawRes] = await Promise.all([
+        fetch(supabaseUrl + '/rest/v1/reports?select=escalation_score&escalation_score=gt.0',
+              { headers, cache: 'no-store' }),
+        fetch(supabaseUrl + '/rest/v1/reports?select=escalation_score_raw&escalation_score_raw=not.is.null',
+              { headers, cache: 'no-store' }),
+      ])
+      const capped = await cappedRes.json()
+      const raws = await rawRes.json()
+      const latestRaw = data[0].escalation_score_raw
+      const totalNonZero = Array.isArray(capped) ? capped.length : 0
+      if (latestRaw != null && Array.isArray(raws) && raws.length > 0) {
+        const below = raws.filter((r: { escalation_score_raw: number }) => r.escalation_score_raw <= latestRaw).length
+        baseline = { score: latestRaw, percentile: Math.round((below / raws.length) * 100),
+                     raw_total: raws.length, total_non_zero: totalNonZero }
+      } else if (totalNonZero > 0) {
+        baseline = { score: 0, percentile: 0, raw_total: 0, total_non_zero: totalNonZero }
       }
     }
 

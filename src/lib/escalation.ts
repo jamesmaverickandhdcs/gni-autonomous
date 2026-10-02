@@ -10,12 +10,20 @@
 // the method, express the uncertainty.
 export const ESCALATION_CAP = 10
 
-// A single report: "10.0/10 · raw 24.5". Rows written before S90 carry no raw value.
-export function formatEscalation(score: number | null | undefined, raw?: number | null): string {
+// A single report: "10.0/10 · raw 24.5".
+// A missing raw value has TWO causes, and the text must not merge them (S106 live read):
+//   'row'    - this row is a report written before S90, when no raw value was stored;
+//   'report' - this row lives in a table with no raw column (frequency_log, alerts); the raw
+//              value of the same run IS stored, on its report. "Not recorded" would be false.
+export type RawHome = 'row' | 'report'
+export function formatEscalation(
+  score: number | null | undefined, raw?: number | null, rawHome: RawHome = 'row',
+): string {
   if (score == null) return 'N/A'
   const capped = `${score.toFixed(1)}/${ESCALATION_CAP}`
   if (raw != null) return `${capped} · raw ${raw.toFixed(1)}`
-  return score >= ESCALATION_CAP ? `${capped} · at cap, raw not recorded` : capped
+  if (score < ESCALATION_CAP) return capped
+  return rawHome === 'report' ? `${capped} · at cap; raw is on the report` : `${capped} · at cap, raw not recorded`
 }
 
 // An average of capped scores is bounded by the cap too, and says so.

@@ -131,7 +131,7 @@ export default function AlertsPage() {
                   <p className="text-sm leading-relaxed">{alert.message}</p>
                   {alert.escalation_score > 0 && (
                     <div className="mt-2 text-xs text-gray-400">
-                      Escalation: <span className="font-bold text-red-400">{formatEscalation(alert.escalation_score, null)}</span>
+                      Escalation: <span className="font-bold text-red-400">{formatEscalation(alert.escalation_score, null, 'report')}</span>
                     </div>
                   )}
                 </div>

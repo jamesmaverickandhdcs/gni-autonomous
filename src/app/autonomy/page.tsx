@@ -129,7 +129,7 @@ export default function AutonomyPage() {
                     <div className="text-xs text-gray-500 mt-1">Current Level</div>
                   </div>
                   <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center">
-                    <div className="text-lg font-bold text-white">{formatEscalation(latest.escalation_score, null)}</div>
+                    <div className="text-lg font-bold text-white">{formatEscalation(latest.escalation_score, null, 'report')}</div>
                     <div className="text-xs text-gray-500 mt-1">Escalation Score</div>
                   </div>
                   <div className="bg-gray-800 border border-blue-800 rounded-xl p-4 text-center">
@@ -139,7 +139,7 @@ export default function AutonomyPage() {
                     <div className="text-xs text-gray-500 mt-1">Run Interval</div>
                   </div>
                   <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center">
-                    <div className="text-sm font-bold text-gray-300">{latestLevel} {formatEscalation(latest.escalation_score, null)}</div>
+                    <div className="text-sm font-bold text-gray-300">{latestLevel} {formatEscalation(latest.escalation_score, null, 'report')}</div>
                     <div className="text-xs text-gray-500 mt-1">Reason</div>
                   </div>
                 </div>
@@ -209,7 +209,7 @@ export default function AutonomyPage() {
                         <span className={`font-bold ${levelColor[entryLevel]?.split(' ')[0] || 'text-gray-400'}`}>
                           {entryLevel}
                         </span>
-                        <span className="text-white">{formatEscalation(entry.escalation_score, null)}</span>
+                        <span className="text-white">{formatEscalation(entry.escalation_score, null, 'report')}</span>
                         <span className="text-blue-400">{entry.recommended_interval_hours != null ? formatInterval(entry.recommended_interval_hours) : intervalMap[entryLevel]}</span>
                       </div>
                     )
@@ -229,7 +229,7 @@ export default function AutonomyPage() {
                     <div key={entry.id} className="flex items-center justify-between bg-gray-800 rounded-lg px-4 py-2">
                       <span className="text-xs text-gray-500">{new Date(entry.run_at).toLocaleString()}</span>
                       <span className={`font-bold ${levelColor[entry.escalation_level]?.split(' ')[0] || 'text-gray-400'}`}>{entry.escalation_level}</span>
-                      <span className="text-white">{formatEscalation(entry.escalation_score, null)}</span>
+                      <span className="text-white">{formatEscalation(entry.escalation_score, null, 'report')}</span>
                       <span className="text-blue-400">{formatInterval(entry.recommended_interval_hours)}</span>
                       <span className="text-xs text-gray-600">band says {intervalMap[entry.escalation_level]}</span>
                     </div>

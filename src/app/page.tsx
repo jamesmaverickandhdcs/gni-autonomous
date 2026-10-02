@@ -1,7 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
-import { formatEscalation } from '@/lib/escalation'
+import { formatEscalation, ESCALATION_CAP } from '@/lib/escalation'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 const MiniMapView = dynamic(() => import('@/components/MapView'), { ssr: false })
@@ -187,11 +187,15 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
 
 
 
-function EscalationSparkline({ reports }: { reports: { escalation_score: number; escalation_level: string; created_at: string }[] }) {
+function EscalationSparkline({ reports }: { reports: { escalation_score: number; escalation_score_raw?: number | null; escalation_level: string; created_at: string }[] }) {
   const last7 = reports.slice(0, 7).reverse()
   if (last7.length < 2) return null
-  const scores = last7.map(r => r.escalation_score || 0)
-  const maxScore = 10
+  // S106: the capped score sat at 10.0 on 262 of 263 runs, so a capped trend is a flat line
+  // that always reads 'stable'. Plot the raw magnitude when all seven runs carry one.
+  const useRaw = last7.every(r => r.escalation_score_raw != null)
+  const scores = last7.map(r => (useRaw ? r.escalation_score_raw : r.escalation_score) || 0)
+  const maxScore = useRaw ? Math.max(...scores) : ESCALATION_CAP
+  const last = last7[last7.length - 1]
   const width = 160
   const height = 40
   const points = scores.map((s, i) => {
@@ -202,11 +206,12 @@ function EscalationSparkline({ reports }: { reports: { escalation_score: number;
   const latest = scores[scores.length - 1]
   const prev = scores[scores.length - 2]
   const trend = latest > prev ? 'up' : latest < prev ? 'down' : 'flat'
-  const trendColor = latest >= 8 ? '#ef4444' : latest >= 6 ? '#f97316' : latest >= 4 ? '#eab308' : '#22c55e'
+  const cappedLatest = last.escalation_score || 0
+  const trendColor = cappedLatest >= 8 ? '#ef4444' : cappedLatest >= 6 ? '#f97316' : cappedLatest >= 4 ? '#eab308' : '#22c55e'
   return (
     <div className="flex items-center gap-3 mt-1">
       <div>
-        <div className="text-xs text-gray-500 mb-0.5">7-run escalation trend</div>
+        <div className="text-xs text-gray-500 mb-0.5">7-run escalation trend{useRaw ? ' (raw magnitude)' : ' (capped score)'}</div>
         <svg width={width} height={height} className="overflow-visible">
           <polyline
             points={points}
@@ -225,7 +230,7 @@ function EscalationSparkline({ reports }: { reports: { escalation_score: number;
       </div>
       <div>
         <div className="text-xs font-bold" style={{ color: trendColor }}>
-          {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'} {latest.toFixed(1)}/10
+          {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'} {formatEscalation(last.escalation_score, last.escalation_score_raw)}
         </div>
         <div className="text-xs text-gray-600">
           {trend === 'up' ? 'escalating' : trend === 'down' ? 'de-escalating' : 'stable'}
@@ -248,7 +253,7 @@ export default function Home() {
   const [mapEvents, setMapEvents] = useState<{id: string, source: string, bias: string, title: string, url: string, summary: string, stage3_score: number, stage4_rank: number, location_name: string, lat: number, lng: number, created_at: string}[]>([])
   const [btcChartData, setBtcChartData] = useState<{date: string, close: number}[]>([])
   const [btcPrice, setBtcPrice] = useState<{price: number, changePercent: string} | null>(null)
-  const [baseline, setBaseline] = useState<{score: number, percentile: number, total_non_zero: number} | null>(null)
+  const [baseline, setBaseline] = useState<{score: number, percentile: number, raw_total: number, total_non_zero: number} | null>(null)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -459,9 +464,9 @@ export default function Home() {
               {baseline && baseline.score > 0 && (
                 <div className="text-xs mt-1">
                   <span className={`font-bold ${baseline.percentile >= 75 ? 'text-red-400' : baseline.percentile >= 50 ? 'text-orange-400' : 'text-yellow-400'}`}>
-                    Today is top {100 - baseline.percentile}% most escalated
+                    Today is top {100 - baseline.percentile}% by raw magnitude
                   </span>
-                  <span className="text-gray-600 ml-1">({baseline.total_non_zero} runs)</span>
+                  <span className="text-gray-600 ml-1">({baseline.raw_total} runs with a raw value)</span>
                 </div>
               )}
               {reports.length >= 2 && <EscalationSparkline reports={reports} />}
