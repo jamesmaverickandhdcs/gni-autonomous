@@ -237,8 +237,8 @@ SEQUENCE ONCE APPROVED
 
 1. You: add GROQ_MAD_EVENING GitHub secret (Part 0A).
 2. You: run the ALTER TABLE on groq_daily_usage (Part 0C).
-3. Me: ship-to-file patches (LR-078) for gni_mad.yml, quota_guard.py,
-   mad_runner.py -- pure ASCII anchors (LR-101).
+3. Me: ship-to-file patches (GNI-L-001) for gni_mad.yml, quota_guard.py,
+   mad_runner.py -- pure ASCII anchors (GNI-L-015).
 4. py_compile both .py files (W2).
 5. Offline dry-run harness (dummy key, GITHUB_ACTIONS=true, monkeypatched
    client) -- assert: primary path reads/writes account='primary'; evening

@@ -1,5 +1,5 @@
 # WORK ORDER — GNI S44 arc-4 FLIP (enforce 3-tier gate + retier)
-**Prepared:** 2026-06-17 · Chiang Mai UTC+7 · Team Geeks / Bro Alpha
+**Prepared:** 2026-06-17 · Chiang Mai UTC+7 · Team Geeks
 **For:** Claude Code, in `C:\HDCS_Project\03\GNI_Autonomous`
 **Basis:** two live dry-run crons (2026-06-16 0713 + 1451 UTC), reviewed in chat. This is the deferred arc-4 flip — every line below is grounded in those two forensic traces, not a hypothesis.
 
@@ -10,7 +10,7 @@
 cd /c/HDCS_Project/03/GNI_Autonomous && source venv/Scripts/activate
 git fetch && git log --oneline -3      # confirm HEAD = 5369d2a (arc 6) or later
 ```
-Hard rules (reference by ID, do not re-derive): GNI-R-037/076 (BEV), GNI-R-233 (read files, reset when corrected), GNI-R-242 (prove on live data), LR-078 (ship-to-file patch), LR-100 (grep downstream of any change), LR-101 (pure-ASCII anchors), W2 (assert count==1). py_compile before commit; git push after (cron runs on GitHub Actions).
+Hard rules (reference by ID, do not re-derive): GNI-R-037/076 (BEV), GNI-R-233 (read files, reset when corrected), GNI-R-242 (prove on live data), GNI-L-001 (ship-to-file patch), GNI-L-016 (grep downstream of any change), GNI-L-015 (pure-ASCII anchors), W2 (assert count==1). py_compile before commit; git push after (cron runs on GitHub Actions).
 
 ---
 
@@ -33,7 +33,7 @@ Hard rules (reference by ID, do not re-derive): GNI-R-037/076 (BEV), GNI-R-233 (
 ```python
 CAPTURE_GATE_DRY_RUN = False
 ```
-**2c. LR-100:** `tier` is read only by `_window_for` in `rss_collector.py` — contained, no downstream migration (already verified arc 4).
+**2c. GNI-L-016:** `tier` is read only by `_window_for` in `rss_collector.py` — contained, no downstream migration (already verified arc 4).
 
 **2d. Verify + ship:**
 ```bash

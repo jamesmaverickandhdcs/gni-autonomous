@@ -1,5 +1,5 @@
 # WORK ORDER — GNI Autonomous S44
-**Prepared:** 2026-06-15 · Chiang Mai UTC+7 · Team Geeks / Bro Alpha
+**Prepared:** 2026-06-15 · Chiang Mai UTC+7 · Team Geeks
 **For:** Claude Code instance, working in `C:\HDCS_Project\03\GNI_Autonomous`
 **Source of truth:** every URL/tier below was LIVE-VERIFIED in chat this session (freshness + paywall + date-presence). Do not re-derive — but DO re-run the verify block before committing new feeds (GNI-R-242).
 
@@ -10,8 +10,8 @@
 cd /c/HDCS_Project/03/GNI_Autonomous && source venv/Scripts/activate
 git fetch && git log --oneline -3      # confirm HEAD a07ee3d or later
 ```
-Operator: James ("Bro Alpha"). Warm tone, hard gates underneath. One question per turn.
-Hard rules (reference by ID, do not re-derive): GNI-R-037/076 (BEV, read full file before edit), GNI-R-233 (never conclude before reading files; reset when corrected), GNI-R-242 (verify on live data, prove before commit), LR-078 (ship-to-file patch, not heredoc), LR-100 (after changing X, grep every Y that depends on X), LR-101 (pure-ASCII patch anchors), W2 (`assert count==1` on every anchor). py_compile before every commit. git push after commit (cron runs on GitHub Actions, not the laptop).
+Operator: James. Warm tone, hard gates underneath. One question per turn.
+Hard rules (reference by ID, do not re-derive): GNI-R-037/076 (BEV, read full file before edit), GNI-R-233 (never conclude before reading files; reset when corrected), GNI-R-242 (verify on live data, prove before commit), GNI-L-001 (ship-to-file patch, not heredoc), GNI-L-016 (after changing X, grep every Y that depends on X), GNI-L-015 (pure-ASCII patch anchors), W2 (`assert count==1` on every anchor). py_compile before every commit. git push after commit (cron runs on GitHub Actions, not the laptop).
 
 Primary file: `ai_engine/collectors/rss_collector.py` (SOURCES dict + ANALYSIS set at line ~202 + parse_date tuple + capture-lag gate).
 
@@ -27,7 +27,7 @@ TIER_WINDOW_HOURS = {"news": 18.0, "review": 48.0, "opinion": 120.0}
 - Capture-lag gate: `lag = collected_at - published_at`; drop if `lag > TIER_WINDOW_HOURS[tier]`.
 - Missing/unparseable publish date = STRICT DROP (keep the existing `date_is_real` flag from `parse_date`'s (iso, bool) tuple).
 - NOTE: opinion tightens from 168h -> **120h**. Re-confirm no opinion source's normal cadence exceeds 120h (RFA at ~102h is the closest — watch it).
-- LR-100 sweep: grep every reader of the old analysis-set / 18h constant and migrate them to the map.
+- GNI-L-016 sweep: grep every reader of the old analysis-set / 18h constant and migrate them to the map.
 - DRY-RUN (`CAPTURE_GATE_DRY_RUN=True`) on one live cron, confirm drop counts sane per tier, THEN flip.
 
 ---
@@ -81,7 +81,7 @@ All fold into **GEO pillar** unless noted. ⚖️ = government-funded (apply bia
 ### FIN backfill (free, Google-News — add `when:24h` where missing)
 - Financial Stability: `...q=when:24h+%22sanctions%22+OR+%22financial+stability%22+OR+%22debt+crisis%22`
 - Central Banks: `...q=when:24h+%22central+bank%22+OR+%22Federal+Reserve%22+OR+%22interest+rates%22+OR+%22inflation%22`
-- IMF/World Bank: same pattern, ADD `when:24h` (Lens versions lack it -> would be gutted by gate)
+- IMF/World Bank: same pattern, ADD `when:24h` (Partner B versions lack it -> would be gutted by gate)
 
 ### REFERENCE-ONLY (do NOT add as collected feed)
 - **Freedom House** `https://freedomhouse.org/rss.xml` — newest 139.3h **exceeds the 120h ceiling**; keep as democracy-score reference, or a `site:freedomhouse.org` Google fallback for fresher mentions.
@@ -108,7 +108,7 @@ Rationale: mass mobilization/crackdowns under authoritarian regimes are leading 
 ## 6. S1b INJECTION CLIFF (separate root-cause arc — AFTER 1-5)
 In the 0708 trace, War on the Rocks/Breaking Defense/Bellingcat/Amnesty/DFRLab collected fine, passed S1 relevance, then got WIPED 20->0 at Stage 1b. Root cause hypothesis: `ai_engine/funnel/prompt_injection_detector.py:108` domain allowlist regex flags full-content feeds whose article bodies carry many non-allowlisted links. Two sub-tasks:
 1. The allowlist still lists dead/cut domains (reuters, nikkei, ft, technologyreview) — clean it.
-2. Breaking Defense: GNI uses `/full-rss-feed/` (full body); Lens uses `/feed/` (summary). Switching to summary feed MAY fix the cliff — test.
+2. Breaking Defense: GNI uses `/full-rss-feed/` (full body); Partner B uses `/feed/` (summary). Switching to summary feed MAY fix the cliff — test.
 **BEV first** — read `prompt_injection_detector.py` fully before touching. Do not hot-patch.
 
 ---
@@ -121,7 +121,7 @@ In the 0708 trace, War on the Rocks/Breaking Defense/Bellingcat/Amnesty/DFRLab c
 5. FFF keyword set (§5)
 6. S1b injection cliff (§6) — separate arc
 
-After each: py_compile -> (yaml-validate if touched) -> self-test -> commit -> push. Begin session close at 80% context (LR-057).
+After each: py_compile -> (yaml-validate if touched) -> self-test -> commit -> push. Begin session close at 80% context (GNI-L-025).
 
 ---
 

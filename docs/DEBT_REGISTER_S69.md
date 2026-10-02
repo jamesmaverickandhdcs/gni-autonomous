@@ -87,15 +87,15 @@ git ls-files --others --exclude-standard | head -20
 # J-1 context: manual MAD triggers since April (log check is James's memory + Actions history)
 ```
 
-## CLASS 6 — CROSS-PROJECT FINDS (GNI debts parked in Lens-context records)
+## CLASS 6 — CROSS-PROJECT FINDS (GNI debts parked in Partner B-context records)
 | ID | Debt | Born | Status |
 |----|------|------|--------|
-| D-8 | **L-CLIFF fix designed but living in a chat artifact**: S63 read lens_quota_guard.py (778 lines), reframed root cause as "dual source of truth" (guard's private model strings drifted from call sites — specimen `qwen/qwen3-32b` vs `qwen3-32b`), designed `lens_models.py` role registry — "analysis transferred to a Lens session artifact." Aug 16 = 32 days | S63 (Jul 11) | AT-RISK: is the design artifact saved to disk in C:/school/lens, or only in chat? A designed-fix-on-chat is DET-DEAD-adjacent. L-CLIFF queue says "Lens opener SOON" — verify artifact exists before that session |
+| D-8 | **L-CLIFF fix designed but living in a chat artifact**: S63 read a Partner B module (778 lines), reframed root cause as "dual source of truth" (guard's private model strings drifted from call sites — specimen `qwen/qwen3-32b` vs `qwen3-32b`), designed `a Partner B module` role registry — "analysis transferred to a Partner B session artifact." Aug 16 = 32 days | S63 (Jul 11) | AT-RISK: is the design artifact saved to disk in C:/school/lens, or only in chat? A designed-fix-on-chat is DET-DEAD-adjacent. L-CLIFF queue says "Partner B opener SOON" — verify artifact exists before that session |
 | D-9 | **GNI_RULES.md duplicate-append anomaly**: S63 close grep returned 6 instead of 3 for the new rules — "investigate at S64 open" | S63 | UNKNOWN if S64 investigated — 1-grep verify |
 | D-10 | "staging checker needs updating" | Mar 23 | UNKNOWN — no later record found; may be extinct with old architecture |
 | D-5+ | Fox News in source_weights/credibility — flagged Mar 23 AND Apr 8, never confirmed cleaned | Mar 23 | STRENGTHENED: two flags, zero closures |
 | ctx | /comparison 7/15/30-day trend windows = CFA-standard 3-horizon design (Mar 23, deliberate) | Mar 23 | F15 context: windows are designed; only the data window feeding them is capped. Relabel lean stands, now informed |
-| ctx | LENS-001 "GNI Maintenance Protocol" — GNI work in Lens sessions: critical→quick commit, feature→queue, ALWAYS note in session record | Apr 11 | The instrument existed; cross-project leakage happens when the "note in session record" step is skipped — R-S69-2 kin |
+| ctx | Partner B "GNI Maintenance Protocol" — GNI work in Partner B sessions: critical→quick commit, feature→queue, ALWAYS note in session record | Apr 11 | The instrument existed; cross-project leakage happens when the "note in session record" step is skipped — R-S69-2 kin |
 
 ### Verify additions
 ```bash
@@ -104,7 +104,7 @@ grep -c "R-S63-1" GNI_RULES.md; grep -c "R-S63-2" GNI_RULES.md; grep -c "R-S63-3
 # D-5: is Fox News still seeded anywhere in code?
 grep -rn "Fox News" ai_engine/ --include="*.py" | head -5
 ```
-(D-8 verify is a Lens-side `ls`: does the S63 L-CLIFF analysis doc exist in C:/school/lens?)
+(D-8 verify is a Partner B-side `ls`: does the S63 L-CLIFF analysis doc exist in C:/school/lens?)
 
 ## S70 STATUS APPENDS (2026-07-16)
 - D-7 CORRECTED: NOT paid. FLOOR_HIT lives only in mad_budget_solver.py; mad_runner has zero

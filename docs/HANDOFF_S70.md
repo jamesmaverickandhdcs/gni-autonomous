@@ -26,7 +26,7 @@ FABRICATION: today's debate = GT-5 exhibit A (Fed/DoE denial fabricated -> publi
 | `f596390` | Debt: D-7 corrected OPEN (solver wired via mad_protocol:43, FLOOR_HIT print-only), F-TILES dissolved into I-9 (Stimson=CF-403 dead, fossil DB row), D-10 CLOSED (staging check 9/9 in log) | bytes+log |
 | `49bfadb`+`8b03ed3` | CERT ledger: stub accident then FULL v2 restore (R-S70-2 born from it) | wc 68 |
 | Rulings (delegated, James ratifies) | F1=81-funnel; F15=FAMILY relabel (/comparison /researcher /research /scenarios); R1 quota->floors (GEO-primary, FIN>=5 TECH>=6); R2 NYT TIER1; R3 Crisis/Amnesty/ICIJ TIER1 (drift); R4 WATCH pair keep; F13 lean re-source+archive | S70 records |
-| Fox World | Re-admission lineage CLOSED: followed Lens usage (James memory) + scored 60 in bytes = ritual satisfied, KEEP | register |
+| Fox World | Re-admission lineage CLOSED: followed Partner B usage (James memory) + scored 60 in bytes = ritual satisfied, KEEP | register |
 | Fabrication audit | Debate vs 354-trace: Fed/DoE denial, Brazil 25% tariff, Treasury-SPR (wrong in reality), quant chains ALL fabricated; Swan's 2 citations VERIFIED REAL (REF-3BE4, REF-B029, Stage-1 rejects by design); GROUNDING SHADOW 22 consultant+6 arb, shadow no-action | bytes |
 | CERT batch 1 | /predictions D (475/193/282 coherent), /scenarios D; F16 researcher empty chart, F17 research CI-vs-RUNS, F18 correlations 290-vs-282, F19 predictions 52-correct-vs-61% | screenshots |
 | Tab scope | James census: 12 tabbed pages; D stamp = default + EVERY tab (in ledger) | ledger |
@@ -47,7 +47,7 @@ FABRICATION: today's debate = GT-5 exhibit A (Fed/DoE denial fabricated -> publi
 | J-RULINGS | STILL OPEN 3rd session: J-1 manual-MAD caution (overdue Jun 12) lift/keep; J-6 O4 SQL done? | James memory | James | - |
 | OC-A | ~Jul 24 (8d) | - | James | - |
 | U-AUG9 | keyfile marathon Aug 9: GROQ_MAD_MODEL + U1 pick (~Aug 2 watch) + J-4 probe + J-7 scorer | - | James | - |
-| CLIFF-CODE / L-CLIFF | Aug 16 = 31d; Lens opener SOON, D-8 artifact verify FIRST MOVE there | Lens session | James | - |
+| CLIFF-CODE / L-CLIFF | Aug 16 = 31d; Partner B opener SOON, D-8 artifact verify FIRST MOVE there | Partner B session | James | - |
 | GT-3 / DET-DEAD | after window chain; DET-DEAD merge design owns 3-array family | - | James | B |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / K-CAND / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND(FIN/TECH only per R1) / U-W / I-WATCH / A-VLOG | unchanged | - | - | - |
 
@@ -76,7 +76,7 @@ FABRICATION: today's debate = GT-5 exhibit A (Fed/DoE denial fabricated -> publi
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `8b03ed3` (ls-remote) + TREE CLEAN — 11 docs/copy commits S70, no shifter shipped, FT-GAP-A at clean #2
 TOP3 = RULES-APPEND (R-S70-1/2), TRACE-READ evening run (final A-clean -> window: SRC-INTEGRITY first), F15-FAMILY relabel (4-page easy win)
-DEADLINE = OC-A ~Jul 24 / CERT-before-model ~Aug 2 / Aug 9 keyfile / Groq cliff Aug 16 (31d, L-CLIFF Lens opener SOON + D-8 first move)
+DEADLINE = OC-A ~Jul 24 / CERT-before-model ~Aug 2 / Aug 9 keyfile / Groq cliff Aug 16 (31d, L-CLIFF Partner B opener SOON + D-8 first move)
 TRAP = window order now A->SRC-INTEGRITY->B->DET-DEAD; landing gate on chat docs (R-S70-2); Fed/DoE action-rec is fabricated (GT-5 exhibit A); D stamps need tabs
 FIRST MOVE = ls-remote + git status (expect CLEAN); then RULES-APPEND: tail GNI_RULES.md, append R-S70-1/2, one docs commit
 

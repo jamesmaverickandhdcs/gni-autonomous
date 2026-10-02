@@ -4,7 +4,7 @@ Read ONCE. Standing rules: docs/GNI_RULES.md by ID (current through R-S76-3 IN B
 Contract: docs/CONTRACT.md (unchanged). 7 commits, zero reverts.
 
 ## 1. STATE (<=10 lines)
-STRATEGY RULED (James): Lens/L-CLIFF WAITS until GNI subpage integrity is finished error-free.
+STRATEGY RULED (James): Partner B/L-CLIFF WAITS until GNI subpage integrity is finished error-free.
   Order = SUBPAGE-TRUTH -> F22 -> WEIGHT-PRIOR/GATE-DESIGN -> others.
 SUBPAGE-TRUTH BUILD PHASE ~DONE (C1-C6): 7-LAYER SWOT ruled A (honest-rewrite all, build nothing)
   -- L6 lang-normalization was a GHOST (dropped), L2 = pattern category, L3/L5 relocated truthfully,
@@ -73,7 +73,7 @@ RULES-APPEND closed `4e33941`. Remaining SUBPAGE-TRUTH: F3, WORD-CONV, PHASE-NAR
 - devops pipelines[0] said 81 all along -- page self-contradiction is gone, don't hunt it.
 
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
-HEAD = `65002a8`+close commits TREE CLEAN -- SUBPAGE-TRUTH C1-C6 shipped (D-2 closed, diseases extinct), SWOT ruled A, Lens WAITS for integrity per James
+HEAD = `65002a8`+close commits TREE CLEAN -- SUBPAGE-TRUTH C1-C6 shipped (D-2 closed, diseases extinct), SWOT ruled A, Partner B WAITS for integrity per James
 TOP3 = RULES-APPEND (R-S77-1/2/3), RE-CERT screenshots (8 pages post-deploy), F3 census spec re-read
 DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (L-CLIFF gated on integrity completion)
 TRAP = a7833854 = pre-patch (ancestry check FIRST); CRLF anchors derive nl; gate chained commit on PATCHED print; 52-correct tile is live math
@@ -93,7 +93,7 @@ R-S77-3: A live-computed stat can still lie by ATTRIBUTION -- verify the label's
 
 DIARY S77 (<=10 lines):
 The session that asked where we were going before taking another step. A strategy review found
-two healthy arcs and one sliding deadline; James ruled: truth first, Lens waits. Then the SWOT
+two healthy arcs and one sliding deadline; James ruled: truth first, Partner B waits. Then the SWOT
 put seven claimed layers under the bytes -- three live, three misplaced, one ghost -- and the
 ruling was the rare kind where honesty made the page stronger, because the real stack outclassed
 the paper one. Six copy commits later, two diseases are extinct by grep: no stale count survives,

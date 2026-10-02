@@ -14,7 +14,7 @@ same generators C8 imports. A fixture stamp is wrong only if the generator is.
 Order inside base() is load-bearing and unchanged in spirit: the stamps go in
 BEFORE the map is written, because the map hashes the finished architecture.
 
-Binary mode throughout (LR-078); every anchor is pure ASCII (LR-101).
+Binary mode throughout (GNI-L-001); every anchor is pure ASCII (GNI-L-015).
 Run from the repo root:   python tools/patch_s104_fixture.py
 Refuses and changes nothing if any anchor is missing or not unique.
 """

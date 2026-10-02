@@ -239,7 +239,7 @@ def _check_relevance(article: dict) -> tuple[bool, str]:
     return False, "No geopolitical keywords found"
 
 
-# Stage 1b extension: PHI-002 bias attacks (GNI S29 — from Lens protection upgrade)
+# Stage 1b extension: PHI-002 bias attacks (GNI S29 — from Partner B protection upgrade)
 _PHI002_PATTERNS = [re.compile(p, re.IGNORECASE | re.DOTALL) for p in [
     r'(ethnic|religious|cultural)\s+(traditions?|identity)\s+must\s+(supersede|override|come\s+before)\s+(individual|human)\s+rights',
     r'(group|collective|national|ethnic)\s+rights\s+(outweigh|are\s+more\s+important\s+than|supersede)\s+individual',
@@ -311,7 +311,7 @@ def _check_injection(article: dict) -> tuple[str, str]:
 
     Returns (action, reason):
       REMOVE — direct prompt injection → drop article entirely
-      FLAG   — Lens-style bias/sectarian attack → include with warning tag
+      FLAG   — Partner B-style bias/sectarian attack → include with warning tag
       PASS   — clean article
     GNI S29: upgraded from (bool, str) to (str, str) for FLAG support.
     """
@@ -352,7 +352,7 @@ def _get_dedup_key(article: dict) -> str:
     return hashlib.md5(' '.join(words).encode()).hexdigest()
 
 
-# ── Source Tier System (from LENS experience) ────────────────────────────────
+# ── Source Tier System (from Partner B experience) ────────────────────────────────
 # Tier-based baseline bonus independent of GPVS EMA weights.
 # EMA weights take months to become reliable (~100+ observations).
 # Tiers give correct relative trust from day one.

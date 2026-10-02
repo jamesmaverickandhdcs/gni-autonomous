@@ -37,7 +37,7 @@ prompts / sacred-MAD which is unsafe).
 
 **MAKE-OR-BREAK CHECKS -- all must be BEV'd, none assumed:**
 1. **TRUE ACCOUNT ISOLATION** -- account B must be a genuinely separate Groq account (different
-   Gmail) with its own 100K TPD. The LENS-010 trap: a separate KEY on the SAME account shares
+   Gmail) with its own 100K TPD. The Partner B trap: a separate KEY on the SAME account shares
    the pool = useless. This exact trap bit `GROQ_API_KEY_2` in S46 (removed). Confirm with
    James that account B is a real separate account.
 2. **PER-CRON KEY INJECTION** -- both MAD crons are two `cron:` lines in the SAME `gni_mad.yml`
@@ -70,7 +70,7 @@ enlargement. This single number:
 
 ## SECOND PRIORITY -- APPLY FOUR TREASURES TO GNI (James wants this, full)
 
-The Four Treasures (memory #12-15; Lens-transfer docx already built) applied to GNI in full
+The Four Treasures (memory #12-15; Partner B-transfer docx already built) applied to GNI in full
 is a MULTI-SESSION arc. Highest-value single piece to start with:
 
 **Treasure 3 -- assertion sweep.** Convert GNI's load-bearing ASSUMPTIONS into runtime
@@ -104,9 +104,9 @@ funnel, GPVS verifier, entity graph); T4 = mostly in place (memory + commit-hash
 
 - **Onboarding prompt set** (continuity-leak cure) -- a complete prompt set so any fresh
   session boots into full context fast. Not yet drafted.
-- **Transfer Four Treasures to Lens** -- docx `GNI_to_Lens_Four_Treasures.docx` is BUILT.
-  James uploads it in his next LENS session -> append to `lens-DOC-002` as LR entries.
-  (Memory edits are project-scoped; this lives in Lens's own registry.)
+- **Transfer Four Treasures to Partner B** -- docx `GNI_to_Partner B_Four_Treasures.docx` is BUILT.
+  James uploads it in his next Partner B session -> append to `lens-DOC-002` as LR entries.
+  (Memory edits are project-scoped; this lives in Partner B's own registry.)
 
 ---
 
@@ -122,19 +122,19 @@ funnel, GPVS verifier, entity graph); T4 = mostly in place (memory + commit-hash
 - **James never runs anything without discussing first** -- Claude Code's dimmed pre-typed
   suggestions are SUGGESTIONS, not completed actions. Never assume a dimmed line was executed.
 - One-question rule: ask only the single most important question.
-- Pause-over-push past deep-work mark (LR-077).
+- Pause-over-push past deep-work mark (GNI-L-026).
 
 ## WORKFLOW REMINDERS
 
 - GNI push: standard `git push origin main`, then ALWAYS `git ls-remote origin main` to
   confirm the hash (an earlier push stalled silently on background credentials -- verify
   against the remote, never trust the "pushed" message).
-- Lens push (if in Lens): `git push https://fintelplan@github.com/fintelplan/project-lens.git main`
+- Partner B push (if in Partner B): `git push <Partner B repository> main`
 - `py_compile` before every commit (W2). Dry-run harnesses are offline/hermetic
   (`os.environ.setdefault('GROQ_API_KEY','test-dummy-key')` + `GITHUB_ACTIONS='true'` +
   monkeypatched client/sleep).
-- LR-101: patch anchors must be PURE ASCII -- no box-drawing, arrows, emoji, non-ASCII.
-- LR-078: ship-to-file patch over bash heredoc (heredocs corrupt with bracketed paste).
+- GNI-L-015: patch anchors must be PURE ASCII -- no box-drawing, arrows, emoji, non-ASCII.
+- GNI-L-001: ship-to-file patch over bash heredoc (heredocs corrupt with bracketed paste).
 - Close the extra VS Code/Claude Code session if a push prompts for credentials.
 
 ## TRUST CALIBRATION FOR S47 (Treasure 1 + 2)

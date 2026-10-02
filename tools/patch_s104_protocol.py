@@ -19,7 +19,7 @@ the identical defect R-S104-1 forbids inside a check, committed in prose one
 document away from the check that forbids it. So the number is REMOVED rather
 than raised, and the expectation is stated in the form that cannot go stale.
 
-Binary mode (LR-078); every anchor is pure ASCII (LR-101).
+Binary mode (GNI-L-001); every anchor is pure ASCII (GNI-L-015).
     python tools/patch_s104_protocol.py
 """
 import os

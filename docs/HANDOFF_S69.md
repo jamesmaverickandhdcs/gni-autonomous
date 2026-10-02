@@ -48,8 +48,8 @@ New rules for GNI_RULES.md: R-S69-1, R-S69-2, R-S69-3 (below) + dedupe D-9
 | GT-3 | shared entities.py -- after DET-DEAD decided (may merge scope) | James | B |
 | CLIFF-CODE | funnel L1065 env-read + adaptive.yml:48 + 6-file sweep + F5 UI model strings (CLIFF-DOC) + check selfbias/graph | GT-3 era or swap-day | James | V(census) |
 | J-RULINGS | J-1 W-10 manual-run caution OVERDUE (window ended Jun 12): lift or keep? J-6: O4 429-fossil SQL done? Fox World re-admission: James's memory | James | James | - |
-| D-8 | Lens-side: does S63 L-CLIFF lens_models.py design doc exist on disk in C:/school/lens? If chat-only -> regenerate before Lens opener | Lens session FIRST MOVE | - | - |
-| L-CLIFF | Lens opener SOON (Aug 16 = 32d); D-8 verify then registry build | Lens session | James | V(scope) |
+| D-8 | Partner B-side: does S63 L-CLIFF a Partner B module design doc exist on disk in C:/school/lens? If chat-only -> regenerate before Partner B opener | Partner B session FIRST MOVE | - | - |
+| L-CLIFF | Partner B opener SOON (Aug 16 = 32d); D-8 verify then registry build | Partner B session | James | V(scope) |
 | U-AUG9 | keyfile day: GROQ_MAD_MODEL contradiction + all values + U1 model pick (~Aug 2 watch) | marathon | James | - |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / F-TILES / K-CAND / SUBPAGE data-layer walk (quantum family) | unchanged / new sub-item | James picks | James | B |
 | D-7 / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND / OC-A(~Jul 24) / U-W / I-WATCH / A-VLOG | unchanged (A-VLOG partially superseded by hydration find) | - | - |
@@ -80,7 +80,7 @@ New rules for GNI_RULES.md: R-S69-1, R-S69-2, R-S69-3 (below) + dedupe D-9
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `aabf76d` (ls-remote) + TREE CLEAN -- FT-GAP-A + RECENCY both live, first breaths CLEAN
 TOP3 = RULES-FIX docs commit (dedupe R-S63 block + append R-S69-1..3), SUBPAGE-STALE paste-ready copy commit, FT-GAP-B after 1-2 clean A-runs
-DEADLINE = OC-A ~Jul 24 / Aug 9 marathon (keyfile) / Groq cliff Aug 16 = 32d (CLIFF-CODE + L-CLIFF Lens opener SOON, D-8 artifact verify FIRST MOVE there)
+DEADLINE = OC-A ~Jul 24 / Aug 9 marathon (keyfile) / Groq cliff Aug 16 = 32d (CLIFF-CODE + L-CLIFF Partner B opener SOON, D-8 artifact verify FIRST MOVE there)
 TRAP = HISTORY-BEFORE-RULING on all subpage fixes (memory #21); F1 = extend hydration never hand-sweep; one shifter per window (A -> B -> DET-DEAD)
 FIRST MOVE = ls-remote + git status (expect CLEAN); then RULES-FIX: view GNI_RULES.md L85-110
 

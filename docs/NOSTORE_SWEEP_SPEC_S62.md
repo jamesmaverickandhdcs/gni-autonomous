@@ -1,7 +1,7 @@
 # NO-STORE SUPABASE SWEEP — for Claude Code (S62)
 Repo: C:/HDCS_Project/03/GNI_Autonomous | HEAD at spec time: e3a10c7 | Next.js 14.2.35 on Vercel
 Rules in force: GNI-R-076 (read full files before patching), R-S59-1 (census before sweep),
-LR-101 (pure-ASCII str-replace anchors), NO git commands — James commits himself.
+GNI-L-015 (pure-ASCII str-replace anchors), NO git commands — James commits himself.
 
 ## MISSION
 Fix the MC-FREEZE class bug: API route handlers create supabase-js clients with no
@@ -60,7 +60,7 @@ Grep first; add ONLY where missing.
   (never add -A) and commits himself.
 - No new dependencies (package.json diff must be empty).
 - Zero behavior/logic changes beyond the data-path armor.
-- Windows Git Bash environment. Pure-ASCII anchors in any str-replace (LR-101).
+- Windows Git Bash environment. Pure-ASCII anchors in any str-replace (GNI-L-015).
 - Read each route file IN FULL before editing it (GNI-R-076).
 
 ## ACCEPTANCE CHECKLIST (Claude Code self-verify before handing back)

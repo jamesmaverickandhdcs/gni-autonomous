@@ -47,7 +47,7 @@ MORNING-SHA closed (a078bbe = HEALTH-W). gh CLI 2.96.0 installed+authed (browser
 | SUBPAGE-TRUTH | 7-LAYER SWOT (add: patterns avgQ over sliced-7 labeled 'Avg Quality') | SWOT session | James | V(S70) |
 | F20-CERT | outcomes NOW LIVE (38%/42% showing) -- close formally vs /correlations growth | next measure run | - | V(partial) |
 | J-RULINGS | J-4 probe, J-7 scorer (Aug 9); J-1 sunsets post-cliff | - | James | - |
-| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Lens opener SOON, D-8 first) | unchanged | - | James | - |
+| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Partner B opener SOON, D-8 first) | unchanged | - | James | - |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / K-CAND / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND / U-W / I-WATCH / A-VLOG / SRC-PHI / GT-6(banked) | unchanged | - | - | - |
 
 ## 4. UNKNOWNS (<=8 lines)
@@ -73,7 +73,7 @@ MORNING-SHA closed (a078bbe = HEALTH-W). gh CLI 2.96.0 installed+authed (browser
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `577b26d`+close commits TREE CLEAN -- 7PLUS-TILE certified (111), TRANS-COUNT shipped prod-pending, DET-DEAD executed, CERT-BATCH-2 5/5, 81-claim TRUE
 TOP3 = RULES-APPEND (R-S75-1/2/3), TRANS-COUNT-CERT (next cron CI print vs DB), then GPVS-NUMBERS or CRED-PRIOR (James picks)
-DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Lens opener SOON, D-8 first)
+DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Partner B opener SOON, D-8 first)
 TRAP = old runs keep inflated dedup counts (honest fossils); funnel default-True flags deliberate; graph job filter correct; localhost 401 baseline
 FIRST MOVE = ls-remote + git status; then TRANS-COUNT-CERT is cheapest read if a cron fired since `8eed829`
 

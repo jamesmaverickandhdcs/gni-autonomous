@@ -3,8 +3,8 @@
 
 This is a PATCH SCRIPT, not a download, because that file holds the GENERATED section 6 that
 only the repo has -- shipping a rebuilt copy would overwrite generated content with a guess.
-Binary mode (LR-078). Anchors are UTF-8-encoded from readable text rather than typed as escapes,
-because the target lines contain a section sign; LR-101's ASCII rule guards `python -c` command
+Binary mode (GNI-L-001). Anchors are UTF-8-encoded from readable text rather than typed as escapes,
+because the target lines contain a section sign; GNI-L-015's ASCII rule guards `python -c` command
 lines, and this is a file. Asserts the NEW text is ABSENT first, so a double paste is safe.
 """
 import sys

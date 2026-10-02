@@ -28,8 +28,8 @@ TARGET DECLARED THIS CLOSE: TRUTHFULNESS OF OUTPUT (see the order file).
 | OC-A | CLOSED: Copilot "AI model training" toggle Disabled on all 3 accounts (main had reverted to Enabled) | settings page, 3x |
 | Sources | HRW down Jul 26 (403) -> ReliefWeb activated by digit reply -> HRW recovered Jul 27 -> auto-deactivated | tg receipts |
 | Scheduler | Crons now fire 13-60 min after request, NOT the 1-3h recorded in S80 | Aug 16-17 run list |
-| Lens brief | `NEXT_SESSION_BRIEF_LENS028_LCLIFF.md` written here, committed to Lens as `9b2836d` | ls-remote |
-| Transfers in | `GNI_LOOPHOLE_TRANSFER_NOTES.md` (Aug 10) + `LENS_TO_GNI_TRANSFER_PACKET_II.md` (Aug 17) received from Lens | uploads |
+| Partner B brief | `NEXT_SESSION_BRIEF_LENS028_LCLIFF.md` written here, committed to Partner B as `9b2836d` | ls-remote |
+| Transfers in | `GNI_LOOPHOLE_TRANSFER_NOTES.md` (Aug 10) + `PARTNER_B_TO_GNI_TRANSFER_PACKET_II.md` (Aug 17) received from Partner B | uploads |
 | Rules | R-S81-1..8 appended; CONTRACT v4 (target/order separation + discovery policy) | GNI_RULES.md tail |
 | Close repair | HANDOFF_S81 + GNI_TARGET_AND_ORDER born; queue no longer lives in the handoff | this commit |
 
@@ -44,7 +44,7 @@ NEXT SESSION'S MISSION is declared at the top of that file.
 | C1's REAL token bill (est is conservative-high post-C1; predicted 60-75K vs July's 91-93K) | unmeasured | read the groq_quota line in Telegram (it is NOT in the workflow log) |
 | Does anything verify what the arbitrator RECEIVED vs what was assembled for it? | unread | ROOT 1 — next session's mission |
 | Are the 46-60s governor waits landing the retry inside the same TPM minute? | candidate, unread | ROOT 4.2 |
-| Is GNI's per-account-day reservation model reasoning about a boundary that does not exist? | inferred from Lens | ROOT 4.3 |
+| Is GNI's per-account-day reservation model reasoning about a boundary that does not exist? | inferred from Partner B | ROOT 4.3 |
 | gpt-oss debate QUALITY vs the old 3.3-70b (verdict confidence sits timid at 0.48-0.53) | 5 verdicts, no judgment made | ROOT 2.1 |
 | Whether GNI's three MAD accounts are separate Groq organizations (TPD isolation) | assumption | one small call at a real exhaustion |
 | Keyfile rotation was due Aug 9 and did not happen | certain, unactioned | LIFECYCLE in the order file |

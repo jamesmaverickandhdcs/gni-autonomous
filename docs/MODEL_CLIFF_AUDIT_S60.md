@@ -42,8 +42,8 @@ harness default), fix_mad_model.py (historical, consider archiving).
 - [ ] Re-validate mad_rate_governor timings on new model (429 profile will differ)
 - [ ] Model-Change Re-Audit Ritual applies: ALL prior prompt/behavior verifications
       partially reset on swap (Four Treasures)
-- [ ] PENDING: same grep in PROJECT LENS working copy (never run — the Jul-8 grep
-      ran in GNI by accident). Lens Groq roles' model strings unknown.
+- [ ] PENDING: same grep in Partner B working copy (never run — the Jul-8 grep
+      ran in GNI by accident). Partner B Groq roles' model strings unknown.
       grep -rn "llama-3.3-70b\|llama-3.1-8b\|qwen3-32b\|llama-4-scout" --include="*.py" --include="*.yml" . | grep -v venv
 
 ## HALLUCINATION SPECIMEN LOG (separate track, feeds Layer-1 grounding gate build)

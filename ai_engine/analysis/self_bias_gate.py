@@ -220,7 +220,7 @@ def _check_source_dominance(min_selected: int = 10, threshold: float = 0.35) -> 
     Set-level check (NN-PHI-2 + NN-PHI-6): no single source should dominate
     GNI's own selection. PHI-002 turned inward -- if one voice supplies a
     disproportionate share of the selected set, GNI's output is being captured
-    by that source's framing, the exact risk LENS found in RT (OP-033). This
+    by that source's framing, the exact risk Partner B found in RT (OP-033). This
     audits GNI's selection the way GNI audits its sources. Conservative: needs
     >= min_selected articles before judging (a tiny run won't false-flag).
     """

@@ -311,7 +311,7 @@ def _within_capture_window(published_iso: str, collected_iso: str,
 # Two independent signals (OR):
 #   1. implausibly old publish date  (lag > CHROME_MAX_LAG_HOURS ~ 5 years)
 #   2. title is nav/breadcrumb chrome (feed-title echo or denylist label)
-# Pure-ASCII anchors (LR-101). Short labels match EXACT title only -- a
+# Pure-ASCII anchors (GNI-L-015). Short labels match EXACT title only -- a
 # substring "home" would wrongly drop "Homes destroyed in ...".
 # ============================================================
 CHROME_MAX_LAG_HOURS = 43800.0          # ~5 years: older => feed-chrome, not an article

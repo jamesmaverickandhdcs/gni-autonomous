@@ -44,7 +44,7 @@ F23 LEAD: /about/patterns run history "ESC: /10, Q: N/A" all rows + Avg Quality 
 | SUBPAGE-TRUTH | 7-LAYER SWOT vs philosophies; hydration ext + D-2 + F3; + historical_correlations accretion | SWOT session | James | V(S70) |
 | CERT-BATCH-2 | James picks 5 routes | screenshots | James | - |
 | J-RULINGS | J-4 probe, J-7 scorer (Aug 9); J-1 sunsets post-cliff | - | James | - |
-| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Lens opener SOON, D-8 first) | unchanged | - | James | - |
+| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Partner B opener SOON, D-8 first) | unchanged | - | James | - |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / K-CAND / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND / U-W / I-WATCH / A-VLOG / SRC-PHI / GT-6(banked) | unchanged | - | - | - |
 
 ## 4. UNKNOWNS (<=8 lines)
@@ -70,7 +70,7 @@ F23 LEAD: /about/patterns run history "ESC: /10, Q: N/A" all rows + Avg Quality 
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `14f222f` TREE CLEAN -- GT5-ENFORCE SHIPPED 4 commits (watch mode), F21 closed, F22 born, F23 lead, CODE-MEM current
 TOP3 = RULES-APPEND (R-S73-1/2), GT5-CERT read (next MAD cron trace: grounding line + GATED/HISTORY-SKIP), then F23 trace or FT-GAP-B (James picks)
-DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Lens opener SOON, D-8 first)
+DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Partner B opener SOON, D-8 first)
 TRAP = arb raw-vs-gated split deliberate NEVER merge; SEAM 3 observe-only ratified; NULL grounding rows include = correct; quota 84% band
 FIRST MOVE = ls-remote + git status (expect `14f222f` or close commit CLEAN); then GT5-CERT is cheapest win if cron has fired
 

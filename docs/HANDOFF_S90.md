@@ -50,7 +50,7 @@ read it before proposing anything in ROOT 8, ROOT 1, retention, or a published f
 | Does the new `not_mad` key work on a SCHEDULE? | proven on dispatch only | next `02:13Z` |
 | What does PROBE-DRIFT actually test? | definition in S57-era records only | recover, don't infer |
 | Where is `MYANMAR_DISPATCH_PAT`'s token? | both PAT tabs empty | fine-grained tab / 3rd acct |
-| `LR-101` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
+| `GNI-L-015` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
 | Is `/stocks` price cache refreshed per request? | render path read, fetch path NOT | 2.4 |
 | Groq ceiling: 85K/day or the published 100K? | never measured; needs a 429 | 9.11, opportunistic |
 

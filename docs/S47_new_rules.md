@@ -7,7 +7,7 @@ Separate Groq accounts (separate Gmail = separate 100K pool) only deliver isolat
 usage-tracking layer is ACCOUNT-AWARE. `groq_daily_usage` summed all rows unfiltered, so two
 accounts would still share one computed bucket. Fix shipped: `account` column (default
 'morning') + `.eq('account', account)` filter in `get_today_usage` + account stamped on every
-`log_usage`. Pattern: the LENS-010 trap recurs one layer up -- separate pools are useless if
+`log_usage`. Pattern: the Partner B trap recurs one layer up -- separate pools are useless if
 the GUARD can't tell them apart. (Born from S47 two-account split, commit 668abeb.)
 
 ## R-S47-2 -- Per-cron secret injection via github.event.schedule
@@ -27,7 +27,7 @@ never trust the success message. This is the existence != correctness rule appli
 output. (Born from S47 Patch-2: garbled echo, printed "Patch 2 OK", greps proved bytes were
 actually correct -- corruption was display-only, but we could not have known without checking.)
 Mitigation: `printf '\e[?2004l'` before paste-heavy work; prefer ship-to-file over heredoc
-(LR-078); single-line git commit messages to avoid multi-line continuation traps.
+(GNI-L-001); single-line git commit messages to avoid multi-line continuation traps.
 
 ## R-S47-4 -- GHA scheduled crons drift hours / occasionally skip -- "missing != broken"
 GitHub Actions delays scheduled workflows under load (minutes to HOURS), worse right after
@@ -52,8 +52,8 @@ the ceiling. Spend the ~25K headroom (real run ~55K vs 80K target) on depth+reas
 - R-S46-3 / Trust-tag: files read this session ~90-95%; structure-measured-but-text-unread
   ~50-60%; unread files ~30-40%. The mad_protocol PROMPT TEXT is unread -- treat as a lead.
 - R-S46-6 governor owns 429s: survived 429 + two transient 503s live this session (52538 run).
-- LENS-010: separate KEYS on same account share the pool; only separate ACCOUNTS isolate.
-- LR-078 ship-to-file over heredoc; LR-101 ASCII anchors -- both bit/saved us in Patch 2.
+- Partner B: separate KEYS on same account share the pool; only separate ACCOUNTS isolate.
+- GNI-L-001 ship-to-file over heredoc; GNI-L-015 ASCII anchors -- both bit/saved us in Patch 2.
 - W2 py_compile before commit; ls-remote verify after push (never trust "pushed").
 - Existing "condense-first" pattern (Myanmar P1->P2: summarize each, then bundle) is a PROVEN
   in-codebase pattern available to transplant into MAD for S48 Option B.

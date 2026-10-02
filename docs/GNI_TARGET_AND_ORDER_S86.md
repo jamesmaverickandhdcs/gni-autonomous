@@ -179,7 +179,7 @@ arbitrator's ratio (now ~39-41 : 209-233, roughly 18%) and did not close the roo
 - **9.5** OPEN — eight unresolved S69 census flags, RE-CERT never ran. **F14 remains the ugly
   one:** `/comparison` can render "Both signals point BEARISH" over a NEUTRAL verdict.
 - **9.6** OPEN — three ID schemes in the register (`GNI-R-###` ×7 lines, `R-S##-#` ×105, plus
-  `LR-###`); CONTRACT cites GNI-R-037 / 076 / 233 as live law. LINEAGE-BEV depends on `docs/`
+  `GNI-L-###`); CONTRACT cites GNI-R-037 / 076 / 233 as live law. LINEAGE-BEV depends on `docs/`
   greps, so register coherence is now a dependency of the gate.
 
 ### ROOT 6 — FREE-TIER RESOURCES COME WITHOUT THE GUARANTEES AROUND THEM · IMPORTANT
@@ -318,7 +318,7 @@ rule does not justify a version bump; RULES is its home. Also honours the law-vs
 CONTRACT ran v1→v7 in six weeks.
 
 **DECISION S86-6 — 6.2 (retention) is PROMOTED at generation 3, not closed.** Reason in writing:
-it is gated by 6.4 (unread), and the thing it protects against — the 402 that took Lens fully
+it is gated by 6.4 (unread), and the thing it protects against — the 402 that took Partner B fully
 offline — has a live precedent in the sister project. Promoted means it must be worked or
 re-justified next close, not carried a fourth time.
 

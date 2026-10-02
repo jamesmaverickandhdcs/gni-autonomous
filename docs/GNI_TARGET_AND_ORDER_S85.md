@@ -206,7 +206,7 @@ still telling readers GNI runs on a model that died Aug 16.
   the AGREE logic treats NEUTRAL as agreement. That is the site asserting a false fact to a
   reader. *S82's framing called this arc CLOSED; it was not (W-85-8).*
 - **9.6** **PROMOTED from 5.4 at generation 3 of 3, with a written reason.** The register carries
-  three ID schemes (`GNI-R-###`, `R-S##-#`, `LR-###`) and CONTRACT cites GNI-R-037 / 076 / 233 as
+  three ID schemes (`GNI-R-###`, `R-S##-#`, `GNI-L-###`) and CONTRACT cites GNI-R-037 / 076 / 233 as
   live law while only six `GNI-R-` lines exist. **Reason for promotion rather than closure:**
   CONTRACT v7's LINEAGE-BEV gate now RUNS ON `docs/` greps, so an incoherent register is no
   longer cosmetic — it is a dependency of the gate that protects every proposal. (Note: the
@@ -385,5 +385,5 @@ Protocol v5 · GNI_RULES + R-S85-1..6.
 4. **RE-ORDER** — regenerate, dated, superseding. Never appended.
 5. **WORK THE TOP.**
 
-*Mirrors the Lens discovery policy by reference, stated in GNI's own terms against GNI's own
+*Mirrors the Partner B discovery policy by reference, stated in GNI's own terms against GNI's own
 evidence — never by paste. Dual sources of truth are how S2-D died. Logged on both sides.*

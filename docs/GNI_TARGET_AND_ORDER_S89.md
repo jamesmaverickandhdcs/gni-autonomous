@@ -263,8 +263,8 @@ confirms it — curl is a dead end (R-S54-4).*
   TRAP still live: both files hold TWO jobs each, so `count==1` aborts; assert 2 per anchor.
 - **6.6** **CLOSED (S89) — PREMISE DISPROVEN, THEN CLEANED.** Generation 8 said four `lens_*`
   tables share the project and "every runway figure includes another system's growth". Measured:
-  GNI 73 tables / 87 MB; LENS 4 tables / **104 kB** = 0.1%, with `n_tup_ins = 0` on all four —
-  never written, not once. The live Project Lens runs on its OWN Supabase project (URL hashes
+  GNI 73 tables / 87 MB; Partner B 4 tables / **104 kB** = 0.1%, with `n_tup_ins = 0` on all four —
+  never written, not once. The live Partner B runs on its OWN Supabase project (URL hashes
   differ; its 23 tables hold 108k raw articles, 251 macro reports, 1,046 tier C/D rows). The
   four in gni-dusky were a schema migration run against the wrong project. Dropped this session
   behind a row-count guard that raises rather than deletes if any row is present.
@@ -279,7 +279,7 @@ confirms it — curl is a dead end (R-S54-4).*
   under-report by roughly a quarter. Read the real figure, do not compute it.
 - **6.4** **L5 exposure when Supabase 402s — RE-SPECIFIED, and it SURVIVES 6.6's closure.**
   The exposure was never table size; it is that a 402 takes the whole project down. 6.6's
-  measurement REDUCES this materially — Lens is on its own project, so a Lens Fair-Use event
+  measurement REDUCES this materially — Partner B is on its own project, so a Partner B Fair-Use event
   cannot 402 GNI — but GNI can still 402 itself, and there is no backup (6.5).
 - **6.5** **THERE IS NO BACKUP.** Unchanged and still true. With 6.6 closed and 6.2 de-ranked,
   this is now the highest-ranked genuinely open item in ROOT 6.
@@ -361,10 +361,10 @@ confirms it — curl is a dead end (R-S54-4).*
 - **PROVIDER + PLATFORM EOL WATCH — record at announcement, not at death.**
   - **`actions/checkout@v4` + `actions/setup-python@v5` → item 6.7. 6 of 8 workflows now on v7;
     `gni_mad` and `gni_pipeline` still warn on every run.**
-  - `gemini-2.5-flash` dies Oct 16 (Lens's lens2 runs on it).
+  - `gemini-2.5-flash` dies Oct 16 (Partner B's a Partner B agent runs on it).
   - `llama-3.1-8b-instant` died Aug 16 — last hardcoded default removed at S89 (9.4).
   - Supabase free tier warns by EMAIL at 20% of a limit, then a grace period, then restricts,
-    with no second grace period. Storage 113/500 MB. **No longer shared with Project Lens.**
+    with no second grace period. Storage 113/500 MB. **No longer shared with Partner B.**
 
 ### RETIRE CANDIDATES — the clause, honestly counted
 - **1.9** — de-ranked at generation 5, unworked since. **Generation 4 of 3 — OVERDUE.**
@@ -455,7 +455,7 @@ filters on `False`"; the record said what the rows are for. See R-S89-2.**
 **DECISION S89-5 — the four empty `lens_*` tables are dropped from gni-dusky.** Chosen over
 leaving them (they made every ROOT 6 figure ambiguous) and over investigating further (four
 byte-level facts settled it: `n_tup_ins = 0` on all four; GNI's code never names them;
-Project Lens's own Supabase project holds the live data under the same names with 1,404 rows
+Partner B's own Supabase project holds the live data under the same names with 1,404 rows
 across the four; the two `SUPABASE_URL` values hash differently). Executed inside a `do $$`
 block that raises rather than drops if any row is present, so running it against the wrong
 project is safe. **GNI-R-238 was cited in chat as the rule permitting the sharing; it is NOT

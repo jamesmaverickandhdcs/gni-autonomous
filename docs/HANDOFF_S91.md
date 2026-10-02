@@ -53,7 +53,7 @@ rows: read it before proposing anything in ROOT 8, ROOT 1, retention, or a publi
 | Why do `frequency_log` and `reports` disagree on 2026-06-22? | 6.1 vs 5.0, same second | unread |
 | Why does `reports` start 2026-05-24 but `frequency_log` 2026-03-20? | 199 vs 338 rows | retention, ROOT 6 |
 | What does PROBE-DRIFT actually test? | S57-era records only | recover, don't infer |
-| `LR-101` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
+| `GNI-L-015` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
 
 ## 5. WRONG THIS SESSION (<=6 lines)
 | Claim | What was true instead | Caught by |

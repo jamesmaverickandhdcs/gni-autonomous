@@ -206,7 +206,7 @@ target-bearing, not housekeeping.
   `docs/gni_runtime_snapshot_S99.json` is 182,578 bytes and section 6 is regenerated every close,
   so one lands per session. That is deliberate - the snapshot IS the evidence and must be in the
   tree for the byte-identity test - but nothing says when an old one may go. Kin of **6.5** and of
-  the Lens retention lesson: a stock grows, a flow does not. Decide the policy before there are
+  the Partner B retention lesson: a stock grows, a flow does not. Decide the policy before there are
   twenty.
 - **5.37** **NEW (S99)** [CAUGHT BY THE DETECTOR] - COR - **TWO MORE UNREGISTERED RULE IDS, AND
   C1 FAILED THIS CLOSE'S OWN DRAFT OVER THEM.** Generation 18's first draft cited three March-2026

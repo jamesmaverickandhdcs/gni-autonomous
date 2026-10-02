@@ -235,7 +235,7 @@ target-bearing, not housekeeping.
   `docs/gni_runtime_snapshot_S99.json` is 182,578 bytes and section 6 is regenerated every close,
   so one lands per session. That is deliberate - the snapshot IS the evidence and must be in the
   tree for the byte-identity test - but nothing says when an old one may go. Kin of **6.5** and of
-  the Lens retention lesson: a stock grows, a flow does not. Decide the policy before there are
+  the Partner B retention lesson: a stock grows, a flow does not. Decide the policy before there are
   twenty.
 - **5.30** OPEN (S98) [MEASURED] - COR. `_fetch_relevant_articles` returns an empty pool from
   three places and `run_mad_protocol` divides by its size. Written fail-open, behaves fail-hard.

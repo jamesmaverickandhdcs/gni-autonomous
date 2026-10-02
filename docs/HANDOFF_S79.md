@@ -28,8 +28,8 @@ Fable5->Opus4.8 transition prepared: MODEL_TRANSITION_BRIEF.md committed (10f42a
 | Phishing handled | fake repo-scanner email (trypatchhog.com) via Vercel-URL recon; repo access clean | collaborators=1, keys=0 |
 | GT5 digest READ | arb-level fabrication real: 118 consultant / 27 arb hits, 7d 10/10 runs | grounding log 81049186383 |
 | MAD corrected | MAD = GROQ_MAD_MODEL 3.3-70b (mad_protocol.py:9), dies Aug 16; mad_model_probe.py exists | bytes beat search memory |
-| Lens cleared | Lens-1 HTTP 200 + quality 6.7-7.8 all 8 logs Jul 19-22 — NOT bleeding | lens manage-analyze logs |
-| Corpse ID revised | old GNI primary likely llama-4-scout (qwen3-32b still 200s for Lens) | lens logs vs deprecation list |
+| Partner B cleared | Partner B-1 HTTP 200 + quality 6.7-7.8 all 8 logs Jul 19-22 — NOT bleeding | lens manage-analyze logs |
+| Corpse ID revised | old GNI primary likely llama-4-scout (qwen3-32b still 200s for Partner B) | lens logs vs deprecation list |
 
 ## 3. QUEUE (<=25 lines)
 | ID | Task | First move | Gate | Trust |
@@ -40,7 +40,7 @@ Fable5->Opus4.8 transition prepared: MODEL_TRANSITION_BRIEF.md committed (10f42a
 | MAD-MIGRATE | MAD on 3.3-70b, dies Aug 16; instrument exists (mad_model_probe.py) — baseline then switch GROQ_MAD_MODEL; own arc, NOT a sweep | python mad_model_probe.py --model openai/gpt-oss-120b --trials 3 | James | V(bytes) |
 | TRANS-COUNT-CERT | certifiable from any green log Deduplication line vs pipeline_runs.total_after_dedup | grep + SQL | - | B |
 | GT5-T2-DECISION | DEFERRED by design: re-read grounding digest 1wk AFTER primary certs clean (fallback-era contamination) | digest read ~Jul 30+ | James | - |
-| LENS-SESSION | opener: which model actually serves Lens-1 (workflow fires lens_s1_report.py — unread); then migrate 3.3-70b hardcodes (compendium/entity_extract/framing_rubrics + "AI 5 verdict" judge) before Aug 16; Cerebras paths unaffected; gh secret list 403 = token lacks fintelplan scope, use web | read code/lens_s1_report.py | James | V(logs) |
+| Partner B-SESSION | opener: which model actually serves Partner B-1 (workflow fires a Partner B module — unread); then migrate 3.3-70b hardcodes (compendium/entity_extract/framing_rubrics + "AI 5 verdict" judge) before Aug 16; Cerebras paths unaffected; gh secret list 403 = token lacks the Partner B account scope, use web | read code/a Partner B module | James | V(logs) |
 | PHISH-HOMEWORK | OAuth apps review + security log + report email in Gmail | browser (James solo) | James | - |
 | ADAPTIVE-DRIFT | CLOSED by e526ff0 (adaptive.yml now on new model; still hardcoded not secret-fed — optional tidy) | - | - | V |
 | CI-DEGRADE | "2 additional runs" -> runs=1 width=0.00 on fallback-era; recheck on certified primary | read CI code | - | I |
@@ -55,7 +55,7 @@ Fable5->Opus4.8 transition prepared: MODEL_TRANSITION_BRIEF.md committed (10f42a
 |------|-------|-----------|
 | CI cert outcome (probe fix in CI) | local-proven only | MODEL-FIX-CERT |
 | gpt-oss analysis-call behavior (JSON shape, quality, reasoning field) | untested in pipeline | first certified run review |
-| Which model serves Lens-1 at runtime | config says qwen3-32b, logs say alive | LENS-SESSION read |
+| Which model serves Partner B-1 at runtime | config says qwen3-32b, logs say alive | Partner B-SESSION read |
 | Exact identity of old dead GNI primary | masked; scout likely | optional (not needed) |
 | TPM 8K adequacy under 10/10 heat | inferred OK (sleeps) | watch 429s post-cert |
 | GROQ_MAD_MODEL actual secret value | comment says 3.3-70b | MAD-MIGRATE step 1 |
@@ -65,7 +65,7 @@ Fable5->Opus4.8 transition prepared: MODEL_TRANSITION_BRIEF.md committed (10f42a
   Don't wait for an 18:0x run that never comes; don't burn a dispatch to "check".
 - gh run list -L1 returns the LAST run — check its timestamp before treating it as new.
 - Browser-UI steps are NOT executable in this partnership (R-S79-1). gh CLI + byte receipts only.
-- Deprecation-list match is a LEAD not a diagnosis — Lens-1 200'd with a "dead" model configured.
+- Deprecation-list match is a LEAD not a diagnosis — Partner B-1 200'd with a "dead" model configured.
 - Reasoning models: any small max_tokens is a starvation bomb; funnel:1070 (max_tokens 5) must be
   REDESIGNED not renamed when fallback swaps.
 - Quota: 85% standing; ONE manual dispatch per diagnosis cycle, prefer free cron reads.

@@ -30,7 +30,7 @@ import sys
 DOCS = "docs"
 OUT = "docs/GNI_MACRO_MAP_S%d.md"
 
-ID = r"(?:R-S\d+-\d+|GNI-R-\d+|LR-\d+|NN-PHI-[A-Za-z0-9-]+)"
+ID = r"(?:R-S\d+-\d+|GNI-R-\d+|GNI-L-\d+|NN-PHI-[A-Za-z0-9-]+)"
 # an entry-start is an ID at the head of a line followed by a DEFINITION
 # separator. A body line that merely opens with a cited id ("R-S91-4 cited
 # ...") is not an entry and must not capture the marker below it.
@@ -218,7 +218,7 @@ def main():
       "**%d**" % (amb_markers, len(ambiguous), amb_markers))
     a("- bound to no rule at all: **%d**" % len(unbound))
     a("- placeable on X: **%d** rules across **%d** sessions (S%d-S%d); "
-      "NOT placeable: **%d** (`GNI-R-###`, `LR-###`, `NN-PHI-*` carry no session)"
+      "NOT placeable: **%d** (`GNI-R-###`, `GNI-L-###`, `NN-PHI-*` carry no session)"
       % (sum(d["yes"] + d["no"] for d in by_session.values()), len(by_session),
          lo, max(by_session) if by_session else 0, len(unplaceable)))
     a("- Y: **%d** of the **%d** sessions on this axis name a layer"

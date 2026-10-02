@@ -34,7 +34,7 @@ R-VERIFY-2 CLOSED: STALE-GATED warns PROVEN (12), columns PROVEN (fetch_ok/serve
 | ID | Task | First move | Gate | Trust |
 |----|------|-----------|------|-------|
 | K-WATCH | TOP: KEY-MAP observation window -- compare 2-3 forensic traces pre/post 24e1bce: S1 pass rate, stage1_match_count mean (~1.77->1.41 expected), Top-22 composition, MAD input quality | pull today 0537 vs 1131 traces | - | B |
-| RECENCY-DEAD | Fix L747 art->article + kill bare except (assert per LR-104). Revives +5..+1 recency & +2 velocity = selection-shifter: land ONLY after K-WATCH baseline read | read L740-770 | James | V(diagnosis) |
+| RECENCY-DEAD | Fix L747 art->article + kill bare except (assert per GNI-L-009). Revives +5..+1 recency & +2 velocity = selection-shifter: land ONLY after K-WATCH baseline read | read L740-770 | James | V(diagnosis) |
 | G-TUNE | ~Jul 15: alias whitelist (fed<->federal reserve, us-iran variants, demonym<->country; share sensor KNOWN_ACTORS anti-L-CLIFF) + consultant Class-B scrub + G-GAP-1; re-measure THEN enforce. New adds: chip* decision, source-aware actor hinting (replaces iran* brand proxy), 'ban'/'fire' narrowing review | grounding digest | James | B |
 | PROMOTE-NYT | Check Stimson RSS URL manually (moved feed?) then promote NYT to primary in rss_collector.py or revive. Roster edit = own commit, after K-WATCH | curl/browser the feed | James | B |
 | FT-GAP | Widened: C2 recovery criterion + reserve POOL RANKING must weigh feed cadence (DN proof x2). Consider fresher GEO reserve for AP GN slot | collector L470-510 + pool | James | V(diagnosis) |
@@ -43,7 +43,7 @@ R-VERIFY-2 CLOSED: STALE-GATED warns PROVEN (12), columns PROVEN (fetch_ok/serve
 | YAKE-KM / DEAD-PILLAR / L4-COUNT | YAKE L713 inverted containment (semantic, own item); sensor _suggest_pillar dead code, 'ai' in said/domain; L4 env counter unread | read each | James | B/unread |
 | CHORE-IGNORE | Add *_GNI_Forensic_Trace_*.xlsx (repo root) to .gitignore -- scheduled runs drop them in tree | one line | - | V |
 | F-TILES / F-CASE / F-KEY | unchanged S65 fossil sweep candidates | James picks | James | B |
-| L-CLIFF | With Lens session; Aug 16 cliff -- quota 93/95% today sharpens urgency | Lens opener | James | V(scope) |
+| L-CLIFF | With Partner B session; Aug 16 cliff -- quota 93/95% today sharpens urgency | Partner B opener | James | V(scope) |
 | SOLV-6 | +2 data points: 94591 metered S65; 93365/91602 both accts today | - | - | B |
 | SRC-EXPAND / OC-A/B / U-AUG9 / U-W / I-WATCH / A-VLOG | unchanged (OC-A matures ~Jul 24) | - | - | - |
 
@@ -55,7 +55,7 @@ R-VERIFY-2 CLOSED: STALE-GATED warns PROVEN (12), columns PROVEN (fetch_ok/serve
 | Sensor signature_id one-time discontinuity (starred tokens in ids) | 90% benign self-heal | watch one window |
 | c4 classifier behavior live (first flight = next run) | 90% | next GH log |
 | IRRELEVANT list residual shapes beyond 24h window | 80% clean | K-WATCH |
-| GROQ secret values (GNI 4 + Lens 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
+| GROQ secret values (GNI 4 + Partner B 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
 
 ## 5. TRAPS (<=8 lines)
 - ONE SELECTION-SHIFTER PER WINDOW: KEY-MAP is live and unobserved. Do NOT land

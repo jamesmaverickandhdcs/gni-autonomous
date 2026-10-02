@@ -2,7 +2,7 @@
 Repo: C:/HDCS_Project/03/GNI_Autonomous | HEAD at spec time: dc145b6
 Design ratified S72: docs/GT5_ENFORCE_DESIGN.md (READ IT FULL FIRST -- it is authoritative;
 this spec only operationalizes it). Memory: gt5-enforce-build.md is current.
-Rules in force: GNI-R-076 (read full files before patching), LR-101 (ASCII anchors),
+Rules in force: GNI-R-076 (read full files before patching), GNI-L-015 (ASCII anchors),
 R-S72-1 (multi-line anchors join on DETECTED newline -- repo working copies are CRLF),
 R-S59-1 (census every consumer before assuming one).
 

@@ -20,7 +20,7 @@ Target declared: TRUTHFULNESS OF OUTPUT (definition of done 1 of 4 now PARTIAL, 
 | Behaviour | Instrument verified behaviour-unchanged STRUCTURALLY, not asserted | grep of all assignments to live prompt vars returns only pre-existing L965-1044 |
 | E-3 scope | Byte-confirmed narrow: labels blind_spot_explanation ONLY; short_focus + action reach Telegram unlabeled | L1119-1147 |
 | Docs | CONTRACT v5 · Transfer Protocol v2 · order regenerated (gen 2) · R-S82-1..5 | this commit |
-| Transfer | Both Lens docs read IN FULL for the first time; two-pass analysis; 4 doc gaps found and closed | order file CHANGED THIS REGENERATION |
+| Transfer | Both Partner B docs read IN FULL for the first time; two-pass analysis; 4 doc gaps found and closed | order file CHANGED THIS REGENERATION |
 
 ## 3. ORDER
 **MOVED.** See `docs/GNI_TARGET_AND_ORDER.md` — generation 2, dated, superseding.
@@ -32,9 +32,9 @@ NEXT SESSION'S MISSION is declared at the top of that file.
 |------|-------|-----------|
 | Is the arbitrator actually starved? Mechanism confirmed, firing UNMEASURED | instrument shipped, no data | S83 mission — read ARB-ARRIVAL on two runs |
 | C1's real token bill (predicted 60-75K vs July's 91-93%) | unmeasured since Jul 27 | the groq_quota line in TELEGRAM, not the workflow log |
-| GNI's real chars/token divisor (Lens measured 3.435-3.713 for its mix) | inferred from Lens ~40% | order 4.4 — one free log line, both numbers already in scope |
+| GNI's real chars/token divisor (Partner B measured 3.435-3.713 for its mix) | inferred from Partner B ~40% | order 4.4 — one free log line, both numbers already in scope |
 | Are the 46-60s governor waits landing the retry inside the same TPM minute? | narrowed, unread | order 4.2 — it is the INNER `_call_agent` path, not W-02 |
-| Is GNI's per-account-day reservation reasoning about a boundary that does not exist? | inferred from Lens | order 4.3 |
+| Is GNI's per-account-day reservation reasoning about a boundary that does not exist? | inferred from Partner B | order 4.3 |
 | Are GNI's three MAD accounts separate Groq organizations (TPD isolation)? | assumption | one small call at a real exhaustion |
 | Keyfile rotation overdue since Aug 9; PHISH-HW since ~Jul 31 | certain, unactioned | LIFECYCLE block in the order file |
 
@@ -65,13 +65,13 @@ FIRST MOVE = git status + ls-remote; then grep ARB-ARRIVAL in the two most recen
 ## 8. POINTERS (<=5 lines)
 Instrument + ladder: `ai_engine/analysis/mad_protocol.py` ~L1036-1080 (ARB-FIT then ARB-ARRIVAL).
 Close/open prompts: `docs/GNI_Session_Transfer_Protocol.md` PART C / PART D (v2).
-Lens transfer sources: the two uploaded packets — NOT in either repo; ask James if needed.
+Partner B transfer sources: the two uploaded packets — NOT in either repo; ask James if needed.
 
 ## DIARY S82 (<=10 lines)
 Opened on a mission that was mostly a question: does anything check what the arbitrator is
 handed? The answer took two reads and was no — not a bug hiding, just nobody ever asked. So
 the day's shipped work is thirty-three lines that change no behaviour at all, which is the
-least impressive commit in weeks and probably the most useful. Then James asked for the Lens
+least impressive commit in weeks and probably the most useful. Then James asked for the Partner B
 letters to be read properly rather than summarised, and the second pass found the contract
 indicting itself in its own version log, and a template quietly instructing every future close
 to rebuild the thing we had just removed. Being wrong about the prompts existing was the good

@@ -38,11 +38,11 @@ B3  Source concentration              Herfindahl index on selection; one source 
 B4  Swan weak-signal anchoring        % runs where Swan cited a genuine score-0 article
                                       (flag exists in quality log; trend it).
 B5  Injection/sanitize hit trend      stage-1b flags per run; a sustained rise = someone
-                                      is probing the pipeline (Lens-grade signal).
+                                      is probing the pipeline (Partner B-grade signal).
 
 TIER C — needs new collection, defer to after Part 2 ships (2 checks):
 C1  Topic persistence half-life       how long selected topics survive in subsequent runs.
-C2  Cross-project echo                GNI-selected topics vs Lens indicator hits (the two
+C2  Cross-project echo                GNI-selected topics vs Partner B indicator hits (the two
                                       systems corroborating each other = highest-trust signal).
 
 Verdict: 13 named checks before C-tier; 8 shippable immediately. The watch is one
@@ -77,7 +77,7 @@ For each REJECTED article (stage 1/2/3 rejects, all logged in the 304-article tr
   b. Blowup regret: rejected topic's keyword enters emerging-keyword sensor or a
      later CRITICAL report within 7d (we rejected a precursor)
   c. External regret (C-tier): GDELT volume spike on a rejected topic (world decided
-     it mattered; we didn't) — reuse Lens GDELT pacing discipline (LR rules exist)
+     it mattered; we didn't) — reuse Partner B GDELT pacing discipline (LR rules exist)
 Output: weekly regret list with WHICH STAGE rejected each miss -> tells you whether
 relevance, dedup, or significance scoring is the leaky stage. This is the single
 highest-value diagnostic GNI does not yet have.
@@ -136,7 +136,7 @@ L5  NARRATIVE EMBEDDING LAYER — THE COGNITIVE-WARFARE DEFENSE CORE
     sampled-rejected article; store in Supabase pgvector (free tier includes it).
     Three detectors on top:
       L5a Narrative convergence: unrelated sources moving toward identical framing
-          within a window = coordination signature (influence-op tell — Lens's
+          within a window = coordination signature (influence-op tell — Partner B's
           mission appearing inside GNI's pipeline).
       L5b Source fingerprint drift: each source has a framing centroid; sudden
           centroid jump = editorial capture, ownership change, or compromise.

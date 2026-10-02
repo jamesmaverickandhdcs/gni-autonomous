@@ -268,7 +268,7 @@ transition. Nothing is inherited here; what is carried is carried because it is 
 - **5.36** **NEW (S99)** [MEASURED] - PRE - **THE SNAPSHOTS HAVE NO RETENTION.** One runtime
   snapshot lands per session that harvests, each around 180 kB, and section six is regenerated
   every close. That is deliberate - the snapshot IS the evidence and must be in the tree for the
-  byte-identity test - but nothing says when an old one may go. Kin of **6.5** and of the Lens
+  byte-identity test - but nothing says when an old one may go. Kin of **6.5** and of the Partner B
   retention lesson: a stock grows, a flow does not. NOTE (S104): two snapshots now sit in `docs/`
   and the RELATION rule picks the higher, which `C8` depends on. Decide the policy before there are
   twenty, and decide it knowing a check now reads the newest one by construction.

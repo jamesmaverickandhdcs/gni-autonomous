@@ -48,7 +48,7 @@ F16 FIXED+certed; F17 root=saturation (width 0.00 real, falsy-zero render suspec
 | HEALTH-W | /health WEIGHTS board unfiltered (Code-flagged sibling of C3) | same mirror filter | James | V |
 | DET-DEAD | after FT-GAP-B; RE-CHECK prompt_injection_detector.py in funnel/ first | grep imports | James | B |
 | J-RULINGS | J-4 probe, J-7 scorer (Aug 9); J-1 sunsets post-cliff | - | James | - |
-| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (31d, Lens opener SOON, D-8 first) | unchanged | - | James | - |
+| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (31d, Partner B opener SOON, D-8 first) | unchanged | - | James | - |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / K-CAND / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND / U-W / I-WATCH / A-VLOG / SRC-PHI(banked) | unchanged | - | - | - |
 
 ## 4. UNKNOWNS (<=8 lines)
@@ -76,7 +76,7 @@ F16 FIXED+certed; F17 root=saturation (width 0.00 real, falsy-zero render suspec
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `b31c75b` + TREE CLEAN -- SRC-INTEGRITY SHIPPED (4 code commits + SQL purge/dedupe), FT-GAP-A closed 3/3, F15/F16 closed
 TOP3 = VERIFY-C1 (morning trace: seed 42/42, B fires w/o weight-write), RULES-APPEND (R-S71-1/2), then FT-GAP-B or GT-5-ENFORCE design (James picks)
-DEADLINE = OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (31d, L-CLIFF Lens opener SOON + D-8 first move)
+DEADLINE = OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (31d, L-CLIFF Partner B opener SOON + D-8 first move)
 TRAP = dedupe was ownership-not-freshest (never re-run keep-freshest); seed INSERT-only forever; cred totals now small+real; Code memory stale
 FIRST MOVE = ls-remote + git status (expect b31c75b CLEAN); then read morning trace for VERIFY-C1 before anything else
 

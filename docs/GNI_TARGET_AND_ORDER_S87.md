@@ -139,8 +139,8 @@ predictive — when a metric is >90% constant, ask WHO GUARANTEED IT before tuni
 - **6.2** Retention policy. Promoted at generation 3 (S86); unchanged this close.
 - **6.3** SIZE METER in Mission Control. Unchanged.
 - **6.4** L5 exposure when Supabase 402s. Gates 6.2.
-- **6.6** **NEW.** `information_schema` shows `lens_macro_reports`, `lens_predictions`,
-  `lens_s4_alert_state`, `lens_tiercd_data` in the SAME Supabase project. Project Lens shares
+- **6.6** **NEW.** `information_schema` shows `a Partner B table`, `a Partner B table`,
+  `a Partner B table`, `a Partner B table` in the SAME Supabase project. Partner B shares
   GNI's 500 MB. Every runway figure quoted in 6.2/6.5 (113/500 MB, 520–660 days) silently
   includes another system's growth curve, which GNI does not control and does not measure.
 - **6.1** CLOSED (S84).
@@ -206,7 +206,7 @@ measured data, and produced a ruling rather than a preference.
 39–41 by a third sample) · 1.7 (third reproduction of the partial-line inflation).
 
 **NEW:** 8.6 (publish magnitude) · 8.7 (polarity) · 8.8 (19 silent keywords) · 1.13 (TECH
-starved in two layers) · 6.6 (Lens shares the Supabase project) · 5.6 (the register nobody
+starved in two layers) · 6.6 (Partner B shares the Supabase project) · 5.6 (the register nobody
 reads) · 5.7 (seven dead columns) · the cross-root diagnosis.
 
 **RE-RANKED: ROOT 8 KEEPS THE TOP SLOT.** 1.11's numeric re-rank trigger was evaluated against

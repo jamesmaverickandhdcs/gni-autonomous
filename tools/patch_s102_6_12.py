@@ -1,5 +1,5 @@
 # S102 / order item 6.12 -- remove the GNI-R-122 standdown from the heartbeat.
-# Binary mode throughout (LR-078): the file carries a BOM and this must not
+# Binary mode throughout (GNI-L-001): the file carries a BOM and this must not
 # decode/re-encode it. EOL is detected from the bytes, never assumed.
 import hashlib, sys
 

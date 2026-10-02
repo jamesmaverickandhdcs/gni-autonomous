@@ -8,7 +8,7 @@ L1 Pipeline: green, unattended six days. 21/21 MAD runs success Aug 18-24, zero 
 L2 MAD: ARB-ARRIVAL fired 14 times. Arbitrator receives a CONSTANT ~20 articles of 132-237.
 L3 GPVS: untouched, two sessions running. L4 Quota: C1's real bill STILL unread since Jul 27.
 L5 Public: /debate publishes R1 the arbitrator never received — now 14/14 confirmed, not a lead.
-STORAGE: unmeasured. Zero retention code in GNI_Autonomous. Sister project Lens died of this
+STORAGE: unmeasured. Zero retention code in GNI_Autonomous. Sister Partner B died of this
 on Aug 23 and cannot recover before Sep 11. GNI is in a different Supabase org and is alive.
 Live watch: nothing hot. The instrument is stable; the next thing to learn needs a SQL editor.
 Target declared: TRUTHFULNESS OF OUTPUT (definition of done 1 of 4 PARTIAL, now measured).
@@ -78,7 +78,7 @@ Instrument + ladder: `ai_engine/analysis/mad_protocol.py` L1036-1083 (ARB-FIT th
 Article assembly + the pillar headers: same file, `_build_news_context` L196-263.
 Close/open prompts: `docs/GNI_Session_Transfer_Protocol.md` PART C / PART D (**v3** — the close
 is now READ from the repo and invoked by name, not pasted).
-Lens transfer sources: session records only, NOT in either repo; ask James if needed.
+Partner B transfer sources: session records only, NOT in either repo; ask James if needed.
 
 ## DIARY S83 (<=10 lines)
 The instrument fired at 02:43 on the nineteenth and nobody was watching, exactly as predicted,
@@ -89,6 +89,6 @@ the days with most news. Nothing was starving; something was simply not scaling,
 quieter and took a distribution to see. Six of my own claims went into the wrongness ledger,
 which is the longest list I have written here, and every one of them was an instrument or a
 clock rather than the system. The trap I inherited was backwards and would have flipped the
-ruling. Then James asked what Lens had learned, and Lens had learned that its own closing
+ruling. Then James asked what Partner B had learned, and Partner B had learned that its own closing
 prompt had been quietly rotting in a place nobody read. Ours was too. We only found it because
 he asked.

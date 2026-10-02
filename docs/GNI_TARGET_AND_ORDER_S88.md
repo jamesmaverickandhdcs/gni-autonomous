@@ -259,9 +259,9 @@ one regeneration at generation 7.**
 - **OC-A**: closed Jul 25, next quarterly re-check ~Oct 25.
 - **PROVIDER + PLATFORM EOL WATCH — record at announcement, not at death.**
   - **`actions/checkout@v4` + `actions/setup-python@v5` → item 6.7, LIVE WARNING TODAY.**
-  - `gemini-2.5-flash` dies Oct 16 (Lens's lens2 runs on it).
+  - `gemini-2.5-flash` dies Oct 16 (Partner B's a Partner B agent runs on it).
   - Supabase free tier warns by EMAIL at 20% of a limit, then a grace period, then restricts,
-    with no second grace period. Storage 113/500 MB, shared with Project Lens (6.6).
+    with no second grace period. Storage 113/500 MB, shared with Partner B (6.6).
 
 ### RETIRE CANDIDATES — the clause, honestly counted
 - **1.9** — de-ranked at generation 5, unworked since. **Generation 3 of 3 — DUE AT S89.** It is
@@ -339,8 +339,8 @@ the canary. Recorded as James's ruling.
 
 **TRAP DISPOSITION (promote or expire, no trap rides forward unchanged twice):**
 - pipeline↔MAD spacing — SECOND CARRY → **PROMOTED**: the lesson into **R-S87-6 as an AMENDMENT**
-  (not a new number — the existing rule already owns scheduler timing, and Lens paid for
-  re-minting LR-119 as LR-144), and the work into **item 1.14** with a named measurement.
+  (not a new number — the existing rule already owns scheduler timing, and Partner B paid for
+  re-minting GNI-L-019 as GNI-L-020), and the work into **item 1.14** with a named measurement.
 - NEW TRAP (first carry, temporary): `/autonomy` will render `Raw Magnitude --` until the first
   post-`ee813c0` pipeline run writes a row. Anyone opening the page before then sees the same
   `--` the never-written Lower Bound used to show and will read the ship as a failure.

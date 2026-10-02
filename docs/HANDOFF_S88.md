@@ -11,7 +11,7 @@ L2 MAD: green, but ORDER INVERTED once on Aug 30 — see TRAPS and item 1.14.
 L3 GPVS: untouched, seven sessions running. L4 Quota: C1's real bill STILL unread since Jul 27.
 L5 Public: `/autonomy` now shows Final Score + Raw Magnitude + the cap caveat. **UNCERTIFIED.**
   `/debate` still publishes R1; F14 unresolved; "4 pipelines" wrong in 6 places.
-STORAGE: 113/500 MB, shared with Project Lens (4 `lens_*` tables). Backup: NONE.
+STORAGE: 113/500 MB, shared with Partner B (4 `lens_*` tables). Backup: NONE.
 SCHEDULE: lateness REGRESSED — Aug 24-26 35-64 min, Aug 27-28 10-12 h, Aug 29-30 4h39-6h49.
   cron untouched since `6f43aa5` (2026-07-08). Count by RUN ID, never by clock (R-S87-6).
 PLATFORM: every run prints the Node 20 deprecation warning. 8 workflows, 19 call sites.
@@ -70,7 +70,7 @@ section: read it before proposing anything in ROOT 8 or ROOT 1.**
   so the page looks identical to a failed ship. **Expires when cert prediction 1 is checked.**
 (PROMOTED at this close: the pipeline↔MAD spacing trap, on its second carry — the lesson into
  R-S87-6 as an AMENDMENT rather than a new number, and the work into item 1.14. Minting a new
- rule where one already owns the subject is what Lens paid for with LR-119/LR-144.)
+ rule where one already owns the subject is what Partner B paid for with GNI-L-019/GNI-L-020.)
 
 ## 7. LOAD CHECK — next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = the S88 docs commit (verify by ls-remote; `737ef06` was HEAD before it) TREE CLEAN

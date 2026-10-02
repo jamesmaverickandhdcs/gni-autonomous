@@ -16,7 +16,7 @@ RULES = """# GNI RULES
 
 # PART 1 - ACTIVE RULES BY TRIGGER
 - R-S90-2 appears here as an INDEX line and must not count as a definition
-- LR-092 appears here too
+- GNI-L-003 appears here too
 
 # PART 2 - CLUSTERS
 - R-S92-2 index mention
@@ -26,7 +26,7 @@ RULES = """# GNI RULES
 **CHECKABLE: yes**
 - R-S92-2: select on a relation, never a position
 **CHECKABLE: yes**
-- LR-092: py_compile every modified file before commit
+- GNI-L-003: py_compile every modified file before commit
 **CHECKABLE: no**
 - R-S98-3: a published hash is EOL-normalised or it is platform noise
 **R-S81-1** - a zero result indicts the instrument first
@@ -195,7 +195,7 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     w(root + "/docs/CONTRACT_S94.md",
       contract if contract is not None else "law: R-S90-2 and `GNI-R-076` apply\n")
     w(root + "/docs/GNI_Session_Transfer_Protocol_S94.md", "see R-S92-2\n")
-    w(root + "/docs/GNI_TARGET_AND_ORDER_S94.md", "queue: LR-092\n")
+    w(root + "/docs/GNI_TARGET_AND_ORDER_S94.md", "queue: GNI-L-003\n")
     w(root + "/docs/HANDOFF_S94.md", "state: R-S81-1\n")
     w(root + "/.github/workflows/a.yml", "on:\n  schedule:\n    - cron: '0 2 * * *'\njobs:\n  x:\n")
     w(root + "/.github/workflows/b.yml", "on:\n  push:\njobs:\n  y:\n")

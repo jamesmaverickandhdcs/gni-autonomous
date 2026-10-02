@@ -2,7 +2,7 @@
 **Purpose:** lossless session-to-session transfer at ~25-35% of the old token cost.
 **Principle:** every fact lives in ONE file (SSOT); the handoff carries STATE only; the ORDER carries work; caps force density.
 **This file is a TEMPLATE, and a template is law that executes itself next session.** v1 said it was "written once and never regenerated" and then sat unread for 27 sessions while the contract changed underneath it. It is regenerated whenever a rule of engagement changes (R-S82-4).
-**v3's core change: THIS FILE IS NOW READ FROM THE REPO AT EVERY OPEN.** Before v3 the closing prompt reached a session only by James pasting it from outside — a prompt living in two places is a dual source of truth, and the pasted copy is free to drift from the repo copy with nothing able to detect it. Mirrored from Project Lens, which shipped the identical fix after its own pasted close prompt was found to have silently lost two clauses.
+**v3's core change: THIS FILE IS NOW READ FROM THE REPO AT EVERY OPEN.** Before v3 the closing prompt reached a session only by James pasting it from outside — a prompt living in two places is a dual source of truth, and the pasted copy is free to drift from the repo copy with nothing able to detect it. Mirrored from Partner B, which shipped the identical fix after its own pasted close prompt was found to have silently lost two clauses.
 
 ---
 
@@ -144,7 +144,7 @@ CLOSE S{N}, my buddy.
    BEFORE claiming a gap or a count, check BOTH ID schemes — GNI_RULES.md carries
    `GNI-R-###` and `R-S##-#`, and a grep for one scheme is blind to the other. A count that
    sees only half the register has invented a hole. And before minting a NEW number, search
-   the register for an existing rule that already says it — amend that one instead. Lens
+   the register for an existing rule that already says it — amend that one instead. Partner B
    paid for re-minting a rule it already had.
 
 10. CONTRACT.md: edit ONLY if a rule of engagement changed. Log it in the version log.
@@ -253,9 +253,9 @@ and buys the only thing that stops the list growing by construction.
   reads the order file and states work-the-top / freshness-confers-no-priority; Part A gains
   the order file, fixes the `GNI_RULES.md` path to `docs/`, and marks `STATUS.md` a fossil.
 - v3 — S83 (2026-08-24). **The close stops being pasted.** Part D step 2 now reads THIS FILE,
-  and Part C is invoked by name, closing the dual-source-of-truth hole that let Lens's pasted
+  and Part C is invoked by name, closing the dual-source-of-truth hole that let Partner B's pasted
   close prompt silently lose two clauses. Part A gains the FIXED PATH vs SESSION-NUMBERED
-  rule (Lens shipped a numbered order to its fixed path and would have opened on the stale
+  rule (Partner B shipped a numbered order to its fixed path and would have opened on the stale
   one). Part D gains a clock-and-HEAD first block (S83 twice stated a schedule position from
   turn count, and mistook a six-day gap for minutes), an unread-run count with the
   debate-vs-grounding-watch distinction, and NOVELTY BY RUN ID (S83's content-grep guard

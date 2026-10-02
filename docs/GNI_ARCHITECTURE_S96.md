@@ -46,7 +46,7 @@ what GNI says must be what GNI measured.
 | Constraint | Consequence |
 |---|---|
 | $0/month, free tiers only (Groq, Cerebras, Supabase, Vercel, GitHub Actions) | quota is a first-class design input; 3 Groq accounts split the load |
-| ONE operator, part-time, also running Project Lens, also a student | operator attention is the scarcest resource in the system |
+| ONE operator, part-time, also running Partner B, also a student | operator attention is the scarcest resource in the system |
 | Repo is PRIVATE; chat sessions run with an empty container | chat cannot read the repo — every file arrives as an attachment (CONTRACT v6). **Does not apply to a local agent.** |
 | Windows / Git Bash / MINGW64 | CRLF, BOM, and textconv hazards are real and recur |
 | Operator pulls every git trigger | no unattended write path to main exists today |
@@ -199,7 +199,7 @@ Layer 2's prerequisite.
 
 GNI holds 134 engineering rules. All 134 are prose; all 134 require an LLM to read
 and apply; **none is executable.** Yet many are mechanically checkable —
-R-S91-5 is a `git grep`, LR-101 is an assert, R-S90-2 is a script.
+R-S91-5 is a `git grep`, GNI-L-015 is an assert, R-S90-2 is a script.
 
 > **Every judgment converted into a check is an agent no longer needed.**
 

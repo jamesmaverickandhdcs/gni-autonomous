@@ -1,5 +1,5 @@
 # WORK ORDER — GNI Autonomous S45 (post-flip health recalibration)
-**Prepared:** 2026-06-19 · Chiang Mai UTC+7 · Team Geeks / Bro Alpha
+**Prepared:** 2026-06-19 · Chiang Mai UTC+7 · Team Geeks
 **For:** Claude Code, in `C:\HDCS_Project\03\GNI_Autonomous`
 **Basis:** two LIVE ENFORCING crons (2026-06-18 0643 + 1244 UTC) + their forensic traces, reviewed in chat. The S44 flip succeeded — the gate is enforcing correctly. This arc fixes the *side effect* the enforcing runs exposed, not the gate.
 
@@ -10,8 +10,8 @@
 cd /c/HDCS_Project/03/GNI_Autonomous && source venv/Scripts/activate
 git fetch && git log --oneline -3      # confirm HEAD = fee2c42 (S44 flip) or later
 ```
-Operator: James ("Bro Alpha"). Warm tone, hard gates. One question per turn.
-Hard rules (reference by ID): GNI-R-037/076 (BEV — read full file before edit), GNI-R-233 (read files, reset when corrected), GNI-R-242 (prove on live data), LR-078 (ship-to-file patch), LR-100 (grep downstream of any change), LR-101 (pure-ASCII anchors), W2 (assert count==1), LR-105 (dry-run-first protects the future). py_compile before commit; push after.
+Operator: James. Warm tone, hard gates. One question per turn.
+Hard rules (reference by ID): GNI-R-037/076 (BEV — read full file before edit), GNI-R-233 (read files, reset when corrected), GNI-R-242 (prove on live data), GNI-L-001 (ship-to-file patch), GNI-L-016 (grep downstream of any change), GNI-L-015 (pure-ASCII anchors), W2 (assert count==1), GNI-L-010 (dry-run-first protects the future). py_compile before commit; push after.
 
 ---
 
@@ -38,9 +38,9 @@ PROPOSED DESIGN (confirm sound on BEV, then implement):
 - A source is "DOWN" only if **fetch fails OR raw entry count == 0** (pre-gate). Never alert on post-gate survivor count alone.
 - **Tier-aware:** opinion-tier (120h) sources are *expected* to yield 0-2/run. Exempt them from count-based alerting; health-check them on fetch success only.
 - **Re-baseline the rolling averages** now that the gate enforces — the pre-gate averages (e.g. "was averaging 5.0") are obsolete inflated baselines. Reset or recompute from post-gate runs.
-- LR-100: grep every reader of the health/average fields and the reserve-activation trigger; confirm the reserve auto-activation keys off the new "fetch-down" signal, not yield.
+- GNI-L-016: grep every reader of the health/average fields and the reserve-activation trigger; confirm the reserve auto-activation keys off the new "fetch-down" signal, not yield.
 
-DRY-RUN (LR-105): run against the next live cron (or replay the two 0618 traces) and confirm: the genuinely-fetch-broken feeds (Stimson, occasionally Crisis Group/AP-Google) still flag, while slow-but-fetched feeds (DFRLab/ICIJ/Bellingcat/WoR/HRW) do NOT flag. Only flip alerting live after that proof.
+DRY-RUN (GNI-L-010): run against the next live cron (or replay the two 0618 traces) and confirm: the genuinely-fetch-broken feeds (Stimson, occasionally Crisis Group/AP-Google) still flag, while slow-but-fetched feeds (DFRLab/ICIJ/Bellingcat/WoR/HRW) do NOT flag. Only flip alerting live after that proof.
 
 ---
 
@@ -56,7 +56,7 @@ These currently drop at the gate (harmless to output) but pollute logs AND the h
 - its published date is implausibly old (lag > ~43,800h / 5 years -> treat as feed-chrome, not an article), OR
 - its title equals/contains the feed's own `<title>` or matches a small chrome denylist ("Video Archive", "Archives", "Home", "Donate to").
 
-Skip BEFORE the entry enters the pipeline and BEFORE it counts toward the source's raw-entry total. Pure-ASCII anchors (LR-101), assert count==1 (W2).
+Skip BEFORE the entry enters the pipeline and BEFORE it counts toward the source's raw-entry total. Pure-ASCII anchors (GNI-L-015), assert count==1 (W2).
 
 ---
 
@@ -87,6 +87,6 @@ Enforcing data confirms RFE/RL is the weakest port: junk header rows + heavy ded
 3. **Arc C** (RFE/RL) — only after B+A give clean data; James decides.
 4. Logged items — separate future session.
 
-After each: py_compile -> self-test -> commit -> push. Begin close at 80% context (LR-057).
+After each: py_compile -> self-test -> commit -> push. Begin close at 80% context (GNI-L-025).
 
 — End S45 work order. The gate is honest; make the health monitor honest too. 🤜

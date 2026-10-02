@@ -12,7 +12,7 @@ source_reserves table censused CLEAN: 2 active only -- Crisis Group->ReliefWeb (
   Think, Africa Report) swept to resolved. AP GN row RETIRED to arm live rehearsal.
 REHEARSAL ARMED: next run -> AP GN feed error -> fresh DOWN alert, expect 7 GEO
   options; James replies 1 (The Independent). Proves roster+numbering+webhook e2e.
-G-GATE shadow window closes ~Jul 15. L-CLIFF sits with Lens session. Aug 16 cliff.
+G-GATE shadow window closes ~Jul 15. L-CLIFF sits with Partner B session. Aug 16 cliff.
 
 ## 2. DELTA (<=15 lines)
 | Item | What | Proof |
@@ -36,7 +36,7 @@ G-GATE shadow window closes ~Jul 15. L-CLIFF sits with Lens session. Aug 16 clif
 | G-TUNE | ~Jul 15 window closes: whitelist + "US-Iran" normalization + G-GAP-1 (agenda unchanged S62) | grounding_watch digest | James | B |
 | C2-LIVE | Recovery-retire STILL unproven live -- next organic primary recovery is the test (rehearsal may provide one if AP GN feed revives) | watch Telegram | - | B |
 | KEY-MAP | + new evidence: S1 substring matching ("eu" in europe) passes junk; coordinate with G-TUNE (unchanged S63 TRAP) | read keyword_sensor.py full | James | B |
-| L-CLIFF | With Lens session (LENS_TRANSFER_LCLIFF.md) | Lens opener | James | V(scope) |
+| L-CLIFF | With Partner B session (PARTNER_B_TRANSFER_LCLIFF.md) | Partner B opener | James | V(scope) |
 | SRC-EXPAND | + DVB as SEA reserve candidate (unverified); FIN institutional adds per FRIENDS Sec 4 | verify feeds first | James | B |
 | OC-A/B | Fabricated 14d prediction matures ~Jul 24 in GPVS | roadmap Part 2 | James | B |
 | U-AUG9 / U-W / SOLV-6 / I-WATCH / A-VLOG | unchanged from S63 | - | - | - |
@@ -49,7 +49,7 @@ G-GATE shadow window closes ~Jul 15. L-CLIFF sits with Lens session. Aug 16 clif
 | C2 recovery-retire fires on organic recovery | untested | next recovery |
 | ReliefWeb reachable from GH runners (FT-GAP masked it -- never fetched) | unknown | FT-GAP work |
 | get_active_reserves failure mode for ex-pool names (moot now, 0 such rows; unread) | unread | if ever needed |
-| GROQ secret values (GNI 4 + Lens 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
+| GROQ secret values (GNI 4 + Partner B 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
 
 ## 5. TRAPS (<=8 lines)
 - Webhook applies numeric reply to MOST RECENT pending row -- table is clean now; any

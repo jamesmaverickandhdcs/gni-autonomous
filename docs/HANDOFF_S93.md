@@ -52,7 +52,7 @@ in three places: this LOAD CHECK, the order's CHANGED section, and the ARCHITECT
 | Do the 36 hidden assertions PASS? | never run | `python -m pytest ai_engine/tests/` LOCALLY first |
 | Why does `dryrun_two_account_split.py` exit 1? | not ZeroDivisionError; repo ROOT, not `tests/` | unread |
 | What does PROBE-DRIFT actually test? | S57-era records only | recover; clock stopped |
-| `LR-101` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
+| `GNI-L-015` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
 | Do `frequency_log` (348) and `reports` (199) still disagree on 2026-06-22? | 6.1 vs 5.0 | ROOT 6 |
 | Is the grounding-shadow 9x swing real or an artefact? | n=2 | 7.4, harvest the span |
 | What is the CURRENT lateness band? | S92's figure, not re-measured | measure, never recall |

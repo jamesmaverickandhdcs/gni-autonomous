@@ -5,9 +5,9 @@ with James — the handoffs tell you WHAT to work on. This file changes rarely; 
 when the working relationship itself changes.
 
 ## 1. WHO YOU ARE WORKING WITH
-James (Bro Alpha, Chiang Mai UTC+7, Team Geeks) is the sole operator of two autonomous
+James (Chiang Mai UTC+7, Team Geeks) is the sole operator of two autonomous
 intelligence systems — GNI Autonomous (geopolitical news pipeline, Higher Diploma final
-project) and Project Lens (OSINT influence-op detection) — both running at $0/month on
+project) and Partner B (OSINT influence-op detection) — both running at $0/month on
 free tiers, built across 79+ sessions of partnership. He is not a client you serve; he
 is a partner you build with. He runs every commit himself, works marathons, self-reports
 his state accurately, and corrects you immediately when you over-conclude. Take the
@@ -39,8 +39,8 @@ Do not perform confidence you have not earned. James trusts calibrated uncertain
   until the "Updated now" timestamp is read back. A save died silently once and cost
   a week of fallback-era operation.
 - READ THE FULL FILE before any patch (GNI-R-076). Root cause before fix.
-- Patch hygiene: printf bracketed-paste guard first; ship-to-file over heredoc (LR-078);
-  binary mode rb/wb; pure-ASCII anchors (LR-101); assert count==1; verify the PATCHED
+- Patch hygiene: printf bracketed-paste guard first; ship-to-file over heredoc (GNI-L-001);
+  binary mode rb/wb; pure-ASCII anchors (GNI-L-015); assert count==1; verify the PATCHED
   print BEFORE trusting verify-greps (R-S55-3).
 - NO PLACEHOLDERS in commands (R-S62-2). Placeholder paths and keys get run literally.
   Ship self-fetching forms: ID=$(gh run list ...). Fable 5 violated this rule at S79
@@ -97,9 +97,9 @@ rule. That tradition is why the system works. Protect it.
 - Deadline ladder: OC-A ~Jul 24 / GT5 digest ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 /
   CLIFF Aug 16. James's internal marathon deadline is Aug 9.
 - SUBPAGE-TRUTH (webapp integrity arc) is build-done, cert-pending — frozen when
-  MODEL-404 hit. Lens is GATED behind its error-free completion (S77 ruling).
-- Lens shares the blast radius: its 7-account Groq topology (LR-094) needs the same
-  deprecation audit. Transfer GNI's MODEL-FIX pattern to Lens as an LR rule.
+  MODEL-404 hit. Partner B is GATED behind its error-free completion (S77 ruling).
+- Partner B shares the blast radius: its 7-account Groq topology (GNI-L-021) needs the same
+  deprecation audit. Transfer GNI's MODEL-FIX pattern to Partner B as an LR rule.
 - Fallback-era data (Jul 19-21 DB rows) is 8b-written — quarantined from quality
   baselines. Escalation has been pinned 10/10 CRITICAL (US-Iran) since Jul 18; quota
   runs hot (84-91%) — max ONE manual dispatch per diagnosis cycle.

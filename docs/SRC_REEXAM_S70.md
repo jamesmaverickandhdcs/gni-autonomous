@@ -1,19 +1,19 @@
 # SRC RE-EXAM REGISTER — S70 (2026-07-16) — v2 COMPLETE (42/42, zero MISSING)
 Purpose: unfreeze the Mar 23 democracy-threshold policy — every live source re-examined,
-one documented row each (LR-038 discipline). Read-only arc; roster/tier changes ship separately.
+one documented row each (GNI-L-029 discipline). Read-only arc; roster/tier changes ship separately.
 
 ## POLICY (lineage: Mar 23 2026, James: "it has to be"; recalled Apr 6)
 Six equal criteria: ownership independence / editorial freedom / authoritarian-govt criticism /
 human-rights coverage / press-freedom-index standing / editorial transparency.
 Threshold: >=50 to remain admitted (admission-time process by design; runtime display-only correct).
-Pillar quota: GEO 60 / TECH 20 / FIN 20. NN-PHI-6: GNI filters to protect (Lens exposes — deliberate).
+Pillar quota: GEO 60 / TECH 20 / FIN 20. NN-PHI-6: GNI filters to protect (Partner B exposes — deliberate).
 
 ## HEADLINE VERDICTS
 1. **THRESHOLD: 42/42 PASS.** Lowest: Eye on the Arctic 55, USNI 55, Fox News World 60. The Mar 23
    policy is intact in practice — nothing below the line.
 2. **FOX NEWS WORLD RESOLVED: KEEP.** Scored 60 in bytes (Western Conservative) — above threshold.
    Predecessor "Fox News" (domestic) exited at 49 (Mar 23); World desk re-scored as distinct source
-   at re-admission (followed Lens usage, James confirmed S70). Ritual satisfied; bytes are the record.
+   at re-admission (followed Partner B usage, James confirmed S70). Ritual satisfied; bytes are the record.
    TIER3/0pts stands as reasonable for 60. Residue: fossil "fox news" 0.9 in DEFAULT_WEIGHTS +
    soft-zeroed "fox news" DB row -> purge in SRC-INTEGRITY dedupe.
 3. **PILLAR QUOTA DRIFT (real policy deviation):** actual GEO 31/42=74%, FIN 5/42=12%, TECH 6/42=14%

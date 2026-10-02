@@ -53,7 +53,7 @@ NOT here — it is `GNI_ARCHITECTURE_S92.md` section 11. One finding, one home.
 | Do the 42 `__main__` selftests work? | never run | S93's mission |
 | Why does `dryrun_two_account_split.py` exit 1? | not ZeroDivisionError | unread |
 | What does PROBE-DRIFT actually test? | S57-era records only | recover; clock stopped |
-| `LR-101` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
+| `GNI-L-015` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
 | Why do `frequency_log` (348) and `reports` (199) disagree on 2026-06-22? | 6.1 vs 5.0 | ROOT 6 |
 | Is `limit(1000)` enough as the table grows? | 348 now; no guard | R-S92-2 says relation, not count |
 | rho (findings in / items closed) across generations | never measured | S93, one grep |

@@ -10,25 +10,25 @@
 
 **GNI-R-242** — A Fix Is a Hypothesis Until Verified: No fix is "done" until verified against regenerated output or live data. Test-clean (compiles, passes self-test, no crash) is NOT proven-working (actually catches/produces the intended result in production). State fixes as test-clean-but-prod-pending until live data confirms. (S40: flatline check never fired <4 reports; workflow alerts untested on real failure; published_at confirmed only after a post-fix run.)
 
-## LR Rules (Lessons Learned)
+## GNI-L Rules (Lessons Learned)
 
-**LR-078** — Ship-to-file patch over bash heredoc: Git Bash corrupts heredocs with bracketed paste. Always write patches to /tmp/*.py files and run with python /tmp/patch.py.
+**GNI-L-001** — Ship-to-file patch over bash heredoc: Git Bash corrupts heredocs with bracketed paste. Always write patches to /tmp/*.py files and run with python /tmp/patch.py.
 
-**LR-091** — Naming consistency check required: Before any integration commit involving new env vars or DB column names, grep all files that read those names and verify exact string match. The 343-hour Telegram webhook darkness (SUPABASE_SERVICE_ROLE_KEY vs SUPABASE_SERVICE_KEY) is the permanent reminder — one wrong character = silent failure for weeks.
+**GNI-L-002** — Naming consistency check required: Before any integration commit involving new env vars or DB column names, grep all files that read those names and verify exact string match. The 343-hour Telegram webhook darkness (SUPABASE_SERVICE_ROLE_KEY vs SUPABASE_SERVICE_KEY) is the permanent reminder — one wrong character = silent failure for weeks.
 
-**LR-092** — py_compile ALL modified .py files before commit.
+**GNI-L-003** — py_compile ALL modified .py files before commit.
 
-**LR-095** — HTTP error: always check r.text[:200] first, never diagnose from status code alone.
+**GNI-L-004** — HTTP error: always check r.text[:200] first, never diagnose from status code alone.
 
-**LR-096** — Never dump raw DB blob columns >1000 chars into AI prompts.
+**GNI-L-005** — Never dump raw DB blob columns >1000 chars into AI prompts.
 
-**LR-098** — When removing pip package: grep code/ for imports first across ALL files, not just one.
-**LR-102** — Confidence is a signal to slow down, not speed up: When a task feels familiar or a fix feels obvious, treat that feeling as the trigger to read the full file / trace the data first — not as permission to skip BEV. "I know this" is not evidence. (S40: guessed a table name, guessed where GNI-R-228 lived, reconstructed file content from memory, assumed the next-free rule number — every time, the actual read corrected it.)
-**LR-103** — Real data over constructed tests: A test you wrote proves the code does what you IMAGINED; only real, un-curated input proves it does what the world NEEDS. When validating, include at least one live example (real headline, real input), not only cases designed to pass. (S40: entity_extractor passed 8/8 constructed but real headlines "Japan's"/"Lebanon's" instantly exposed a possessive bug -- the constructed tests never used a possessive.)
-**LR-104** — Rank work by blast radius, not just possibility: Before building, sort candidate tasks by risk -- schema/production changes = highest (hold for fresh focus + SQL-before-code); config/standalone modules = safe. Energy or enthusiasm is never a reason to do the riskiest thing at the tail of a long session. (S40: built new sources + standalone modules safely; deliberately held B3 schema-wiring for a fresh session.)
-**LR-105** — Protect the future of the work over the momentum of the moment: Never make a failing check pass cosmetically. Revert to the honest proven state and log the real finding loud. A codebase must never lie about what it can do. (S40: a real-headline test found a genuine bug at 8/10 -- reverted to honest 8/8 + logged the bug for a proper fix rather than papering it green.)
+**GNI-L-006** — When removing pip package: grep code/ for imports first across ALL files, not just one.
+**GNI-L-007** — Confidence is a signal to slow down, not speed up: When a task feels familiar or a fix feels obvious, treat that feeling as the trigger to read the full file / trace the data first — not as permission to skip BEV. "I know this" is not evidence. (S40: guessed a table name, guessed where GNI-R-228 lived, reconstructed file content from memory, assumed the next-free rule number — every time, the actual read corrected it.)
+**GNI-L-008** — Real data over constructed tests: A test you wrote proves the code does what you IMAGINED; only real, un-curated input proves it does what the world NEEDS. When validating, include at least one live example (real headline, real input), not only cases designed to pass. (S40: entity_extractor passed 8/8 constructed but real headlines "Japan's"/"Lebanon's" instantly exposed a possessive bug -- the constructed tests never used a possessive.)
+**GNI-L-009** — Rank work by blast radius, not just possibility: Before building, sort candidate tasks by risk -- schema/production changes = highest (hold for fresh focus + SQL-before-code); config/standalone modules = safe. Energy or enthusiasm is never a reason to do the riskiest thing at the tail of a long session. (S40: built new sources + standalone modules safely; deliberately held B3 schema-wiring for a fresh session.)
+**GNI-L-010** — Protect the future of the work over the momentum of the moment: Never make a failing check pass cosmetically. Revert to the honest proven state and log the real finding loud. A codebase must never lie about what it can do. (S40: a real-headline test found a genuine bug at 8/10 -- reverted to honest 8/8 + logged the bug for a proper fix rather than papering it green.)
 
-**LR-099** — Philosophy Compatibility Gate: When Claude reads a finalized philosophy document AND has access to the implementation codebase, Claude must perform a compatibility audit unprompted. Map each non-negotiable principle to its code implementation. Any gap found must be surfaced immediately. Full context visibility = full audit responsibility. Reference: phi_compatibility_check.md in repo root.
+**GNI-L-011** — Philosophy Compatibility Gate: When Claude reads a finalized philosophy document AND has access to the implementation codebase, Claude must perform a compatibility audit unprompted. Map each non-negotiable principle to its code implementation. Any gap found must be surfaced immediately. Full context visibility = full audit responsibility. Reference: phi_compatibility_check.md in repo root.
 
 ## PHI-003 Non-Negotiables (Quick Reference)
 
@@ -42,7 +42,7 @@
 
 Last updated: May 24, 2026 — GNI S36
 
-## LR-106 -- LLM JSON parsers must guarantee dict-or-None
+## GNI-L-012 -- LLM JSON parsers must guarantee dict-or-None
 Any function parsing LLM JSON output (e.g. _parse_json_response) MUST coerce the
 result to dict-or-None before returning. LLMs intermittently wrap the report in an
 array [{...}]; json.loads then returns a list and downstream .get() crashes ('list'
@@ -50,12 +50,12 @@ object has no attribute 'get'). Unwrap single-object lists to the dict; return N
 for [] or non-dict arrays. Root-caused from Jun 7 Intelligence #210 (the only failure
 in 9 autonomous days). Fix: commit a15bcc0.
 
-## LR-107 -- A brief-claimed bug is a hypothesis, not a fact
+## GNI-L-013 -- A brief-claimed bug is a hypothesis, not a fact
 A bug asserted in a prior session's brief (or by anyone) is unverified until reproduced
 against live execution. S42 had TWO false ones: the S41 "URGENT" possessive bug (a test
 artifact from heredoc apostrophe-stripping) and the initial "Sunday digest mutates shared
 state" theory for #210 (the code shared no state; real cause was list-shaped JSON). Verify
-before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / LR-102.
+before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / GNI-L-007.
 
 - **R-S55-1 - Sibling sweep:** when a bug is found in ONE consumer of a shared route/field, grep ALL consumers before closing the arc. (The 4th false-185% sibling on /about/devops sat undiscovered for 2 sessions.)
 - **R-S55-2 - Widen the fossil grep:** after any fossil is found, generalize its pattern before declaring the class swept. (The "02:00" grep missed the ":30" MAD variants.)
@@ -207,7 +207,7 @@ R-S79-1: Browser-UI steps are not executable in this partnership — every actio
   command; config writes go through gh CLI with byte receipts (gh secret list before/after). Never
   ship a gated command block in the same message as its gate. (S78's dispatch mistake repeated at S79.)
 R-S79-2: A deprecation list proves the list, not the runtime. Grep live logs before declaring a
-  component dead or alive. (Lens-1 served HTTP 200 all week with a "shut down" model configured;
+  component dead or alive. (Partner B-1 served HTTP 200 all week with a "shut down" model configured;
   MAD's byte-level comment beat a remembered search claiming gpt-oss adoption.)
 R-S80-1: Binary patch anchors derive NL from the target file's own bytes (repo mixes LF and
   CRLF per file). A patch script that dies mid-sequence has written NOTHING — verify which
@@ -232,28 +232,28 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   a budget must log what was INCLUDED against what was AVAILABLE. A guard that tests the fetched
   list passes whenever the fetch succeeds, and cannot detect its own starvation. Zero inclusion
   of a required input is a FAILURE, not a quiet loop break. Corollary: a failure that grows with
-  upstream health does not look like a failure. Mirrors Lens LR-141, adopted by reference;
+  upstream health does not look like a failure. Mirrors a Partner B rule, adopted by reference;
   GNI's own evidence pending the ROOT 1 audit.
 
 - R-S81-3 (Absolute allotments, never leftover budgeting): No consumer's share may be defined by
   what another consumer left over. Each tier gets an absolute allotment measured exclusive of
   every other tier; a total cap may exist as a backstop but must not be the allocator. When a
   tier drops content, log WHICH item was dropped by name — a count says the tier shrank, a name
-  says which perspective was lost. Mirrors Lens's Mission Analyst finding.
+  says which perspective was lost. Mirrors Partner B's Mission Analyst finding.
 
 - R-S81-4 (One load-bearing block per message; rollbacks never travel with applies): When a
   message contains a patch block, multi-block pastes get PARTIALLY executed — a commit block can
   run while its patch block does not, committing nothing and looking like success. And a rollback
   command sitting in the same message WILL eventually be pasted along with everything else.
   Offer recovery separately, on request, only after the apply is verified. Assume any block may
-  run twice, out of order, or not at all. Mirrors Lens LR-140.
+  run twice, out of order, or not at all. Mirrors a Partner B rule.
 
 - R-S81-5 (A guard's expected value must be derived, not hand-counted): Any assertion whose
   expected number was counted by eye is a banked estimate living inside a tool built to stop
   banked estimates. Derive it from the same data the change is made from (sum the deltas across
   the edit list, do not count lines). Assert RELATIVE to the file's state read at the start of
   the patch, never absolutely — a hardcoded "this file must be LF" starts failing on files
-  nobody touched the first time autocrlf converts them. Extends R-S80-1. Mirrors Lens LR-139.
+  nobody touched the first time autocrlf converts them. Extends R-S80-1. Mirrors a Partner B rule.
 
 - R-S81-6 (Grep the agreement, not the message): `git log --stat` proves message-vs-contents. It
   cannot prove contents-vs-agreement. Before committing a change agreed in conversation, grep ONE
@@ -261,7 +261,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   element did not land. The phrase must be unique by construction — a commit SHA proves nothing
   because SHAs legitimately recur in a document. Presence alone is not enough: assert UNIQUENESS
   whenever an ordered list gains an item. The trap stated plainly: producing text in conversation
-  FEELS like shipping it, and the same illusion works on the reader. Mirrors Lens LR-138.
+  FEELS like shipping it, and the same illusion works on the reader. Mirrors a Partner B rule.
 
 - R-S81-7 (Record requested time and observed time separately): The trap book recorded when crons
   FIRED and called it the schedule. YAML holds the request; run history holds reality; the delay
@@ -275,7 +275,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   x-ratelimit headers, all per-MINUTE; there is NO daily token header, so TPD is observable only
   from a 429 body or the console, and a 404 carries no rate headers at all (so any pre-flight
   reading them fails open on a dead model name). Any reasoning of the form "the quota resets and
-  we start fresh" is reasoning about a fiction. Measured in Lens to the millisecond across seven
+  we start fresh" is reasoning about a fiction. Measured in Partner B to the millisecond across seven
   readings; adopted here by reference, and GNI's per-account-day reservation model is unaudited
   against it (order item 4.3).
 
@@ -296,7 +296,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   sibling tiers (constraint_block, R1, R2, R3, tail) that compete for the same budget --
   so when the arb prompt grows, the log will show articles shrinking without naming which
   tier ate the room, which is the very question the next item must answer. Corollary from
-  Lens: a measurement that FALSIFIES the instruction that requested it is a success, not a
+  Partner B: a measurement that FALSIFIES the instruction that requested it is a success, not a
   failed mission. Design for that outcome.
 
 - R-S82-3 (A stopgap never closes a root): Capacity freed by a stopgap flows wherever the
@@ -356,7 +356,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
 - R-S83-4 (A cert that measures mechanics has not certified the instrument): Passing on
   finish_reason, absence of 413s, absence of empties, and "the output arrived" proves the
   PLUMBING survived a change; it says nothing about whether what flows through the plumbing
-  is the same. Evidence from Project Lens: a July migration certified clean on mechanics, and
+  is the same. Evidence from Partner B: a July migration certified clean on mechanics, and
   three weeks later the same positions were extracting twice the actors and THREE TIMES the
   claims per row, while the headline consistency metric moved 0.834 -> 0.853 and hid it. GNI
   owns the same debt: the S80 MAD migration was certified on 413s and empties, and ROOT 2.3
@@ -369,31 +369,31 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   nothing ever compares them. Byte evidence: `sed -n '/PART D/,/PART E/p' | grep -c
   "Transfer_Protocol"` returned 0. GNI's CONTRACT cited the prompts by path since v5, the
   protocol file existed and was correct, and no artifact in the repo ever instructed anyone
-  to open it. Lens shipped the identical fix after discovering its pasted close prompt had
+  to open it. Partner B shipped the identical fix after discovering its pasted close prompt had
   silently lost two clauses present in the repo. Extends R-S82-4: sweeping templates when law
   changes is worthless if no template is ever read.
 
 - R-S83-6 (Flow discipline does not protect a stock): Rate limits, per-minute pacers and
   per-day reservations all govern a FLOW, and a system fluent in flow control can be entirely
   blind to accumulation. Storage only grows; nothing consumes it back; and its failure is not
-  a slow degradation but a hard refusal of every read at once. Project Lens ran sophisticated
+  a slow degradation but a hard refusal of every read at once. Partner B ran sophisticated
   token-per-minute and token-per-day governors while its database grew unmetered to 287% of a
   free-tier quota, and went fully offline for nineteen days. GNI_Autonomous has `quota_guard.py`
   and ZERO retention code -- `grep -rn "\.delete()"` returns nothing. For every free-tier
   resource, ask whether it is spent or ACCUMULATED, and meter the accumulated ones. Corollary
-  amending R-S81-6: read the METER, not the mail -- Lens missed two announcement emails a
+  amending R-S81-6: read the METER, not the mail -- Partner B missed two announcement emails a
   month apart and lost five positions to one and its whole database to the other.
 
 ## AMENDMENT TO AN EXISTING RULE (no new number -- R-S83 deliberately does not re-mint)
 
 - R-S81-3 (AMENDED 2026-08-24): the existing rule says a count tells you the tier shrank while
   a NAME tells you which perspective was lost. Amended: the count must be of DISTINCT IDENTITY,
-  not of rows. Project Lens's arrival check reported `s1=4/4` on a wave where all four rows
+  not of rows. Partner B's arrival check reported `s1=4/4` on a wave where all four rows
   were the same lens produced four times -- a perfect score over a single perspective. GNI's
   ARB-ARRIVAL has the identical blind spot: `arrived=20` counts lines beginning `'  - ['`, so
   fifteen geopolitical articles and five financial ones report exactly as four pillars would.
   Count the distinct category, then name the losses.
-  *(This is an amendment rather than R-S83-7 on purpose: Lens re-minted a rule it already held
+  *(This is an amendment rather than R-S83-7 on purpose: Partner B re-minted a rule it already held
   and paid for the duplicate. Before minting a number, search the register for the rule that
   already says it -- and search BOTH ID schemes, `GNI-R-###` and `R-S##-#`, since a grep for
   one is blind to the other.)*

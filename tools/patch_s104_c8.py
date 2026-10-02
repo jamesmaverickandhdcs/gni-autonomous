@@ -2,8 +2,8 @@
 """tools/patch_s104_c8.py - S104 item 5.54.
 
 The executable record of how these bytes changed. Two files, five edits, all
-anchored on text that exists exactly once. Binary mode throughout (LR-078);
-every anchor is pure ASCII (LR-101).
+anchored on text that exists exactly once. Binary mode throughout (GNI-L-001);
+every anchor is pure ASCII (GNI-L-015).
 
   gni_state.py         workflow_manifest() lifted out of main(), IMPORTABLE
   gni_rule_checks.py   live_snapshot_path, arch_stamps, three fingerprint

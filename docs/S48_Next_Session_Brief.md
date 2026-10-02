@@ -99,8 +99,8 @@ stale `PIPELINE_RESERVATIONS` comment math (still cites 7433).
 ## PENDING OFFERS (James can pick up anytime)
 - **Onboarding prompt set** (continuity-leak cure) -- complete prompt set so a fresh session
   boots into full context fast. Not drafted.
-- **Four Treasures -> Lens** -- `GNI_to_Lens_Four_Treasures.docx` BUILT; upload in next LENS
-  session, append to lens-DOC-002. Lens-side, not GNI.
+- **Four Treasures -> Partner B** -- `GNI_to_Partner B_Four_Treasures.docx` BUILT; upload in next Partner B
+  session, append to lens-DOC-002. Partner B-side, not GNI.
 
 ## OPERATOR CONTRACT REMINDERS (apply from message 1)
 - Warm informal ("my buddy") + strict rigor. Cut preamble, answer first. Lettered options
@@ -118,7 +118,7 @@ stale `PIPELINE_RESERVATIONS` comment math (still cites 7433).
 - **Single-line git commit messages** (multi-line invited bracketed-paste corruption in S47).
 - `printf '\e[?2004l'` before paste-heavy work. **Verify file BYTES (grep -n anchors) after
   any patch -- a success PRINT is not proof** (R-S47-3, the Patch-2 lesson).
-- LR-078 ship-to-file over heredoc. LR-101 ASCII anchors only. W2 py_compile before commit.
+- GNI-L-001 ship-to-file over heredoc. GNI-L-015 ASCII anchors only. W2 py_compile before commit.
 - Dry-runs offline/hermetic (`os.environ.setdefault('GROQ_API_KEY','test-dummy-key')`,
   `GITHUB_ACTIONS='true'`, monkeypatched client).
 - Schema changes = L2 (James approves + runs the SQL in Supabase).

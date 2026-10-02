@@ -1,5 +1,5 @@
 # GNI S53 -- Next Session Brief
-**Closed:** 2026-06-30 - Chiang Mai UTC+7 - Team Geeks / Bro Alpha - Claude Opus 4.8
+**Closed:** 2026-06-30 - Chiang Mai UTC+7 - Team Geeks - Claude Opus 4.8
 **Repo HEAD:** 8c08530
 
 ## COMMIT LEDGER (S53 -- 10 commits, all BEV-gated, James ran every commit)
@@ -70,7 +70,7 @@ TEST RESULT (with free API key; keyless failed IP-gated): scrapes BOTH AP + CNN 
 clean FRESH markdown (AP June-29 headlines; CNN "a min ago", NOT the 2023 archive-ghosts that
 removed it S43). Capability CONFIRMED. BUT: (a) result is front-page index not article bodies --
 real ingestion = 1 credit/article, ~1200/mo at production scale -> BREAKS $0 principle; (b) access-
-permitted != republish-permitted (AP is a licensing business); (c) GNI's own LENS project already
+permitted != republish-permitted (AP is a licensing business); (c) GNI's own Partner B project already
 solved AP/CNN via Google News RSS ($0, ToS-clean, public-index). VERDICT: for AP/CNN ingestion,
 Google News RSS is the better tool. Firecrawl's high-value GNI use = hallucination grounding gate
 (Search = verify-a-claim, low-call, ToS-clean). Free tier: 1000 credits/mo. [KEY ROTATED after
@@ -95,7 +95,7 @@ accidental exposure -- new key in James's terminal only, never in repo.]
 - When an audit reports a file-class to delete, sweep ALL siblings before the first delete.
 - Recount catches its own slip (test-dropped-from-commit, .bak wrong path, 4th analyze() caller,
   2nd legit "69", 4th analyze __main__ caller).
-- Cross-lab-evidence (LR-085): "check real-world apps + legal research first" turned a weak
+- Cross-lab-evidence (GNI-L-027): "check real-world apps + legal research first" turned a weak
   prompt-hunch hallucination fix into a NIST-framed layered design. Check the world before designing.
 - Deadline discipline: set internal deadline ONE WEEK ahead of a hard cliff (Aug 9 not Aug 16) --
   buffer = runway to fix a bad migration while the old model is still alive.

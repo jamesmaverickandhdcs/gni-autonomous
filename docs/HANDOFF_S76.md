@@ -48,7 +48,7 @@ RULES-APPEND closed `89f6007`. TRANS-COUNT-CERT still parked -- no post-8eed829 
 | D-11 | escalation recalibration SWOT (+ GATE-DESIGN) | POST-CLIFF | James | V(S74) |
 | DEAD-COLS | unread selects | leads | - | B |
 | J-RULINGS | J-4 probe, J-7 scorer (Aug 9); J-1 sunsets post-cliff | - | James | - |
-| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (Lens opener SOON, D-8 first) | unchanged | - | James | - |
+| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (Partner B opener SOON, D-8 first) | unchanged | - | James | - |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / K-CAND / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND / U-W / I-WATCH / A-VLOG / SRC-PHI / GT-6(banked) | unchanged | - | - | - |
 
 ## 4. UNKNOWNS (<=8 lines)
@@ -75,7 +75,7 @@ RULES-APPEND closed `89f6007`. TRANS-COUNT-CERT still parked -- no post-8eed829 
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `6db7267`+close commits TREE CLEAN -- CRED-PRIOR certified (0.5 prior), GPVS-NUMBERS certified (two systems; 43/48 new baseline), CRED-TOTAL = fossils, writer B stochastic never-fired
 TOP3 = RULES-APPEND (R-S76-1/2/3), TRANS-COUNT-CERT (first post-8eed829 Intelligence run), CRED-TOTAL-WATCH (writer B fire print)
-DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (L-CLIFF Lens opener SOON, D-8 first)
+DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (L-CLIFF Partner B opener SOON, D-8 first)
 TRAP = CRLF anchors (derive EOL); oracle grep 'Deduplication' not 'Stage 2:'; uniform-102 rows are fossils; 466 vs 111 both true
 FIRST MOVE = ls-remote + git status; then gh run list wf "GNI Intelligence Pipeline" -L1 -- any new ID is post-patch by construction
 

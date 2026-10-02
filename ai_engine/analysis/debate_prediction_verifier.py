@@ -13,7 +13,7 @@
 #          Thresholds mirror check_escalation_accuracy (GPVS v1.1) bands.
 #          This is a PROXY: prose threats are not purely directional; the
 #          method name is stored so the UI can say what kind of verdict it is.
-# Safety:  DRY-RUN by default (LR-105 pattern) -- prints every verdict,
+# Safety:  DRY-RUN by default (GNI-L-010 pattern) -- prints every verdict,
 #          writes NOTHING until --apply. Schema-adaptive updates: reads one
 #          live row first and only writes columns that actually exist.
 # Run:     python ai_engine/analysis/debate_prediction_verifier.py --inspect

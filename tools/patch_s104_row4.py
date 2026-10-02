@@ -10,7 +10,7 @@ parsed as an integer -- so this runs correctly whether or not the close has
 already renamed the file. Lines are located by unique PREFIX and replaced
 whole, so a 1,300-character anchor never has to be transcribed by hand.
 
-Binary mode throughout (LR-078). Run from the repo root:
+Binary mode throughout (GNI-L-001). Run from the repo root:
     python tools/patch_s104_row4.py
 Refuses and changes nothing unless every anchor matches exactly once.
 """

@@ -11,7 +11,7 @@ L2 MAD: `228634c` certified at S86; ROOT 1 closing, 1.11 open. Boundary now pinn
 L3 GPVS: untouched, six sessions running. L4 Quota: C1's real bill STILL unread since Jul 27.
 L5 Public: publishes CRITICAL 10.0 every run while the instrument computed 19. `/debate`
   still publishes R1; F14 unresolved; "4 pipelines" wrong in 6 places.
-STORAGE: 113/500 MB — **shared with Project Lens** (four `lens_*` tables in the same project),
+STORAGE: 113/500 MB — **shared with Partner B** (four `lens_*` tables in the same project),
   so every runway figure includes another system's growth. Backup: NONE.
 SCHEDULE: free-tier lateness is a measured PROPERTY, not an event (R-S87-6). Count by RUN ID.
   Pipeline and MAD drift independently; spacing was 13 min on Aug 28 against 30 by design.
@@ -50,7 +50,7 @@ NEXT SESSION'S MISSION is declared at the top of that file.
 | What is the VALUE of `GROQ_MODEL_FALLBACK`? | never read | do not wire before reading |
 | Does 2.1's clause 2 (LABELED coverage) trigger B? | unmeasured | the only thing keeping 2.1 open |
 | C1's real token bill | unmeasured since Jul 27 | the `groq_quota` TELEGRAM line |
-| How much of the 113 MB is Lens, not GNI? | never split | 6.6 |
+| How much of the 113 MB is Partner B, not GNI? | never split | 6.6 |
 | Do S69 flags F2/F3/F8/F9/F12-F15 still fire live? | unaudited since Jul | 9.5 |
 
 ## 5. WRONG THIS SESSION (<=6 lines)

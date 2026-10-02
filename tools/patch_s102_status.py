@@ -1,6 +1,6 @@
 # S102 (reopened at close) -- the roadmap 2 STATUS table has been the S98 table
 # for four closes. Item 5.46. Re-run today: rows 2 and 3 hold, row 4 is the only
-# one left and it names its own fix. Pure ASCII source (LR-101); the section
+# one left and it names its own fix. Pure ASCII source (GNI-L-015); the section
 # sign is a byte constant.
 import hashlib, sys
 P = 'docs/GNI_ARCHITECTURE_S102.md'

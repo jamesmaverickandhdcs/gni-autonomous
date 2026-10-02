@@ -38,7 +38,7 @@ FT-GAP-A -> SRC-INTEGRITY -> FT-GAP-B -> DET-DEAD). All findings byte-verified S
 
 ## PHILOSOPHY VERDICT (the "upgrade?" question James asked)
 - NN-PHI-2 PASS: weights learn from outcomes, never sentiment. No direction filtering.
-- NN-PHI-6 PASS: filter-to-protect is GNI's deliberate side of the May 26 GNI/Lens divergence.
+- NN-PHI-6 PASS: filter-to-protect is GNI's deliberate side of the May 26 GNI/Partner B divergence.
 - NN-PHI-1 GAP (real): source trust learns EXCLUSIVELY from market-direction correctness
   (direction_correct_3d) — "markets are one lens, not the purpose." The S35/36 GPVS
   human-security track never reached the weight formula. -> banked as SRC-PHI (B option),

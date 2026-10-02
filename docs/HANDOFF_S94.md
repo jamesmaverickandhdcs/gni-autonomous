@@ -55,7 +55,7 @@ order's CHANGED section, and the ARCHITECTURE table.
 | Do the 36 hidden assertions PASS? | never run | `python -m pytest ai_engine/tests/` LOCALLY |
 | Why does `dryrun_two_account_split.py` exit 1? | not ZeroDivisionError | unread |
 | What does PROBE-DRIFT actually test? | S57-era records only | recover; clock stopped |
-| `LR-101` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
+| `GNI-L-015` / `GNI-R-122` original text | cited as law, unfound | conversation_search |
 | Do `frequency_log` (348) and `reports` (199) still disagree on 2026-06-22? | 6.1 vs 5.0 | ROOT 6 |
 | Is the grounding-shadow 9x swing real? | n=2 | 7.4, harvest the span |
 | Is the lateness band stable, or drifting? | n=9, one 4-day window | 6.10, widen the window |

@@ -279,7 +279,7 @@ target-bearing, not housekeeping.
   `docs/gni_runtime_snapshot_S99.json` is 182,578 bytes and section 6 is regenerated every close,
   so one lands per session. That is deliberate - the snapshot IS the evidence and must be in the
   tree for the byte-identity test - but nothing says when an old one may go. Kin of **6.5** and of
-  the Lens retention lesson: a stock grows, a flow does not. Decide the policy before there are
+  the Partner B retention lesson: a stock grows, a flow does not. Decide the policy before there are
   twenty.
 - **5.30** OPEN (S98) [MEASURED] - COR. `_fetch_relevant_articles` returns an empty pool from
   three places and `run_mad_protocol` divides by its size. Written fail-open, behaves fail-hard.
@@ -462,7 +462,7 @@ and a paragraph is something a close can read and postpone.
   `DANGLING-LAW` at this close, which records the fact without asserting a home it does not have.
 - **5.55** **NEW (S103)** [MEASURED] - PRE - **NO CHECK WATCHES THE ORDER-ITEM NUMBERS THAT LIVE
   DOCUMENTS CITE.** `C1` verifies that every RULE id cited by a live document is registered, by the
-  four id schemes `R-S##-#`, `LR-###`, `GNI-R-###` and `NN-PHI-*`. Order item numbers are a fifth
+  four id schemes `R-S##-#`, `GNI-L-###`, `GNI-R-###` and `NN-PHI-*`. Order item numbers are a fifth
   scheme and are checked by nothing. This is load-bearing as of this close: row four of roadmap 2's
   completion test, inside `GNI_ARCHITECTURE`, cites item **5.54** by number, and that number was
   chosen at the S103 close before this file existed. If the number had drifted, the architecture

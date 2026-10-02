@@ -2,7 +2,7 @@
 # Creates docs/GNI_ARCHITECTURE_S102.md from S101's bytes. S101 is NEVER
 # touched: freezing it keeps S102-F1 (the macro map's stale ARCHITECTURE
 # stamp) reproducible instead of erasing the evidence with a regeneration.
-# Pure ASCII source (LR-101); the em dash is a byte constant.
+# Pure ASCII source (GNI-L-015); the em dash is a byte constant.
 import hashlib, os, sys
 
 SRC = 'docs/GNI_ARCHITECTURE_S101.md'

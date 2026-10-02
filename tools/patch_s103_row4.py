@@ -5,8 +5,8 @@ Updates roadmap 2's completion-test status table in the LIVE architecture from
 BYTES: what S103 closed, what it did not, and the reason roadmap 2 is not four
 of four (DECISION S103-1).
 
-Pure ASCII source; the section sign is a byte constant (LR-101 discipline, and
-the shape S102's own patches used). Binary mode throughout (LR-078). Every
+Pure ASCII source; the section sign is a byte constant (GNI-L-015 discipline, and
+the shape S102's own patches used). Binary mode throughout (GNI-L-001). Every
 anchor must match exactly once or nothing is written (R-S95-1). Re-running is
 refused rather than duplicated.
 

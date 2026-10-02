@@ -5,7 +5,7 @@ Widens C6 from "the register's INPUT line" to "EVERY INPUT line the map
 declares", adds a third control probe, and adds three fixture families.
 
 DISCIPLINE THIS SCRIPT HONOURS:
-  LR-078   binary mode throughout; ship-to-file, never a heredoc.
+  GNI-L-001   binary mode throughout; ship-to-file, never a heredoc.
   R-S95-1  every verification is computed BEFORE the write, not after.
   R-S81-5  the C5 self-lint is REPRODUCED here against the new source, so a
            patch that would make the detector fail itself never gets written.

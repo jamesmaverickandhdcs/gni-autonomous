@@ -30,7 +30,7 @@ Files read in full this session (ground truth, ~90-95% trust):
 - `gni_mad.yml` -- key injected at step-level `env: GROQ_API_KEY`. Cron `43 2` + `43 10` UTC
   CONFIRMED matching the doc (my earlier S46-doc-vs-runs worry was a FALSE ALARM -- the
   off-schedule runs were workflow_dispatch/heartbeat, not the scheduled crons).
-- `quota_guard.py` -- `get_today_usage()` summed ALL rows unfiltered (LENS-010 shape, no
+- `quota_guard.py` -- `get_today_usage()` summed ALL rows unfiltered (Partner B shape, no
   account dimension). `check_quota('gni_mad', sacred=False)` -> non-sacred path ->
   `needed = 7433 + 15000 = 22433`. THIS (not the stale number alone) is why the 15:37
   block fired: the gate checks against a stale estimate, runs the real ~58-63K anyway, and
@@ -47,7 +47,7 @@ is the stale-estimate-vs-real-cost gap, not the number in isolation. Reset-to-ze
 ### 4. James's L2 decisions (gated, James decided)
 - Q1: manual workflow_dispatch uses the MORNING key (accepted; real 10:43 cron is the test).
 - Q2: column `account`, values **'morning' / 'evening'** (NOT 'primary'/'evening').
-- Account B = `GROQ_MAD_EVENING`, genuinely separate Gmail account (LENS-010 trap cleared).
+- Account B = `GROQ_MAD_EVENING`, genuinely separate Gmail account (Partner B trap cleared).
 
 ### 5. THE BUILD (three files, surgical anchored patches)
 Shipped as `668abeb` (commit msg single-line to dodge bracketed-paste; em-dash -> `--`):

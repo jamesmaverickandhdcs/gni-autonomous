@@ -39,7 +39,7 @@ New rules appended to GNI_RULES.md: R-S67-1, R-S67-2
 | FT-GAP-B | cadence-ranked pool pick (C3 pool[0]). Data source: health history vs static field | after A proves | James | B |
 | GT-3 | shared entities.py (sensor KNOWN_* + ALIAS_GROUPS + G-GAP-1 lowercase pass, anti-L-CLIFF). LAST shifter | after FT-GAP-A window | James | B |
 | GT-4 | 3-5 digests post-`19d2b10`; expect high-precision residue; THEN GT-5 enforce decision | passive | James (GT-5) | - |
-| L-CLIFF | Aug 16 cliff, 34d; quota 93/95%. Lens opener SOON | Lens session | James | V(scope) |
+| L-CLIFF | Aug 16 cliff, 34d; quota 93/95%. Partner B opener SOON | Partner B session | James | V(scope) |
 | SAN-DEAD | design fresh: score pre-sanitized text vs neutral forms | read sanitize L1108 region | James | V(diagnosis) |
 | CENSUS-2 | +evidence: trace kw cap=3 censors stats (R-S67-2) | extend scratch | - | V(design) |
 | K-CAND | 'who' noise / strike* polysemy / 1-kw threshold -> GT-4 review | - | James | B |
@@ -54,7 +54,7 @@ New rules appended to GNI_RULES.md: R-S67-1, R-S67-2
 | NYT first run as named primary + dashboard rename cosmetics | 90% self-heals | TRACE-READ browser |
 | health monitor reaction to promoted slot (fresh history) | 80% cosmetic | 1-2 runs |
 | Stimson browser-load (bot-wall vs removed) | 85% bot-wall | James 10s, epitaph only |
-| GROQ secret values (GNI 4 + Lens 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
+| GROQ secret values (GNI 4 + Partner B 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
 
 ## 5. TRAPS (<=8 lines)
 - DIRTY funnel file = RECENCY-DEAD by design: never `git restore`, never let it
@@ -69,7 +69,7 @@ New rules appended to GNI_RULES.md: R-S67-1, R-S67-2
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `a95bd67` + S67-close docs commits (ls-remote) + DIRTY TREE BY DESIGN: funnel file = uncommitted RECENCY-DEAD patch
 TOP3 = TRACE-READ (4 birds: K-WATCH #2 / GT-4 digest #1 / NYT verify / RECENCY gate), RECENCY-DEAD commit if clean, FT-GAP-A spec (strictly after RECENCY window)
-DEADLINE = OC-A ~Jul 24 / Aug 9 marathon (keyfile FIRST) / Groq cliff Aug 16 (L-CLIFF Lens session SOON, quota 93/95%)
+DEADLINE = OC-A ~Jul 24 / Aug 9 marathon (keyfile FIRST) / Groq cliff Aug 16 (L-CLIFF Partner B session SOON, quota 93/95%)
 TRAP = never restore/absorb the dirty funnel file; one shifter per window (RECENCY -> FT-GAP-A -> GT-3); GT-4 hit-drop = noise exiting, not integrity improving
 FIRST MOVE = ls-remote + git status (expect ONLY funnel modified); then James uploads 2 traces + digest screenshot + GH log SHA
 

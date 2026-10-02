@@ -19,7 +19,7 @@ GENERATED from `docs/GNI_RULES_S99.md` -- 176 CHECKABLE markers, register genera
 - bound to exactly one rule id: **167**
 - AMBIGUOUS (one id claimed by several markers, 9 markers over 3 ids): **9**
 - bound to no rule at all: **0**
-- placeable on X: **147** rules across **44** sessions (S54-S99); NOT placeable: **20** (`GNI-R-###`, `LR-###`, `NN-PHI-*` carry no session)
+- placeable on X: **147** rules across **44** sessions (S54-S99); NOT placeable: **20** (`GNI-R-###`, `GNI-L-###`, `NN-PHI-*` carry no session)
 - Y: **2** of the **46** sessions on this axis name a layer
 
 ## THE SERIES
@@ -91,17 +91,17 @@ and it is not a zero.
 | `GNI-R-240` | yes | GNI_RULES_S99.md:291 |
 | `GNI-R-241` | yes | GNI_RULES_S99.md:294 |
 | `GNI-R-242` | no | GNI_RULES_S99.md:297 |
-| `LR-078` | no | GNI_RULES_S99.md:302 |
-| `LR-091` | yes | GNI_RULES_S99.md:305 |
-| `LR-092` | yes | GNI_RULES_S99.md:308 |
-| `LR-095` | no | GNI_RULES_S99.md:311 |
-| `LR-096` | no | GNI_RULES_S99.md:314 |
-| `LR-098` | yes | GNI_RULES_S99.md:317 |
-| `LR-099` | no | GNI_RULES_S99.md:328 |
-| `LR-102` | no | GNI_RULES_S99.md:319 |
-| `LR-103` | no | GNI_RULES_S99.md:321 |
-| `LR-104` | no | GNI_RULES_S99.md:323 |
-| `LR-105` | no | GNI_RULES_S99.md:325 |
+| `GNI-L-001` | no | GNI_RULES_S99.md:302 |
+| `GNI-L-002` | yes | GNI_RULES_S99.md:305 |
+| `GNI-L-003` | yes | GNI_RULES_S99.md:308 |
+| `GNI-L-004` | no | GNI_RULES_S99.md:311 |
+| `GNI-L-005` | no | GNI_RULES_S99.md:314 |
+| `GNI-L-006` | yes | GNI_RULES_S99.md:317 |
+| `GNI-L-011` | no | GNI_RULES_S99.md:328 |
+| `GNI-L-007` | no | GNI_RULES_S99.md:319 |
+| `GNI-L-008` | no | GNI_RULES_S99.md:321 |
+| `GNI-L-009` | no | GNI_RULES_S99.md:323 |
+| `GNI-L-010` | no | GNI_RULES_S99.md:325 |
 | `NN-PHI-1` | no | GNI_RULES_S99.md:333 |
 | `NN-PHI-2` | no | GNI_RULES_S99.md:335 |
 | `NN-PHI-3` | no | GNI_RULES_S99.md:337 |

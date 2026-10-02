@@ -102,7 +102,7 @@ already-solved problem. It addresses the half of the S69 finding that was never 
 | file | who writes it | why |
 |---|---|---|
 | `docs/GNI_ORIGIN.md` | human, append-only, PAST TENSE only | the five steps. Never regenerated. A record of the past cannot go stale; a description of the present always does. |
-| `docs/GNI_GLOSSARY_S<N>.md` | human for names, DERIVED for check/metric rows | six groups: id namespaces (`GNI-R-###`, `R-S##-#`, `LR-###`, `C#`, `#.#`, `S##`) · session index · checks · defect names (DET-DEAD, DEGRADE-SILENT, SUBPAGE-IC) · procedures (BEV, LOAD CHECK, cert, fixture family, control probe) · metrics (rho, lambda, mu, Z, COVERAGE) |
+| `docs/GNI_GLOSSARY_S<N>.md` | human for names, DERIVED for check/metric rows | six groups: id namespaces (`GNI-R-###`, `R-S##-#`, `GNI-L-###`, `C#`, `#.#`, `S##`) · session index · checks · defect names (DET-DEAD, DEGRADE-SILENT, SUBPAGE-IC) · procedures (BEV, LOAD CHECK, cert, fixture family, control probe) · metrics (rho, lambda, mu, Z, COVERAGE) |
 | `docs/GNI_CLAIMS_S<N>.md` | claim text human + append-only; **STATUS DERIVED, never typed** | every promise GNI makes about itself, its source `file:line`, its fitness function or an explicit `UNMEASURED` |
 
 **Hard rule for the claims file:** `C5` already forbids a check from carrying a hand-written

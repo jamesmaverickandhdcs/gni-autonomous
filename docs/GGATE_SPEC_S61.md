@@ -84,7 +84,7 @@ env/secrets blocks it needs — Supabase URL/key + Telegram token only).
 - Shadow only: zero behavior change to MAD output this build.
 - Windows Git Bash environment; James commits/pushes himself — produce files +
   the ALTER statement + a verification checklist, do NOT run git commands.
-- Pure-ASCII anchors in any str-replace patching (LR-101).
+- Pure-ASCII anchors in any str-replace patching (GNI-L-015).
 - Census-before-sweep (R-S59-1): grep every mad_quality_log insert site before
   assuming there is only one.
 - npm build untouched (Python-only change) — but note if any dashboard surface

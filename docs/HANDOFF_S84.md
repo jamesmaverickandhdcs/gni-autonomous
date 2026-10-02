@@ -28,7 +28,7 @@ Target declared: TRUTHFULNESS OF OUTPUT (definition of done 1 of 4 PARTIAL, inst
 | Backup | NONE, 93 MB with no copy, while the sister project is offline | project page `LAST BACKUP: No backups` |
 | CASCADE | `pipeline_runs` is the ONLY retention lever; `reports` deletes ERROR on NO ACTION | full `pg_constraint` FK map |
 | Lineage | A 30-day cleanup was specified with numbers in March and never built | Sprint day-5 briefing, session records |
-| Org | Six projects, five paused, Lens in none; paused ones do not consume quota | org panel 113/500 == project page 0.11 GB |
+| Org | Six projects, five paused, Partner B in none; paused ones do not consume quota | org panel 113/500 == project page 0.11 GB |
 | Retire | 5.1, 5.2-CI, 5.3 closed as accepted; 5.2-grep promoted to 1.10 | order file |
 
 ## 3. ORDER

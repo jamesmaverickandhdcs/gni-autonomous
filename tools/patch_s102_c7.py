@@ -1,7 +1,7 @@
 # S102 / order item 6.12 -- C7 must ASK the tree whether the watcher still
 # stands down, instead of assuming it does. Without this the bound cannot
 # fall when the standdown is removed, and cannot rise if it is reinstated.
-# Binary mode (LR-078); EOL detected, never assumed.
+# Binary mode (GNI-L-001); EOL detected, never assumed.
 import hashlib, sys
 
 P = 'tools/gni_rule_checks.py'

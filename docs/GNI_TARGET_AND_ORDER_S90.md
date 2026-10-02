@@ -129,7 +129,7 @@ is designed, since 8.5 unblocks two ROOT 9 certs.*
   CONTRACT attributed to it is `GNI-R-037`'s own. The BIRD-EYE attribution is CONTESTED between
   `GNI-R-037` and `GNI-R-180` in the record, so CONTRACT v8 asserts NO id for it. Eight
   cited-but-unregistered IDs are now in `GNI_RULES_S90.md` PART 0; `R-S54-1..4` were recovered
-  verbatim. **RESIDUE: `LR-101` and `GNI-R-122` are still cited by live documents and their
+  verbatim. **RESIDUE: `GNI-L-015` and `GNI-R-122` are still cited by live documents and their
   original text has not been found. Do not restate them as law from inferred meaning.**
 - **9.7** **CLOSED (S90), CERTIFIED IN BROWSER.** The `levels` table on `/autonomy` reads
   `9–10 / 7–9 / 5–7 / 3–5 / 0–3` and the ring highlight sits on the matching row.
@@ -223,7 +223,7 @@ returns to the top the moment 8.5 is designed — 8.5 is the S91 mission.*
   again. Fix when the arbitrator file is next opened.
 
 ### ROOT 6 — FREE-TIER RESOURCES COME WITHOUT THE GUARANTEES AROUND THEM
-- **6.1** CLOSED (S84). **6.6** CLOSED (S89) — Lens runs on its own Supabase project.
+- **6.1** CLOSED (S84). **6.6** CLOSED (S89) — Partner B runs on its own Supabase project.
 - **6.2** DE-RANKED (S89). Runway ~550 days at 0.7 MB/day; the obvious deletion target is in
   the GRAVEYARD. What remains is a long-fuse question about what SHOULD age out.
 - **6.3** SIZE METER — RE-SPECIFIED (S89). Meter 113 MB vs 87 MB of tables: 26 MB (23%) is not
@@ -271,7 +271,7 @@ can act on it is the "decorative rank" generation 9 warned about.
 ### ROOT 3 — FALLBACK-ERA CONTAMINATION IN THE EVIDENCE BASE · IMPORTANT
 - **3.1** WIDENED (S86) — `conf = 0.5` exactly on Jun 11 and Jul 7; wider than Jul 19–22.
 - **3.2** `data_era` column + tagging. **Originally due ~Aug 2; now ~30 days overdue.** Recorded
-  so the age is visible, not re-ranked. **LR-104 binds: schema work needs a session opening, not
+  so the age is visible, not re-ranked. **GNI-L-009 binds: schema work needs a session opening, not
   a session tail** — S90 deferred it on exactly that ground and then broke the same rule ten
   minutes later on a credential (see R-S90-4).
 
@@ -322,7 +322,7 @@ can act on it is the "decorative rank" generation 9 warned about.
 ### LIFECYCLE + SECURITY — target-independent, deadline-driven, never ranked away
 **WRITTEN OUT IN FULL. "Unchanged from generation N" is BANNED here (DECISION S88-4).**
 - **PHISH-HW: PARTLY PAID (S90), OVERDUE since ~Jul 31 (~31 days).** DONE: security logs read
-  on both `jamesmaverickandhdcs` and `fintelplan`; OAuth/GitHub-App inventories read (6 apps
+  on both `jamesmaverickandhdcs` and `the Partner B account`; OAuth/GitHub-App inventories read (6 apps
   and 4 apps respectively); PAT tabs read — **"No personal access token created" on both**,
   which is itself a finding, because `MYANMAR_DISPATCH_PAT` exists as a secret and its token is
   therefore in the fine-grained tab, on the third account, or expired. Foreign-country session
@@ -354,10 +354,10 @@ can act on it is the "decorative rank" generation 9 warned about.
 - **PROVIDER + PLATFORM EOL WATCH — record at announcement, not at death.**
   - `actions/checkout@v4` + `actions/setup-python@v5` → item 6.7. **All 8 workflows now on v7;
     cert pending one scheduled run of `gni_mad` and `gni_pipeline`.**
-  - `gemini-2.5-flash` dies Oct 16 (Lens's lens2 runs on it).
+  - `gemini-2.5-flash` dies Oct 16 (Partner B's a Partner B agent runs on it).
   - `llama-3.1-8b-instant` died Aug 16 — last hardcoded default removed at S89 (9.4).
   - Supabase free tier warns by EMAIL at 20% of a limit, then a grace period, then restricts,
-    with no second grace period. Storage 113/500 MB. No longer shared with Project Lens.
+    with no second grace period. Storage 113/500 MB. No longer shared with Partner B.
 
 ### RETIRE CANDIDATES — the clause, honestly counted
 - **1.9** — **DISCHARGED THIS CLOSE as CLOSED AS ACCEPTED, with the reason written into the
@@ -417,7 +417,7 @@ Cost accepted: the gate sequence's first step cites a contested id rather than a
 
 **DECISION S90-5** — `GROQ_API_KEY` and `GROQ_MAD_EVENING` rotations DEFERRED to S91 rather
 than completed at S90. Chosen after the `not_mad` rotation produced an empty secret and a red
-pipeline: `LR-104` says credential work needs a session opening, and the morning key's blast
+pipeline: `GNI-L-009` says credential work needs a session opening, and the morning key's blast
 radius is three workflows against `not_mad`'s one.
 
 **NOT DONE, NAMED:** 9.5 (the July census audit — scoped as a session, not a task) · 9.11

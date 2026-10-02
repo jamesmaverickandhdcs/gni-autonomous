@@ -23,7 +23,7 @@ import sys
 
 SRC = "docs/GNI_RULES_S95.md"
 TSV = "docs/GNI_RULE_CHECKABILITY_S95.tsv"
-ID_RE = re.compile(r"R-S\d+-\d+|LR-\d+|GNI-R-\d+|NN-PHI-\d+")
+ID_RE = re.compile(r"R-S\d+-\d+|GNI-L-\d+|GNI-R-\d+|NN-PHI-\d+")
 MARK = "CHECKABLE:"
 
 C = {}
@@ -46,19 +46,19 @@ n("R-S54-5", "a cognitive tell - felt familiarity has no representation in bytes
 y("GNI-R-240", "grep ai_engine/mad_runner.py for the polling gate constants (60s, 25 attempts)")
 y("GNI-R-241", "SQL: rows past Stage 1 with content_type IS NULL must be zero")
 n("GNI-R-242", "governs when a claim may be CALLED done; the claim lives in prose")
-n("LR-078", "patch scripts live in /tmp and are never committed - nothing to scan")
-y("LR-091", "every os.getenv name must resolve to a stored secret or a workflow env (section 7.2 emits the join)")
-y("LR-092", "python -m py_compile over changed .py files in CI")
-n("LR-095", "governs how a human diagnoses an HTTP error, not the shape of code")
-n("LR-096", "no truncation convention exists to assert prompt fields against")
-y("LR-098", "every package in a workflow inline pip list must be imported by a reachable module")
-n("LR-099", "an audit obligation on the agent; no artifact records whether it happened")
-n("LR-102", "a cognitive tell; confidence is not stored anywhere")
-n("LR-103", "governs the CHOICE of test input, which the test file does not record")
-n("LR-104", "ranks candidate work by risk before it exists; no artifact to rank")
-n("LR-105", "forbids cosmetic green; distinguishing cosmetic from real needs the intent")
-y("LR-106", "AST: every _parse_json_response-class function's return paths yield dict or None")
-n("LR-107", "governs trust in a prior session's claim; trust has no byte form")
+n("GNI-L-001", "patch scripts live in /tmp and are never committed - nothing to scan")
+y("GNI-L-002", "every os.getenv name must resolve to a stored secret or a workflow env (section 7.2 emits the join)")
+y("GNI-L-003", "python -m py_compile over changed .py files in CI")
+n("GNI-L-004", "governs how a human diagnoses an HTTP error, not the shape of code")
+n("GNI-L-005", "no truncation convention exists to assert prompt fields against")
+y("GNI-L-006", "every package in a workflow inline pip list must be imported by a reachable module")
+n("GNI-L-011", "an audit obligation on the agent; no artifact records whether it happened")
+n("GNI-L-007", "a cognitive tell; confidence is not stored anywhere")
+n("GNI-L-008", "governs the CHOICE of test input, which the test file does not record")
+n("GNI-L-009", "ranks candidate work by risk before it exists; no artifact to rank")
+n("GNI-L-010", "forbids cosmetic green; distinguishing cosmetic from real needs the intent")
+y("GNI-L-012", "AST: every _parse_json_response-class function's return paths yield dict or None")
+n("GNI-L-013", "governs trust in a prior session's claim; trust has no byte form")
 n("NN-PHI-1", "a value statement about who GNI serves; no measurable predicate")
 n("NN-PHI-2", "requires judging whether coverage is direction-balanced; needs a labelled corpus")
 n("NN-PHI-3", "detecting manipulation in output requires reading the output for meaning")

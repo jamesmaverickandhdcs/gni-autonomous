@@ -40,14 +40,14 @@ MAD-CERT = S81 FIRST MOVE: 05:36 UTC Jul 25 cron. Residual P5: 768 cap may starv
 | MAD-CERT | 05:36 UTC cron: PASS = zero 413, real verdict, cost~1.0, LABELED line if speculation; FAIL(empty agents) -> context slimming (depth D / article count), NOT floor raise | gh run list -w "GNI MAD Pipeline" -L1 --json databaseId,createdAt then grep -aE "413\|verdict\|LABELED\|429\|error" | - | V(local) |
 | E3-WATCH | label frequency + wording on real runs thru Jul 30; feeds GT5-T2 | read tg blind spots | - | - |
 | OC-A | OVERDUE Jul 24: Copilot policy toggle check x3 accounts (browser, James solo) | github.com/settings/copilot | James | I(60%) |
-| LENS-SESSION | own opener: read code/lens_s1_report.py; 3.3-70b hardcodes x3 before Aug 16 | unchanged from S79 | James | - |
+| Partner B-SESSION | own opener: read code/a Partner B module; 3.3-70b hardcodes x3 before Aug 16 | unchanged from S79 | James | - |
 | GT5-T2 | Jul 30 decision — now WITH treatment group (E-3) + 3 specimens + 92/28 | re-read digest | James | - |
 | QUARANTINE | fallback-era Jul 19-22 DB rows tag | SQL | James | - |
 | PROMOS x2 | AllAfrica->Irrawaddy slot, DefenseNews->AP slot | telegram reply | James | - |
 | PROBE-DRIFT | NEW: monthly probe re-run vs jsonl (3 trials ~14K tok) — drift as diff not surprise | ~Aug 24 | James | - |
 | PUSH-GATE | NEW: Actions test-gate blocking red pushes (61adb50 lesson) | design | James | - |
 | PHISH-HW / TRANS-COUNT-CERT / CI-DEGRADE / mojibake / adaptive-tidy / parked 16 | unchanged S79 | - | see S79 | - |
-| Keyfile Aug 9 / CLIFF Aug 16 (accounts + LENS 3.3-70b only — GNI code no longer needs dying models) | - | - | James | - |
+| Keyfile Aug 9 / CLIFF Aug 16 (accounts + Partner B 3.3-70b only — GNI code no longer needs dying models) | - | - | James | - |
 
 ## 4. UNKNOWNS (<=8 lines)
 | Fact | Trust | Resolve by |
@@ -57,7 +57,7 @@ MAD-CERT = S81 FIRST MOVE: 05:36 UTC Jul 25 cron. Residual P5: 768 cap may starv
 | E-3 label real-world hit rate / false-positive feel | unshipped behavior | E3-WATCH |
 | gpt-oss debate QUALITY vs 3.3-70b (verdicts, blind-spot usefulness) | unknown | Jul 30 review |
 | OC-A meaning | inferred 60% | James confirms |
-| Which model serves Lens-1 runtime | config vs logs conflict | LENS-SESSION |
+| Which model serves Partner B-1 runtime | config vs logs conflict | Partner B-SESSION |
 
 ## 5. TRAPS (<=8 lines)
 - 413 != 429: 413 = prompt+max_tokens > 8K per-request ceiling, UNRETRYABLE (governor can't save it);
@@ -73,7 +73,7 @@ MAD-CERT = S81 FIRST MOVE: 05:36 UTC Jul 25 cron. Residual P5: 768 cap may starv
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `716dd93` TREE CLEAN -- whole organism on gpt-oss; MAD: baseline in git, budget floor + E-3 label shipped, cert pending 05:36 UTC Jul 25 cron
 TOP3 = RULES-APPEND (R-S80-1/2/3), MAD-CERT (grep 413|verdict|LABELED; empty-agents => slim context NOT raise floor), then OC-A (overdue) + E3-WATCH
-DEADLINE = OC-A overdue / GT5-T2 Jul 30 (with E-3 treatment group) / keyfile Aug 9 / CLIFF Aug 16 (accounts + Lens hardcodes only)
+DEADLINE = OC-A overdue / GT5-T2 Jul 30 (with E-3 treatment group) / keyfile Aug 9 / CLIFF Aug 16 (accounts + Partner B hardcodes only)
 TRAP = 413 unretryable (per-request ceiling, budget math first); 768 may starve giant-prompt agents; per-model quota buckets; probe fixture = arb-shaped only
 FIRST MOVE = ls-remote + git status; then MAD-CERT cron read (free, no dispatch)
 
@@ -85,4 +85,4 @@ spot when 413s arrived wearing shapes the fixture never held. Three fabrication 
 the organism now says "hypothesis, not finding" when it's guessing. James spent his last
 promo credits deliberately: design from Fable 5, execution from paste-blocks, and the
 partnership's discipline (bytes, receipts, resets) carried the rest. The Aug 16 cliff is now
-just accounts and Lens. Sleep well; the crons certify while we rest.
+just accounts and Partner B. Sleep well; the crons certify while we rest.

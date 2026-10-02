@@ -21,7 +21,7 @@ RULES moved to docs/ `130a3ae` (census clean); R-S73-1/2 appended `a17b135`; D-9
 | `a17b135` | R-S73-1/2 appended (root path at the time) | grep 2 |
 | `130a3ae` | GNI_RULES.md -> docs/ (100% rename; only doc-prose consumers) | git rename |
 | `4d7db66` | F23: route select joins reports(esc,quality,sentiment); page reads run.reports.*; avg over non-null only, N/A honest | build 40/40 + browser |
-| `cc2a438` | D-11 born in DEBT_REGISTER (D-10 existed Mar 23 -- assert caught my next-free-ID guess, LR-102) | register tail |
+| `cc2a438` | D-11 born in DEBT_REGISTER (D-10 existed Mar 23 -- assert caught my next-free-ID guess, GNI-L-007) | register tail |
 | `a783385` | FT-GAP-B: busy-set exclusion + DOUBLE-VOICE fallback + docstring truth | 3/3 mock tests, py_compile |
 | SQL | escalation dist 109x10.0 + 1x5.0 (gate's lone firing); sentiment 93B/12N/5Bu NOT pinned | queries |
 | Logs | Morning MAD (05:29) checkout a078bbe = pre-GT5 state, NULL correct; evening = a783385 full GT5 | checkout SHAs |
@@ -46,7 +46,7 @@ RULES moved to docs/ `130a3ae` (census clean); R-S73-1/2 appended `a17b135`; D-9
 | CERT-BATCH-2 | James picks 5 routes | screenshots | James | - |
 | F20-CERT | correlation-engine firing -> /correlations grows | next measure run | - | V |
 | J-RULINGS | J-4 probe, J-7 scorer (Aug 9); J-1 sunsets post-cliff | - | James | - |
-| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Lens opener SOON, D-8 first) | unchanged | - | James | - |
+| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Partner B opener SOON, D-8 first) | unchanged | - | James | - |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / K-CAND / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND / U-W / I-WATCH / A-VLOG / SRC-PHI / GT-6(banked) | unchanged | - | - | - |
 
 ## 4. UNKNOWNS (<=8 lines)
@@ -72,7 +72,7 @@ RULES moved to docs/ `130a3ae` (census clean); R-S73-1/2 appended `a17b135`; D-9
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `a783385`+close commit TREE CLEAN -- GT5-CERT PASSED LIVE (gates+score+DB), F23 closed certified, D-11 born, FT-GAP-B shipped, rules at docs/
 TOP3 = RULES-APPEND (R-S74-1/2/3), FED-DOE-WATCH grep next MAD verdict, then DET-DEAD or 7PLUS-TILE (James picks)
-DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Lens opener SOON, D-8 first)
+DEADLINE = GT5-T-WATCH ~Jul 24 / OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Partner B opener SOON, D-8 first)
 TRAP = rules file at docs/ now; SEAM 3 arb hits expected not failure; FT-GAP-B never reorders roster; /patterns 10.0 = D-11 not F23
 FIRST MOVE = ls-remote + git status (expect close commit CLEAN); then FED-DOE-WATCH is cheapest read if a MAD has fired
 

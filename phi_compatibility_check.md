@@ -1,6 +1,6 @@
 # PHI-003 Philosophy Compatibility Check
 # GNI Autonomous — Team Geeks
-# Rule: LR-099 — Every philosophy update requires this file to be reviewed and updated before session close.
+# Rule: GNI-L-011 — Every philosophy update requires this file to be reviewed and updated before session close.
 # Last verified: June 12, 2026 (GNI S43)
 
 ## Non-Negotiables Mapping
@@ -46,7 +46,7 @@
 | About page | Update copy to reflect PHI-003 identity | S37 |
 | Banner | Update from "rebuilding" to "PHI-003 live" | S37 |
 | Self-bias semantic | Does GNI output use the OP-005/Cui Bono techniques it flags in sources? | IMPORTANT S41 |
-| NN-PHI-8 | fff_conversation_starter -- one senior-to-young-adult question per report; question-grammar only (method-not-verdict); full LR-100 sweep: prompt + validator + regex fallback + saver + Telegram + brief page + self-bias gate + Supabase column | S43+ |
+| NN-PHI-8 | fff_conversation_starter -- one senior-to-young-adult question per report; question-grammar only (method-not-verdict); full GNI-L-016 sweep: prompt + validator + regex fallback + saver + Telegram + brief page + self-bias gate + Supabase column | S43+ |
 | NN-PHI-8 | Manipulation micro-lesson -- one named pattern per report with live example (senior teaching material) | S43+ |
 | NN-PHI-8 | Human tests: senior transmissibility (one 55+ reader) + first-voter test (one 17-19 reader). Zero code. | S43+ |
 | NN-PHI-8 | Election-window scrutiny -- design doc before code | QUEUE |
@@ -92,7 +92,7 @@ parallel statement -- it is the DELIVERY MECHANISM of sentence one.
 
 Guards owed before any NN-PHI-8 surface ships: SANITIZE_VOCAB applies to
 new fields; self_bias_gate required-field check extends to them; regex
-fallback dict must carry them (the S36 empty-FFF lesson, LR-100).
+fallback dict must carry them (the S36 empty-FFF lesson, GNI-L-016).
 
 ## Instructions for Next Philosophy Update
 

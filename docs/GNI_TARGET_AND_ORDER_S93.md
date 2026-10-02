@@ -161,7 +161,7 @@ THEM HAVE NEVER DECIDED A RUN — every row with `risk_level` High/Critical also
 working ROOT 8, and one of them (9.14) is S92's mission because it unblocks two shipped items.*
 
 - **9.1 / 9.2 / 9.3 / 9.4 / 9.6 / 9.7 / 9.8** CLOSED in earlier sessions. 9.3, 9.7, 9.8
-  certified in a browser at S90; 9.6 closed except two unrecovered IDs (`LR-101`, `GNI-R-122`).
+  certified in a browser at S90; 9.6 closed except two unrecovered IDs (`GNI-L-015`, `GNI-R-122`).
 - **9.5** OPEN — eight unresolved S69 census flags; F14 (`/comparison` renders BEARISH over a
   NEUTRAL verdict) is the ugly one. RE-CERT never ran. Unaudited since July. This is an AUDIT,
   not a fix — scope it as a session, not a task.
@@ -281,7 +281,7 @@ DE-RANKED at S90 (DECISION S90-2) with a checkable re-rank trigger. Untouched at
 ### ROOT 3 — FALLBACK-ERA CONTAMINATION IN THE EVIDENCE BASE · IMPORTANT
 - **3.1** WIDENED (S86) — `conf = 0.5` exactly on Jun 11 and Jul 7.
 - **3.2** `data_era` column + tagging. **Originally due ~Aug 2; now ~31 days overdue.**
-  **LR-104 binds: schema work needs a session opening.** Recorded so the age is visible.
+  **GNI-L-009 binds: schema work needs a session opening.** Recorded so the age is visible.
 
 ### ROOT 4 — COST AND HEADROOM · IMPORTANT
 - **4.1** C2 solver recalibration. `ctx-trim` fired again at S87, so not dormant.
@@ -299,7 +299,7 @@ DE-RANKED at S90 (DECISION S90-2) with a checkable re-rank trigger. Untouched at
   script they exit 0 having asserted NOTHING. **36 assertions are invisible.**
   `test_analysis_guardian.py` has no test and no assert at all. S91's "7 green" included
   these. `pytest 9.0.3` is installed locally - run it there BEFORE wiring CI, or the first
-  red will be indistinguishable from stale fixtures (the Lens `lens-ci.yml` failure).
+  red will be indistinguishable from stale fixtures (the Partner B `lens-ci.yml` failure).
 - **5.16** **NEW (S93).** The 42 `__main__` selftests OUTSIDE `tests/` - including
   `main.py`, `mad_runner.py`, `adaptive_pipeline.py` - **cannot be answered by CI.**
   Running them runs the pipeline: real Groq calls, real DB writes, real quota. S92's
@@ -332,7 +332,7 @@ DE-RANKED at S90 (DECISION S90-2) with a checkable re-rank trigger. Untouched at
 - **5.13** **CLOSED (S91) — PREMISE DISPROVEN BY BYTES.** The item said the register's
   header line 2 still read a stale model roster. `grep -n 'Sonnet 4.6\|Team Geeks'
   GNI_RULES_S90.md` returns NOTHING: S90's own restructure rewrote that header to
-  `# Bro Alpha (James Maverick) + Claude - Reference by ID` in the same close that
+  `# James Maverick + Claude - Reference by ID` in the same close that
   numbered the item. The defect was fixed and recorded as open by one session.
   Closed rather than retired: nothing is owed.
 - **5.14** **NEW (S91) [MEASURED] — THREE OF TEN RUNNABLE HARNESSES ARE DEAD, ONE CAUSE.**
@@ -397,10 +397,10 @@ DE-RANKED at S90 (DECISION S90-2) with a checkable re-rank trigger. Untouched at
   - **Node 20 is ITSELF now deprecated on GitHub runners** — the post-fix logs state that
     workflows run on **Node 24 by default**, citing a 2025-09-19 changelog. Recorded at
     announcement. No action required while all eight are on v7.
-  - `gemini-2.5-flash` dies Oct 16 (Lens's lens2 runs on it).
+  - `gemini-2.5-flash` dies Oct 16 (Partner B's a Partner B agent runs on it).
   - `llama-3.1-8b-instant` died Aug 16 — last hardcoded default removed at S89 (9.4).
   - Supabase free tier warns by EMAIL at 20% of a limit, then a grace period, then restricts,
-    with no second grace period. Storage 113/500 MB. No longer shared with Project Lens.
+    with no second grace period. Storage 113/500 MB. No longer shared with Partner B.
 
 ### RETIRE CANDIDATES — the clause, honestly counted
 - **4.4** — promoted with a written reason at generation 7; carried on that reason.

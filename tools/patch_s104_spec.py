@@ -20,7 +20,7 @@ row's own forward claim RESOLVED, because that row still says "four of four
 WITH evidence, or NOT ACHIEVED with the reason" about work that is now done.
 Corrected rather than deleted, which is this file's own stated doctrine.
 
-Binary mode (LR-078); every anchor is pure ASCII (LR-101).
+Binary mode (GNI-L-001); every anchor is pure ASCII (GNI-L-015).
 Run from the repo root:   python tools/patch_s104_spec.py
 """
 import os

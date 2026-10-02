@@ -43,7 +43,7 @@ HEALTH-W shipped+certed (`a078bbe`): weights board on C3 roster mirror, fail-ope
 | F21 | patterns 100%-on-empty -> honest N/A; two-line fix, CRLF-safe pattern | patch | James | V(S72) |
 | DET-DEAD | after FT-GAP-B; RE-CHECK prompt_injection_detector.py in funnel/ first | grep imports | James | B |
 | J-RULINGS | J-4 probe, J-7 scorer (Aug 9); J-1 sunsets post-cliff | - | James | - |
-| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Lens opener SOON, D-8 first) | unchanged | - | James | - |
+| OC-A ~Jul 24 / CERT ~Aug 2 / U-AUG9 keyfile / CLIFF-CODE+L-CLIFF Aug 16 (30d, Partner B opener SOON, D-8 first) | unchanged | - | James | - |
 | K-WATCH-NS / SAN-DEAD / CENSUS-2 / K-CAND / YAKE-KM / DEAD-PILLAR / L4-COUNT / F-CASE / F-KEY / SOLV-6 / SRC-EXPAND / U-W / I-WATCH / A-VLOG / SRC-PHI / GT-6(banked) | unchanged | - | - | - |
 
 ## 4. UNKNOWNS (<=8 lines)
@@ -69,7 +69,7 @@ HEALTH-W shipped+certed (`a078bbe`): weights board on C3 roster mirror, fail-ope
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = close commit atop `4d188ce` + TREE CLEAN -- SRC-INTEGRITY CERTIFIED 42/42, GT5 designed scope B, F17/F18/F19 closed, F20 constraint live, HEALTH-W shipped
 TOP3 = RULES-APPEND (R-S72-1), CODE-MEM fix, then GT5-BUILD spec (James SQL jsonb col first) or FT-GAP-B (James picks)
-DEADLINE = OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Lens opener SOON + D-8 first move)
+DEADLINE = OC-A ~Jul 24 / CERT ~Aug 2 / keyfile Aug 9 / Groq cliff Aug 16 (30d, L-CLIFF Partner B opener SOON + D-8 first move)
 TRAP = CRLF anchors (detect nl); F20 42P07-after-success is noise; /research 0.000 + /about 59% are TRUE values; Code memory stale
 FIRST MOVE = ls-remote + git status (expect close commit CLEAN); then rm any docs/cmd.txt stray; queue is build-heavy, pick with fresh tank
 

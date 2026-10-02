@@ -31,7 +31,7 @@ L5 Public: MC-FREEZE FIXED at a709788 (no-store factory sweep, 25 routes). MC tr
 ## 3. QUEUE (<=25 lines)
 | ID | Task | First move | Gate | Trust |
 |----|------|-----------|------|-------|
-| L-CLIFF | TOP S63: Lens migration scoping. lens_quota_guard.py keys TPD tables + role registry on dying model strings -- ledger-key redesign, not string swap. SWOT required | read lens_quota_guard.py IN FULL | James | B |
+| L-CLIFF | TOP S63: Partner B migration scoping. a Partner B module keys TPD tables + role registry on dying model strings -- ledger-key redesign, not string swap. SWOT required | read a Partner B module IN FULL | James | B |
 | G-TUNE | ~Jul 15 shadow window closes. Agenda from data: (a) whitelist prompt-vocab ("hidden-pattern connection" x16) + boilerplate ("far-reaching/second-order/third-order"), (b) "US-Iran" vs "US and Iran" normalization gap, (c) G-GAP-1 extractor extension proposal | grounding_watch digest + banked taxonomy | James | B |
 | OC-A/B | Measurement design, now with killer exhibit: fabricated 14d prediction in GPVS = miss-regret made flesh. Fold in DRIFT-clamp question | roadmap Part 2 | James | B |
 | SRC-32 | Glance: source_health 32/42 -- lean: zero-yield-but-fetching sources counted degraded | MC message / source-health API | - | - |
@@ -48,7 +48,7 @@ L5 Public: MC-FREEZE FIXED at a709788 (no-store factory sweep, 25 routes). MC tr
 | No-store sweep survives multi-day (no re-freeze) | 85% | Jul 12-13 MC glances |
 | Whitelist false-pos final rate | partial (4/10 runs) | Jul 15 window close |
 | GROQ secret VALUES (lean: all four dying) | 50% | Aug 9 keyfile FIRST |
-| Lens SECRET values | unknown | L-CLIFF scoping |
+| Partner B SECRET values | unknown | L-CLIFF scoping |
 | adaptive.yml:48 consumed? | 50% | marathon |
 
 ## 5. TRAPS (<=8 lines)
@@ -62,8 +62,8 @@ L5 Public: MC-FREEZE FIXED at a709788 (no-store factory sweep, 25 routes). MC tr
 
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `a709788` + one S62-close docs commit (verify ls-remote)
-TOP3 = L-CLIFF scoping (read lens_quota_guard.py full, SWOT ledger-key redesign), G-TUNE ~Jul 15 (whitelist + normalization + G-GAP-1), OC-A/B design (fabricated-prediction exhibit in GPVS)
-DEADLINE = Aug 9 marathon / Groq cliff Aug 16 (GNI lineup + Lens ~15 files)
+TOP3 = L-CLIFF scoping (read a Partner B module full, SWOT ledger-key redesign), G-TUNE ~Jul 15 (whitelist + normalization + G-GAP-1), OC-A/B design (fabricated-prediction exhibit in GPVS)
+DEADLINE = Aug 9 marathon / Groq cliff Aug 16 (GNI lineup + Partner B ~15 files)
 TRAP = gate digest UNDERCOUNTS (G-GAP-1) -- quiet is not clean; MC warnings are now REAL
 FIRST MOVE = ls-remote verify HEAD; then James picks L-CLIFF or G-TUNE opener
 

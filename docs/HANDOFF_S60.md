@@ -35,7 +35,7 @@ Live watch: Hormuz/Iran CRITICAL 10/10 ongoing (US strikes after 3 ships hit).
 | I-WATCH | Integrity watch Tier A (8 checks, one daily script, Telegram digest; red only A1-arb/A8/2-sigma) — merges I4 | after G-GATE (shares cron) | James | B |
 | OC-A/B | Mark-validation + miss-regret measurement. TIME-SENSITIVE: collect BEFORE Aug 16 for before/after baseline | design from roadmap Part 2 | James | B |
 | U-AUG9 | MARATHON + cliff-audit additions (funnel:1010, adaptive.yml:48 verify, secrets enum FIRST, Tier-3 sweep, governor revalidate) | keyfile | James | V(prep) |
-| LENS-GREP | Deprecation grep in LENS working copy (never ran — Jul-8 grep hit GNI by accident) | cmd in cliff doc | - | - |
+| Partner B-GREP | Deprecation grep in Partner B working copy (never ran — Jul-8 grep hit GNI by accident) | cmd in cliff doc | - | - |
 | V-CRON | Glance Jul-9 10:13 UTC verify-outcomes: both GPVS steps green (expect Due:0) | Actions 1 click | - | 90% |
 | U-W | Weekly Groq lineup glance | models page | James | - |
 | SOLV-5 | 5th solver datapoint then recal decision (series: +0.2/+8.8/+4.0/-4.5; churn corr ~45%) | next MAD log | - | - |
@@ -52,7 +52,7 @@ Live watch: Hormuz/Iran CRITICAL 10/10 ongoing (US strikes after 3 ships hit).
 | Endpoint sends rich CRITICAL Telegram detail | 85% | next natural CRITICAL |
 | 429-churn <-> solver error correlation | ~45% (sign flip #4) | SOLV-5 |
 | Telegram verdict 57% vs site 58% (rounding?) | micro | 1-line check someday |
-| Lens Groq model strings | unknown | LENS-GREP |
+| Partner B Groq model strings | unknown | Partner B-GREP |
 
 ## 5. TRAPS (<=8 lines)
 - R-S60-1: browser-verify = HARD-REFRESH FIRST. V-W13 burned an hour on a cached bundle.

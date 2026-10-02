@@ -35,7 +35,7 @@ Target: TRUTHFULNESS OF OUTPUT. ROOT 8 top until 8.6's cert is read; then ROOT 9
 | 5.9 SHIPPED | `bb6bd2f` — `docs/STATUS.md` deleted | 61 deletions |
 | 4.5 CLOSED | 14-day bill stable: mad `morning` 66-72K/21 req · mad `evening` 66-72K/21 · pipeline `not_mad` 31-42K/10-12 | SQL |
 | 4.5 blocker | the named source, "the `groq_quota` TELEGRAM line", **does not exist in the repo** | `git grep` empty |
-| 6.6 CLOSED | LENS 4 tables / **104 kB** / `n_tup_ins=0` vs GNI 73 / 87 MB. Lens lives on its OWN project | 2 SQL + url hashes |
+| 6.6 CLOSED | Partner B 4 tables / **104 kB** / `n_tup_ins=0` vs GNI 73 / 87 MB. Partner B lives on its OWN project | 2 SQL + url hashes |
 | 1.14 CLOSED | checkout 14:58:21Z, row written 14:58:20Z, fetch after pip install — start-only inversion | MAD log |
 | 1.7 + 1.8 CLOSED | 2nd `truncated=0`; and 0 of 196 rows ever hit the surviving `bool(mad_bull_case)` | log + SQL |
 | Storage gap | meter 113 MB − table sum 87 MB = **26 MB (23%) not in any table** | `pg_statio_user_tables` |

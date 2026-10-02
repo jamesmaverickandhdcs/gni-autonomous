@@ -13,7 +13,7 @@ REHEARSAL 4/5 PROVEN: alert rendered exactly 7 GEO options; James replied 5 (not
   fetch-based recovery with yield=0: C2's criterion inherits FT-GAP blindness (R-S65-1).
 Remaining proof: next run must show Defense News serving + STALE-GATED warns + populated columns.
 MAD fabrication CONFIRMED LIVE at arb level: today's 8f967654 is an ARB HIT (invented
-  Goldman Sachs + FT attributions, Bear R2/R3). G-TUNE agenda frozen. L-CLIFF with Lens. Aug 16 cliff.
+  Goldman Sachs + FT attributions, Bear R2/R3). G-TUNE agenda frozen. L-CLIFF with Partner B. Aug 16 cliff.
 
 ## 2. DELTA (<=15 lines)
 | Item | What | Proof |
@@ -39,7 +39,7 @@ MAD fabrication CONFIRMED LIVE at arb level: today's 8f967654 is an ARB HIT (inv
 | G-TUNE | ~Jul 15: (1) alias whitelist (fed<->federal reserve; US-Iran variants; share/import sensor KNOWN_ACTORS -- anti-L-CLIFF) + G-GAP-1 normalization; (2) consultant prompt scrub of Class-B dialect; (3) re-measure shadow, THEN enforce | grounding_watch digest | James | B |
 | FT-GAP | Design widened: fall-through AND C2 recovery criterion must consult yield/serve-path (Crisis Group false-recovery proof). WARN already live | collector L470-510 + reserve_lifecycle read | James | V(diagnosis) |
 | F-TILES / F-CASE / F-KEY | Fossil sweep candidates: hardcoded infra tiles; weight-row case dedupe census; NEXT_PUBLIC key is not auth | James picks | James | B |
-| L-CLIFF | With Lens session (LENS_TRANSFER_LCLIFF.md) | Lens opener | James | V(scope) |
+| L-CLIFF | With Partner B session (PARTNER_B_TRANSFER_LCLIFF.md) | Partner B opener | James | V(scope) |
 | SRC-EXPAND | DVB SEA reserve candidate unverified; FIN adds per FRIENDS Sec 4 | verify feeds | James | B |
 | OC-A/B | Fabricated 14d prediction matures ~Jul 24 GPVS | roadmap Pt 2 | James | B |
 | L4-COUNT | _GNI_L4_CALLS env counter: is it ever incremented? (classifier L990+, unread tail) | read L990-1035 | - | unread |
@@ -53,7 +53,7 @@ MAD fabrication CONFIRMED LIVE at arb level: today's 8f967654 is an ARB HIT (inv
 | avg mixes gate-eaten runs -> degraded flag quieter post-recovery (accepted, self-healing) | V | watch only |
 | IRRELEVANT_KEYWORDS contents (substring false-kill risk unknown) | unread | KEY-MAP c2 |
 | L4 LLM counter increment | unread | L4-COUNT |
-| GROQ secret values (GNI 4 + Lens 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
+| GROQ secret values (GNI 4 + Partner B 11 key names) | 50%/unknown | Aug 9 keyfile FIRST |
 
 ## 5. TRAPS (<=8 lines)
 - Webhook numeric reply hits MOST RECENT pending row; Defense News row now ACTIVE --

@@ -66,9 +66,9 @@ odd minutes (e.g. :13/:43/:58) to reduce observed drift. When moving a cron, upd
 that job silently stops; and keep MAD inside its GNI-R-122 protection window.
 
 ## AFFIRMED (existing rules that bit us again this session)
-- LENS-010 quota isolation: separate KEYS on the SAME account share the pool -- useless. Only
+- Partner B quota isolation: separate KEYS on the SAME account share the pool -- useless. Only
   separate ACCOUNTS (different Gmail) give separate 100K TPD. (`GROQ_API_KEY_2` removed in S46.)
-- LR-101: patch anchors pure ASCII only.
+- GNI-L-015: patch anchors pure ASCII only.
 - W2: py_compile before every commit.
 - GNI-R-110: MAD runs after pipeline with a clean TPM window; handshake-gated.
 - GNI-R-122: adaptive-suppression protection windows around the pipeline runs.

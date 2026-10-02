@@ -2,19 +2,19 @@ id	checkable	reason
 GNI-R-240	yes	grep ai_engine/mad_runner.py for the polling gate constants (60s, 25 attempts)
 GNI-R-241	yes	SQL: rows past Stage 1 with content_type IS NULL must be zero
 GNI-R-242	no	governs when a claim may be CALLED done; the claim lives in prose
-LR-078	no	patch scripts live in /tmp and are never committed - nothing to scan
-LR-091	yes	every os.getenv name must resolve to a stored secret or a workflow env (section 7.2 emits the join)
-LR-092	yes	python -m py_compile over changed .py files in CI
-LR-095	no	governs how a human diagnoses an HTTP error, not the shape of code
-LR-096	no	no truncation convention exists to assert prompt fields against
-LR-098	yes	every package in a workflow inline pip list must be imported by a reachable module
-LR-099	no	an audit obligation on the agent; no artifact records whether it happened
-LR-102	no	a cognitive tell; confidence is not stored anywhere
-LR-103	no	governs the CHOICE of test input, which the test file does not record
-LR-104	no	ranks candidate work by risk before it exists; no artifact to rank
-LR-105	no	forbids cosmetic green; distinguishing cosmetic from real needs the intent
-LR-106	yes	AST: every _parse_json_response-class function's return paths yield dict or None
-LR-107	no	governs trust in a prior session's claim; trust has no byte form
+GNI-L-001	no	patch scripts live in /tmp and are never committed - nothing to scan
+GNI-L-002	yes	every os.getenv name must resolve to a stored secret or a workflow env (section 7.2 emits the join)
+GNI-L-003	yes	python -m py_compile over changed .py files in CI
+GNI-L-004	no	governs how a human diagnoses an HTTP error, not the shape of code
+GNI-L-005	no	no truncation convention exists to assert prompt fields against
+GNI-L-006	yes	every package in a workflow inline pip list must be imported by a reachable module
+GNI-L-011	no	an audit obligation on the agent; no artifact records whether it happened
+GNI-L-007	no	a cognitive tell; confidence is not stored anywhere
+GNI-L-008	no	governs the CHOICE of test input, which the test file does not record
+GNI-L-009	no	ranks candidate work by risk before it exists; no artifact to rank
+GNI-L-010	no	forbids cosmetic green; distinguishing cosmetic from real needs the intent
+GNI-L-012	yes	AST: every _parse_json_response-class function's return paths yield dict or None
+GNI-L-013	no	governs trust in a prior session's claim; trust has no byte form
 NN-PHI-1	no	a value statement about who GNI serves; no measurable predicate
 NN-PHI-2	no	requires judging whether coverage is direction-balanced; needs a labelled corpus
 NN-PHI-3	no	detecting manipulation in output requires reading the output for meaning

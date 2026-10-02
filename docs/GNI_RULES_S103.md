@@ -1,5 +1,5 @@
 # GNI Autonomous — Rules Registry
-# Bro Alpha (James Maverick) + Claude · Reference by ID — do not re-derive
+# James Maverick + Claude · Reference by ID — do not re-derive
 # RESTRUCTURED AT S90 (2026-08-31). Nothing was deleted. PART 3 is the S89 file VERBATIM.
 
 ## HOW THIS FILE IS ORGANISED — read this paragraph, then PART 1
@@ -18,7 +18,7 @@ summary is a lead, and the full text in PART 3 is the rule.
 
 **Measured at S90:** the four live documents (CONTRACT, TARGET+ORDER, HANDOFF, Protocol)
 cite 8 rule IDs that appear NOWHERE in this register: `GNI-R-037`, `GNI-R-076`,
-`GNI-R-122`, `LR-101`, `R-S54-1`, `R-S54-2`, `R-S54-3`, `R-S54-4`.
+`GNI-R-122`, `GNI-L-015`, `R-S54-1`, `R-S54-2`, `R-S54-3`, `R-S54-4`.
 
 **Structural cause — not forgetfulness.** This register was born at the S55 close
 (CONTRACT VERSION LOG v1 says so). Every `R-S54-*` rule predates the file by one session.
@@ -65,7 +65,7 @@ nobody noticed for 35 sessions. **A rule cited by inferred meaning is a banked p
 - **R-S54-5** — affirms GNI-R-233: the FAMILIAR explanation is the TELL (vindicated 5x in
   one session).
 
-**STILL UNRECOVERED: `LR-101` (pure-ASCII patch anchors).** It is cited by live
+**STILL UNRECOVERED: `GNI-L-015` (pure-ASCII patch anchors).** It is cited by live
 documents and is followed from inferred meaning. Do not restate it as law until the
 original text is found.
 
@@ -141,7 +141,7 @@ tool with EXIT 2 rather than silently passing every citation. Statuses are close
 | `GNI-R-076` | UNMIGRATED-DOCX | cited with the wrong meaning for ~35 sessions; text unmigrated |
 | `GNI-R-180` | DISCUSSION-ONLY | named only while CONTRACT describes the S90 citation defect |
 | `GNI-R-233` | DEFINED-IN-CONTRACT | CONTRACT_S94.md:24 defines it inline; routing debt |
-| `LR-101` | DANGLING-LAW | cited as law by CONTRACT, order, handoff; unfound |
+| `GNI-L-015` | DANGLING-LAW | cited as law by CONTRACT, order, handoff; unfound |
 
 Six rows. S90 measured eight. `GNI-R-114` and `GNI-R-122` were retired at S101 when
 their text was recovered verbatim and registered in PART 0 above; `GNI-R-115` and
@@ -160,7 +160,7 @@ Each line is an INDEX ENTRY. The rule is its full text in PART 3.
 - **R-S72-1 / R-S76-1 / R-S80-1** Multi-line anchors join on the file's OWN detected newline; single-line anchors are immune; print the newline before asserting.
 - **R-S81-5** A guard's expected count is DERIVED from the edit list, never hand-counted; assert RELATIVE to the file's state read at the start.
 - **R-S85-3** An idempotency guard tests the ANCHOR's absence, never a sentinel drawn from the new text.
-- **R-S54-1** >~30 lines goes to Claude Code, not a hand-paste. **LR-078** ship-to-file over heredoc. **LR-101** pure-ASCII anchors.
+- **R-S54-1** >~30 lines goes to Claude Code, not a hand-paste. **GNI-L-001** ship-to-file over heredoc. **GNI-L-015** pure-ASCII anchors.
 - **R-S77-1** Chained build/verify/commit after a patch run UNCONDITIONALLY — gate the chain on the PATCHED print or split the paste.
 - **R-S87-5** MSYS/MINGW translates ARGUMENTS, not string literals: `/tmp` inside a heredoc is `C:\tmp`; `grep --include` is silently dropped when an unquoted flag variable expands.
 - **GNI-R-037 (original text)** Read the FULL file before rewriting. The file on disk is truth; what is in chat may be stale.
@@ -180,8 +180,8 @@ Each line is an INDEX ENTRY. The rule is its full text in PART 3.
 - **R-S89-1** LINEAGE-BEV applies to a FINDING, not only a proposal. Before calling two byte-facts a contradiction, search for the DECISION that created the difference.
 - **R-S69-1** A byte-census says what IS; only session history says which side is CANONICAL.
 - **R-S86-6** `git log -S '<symbol>'` is the third lineage stage — a commit subject is the only lineage written by the person who made the change.
-- **R-S83-1** A disclosed limitation is a CLAIM, not a fact. **LR-107** a brief-claimed bug is a hypothesis.
-- **GNI-R-233 / LR-102 / R-S54-5** FAMILIAR/EASY = THE TELL. When corrected, RESET to zero.
+- **R-S83-1** A disclosed limitation is a CLAIM, not a fact. **GNI-L-013** a brief-claimed bug is a hypothesis.
+- **GNI-R-233 / GNI-L-007 / R-S54-5** FAMILIAR/EASY = THE TELL. When corrected, RESET to zero.
 - **R-S84-3** A correction that is not WRITTEN DOWN as a correction will re-form in a later session with fresh confidence.
 - **R-S81-1** A zero-match indicts the PATTERN first — *and a REDIRECTED FAILURE is worse than silence, because it produces a corpus* (2026-08-25 amendment): `wc -l` before `grep`, always.
 - **R-S82-1** To find an artifact, grep its STRUCTURE, not its name — a high match count misleads exactly as a zero match does.
@@ -274,8 +274,8 @@ recurring failure as a series of new discoveries** — that is the hazard this p
 to make visible.
 
 **CLUSTER A — THE PATCH ANCHOR (10 rules, 8 sessions, and it still fired twice at S90).**
-`R-S57-1` → `R-S58-1` → `R-S72-1` → `R-S76-1` → `R-S80-1` → `R-S81-5`, plus `LR-078`,
-`LR-101`, `R-S85-3`, `R-S77-1`. Six of these say some version of *derive the newline from
+`R-S57-1` → `R-S58-1` → `R-S72-1` → `R-S76-1` → `R-S80-1` → `R-S81-5`, plus `GNI-L-001`,
+`GNI-L-015`, `R-S85-3`, `R-S77-1`. Six of these say some version of *derive the newline from
 the file's own bytes*. At S90 a multi-line anchor failed twice anyway — first as LF against
 CRLF, then as CRLF against a file that turned out to mix BOTH inside the same ten-line
 block, which `R-S57-1` states in its own first sentence ("per-ANCHOR facts ... per-file AND
@@ -310,7 +310,7 @@ being patched and anyone noticing it reached 0 of 191 rows.
 
 **CLUSTER F — THE BYTES SAY WHAT IS; THE RECORD SAYS WHICH SIDE IS CANONICAL.**
 `R-S69-1` · `R-S85-1` · `R-S86-6` · `R-S84-3` · `R-S88-3` · `R-S89-1` · `R-S89-2` ·
-`GNI-R-233` · `LR-102` · `LR-107` · `R-S54-5`. **The largest cluster, and the one with the
+`GNI-R-233` · `GNI-L-007` · `GNI-L-013` · `R-S54-5`. **The largest cluster, and the one with the
 most repeat offences.** Its S89 form is the sharpest: *two numbers that differ are often
 two different subjects.*
 
@@ -345,36 +345,36 @@ rules are appended at the S90 close, below this line, in the usual format.*
 
 **GNI-R-242** — A Fix Is a Hypothesis Until Verified: No fix is "done" until verified against regenerated output or live data. Test-clean (compiles, passes self-test, no crash) is NOT proven-working (actually catches/produces the intended result in production). State fixes as test-clean-but-prod-pending until live data confirms. (S40: flatline check never fired <4 reports; workflow alerts untested on real failure; published_at confirmed only after a post-fix run.)
 
-## LR Rules (Lessons Learned)
+## GNI-L Rules (Lessons Learned)
   **CHECKABLE: no** — governs when a claim may be CALLED done; the claim lives in prose
 
-**LR-078** — Ship-to-file patch over bash heredoc: Git Bash corrupts heredocs with bracketed paste. Always write patches to /tmp/*.py files and run with python /tmp/patch.py.
+**GNI-L-001** — Ship-to-file patch over bash heredoc: Git Bash corrupts heredocs with bracketed paste. Always write patches to /tmp/*.py files and run with python /tmp/patch.py.
   **CHECKABLE: no** — patch scripts live in /tmp and are never committed - nothing to scan
 
-**LR-091** — Naming consistency check required: Before any integration commit involving new env vars or DB column names, grep all files that read those names and verify exact string match. The 343-hour Telegram webhook darkness (SUPABASE_SERVICE_ROLE_KEY vs SUPABASE_SERVICE_KEY) is the permanent reminder — one wrong character = silent failure for weeks.
+**GNI-L-002** — Naming consistency check required: Before any integration commit involving new env vars or DB column names, grep all files that read those names and verify exact string match. The 343-hour Telegram webhook darkness (SUPABASE_SERVICE_ROLE_KEY vs SUPABASE_SERVICE_KEY) is the permanent reminder — one wrong character = silent failure for weeks.
   **CHECKABLE: yes** — every os.getenv name must resolve to a stored secret or a workflow env (section 7.2 emits the join)
 
-**LR-092** — py_compile ALL modified .py files before commit.
+**GNI-L-003** — py_compile ALL modified .py files before commit.
   **CHECKABLE: yes** — python -m py_compile over changed .py files in CI
 
-**LR-095** — HTTP error: always check r.text[:200] first, never diagnose from status code alone.
+**GNI-L-004** — HTTP error: always check r.text[:200] first, never diagnose from status code alone.
   **CHECKABLE: no** — governs how a human diagnoses an HTTP error, not the shape of code
 
-**LR-096** — Never dump raw DB blob columns >1000 chars into AI prompts.
+**GNI-L-005** — Never dump raw DB blob columns >1000 chars into AI prompts.
   **CHECKABLE: no** — no truncation convention exists to assert prompt fields against
 
-**LR-098** — When removing pip package: grep code/ for imports first across ALL files, not just one.
+**GNI-L-006** — When removing pip package: grep code/ for imports first across ALL files, not just one.
   **CHECKABLE: yes** — every package in a workflow inline pip list must be imported by a reachable module
-**LR-102** — Confidence is a signal to slow down, not speed up: When a task feels familiar or a fix feels obvious, treat that feeling as the trigger to read the full file / trace the data first — not as permission to skip BEV. "I know this" is not evidence. (S40: guessed a table name, guessed where GNI-R-228 lived, reconstructed file content from memory, assumed the next-free rule number — every time, the actual read corrected it.)
+**GNI-L-007** — Confidence is a signal to slow down, not speed up: When a task feels familiar or a fix feels obvious, treat that feeling as the trigger to read the full file / trace the data first — not as permission to skip BEV. "I know this" is not evidence. (S40: guessed a table name, guessed where GNI-R-228 lived, reconstructed file content from memory, assumed the next-free rule number — every time, the actual read corrected it.)
   **CHECKABLE: no** — a cognitive tell; confidence is not stored anywhere
-**LR-103** — Real data over constructed tests: A test you wrote proves the code does what you IMAGINED; only real, un-curated input proves it does what the world NEEDS. When validating, include at least one live example (real headline, real input), not only cases designed to pass. (S40: entity_extractor passed 8/8 constructed but real headlines "Japan's"/"Lebanon's" instantly exposed a possessive bug -- the constructed tests never used a possessive.)
+**GNI-L-008** — Real data over constructed tests: A test you wrote proves the code does what you IMAGINED; only real, un-curated input proves it does what the world NEEDS. When validating, include at least one live example (real headline, real input), not only cases designed to pass. (S40: entity_extractor passed 8/8 constructed but real headlines "Japan's"/"Lebanon's" instantly exposed a possessive bug -- the constructed tests never used a possessive.)
   **CHECKABLE: no** — governs the CHOICE of test input, which the test file does not record
-**LR-104** — Rank work by blast radius, not just possibility: Before building, sort candidate tasks by risk -- schema/production changes = highest (hold for fresh focus + SQL-before-code); config/standalone modules = safe. Energy or enthusiasm is never a reason to do the riskiest thing at the tail of a long session. (S40: built new sources + standalone modules safely; deliberately held B3 schema-wiring for a fresh session.)
+**GNI-L-009** — Rank work by blast radius, not just possibility: Before building, sort candidate tasks by risk -- schema/production changes = highest (hold for fresh focus + SQL-before-code); config/standalone modules = safe. Energy or enthusiasm is never a reason to do the riskiest thing at the tail of a long session. (S40: built new sources + standalone modules safely; deliberately held B3 schema-wiring for a fresh session.)
   **CHECKABLE: no** — ranks candidate work by risk before it exists; no artifact to rank
-**LR-105** — Protect the future of the work over the momentum of the moment: Never make a failing check pass cosmetically. Revert to the honest proven state and log the real finding loud. A codebase must never lie about what it can do. (S40: a real-headline test found a genuine bug at 8/10 -- reverted to honest 8/8 + logged the bug for a proper fix rather than papering it green.)
+**GNI-L-010** — Protect the future of the work over the momentum of the moment: Never make a failing check pass cosmetically. Revert to the honest proven state and log the real finding loud. A codebase must never lie about what it can do. (S40: a real-headline test found a genuine bug at 8/10 -- reverted to honest 8/8 + logged the bug for a proper fix rather than papering it green.)
   **CHECKABLE: no** — forbids cosmetic green; distinguishing cosmetic from real needs the intent
 
-**LR-099** — Philosophy Compatibility Gate: When Claude reads a finalized philosophy document AND has access to the implementation codebase, Claude must perform a compatibility audit unprompted. Map each non-negotiable principle to its code implementation. Any gap found must be surfaced immediately. Full context visibility = full audit responsibility. Reference: phi_compatibility_check.md in repo root.
+**GNI-L-011** — Philosophy Compatibility Gate: When Claude reads a finalized philosophy document AND has access to the implementation codebase, Claude must perform a compatibility audit unprompted. Map each non-negotiable principle to its code implementation. Any gap found must be surfaced immediately. Full context visibility = full audit responsibility. Reference: phi_compatibility_check.md in repo root.
 
 ## PHI-003 Non-Negotiables (Quick Reference)
   **CHECKABLE: no** — an audit obligation on the agent; no artifact records whether it happened
@@ -396,7 +396,7 @@ rules are appended at the S90 close, below this line, in the usual format.*
 Last updated: May 24, 2026 — GNI S36
   **CHECKABLE: no** — a policy about when to reset data; the trigger is a human decision
 
-## LR-106 -- LLM JSON parsers must guarantee dict-or-None
+## GNI-L-012 -- LLM JSON parsers must guarantee dict-or-None
 Any function parsing LLM JSON output (e.g. _parse_json_response) MUST coerce the
 result to dict-or-None before returning. LLMs intermittently wrap the report in an
 array [{...}]; json.loads then returns a list and downstream .get() crashes ('list'
@@ -405,12 +405,12 @@ for [] or non-dict arrays. Root-caused from Jun 7 Intelligence #210 (the only fa
 in 9 autonomous days). Fix: commit a15bcc0.
   **CHECKABLE: yes** — AST: every _parse_json_response-class function's return paths yield dict or None
 
-## LR-107 -- A brief-claimed bug is a hypothesis, not a fact
+## GNI-L-013 -- A brief-claimed bug is a hypothesis, not a fact
 A bug asserted in a prior session's brief (or by anyone) is unverified until reproduced
 against live execution. S42 had TWO false ones: the S41 "URGENT" possessive bug (a test
 artifact from heredoc apostrophe-stripping) and the initial "Sunday digest mutates shared
 state" theory for #210 (the code shared no state; real cause was list-shaped JSON). Verify
-before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / LR-102.
+before fixing. Confidence is the tell to slow down. Extends GNI-R-233 / GNI-L-007.
   **CHECKABLE: no** — governs trust in a prior session's claim; trust has no byte form
 
 - **R-S55-1 - Sibling sweep:** when a bug is found in ONE consumer of a shared route/field, grep ALL consumers before closing the arc. (The 4th false-185% sibling on /about/devops sat undiscovered for 2 sessions.)
@@ -619,7 +619,7 @@ R-S79-1: Browser-UI steps are not executable in this partnership — every actio
   ship a gated command block in the same message as its gate. (S78's dispatch mistake repeated at S79.)
   **CHECKABLE: no** — about the deliverable form of an instruction in chat
 R-S79-2: A deprecation list proves the list, not the runtime. Grep live logs before declaring a
-  component dead or alive. (Lens-1 served HTTP 200 all week with a "shut down" model configured;
+  component dead or alive. (Partner B-1 served HTTP 200 all week with a "shut down" model configured;
   MAD's byte-level comment beat a remembered search claiming gpt-oss adoption.)
   **CHECKABLE: no** — requires grepping live logs, which vary per run
 R-S80-1: Binary patch anchors derive NL from the target file's own bytes (repo mixes LF and
@@ -649,7 +649,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   a budget must log what was INCLUDED against what was AVAILABLE. A guard that tests the fetched
   list passes whenever the fetch succeeds, and cannot detect its own starvation. Zero inclusion
   of a required input is a FAILURE, not a quiet loop break. Corollary: a failure that grows with
-  upstream health does not look like a failure. Mirrors Lens LR-141, adopted by reference;
+  upstream health does not look like a failure. Mirrors a Partner B rule, adopted by reference;
   GNI's own evidence pending the ROOT 1 audit.
   **CHECKABLE: yes** — grep budget assemblers for a paired INCLUDED-vs-AVAILABLE print
 
@@ -657,7 +657,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   what another consumer left over. Each tier gets an absolute allotment measured exclusive of
   every other tier; a total cap may exist as a backstop but must not be the allocator. When a
   tier drops content, log WHICH item was dropped by name — a count says the tier shrank, a name
-  says which perspective was lost. Mirrors Lens's Mission Analyst finding.
+  says which perspective was lost. Mirrors Partner B's Mission Analyst finding.
   **CHECKABLE: yes** — grep budget code for a share computed from another consumer's remainder
 
 - R-S81-4 (One load-bearing block per message; rollbacks never travel with applies): When a
@@ -665,7 +665,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   run while its patch block does not, committing nothing and looking like success. And a rollback
   command sitting in the same message WILL eventually be pasted along with everything else.
   Offer recovery separately, on request, only after the apply is verified. Assume any block may
-  run twice, out of order, or not at all. Mirrors Lens LR-140.
+  run twice, out of order, or not at all. Mirrors a Partner B rule.
   **CHECKABLE: no** — one load-bearing block per message - a property of a chat turn
 
 - R-S81-5 (A guard's expected value must be derived, not hand-counted): Any assertion whose
@@ -673,7 +673,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   banked estimates. Derive it from the same data the change is made from (sum the deltas across
   the edit list, do not count lines). Assert RELATIVE to the file's state read at the start of
   the patch, never absolutely — a hardcoded "this file must be LF" starts failing on files
-  nobody touched the first time autocrlf converts them. Extends R-S80-1. Mirrors Lens LR-139.
+  nobody touched the first time autocrlf converts them. Extends R-S80-1. Mirrors a Partner B rule.
   **CHECKABLE: yes** — SHIPPED C5: AST lint - no check function may hold a hand-written integer
 
 - R-S81-6 (Grep the agreement, not the message): `git log --stat` proves message-vs-contents. It
@@ -682,7 +682,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   element did not land. The phrase must be unique by construction — a commit SHA proves nothing
   because SHAs legitimately recur in a document. Presence alone is not enough: assert UNIQUENESS
   whenever an ordered list gains an item. The trap stated plainly: producing text in conversation
-  FEELS like shipping it, and the same illusion works on the reader. Mirrors Lens LR-138.
+  FEELS like shipping it, and the same illusion works on the reader. Mirrors a Partner B rule.
   **CHECKABLE: no** — 'contents vs agreement' requires knowing what was agreed
 
 - R-S81-7 (Record requested time and observed time separately): The trap book recorded when crons
@@ -698,7 +698,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   x-ratelimit headers, all per-MINUTE; there is NO daily token header, so TPD is observable only
   from a 429 body or the console, and a 404 carries no rate headers at all (so any pre-flight
   reading them fails open on a dead model name). Any reasoning of the form "the quota resets and
-  we start fresh" is reasoning about a fiction. Measured in Lens to the millisecond across seven
+  we start fresh" is reasoning about a fiction. Measured in Partner B to the millisecond across seven
   readings; adopted here by reference, and GNI's per-account-day reservation model is unaudited
   against it (order item 4.3).
 
@@ -721,7 +721,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   sibling tiers (constraint_block, R1, R2, R3, tail) that compete for the same budget --
   so when the arb prompt grows, the log will show articles shrinking without naming which
   tier ate the room, which is the very question the next item must answer. Corollary from
-  Lens: a measurement that FALSIFIES the instruction that requested it is a success, not a
+  Partner B: a measurement that FALSIFIES the instruction that requested it is a success, not a
   failed mission. Design for that outcome.
   **CHECKABLE: no** — 'the whole category' requires naming the category under test
 
@@ -788,7 +788,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
 - R-S83-4 (A cert that measures mechanics has not certified the instrument): Passing on
   finish_reason, absence of 413s, absence of empties, and "the output arrived" proves the
   PLUMBING survived a change; it says nothing about whether what flows through the plumbing
-  is the same. Evidence from Project Lens: a July migration certified clean on mechanics, and
+  is the same. Evidence from Partner B: a July migration certified clean on mechanics, and
   three weeks later the same positions were extracting twice the actors and THREE TIMES the
   claims per row, while the headline consistency metric moved 0.834 -> 0.853 and hid it. GNI
   owns the same debt: the S80 MAD migration was certified on 413s and empties, and ROOT 2.3
@@ -802,7 +802,7 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
   nothing ever compares them. Byte evidence: `sed -n '/PART D/,/PART E/p' | grep -c
   "Transfer_Protocol"` returned 0. GNI's CONTRACT cited the prompts by path since v5, the
   protocol file existed and was correct, and no artifact in the repo ever instructed anyone
-  to open it. Lens shipped the identical fix after discovering its pasted close prompt had
+  to open it. Partner B shipped the identical fix after discovering its pasted close prompt had
   silently lost two clauses present in the repo. Extends R-S82-4: sweeping templates when law
   changes is worthless if no template is ever read.
   **CHECKABLE: no** — requires the pasted opening prompt, which reaches no file
@@ -810,12 +810,12 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
 - R-S83-6 (Flow discipline does not protect a stock): Rate limits, per-minute pacers and
   per-day reservations all govern a FLOW, and a system fluent in flow control can be entirely
   blind to accumulation. Storage only grows; nothing consumes it back; and its failure is not
-  a slow degradation but a hard refusal of every read at once. Project Lens ran sophisticated
+  a slow degradation but a hard refusal of every read at once. Partner B ran sophisticated
   token-per-minute and token-per-day governors while its database grew unmetered to 287% of a
   free-tier quota, and went fully offline for nineteen days. GNI_Autonomous has `quota_guard.py`
   and ZERO retention code -- `grep -rn "\.delete()"` returns nothing. For every free-tier
   resource, ask whether it is spent or ACCUMULATED, and meter the accumulated ones. Corollary
-  amending R-S81-6: read the METER, not the mail -- Lens missed two announcement emails a
+  amending R-S81-6: read the METER, not the mail -- Partner B missed two announcement emails a
   month apart and lost five positions to one and its whole database to the other.
 
 ## AMENDMENT TO AN EXISTING RULE (no new number -- R-S83 deliberately does not re-mint)
@@ -823,12 +823,12 @@ R-S80-3: Speculation may flow but must not reach humans dressed as a finding. La
 
 - R-S81-3 (AMENDED 2026-08-24): the existing rule says a count tells you the tier shrank while
   a NAME tells you which perspective was lost. Amended: the count must be of DISTINCT IDENTITY,
-  not of rows. Project Lens's arrival check reported `s1=4/4` on a wave where all four rows
+  not of rows. Partner B's arrival check reported `s1=4/4` on a wave where all four rows
   were the same lens produced four times -- a perfect score over a single perspective. GNI's
   ARB-ARRIVAL has the identical blind spot: `arrived=20` counts lines beginning `'  - ['`, so
   fifteen geopolitical articles and five financial ones report exactly as four pillars would.
   Count the distinct category, then name the losses.
-  *(This is an amendment rather than R-S83-7 on purpose: Lens re-minted a rule it already held
+  *(This is an amendment rather than R-S83-7 on purpose: Partner B re-minted a rule it already held
   and paid for the duplicate. Before minting a number, search the register for the rule that
   already says it -- and search BOTH ID schemes, `GNI-R-###` and `R-S##-#`, since a grep for
   one is blind to the other.)*
@@ -1207,7 +1207,7 @@ that silently drops one.
   **CHECKABLE: no** — 're-emit preconditions' - about how a revision is communicated
 
 **R-S90-4** — A rule invoked to DEFER one item binds every item of the same class in the same
-session. S90 cited `LR-104` (production/schema/credential work needs a session opening, not a
+session. S90 cited `GNI-L-009` (production/schema/credential work needs a session opening, not a
 tail) to defer item 3.2, and then, ten minutes later, urged a credential rotation that the
 same rule covers. This is not forgetfulness; it is applying a rule as an argument for one
 decision instead of as a constraint on all of them. When you reach for a rule to justify a

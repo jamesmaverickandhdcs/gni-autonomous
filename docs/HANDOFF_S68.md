@@ -44,7 +44,7 @@ New rules appended to GNI_RULES.md: R-S68-1, R-S68-2
 | GT-4 | digests #2-5: watch legacy fabricated counts decay + alias-family ARB spans thin; THEN GT-5 enforce decision | passive, ~18:13+drift local | James (GT-5) | - |
 | CLIFF-CODE | NEW: one commit -- funnel L1065 env-read, adaptive.yml:48 secrets ref, 6-file dying-default sweep; + check gni_selfbias/gni_graph LLM env | after GT-3 or swap-day | James | V(census) |
 | U-AUG9 | keyfile FIRST: resolves GROQ_MAD_MODEL contradiction + all secret values | marathon day | James | - |
-| L-CLIFF | Lens opener SOON; Aug 16 = 34d; quota structural (1 MAD run = 90.5%/day) | Lens session | James | V(scope) |
+| L-CLIFF | Partner B opener SOON; Aug 16 = 34d; quota structural (1 MAD run = 90.5%/day) | Partner B session | James | V(scope) |
 | K-WATCH-NS | non-storm corpus read still owed (Hormuz storm since S67) | first quiet-day trace | - | - |
 | SAN-DEAD | design session: scoring-vs-sanitize ordering options | grounded, design fresh | James | V(bytes) |
 | CENSUS-2 | 3-kw cap censors ~44% of pass rows -- instrument fix design | extend scratch | - | V(evidence) |
@@ -79,7 +79,7 @@ New rules appended to GNI_RULES.md: R-S68-1, R-S68-2
 ## 6. LOAD CHECK - next AI echoes EXACTLY these 5 lines, nothing more
 HEAD = `9991c4a` (ls-remote) + TREE CLEAN -- RECENCY-DEAD live from next run, observation window OPEN
 TOP3 = TRACE-READ-2 (RECENCY first breath: no [RECENCY-WARN] + live bonuses + selection shift = medicine), FT-GAP-A ship (spec paste-ready, strictly after RECENCY window), GT-4 decay watch
-DEADLINE = OC-A ~Jul 24 / Aug 9 marathon (keyfile FIRST -- resolves GROQ_MAD_MODEL contradiction) / Groq cliff Aug 16 (CLIFF-CODE: 2 hardcode landmines censused; L-CLIFF Lens SOON)
+DEADLINE = OC-A ~Jul 24 / Aug 9 marathon (keyfile FIRST -- resolves GROQ_MAD_MODEL contradiction) / Groq cliff Aug 16 (CLIFF-CODE: 2 hardcode landmines censused; L-CLIFF Partner B SOON)
 TRAP = one shifter per window (RECENCY -> FT-GAP-A -> GT-3); RECENCY selection shift = medicine; GT-4 falling counts = window decay not integrity
 FIRST MOVE = ls-remote + git status (expect CLEAN); then James uploads morning trace + pipeline log for RECENCY read
 

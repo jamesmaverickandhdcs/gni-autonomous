@@ -1,7 +1,7 @@
 # GNI OPERATING CONTRACT (permanent - edit only when a rule of engagement changes)
 
 ## ROLES
-- James (Bro Alpha, Chiang Mai UTC+7, Team Geeks): continuity + gate + GIT TRIGGER. He runs EVERY commit/push himself (Git Bash, Windows, venv). Sole operator authority.
+- James (Chiang Mai UTC+7, Team Geeks): continuity + gate + GIT TRIGGER. He runs EVERY commit/push himself (Git Bash, Windows, venv). Sole operator authority.
 - Chat-Claude: audit / design / review / patch author. NEVER pulls the git trigger. Owns decisions only when James says "your call" - then decide WITH reasoning, never bounce back.
 - Claude Code: local executor for big writes (>~30 lines, R-S54-1).
 
@@ -27,7 +27,7 @@ BIRD-EYE (GNI-R-037) -> **LINEAGE-BEV** -> DEEP ANALYSIS -> SWOT if architectura
 - ECONOMY (model-agnostic, v3 principle, v5 de-rostered): the most capable model available is spent on DESIGN AND JUDGMENT - redesigns, root-cause, decision frameworks, audits. Mechanical execution (secret swaps, probe runs, cron reads, SQL) goes to paste-blocks or a cheaper session. Batch reads; minimise round-trips. WHICH model is current is STATE and lives in the handoff, never here.
 
 ## WORKFLOW RULES
-- Short patches: `printf '\e[?2004l'` guard, anchored python heredoc or sed, pure-ASCII anchors (LR-101), assert count==1.
+- Short patches: `printf '\e[?2004l'` guard, anchored python heredoc or sed, pure-ASCII anchors (GNI-L-015), assert count==1.
 - Verify the PATCHED/DONE print BEFORE trusting verify-greps (R-S55-3). Then exit status + clean $ prompt (R-S54-3).
 - `npm run build` (expect 40/40) before commit. `git status` first; stage files EXPLICITLY, never `add -A`.
 - Browser is the ONLY live-verify; curl/fetch is a dead-end (R-S54-4).
@@ -84,8 +84,8 @@ Warm long-term partnership ("my buddy", the fist-bump), rigorous underneath. Ans
 - v1 - born at S55 close (2026-07-06). Edit this file only when a rule of engagement changes; log each edit here.
 - v2 - S79 (2026-07-22): daily-driver model Fable 5 -> Opus 4.8; MODEL_TRANSITION_BRIEF.md born. **RETIRED AT v5**: a model roster is STATE, not law, and this entry was already false (S82 ran on Opus 5). The roster now lives in the handoff.
 - v3 - S80 (2026-07-24): Claude economy rule. **KEPT AT v5 as a model-agnostic principle** in CORE DISCIPLINE - the principle is a rule of engagement; the model names in it were state.
-- v4 - S81 (2026-08-17): target/order separation adopted. MISSION stays here; CURRENT TARGET and WORKING ORDER move to docs/GNI_TARGET_AND_ORDER.md (fixed path). Discovery policy, one-mission-per-session, same-session-fix bar, routing, retire clause and phase transition added. Mirrored from Project Lens by reference-and-mirror, never blind copy - Lens adopted GNI CONTRACT v3's shared discipline the same way, and both sides log the mirror.
-- v5 - S82 (2026-08-17): second-pass adoption of the Lens transfer, from the two documents read IN FULL rather than from a summary. Added: the wrongness ledger at close (M1) · traps promote-or-expire (M2) · decisions homed in the order file with the no-fifth-document cost accepted in writing (M3) · close-is-a-checkpoint ruling, pending James's confirmation (M4) · roster evicted from law, economy principle de-rostered and kept (M5) · prompts cited BY PATH as artifacts (Parts C/D) instead of named as folklore · the sibling sweep extended to templates · measurement-dumps-everything, stopgap-never-closes-a-root, and the two non-trigger rationalisations, all stated in GNI's own terms against GNI's own evidence.
+- v4 - S81 (2026-08-17): target/order separation adopted. MISSION stays here; CURRENT TARGET and WORKING ORDER move to docs/GNI_TARGET_AND_ORDER.md (fixed path). Discovery policy, one-mission-per-session, same-session-fix bar, routing, retire clause and phase transition added. Mirrored from Partner B by reference-and-mirror, never blind copy - Partner B adopted GNI CONTRACT v3's shared discipline the same way, and both sides log the mirror.
+- v5 - S82 (2026-08-17): second-pass adoption of the Partner B transfer, from the two documents read IN FULL rather than from a summary. Added: the wrongness ledger at close (M1) · traps promote-or-expire (M2) · decisions homed in the order file with the no-fifth-document cost accepted in writing (M3) · close-is-a-checkpoint ruling, pending James's confirmation (M4) · roster evicted from law, economy principle de-rostered and kept (M5) · prompts cited BY PATH as artifacts (Parts C/D) instead of named as folklore · the sibling sweep extended to templates · measurement-dumps-everything, stopgap-never-closes-a-root, and the two non-trigger rationalisations, all stated in GNI's own terms against GNI's own evidence.
 - v6 - S84 (2026-08-25): CLOSE DELIVERY added; ruled by James. Every close artifact is
   session-numbered in the repo as well as in the download, the live file is the highest number,
   and the close ends with a FILE MANIFEST that a later session re-reads to check completeness.

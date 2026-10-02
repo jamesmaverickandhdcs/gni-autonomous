@@ -128,7 +128,7 @@ the machinery you would expect around it: no meter, no retention, and no backup.
   kB/day all tables. **Runway 520-660 days.** The two 48/day workflows write ~31 rows/day
   combined = ~5% of growth: they are NOT the stock driver. Egress 446 MB / 5 GB (9%), file
   storage 0/1 GB, MAU 0/50,000 — **no second stock exists.** Org `jamesmaverickandhdcs` holds
-  six projects, five paused, Lens among none of them: the "different org" claim is CONFIRMED,
+  six projects, five paused, Partner B among none of them: the "different org" claim is CONFIRMED,
   and paused projects do not consume the quota (113 MB total vs ~40-60 MB per project floor).
   Data window is 92 days, not 193: a `TRUNCATE` on 2026-05-24 ~02:50Z (the S35 data reset)
   explains both the `del=0` counters and the epoch.
@@ -180,7 +180,7 @@ the machinery you would expect around it: no meter, no retention, and no backup.
 
 ### ROOT 4 — COST AND HEADROOM · IMPORTANT
 - **4.4** Measure chars/token PER POSITION (agent call vs arbitrator call), not once for the
-  repo — Lens measured the same model at 3.80/4.19/4.156/4.738 on different prompts.
+  repo — Partner B measured the same model at 3.80/4.19/4.156/4.738 on different prompts.
   `_call_agent` already holds both the char count and `usage.prompt_tokens` in one scope: one
   log line, zero API cost. `//3` over-estimates and is the SAFE direction: do NOT change to
   `//4`.
@@ -198,7 +198,7 @@ the machinery you would expect around it: no meter, no retention, and no backup.
 
 ### ROOT 5 — INSTITUTIONAL HARDENING · BELOW THE LINE
 - **5.4** The register has THREE ID schemes and CONTRACT cites three IDs possibly absent from
-  it. `GNI_RULES.md` carries `GNI-R-###`, `R-S##-#` and `LR-###` (18 LR lines). A `GNI-R-`
+  it. `GNI_RULES.md` carries `GNI-R-###`, `R-S##-#` and `GNI-L-###` (18 LR lines). A `GNI-R-`
   grep returns SIX lines, yet CONTRACT v5 cites GNI-R-037, GNI-R-076 and GNI-R-233 as live law.
   One repo-wide grep decides whether CORE DISCIPLINE points at anything. *(Generation 2 of 3.)*
 - **NEW, unnumbered, one line each:** delete `docs/STATUS.md` (fossil at S46) · the Protocol's
@@ -345,5 +345,5 @@ working draft had silently dropped.
 4. **RE-ORDER** — regenerate, dated, superseding. Never appended.
 5. **WORK THE TOP.**
 
-*Mirrors the Lens discovery policy by reference, stated in GNI's own terms against GNI's own
+*Mirrors the Partner B discovery policy by reference, stated in GNI's own terms against GNI's own
 evidence — never by paste. Dual sources of truth are how S2-D died. Logged on both sides.*
