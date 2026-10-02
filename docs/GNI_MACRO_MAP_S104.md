@@ -9,8 +9,8 @@ No clock is written into this file, so an unchanged input reproduces it byte-ide
 | Y | White Paper layer | `docs/GNI_ARCHITECTURE_S104.md`, ROADMAP table |
 | Z | vision -> executable | `**CHECKABLE:**` markers in `docs/GNI_RULES_S104.md` |
 
-INPUT `docs/GNI_RULES_S104.md` md5 `b5b10ce120f5b57f1078d5df2bd3ef02` (EOL-normalised)
-INPUT `docs/GNI_ARCHITECTURE_S104.md` md5 `999fa0e6a8f7728515bbe451ec4ee5fb` (EOL-normalised)
+INPUT `docs/GNI_RULES_S104.md` md5 `cb5085c5ea6738b988896a36d655052f` (EOL-normalised)
+INPUT `docs/GNI_ARCHITECTURE_S104.md` md5 `5230e53b9c15a1374c37d8e597a24c24` (EOL-normalised)
 GENERATED from `docs/GNI_RULES_S104.md` -- 192 CHECKABLE markers, register generation 104.
 
 ## TOTALS
@@ -94,6 +94,17 @@ and it is not a zero.
 
 | id | Z | source |
 |---|---|---|
+| `GNI-L-001` | no | GNI_RULES_S104.md:351 |
+| `GNI-L-002` | yes | GNI_RULES_S104.md:354 |
+| `GNI-L-003` | yes | GNI_RULES_S104.md:357 |
+| `GNI-L-004` | no | GNI_RULES_S104.md:360 |
+| `GNI-L-005` | no | GNI_RULES_S104.md:363 |
+| `GNI-L-006` | yes | GNI_RULES_S104.md:366 |
+| `GNI-L-007` | no | GNI_RULES_S104.md:368 |
+| `GNI-L-008` | no | GNI_RULES_S104.md:370 |
+| `GNI-L-009` | no | GNI_RULES_S104.md:372 |
+| `GNI-L-010` | no | GNI_RULES_S104.md:374 |
+| `GNI-L-011` | no | GNI_RULES_S104.md:377 |
 | `GNI-R-114` | yes | GNI_RULES_S104.md:80 |
 | `GNI-R-115` | no | GNI_RULES_S104.md:84 |
 | `GNI-R-116` | yes | GNI_RULES_S104.md:89 |
@@ -101,17 +112,6 @@ and it is not a zero.
 | `GNI-R-240` | yes | GNI_RULES_S104.md:340 |
 | `GNI-R-241` | yes | GNI_RULES_S104.md:343 |
 | `GNI-R-242` | no | GNI_RULES_S104.md:346 |
-| `GNI-L-001` | no | GNI_RULES_S104.md:351 |
-| `GNI-L-002` | yes | GNI_RULES_S104.md:354 |
-| `GNI-L-003` | yes | GNI_RULES_S104.md:357 |
-| `GNI-L-004` | no | GNI_RULES_S104.md:360 |
-| `GNI-L-005` | no | GNI_RULES_S104.md:363 |
-| `GNI-L-006` | yes | GNI_RULES_S104.md:366 |
-| `GNI-L-011` | no | GNI_RULES_S104.md:377 |
-| `GNI-L-007` | no | GNI_RULES_S104.md:368 |
-| `GNI-L-008` | no | GNI_RULES_S104.md:370 |
-| `GNI-L-009` | no | GNI_RULES_S104.md:372 |
-| `GNI-L-010` | no | GNI_RULES_S104.md:374 |
 | `NN-PHI-1` | no | GNI_RULES_S104.md:382 |
 | `NN-PHI-2` | no | GNI_RULES_S104.md:384 |
 | `NN-PHI-3` | no | GNI_RULES_S104.md:386 |
