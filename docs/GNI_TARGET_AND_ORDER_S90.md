@@ -354,7 +354,7 @@ can act on it is the "decorative rank" generation 9 warned about.
 - **PROVIDER + PLATFORM EOL WATCH — record at announcement, not at death.**
   - `actions/checkout@v4` + `actions/setup-python@v5` → item 6.7. **All 8 workflows now on v7;
     cert pending one scheduled run of `gni_mad` and `gni_pipeline`.**
-  - `gemini-2.5-flash` dies Oct 16 (Partner B's a Partner B agent runs on it).
+  - `gemini-2.5-flash` dies Oct 16 (a Partner B agent runs on it).
   - `llama-3.1-8b-instant` died Aug 16 — last hardcoded default removed at S89 (9.4).
   - Supabase free tier warns by EMAIL at 20% of a limit, then a grace period, then restricts,
     with no second grace period. Storage 113/500 MB. No longer shared with Partner B.

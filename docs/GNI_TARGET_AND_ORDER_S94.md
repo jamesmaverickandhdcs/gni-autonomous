@@ -467,7 +467,7 @@ DE-RANKED at S90 (DECISION S90-2) with a checkable re-rank trigger. Untouched at
   - **Node 20 is ITSELF now deprecated on GitHub runners** — the post-fix logs state that
     workflows run on **Node 24 by default**, citing a 2025-09-19 changelog. Recorded at
     announcement. No action required while all eight are on v7.
-  - `gemini-2.5-flash` dies Oct 16 (Partner B's a Partner B agent runs on it).
+  - `gemini-2.5-flash` dies Oct 16 (a Partner B agent runs on it).
   - `llama-3.1-8b-instant` died Aug 16 — last hardcoded default removed at S89 (9.4).
   - Supabase free tier warns by EMAIL at 20% of a limit, then a grace period, then restricts,
     with no second grace period. Storage 113/500 MB. No longer shared with Partner B.

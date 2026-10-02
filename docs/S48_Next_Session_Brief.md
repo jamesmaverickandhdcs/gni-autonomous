@@ -99,7 +99,7 @@ stale `PIPELINE_RESERVATIONS` comment math (still cites 7433).
 ## PENDING OFFERS (James can pick up anytime)
 - **Onboarding prompt set** (continuity-leak cure) -- complete prompt set so a fresh session
   boots into full context fast. Not drafted.
-- **Four Treasures -> Partner B** -- `GNI_to_Partner B_Four_Treasures.docx` BUILT; upload in next Partner B
+- **Four Treasures -> Partner B** -- `GNI_to_Partner_B_Four_Treasures.docx` BUILT; upload in next Partner B
   session, append to lens-DOC-002. Partner B-side, not GNI.
 
 ## OPERATOR CONTRACT REMINDERS (apply from message 1)

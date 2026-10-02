@@ -104,7 +104,7 @@ funnel, GPVS verifier, entity graph); T4 = mostly in place (memory + commit-hash
 
 - **Onboarding prompt set** (continuity-leak cure) -- a complete prompt set so any fresh
   session boots into full context fast. Not yet drafted.
-- **Transfer Four Treasures to Partner B** -- docx `GNI_to_Partner B_Four_Treasures.docx` is BUILT.
+- **Transfer Four Treasures to Partner B** -- docx `GNI_to_Partner_B_Four_Treasures.docx` is BUILT.
   James uploads it in his next Partner B session -> append to `lens-DOC-002` as LR entries.
   (Memory edits are project-scoped; this lives in Partner B's own registry.)
 

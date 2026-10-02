@@ -259,7 +259,7 @@ one regeneration at generation 7.**
 - **OC-A**: closed Jul 25, next quarterly re-check ~Oct 25.
 - **PROVIDER + PLATFORM EOL WATCH — record at announcement, not at death.**
   - **`actions/checkout@v4` + `actions/setup-python@v5` → item 6.7, LIVE WARNING TODAY.**
-  - `gemini-2.5-flash` dies Oct 16 (Partner B's a Partner B agent runs on it).
+  - `gemini-2.5-flash` dies Oct 16 (a Partner B agent runs on it).
   - Supabase free tier warns by EMAIL at 20% of a limit, then a grace period, then restricts,
     with no second grace period. Storage 113/500 MB, shared with Partner B (6.6).
 
