@@ -703,6 +703,25 @@ def check_c7_slo_freshness(ctx):
             "window %s..%s spans a regime boundary at %s: check p50 ratio %.2f"
             % (frm, to, at, worst))
 
+    # (c) S105, item 9.21: the public pages carry the bound through ONE constant that
+    # mirrors SLO-CFG. A moved bound must redden here until the pages follow it.
+    web = os.path.join(ctx["root"], "src", "lib", "freshness.ts")
+    if not os.path.isfile(web):
+        problems.append("no public freshness constant at src/lib/freshness.ts")
+    else:
+        with open(web, "rb") as fh:
+            ts = fh.read().decode("utf-8")
+        for key in ("BOUND_HOURS", "EXCEEDANCE_MAX", "WINDOW_FROM", "WINDOW_TO"):
+            m = re.search(r"^export const FRESHNESS_%s = '?([^'\s]+)'?\s*$" % key, ts, re.M)
+            seen = m.group(1) if m else None
+            if key.startswith("WINDOW"):
+                same = seen == cfg[key]
+            else:
+                same = seen is not None and float(seen) == float(cfg[key])
+            if not same:
+                problems.append("src/lib/freshness.ts FRESHNESS_%s is %s; SLO-CFG says %s"
+                                % (key, seen, cfg[key]))
+
     if problems:
         return False, "; ".join(problems)
     return True, ("%s h is the smallest hour inside a %.2f budget; %d of %d gaps "

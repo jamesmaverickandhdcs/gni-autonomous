@@ -1,6 +1,7 @@
 ﻿'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { FRESHNESS_LINE } from '@/lib/freshness'
 
 interface AdaptiveRun {
   id: string
@@ -90,7 +91,7 @@ export default function AdaptiveLogPage() {
               <div className="space-y-3 text-xs text-gray-400">
                 <div className="flex gap-3">
                   <span className="text-blue-400 font-bold shrink-0">1.</span>
-                  <span>Heartbeat runs every 30 min — zero Groq calls (GNI-R-114)</span>
+                  <span>Heartbeat: {FRESHNESS_LINE} — zero Groq calls (GNI-R-114)</span>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-blue-400 font-bold shrink-0">2.</span>

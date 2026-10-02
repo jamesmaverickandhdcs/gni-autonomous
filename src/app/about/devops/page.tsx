@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { FRESHNESS_LINE, FRESHNESS_SHORT, SCHEDULE_REQUESTED_30 } from '@/lib/freshness'
 
 interface QuotaData {
   today_tokens: number
@@ -40,7 +41,7 @@ export default function AboutDevopsPage() {
   const pipelines = [
     { name: 'gni_pipeline', schedule: '02:13 + 10:13 UTC', tokens: '~17,780/run (measured avg, 61 runs, Aug 2026)', color: 'blue', desc: 'Core intelligence pipeline. RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. The sacred run that never fails.' },
     { name: 'gni_mad', schedule: '02:43 + 10:43 UTC', tokens: madTokens, color: 'purple', desc: 'Quadratic MAD Protocol. Four AI agents (Bull, Bear, Black Swan, Ostrich) debate the latest report across 3 rounds with Arbitrator coaching after each round. Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction.' },
-    { name: 'gni_heartbeat', schedule: 'Every 30 min', tokens: '0 tokens', color: 'green', desc: 'Escalation monitoring and NYSE alert system. Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold.' },
+    { name: 'gni_heartbeat', schedule: FRESHNESS_SHORT, tokens: '0 tokens', color: 'green', desc: 'Escalation monitoring and NYSE alert system. Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold.' },
     { name: 'gni_adaptive', schedule: 'On trigger', tokens: '0 (Cerebras path -- logs 0 Groq)', color: 'amber', desc: 'Emergency fresh analysis when world escalation spikes. CRITICAL level = 0 Groq calls (cached data only). HIGH = 4 calls. LOW = 19 calls. Frequency controller adjusts run interval autonomously: CRITICAL=30min, HIGH=2h, ELEVATED=4h, MODERATE=6h, LOW=12h.' },
   ]
 
@@ -49,7 +50,7 @@ export default function AboutDevopsPage() {
     { layer: 'L2 Security', title: '81-Pattern Injection Detection', desc: 'Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain.' },
     { layer: 'L3 Intelligence', title: 'Funnel Scoring + AI Analysis', desc: 'Geopolitical significance scoring (0-20 points), top-N selection with source diversity enforcement, 3 independent AI runs at temperatures 0.1/0.3/0.7, t-distribution confidence interval (t=4.303, n=3, alpha=0.05) for every sentiment score.' },
     { layer: 'L4 Validation', title: 'GPVS Prediction Scoring', desc: 'After verify_date passes, actual SPY movement measured against prediction direction. Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for inconclusive. Creates compounding accuracy advantage.' },
-    { layer: 'L5 Autonomy', title: 'Self-Healing + Mission Control', desc: 'Heartbeat monitors escalation delta every 30 minutes. Mission Control checks Supabase connection, report freshness, quota ceiling, source health, pipeline recency. Telegram CRITICAL/WARNING alerts with specific action recommendations.' },
+    { layer: 'L5 Autonomy', title: 'Self-Healing + Mission Control', desc: `Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. Mission Control checks Supabase connection, report freshness, quota ceiling, source health, pipeline recency. Telegram CRITICAL/WARNING alerts with specific action recommendations.` },
   ]
 
   const colorMap: Record<string, string> = {
@@ -82,7 +83,7 @@ export default function AboutDevopsPage() {
             {[
               { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (100K tokens/day), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero vendor lock-in. Zero credit card required. Zero maintenance cost.' },
               { title: 'Zero Human Intervention', desc: 'Once deployed, GNI runs 2x daily without any human action. The frequency controller adjusts run intervals based on world escalation score. The adaptive pipeline responds to breaking threats automatically without any trigger from a human.' },
-              { title: 'Self-Healing by Design', desc: 'Mission Control monitors 6 health dimensions every 30 minutes. Telegram alerts fire before failures cascade. The heartbeat detects anomalies and triggers corrective pipelines autonomously. The system fixes itself.' },
+              { title: 'Self-Healing by Design', desc: `Mission Control monitors 6 health dimensions, ${SCHEDULE_REQUESTED_30}. Telegram alerts fire before failures cascade. The heartbeat detects anomalies and triggers corrective pipelines autonomously. The system fixes itself.` },
             ].map(item => (
               <div key={item.title} className="bg-purple-900 bg-opacity-30 rounded-lg p-4">
                 <div className="text-sm font-bold text-purple-300 mb-2">{item.title}</div>

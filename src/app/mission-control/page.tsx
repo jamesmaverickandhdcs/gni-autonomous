@@ -1,6 +1,7 @@
 ﻿'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { SCHEDULE_REQUESTED_30 } from '@/lib/freshness'
 
 interface CheckResult {
   status: string
@@ -196,7 +197,7 @@ export default function SelfCheckPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">How This Works</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            Auto-runs every 30 minutes. Checks: Supabase connection, latest report age, Groq quota, source health, pipeline recency, MAD debate recency.
+            Auto-runs: {SCHEDULE_REQUESTED_30}. Checks: Supabase connection, latest report age, Groq quota, source health, pipeline recency, MAD debate recency.
             CRITICAL or WARNING issues trigger automatic Telegram alert to admin. All results saved to mission_control_log table.
             This is GNI&apos;s web-layer self-monitoring — part of the L8 autonomy roadmap.
           </p>

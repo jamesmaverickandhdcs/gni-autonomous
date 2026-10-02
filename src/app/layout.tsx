@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     default: 'GNI — Global Nexus Insights (Autonomous)',
     template: '%s | GNI — Global Nexus Insights',
   },
-  description: 'Free AI-powered geopolitical intelligence. Real-time analysis of global conflicts, market impact, escalation risk, and financial sentiment. Autonomous pipeline. $0/month.',
+  description: 'Free AI-powered geopolitical intelligence. Analysis of global conflicts, market impact, escalation risk, and financial sentiment. Autonomous pipeline. $0/month.',
   keywords: [
     'free geopolitical intelligence',
     'AI news analysis',
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: 'Global Nexus Insights (Autonomous)',
     title: 'GNI — Free AI Geopolitical Intelligence',
-    description: 'Free AI-powered geopolitical intelligence. Real-time analysis of global conflicts, market impact, and escalation risk. Autonomous pipeline. $0/month.',
+    description: 'Free AI-powered geopolitical intelligence. Analysis of global conflicts, market impact, and escalation risk. Autonomous pipeline. $0/month.',
     images: [
       {
         url: `${siteUrl}/og-image.png`,
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'GNI — Free AI Geopolitical Intelligence',
-    description: 'Real-time autonomous AI analysis of global conflicts and market impact. Free forever.',
+    description: 'Autonomous AI analysis of global conflicts and market impact. Free forever.',
     images: [`${siteUrl}/og-image.png`],
   },
   alternates: {

@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { SCHEDULE_REQUESTED_30 } from '@/lib/freshness'
 
 interface QuotaData {
   by_account_today: Record<string, number>
@@ -163,7 +164,7 @@ export default function DeveloperHub() {
               <div className="text-sm font-bold text-white">Mission Control System</div>
               <span className="text-xs bg-purple-900 text-purple-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400 leading-relaxed">Autonomous web-layer health monitoring that runs every 30 minutes. Checks Supabase connection, report freshness, Groq quota, source health, pipeline recency, and MAD debate recency. Sends Telegram alerts automatically when issues are detected and saves all results to Supabase for historical analysis.</p>
+            <p className="text-xs text-gray-400 leading-relaxed">Autonomous web-layer health monitoring, {SCHEDULE_REQUESTED_30}. Checks Supabase connection, report freshness, Groq quota, source health, pipeline recency, and MAD debate recency. Sends Telegram alerts automatically when issues are detected and saves all results to Supabase for historical analysis.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-purple-200 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 transition-colors">View Mission Control &rarr;</span>
             </div>
