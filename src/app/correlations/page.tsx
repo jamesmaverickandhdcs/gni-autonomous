@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatCappedAverage } from '@/lib/escalation'
 
 interface Correlation {
   escalation_level: string
@@ -160,7 +161,7 @@ export default function CorrelationsPage() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <div className={`text-lg font-bold ${col.text}`}>{c.escalation_level}</div>
-                      <div className="text-xs text-gray-500">avg {c.avg_escalation_score?.toFixed(1)}/10 — {c.sample_count} samples</div>
+                      <div className="text-xs text-gray-500">{formatCappedAverage(c.avg_escalation_score)} — {c.sample_count} samples</div>
                     </div>
                   </div>
 

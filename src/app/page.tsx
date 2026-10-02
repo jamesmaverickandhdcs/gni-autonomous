@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 const MiniMapView = dynamic(() => import('@/components/MapView'), { ssr: false })
@@ -58,6 +59,7 @@ interface Report {
   dark_side_detected: string
   mad_confidence: number
   escalation_score: number
+  escalation_score_raw?: number | null
   escalation_level: string
   deception_level: string
   myanmar_summary: string
@@ -422,7 +424,7 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <span className="text-lg font-black">&#9888; CRITICAL ESCALATION DETECTED</span>
             <span className="text-sm font-medium opacity-90">
-              {latest.escalation_score ? latest.escalation_score.toFixed(1) + '/10' : ''} -- {latest.title || 'High-risk geopolitical signal active'}
+              {latest.escalation_score ? formatEscalation(latest.escalation_score, latest.escalation_score_raw) : ''} -- {latest.title || 'High-risk geopolitical signal active'}
             </span>
           </div>
           <a href="/brief" className="text-xs font-black bg-white text-red-700 rounded px-3 py-1 shrink-0 hover:bg-red-100 transition-colors">VIEW BRIEF</a>
@@ -702,7 +704,7 @@ export default function Home() {
                     </span>
                     {latest.escalation_level && (
                       <span className={`text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap ${escalationColor(latest.escalation_level)}`}>
-                        ⚡ {latest.escalation_level?.toUpperCase()} {latest.escalation_score ? `${latest.escalation_score.toFixed(1)}/10` : ''}
+                        ⚡ {latest.escalation_level?.toUpperCase()} {latest.escalation_score ? formatEscalation(latest.escalation_score, latest.escalation_score_raw) : ''}
                       </span>
                     )}
                   </div>

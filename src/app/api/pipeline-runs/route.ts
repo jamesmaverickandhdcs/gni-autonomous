@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   try {
     const { data, error, count } = await supabase
       .from('pipeline_runs')
-      .select('*, reports(escalation_score, quality_score, sentiment)', { count: 'exact' })
+      .select('*, reports(escalation_score, escalation_score_raw, quality_score, sentiment)', { count: 'exact' })
       .eq('pipeline_type', 'main')
       .order('run_at', { ascending: false })
       .limit(200)

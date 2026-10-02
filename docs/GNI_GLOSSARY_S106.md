@@ -182,10 +182,16 @@ name two series each; the row says which document each meaning lives in.
 Sessions with no record under `docs/`. A session listed here as CHAT-ONLY was confirmed
 from its chat transcript; the record is the chat, which is not in the repository.
 
-| session | record | status |
-|---|---|---|
-| S52 | chat "Project status review and next steps", closed 2026-06-28 | CHAT-ONLY |
-| S53 | chat "Project status review and next steps", 2026-06-28 to 2026-06-30 | CHAT-ONLY |
+**HOW TO OPEN ONE, FIRST TRY.** Both rows below share one chat TITLE, so the title alone finds
+the wrong session half the time. Use the URL in the `find it` column; when the URL cannot be
+opened, run the `conversation_search` query printed beside it - at S106 it returned both chats
+among its first two hits, S53 first. Search by CONTENT words, never by session number alone: chat
+titles carry no session number, and S106 found S53 only through the work it did.
+
+| session | record | find it | status |
+|---|---|---|---|
+| S52 | chat "Project status review and next steps", closed 2026-06-28: the 14-commit truthfulness pass; at its end the seven-layer design was written and layer 1 (NFKC) shipped | https://claude.ai/chat/10df0efd-9c61-42ce-9080-24031f856ff5 - query `GNI S53 7-layer defense` (S52 wrote the design FOR S53) | CHAT-ONLY |
+| S53 | chat "Project status review and next steps", 2026-06-28 to 2026-06-30: dedup fix, layer 6 guardian, the seven-layer UI sync, the MAD fabrication finding | https://claude.ai/chat/73cd999a-4e9b-41bc-960c-5d7cc700bfee - query `GNI S53 7-layer defense` | CHAT-ONLY |
 
 ## CHECKS
 
@@ -204,6 +210,7 @@ CHECKS tuple entry without a row here, so this list cannot fall behind the code.
 | C8 | the three GENERATED sections of ARCHITECTURE match their inputs (R-S104-1) |
 | C9 | every abbreviation a live document or ORIGIN uses is in this glossary (R3-1) |
 | C10 | every session ORIGIN cites has a record, and ORIGIN cites no commit hash (R3-1) |
+| C11 | no page formats an escalation score itself; `src/lib/escalation.ts` shows it with its uncapped magnitude (DoD D2) |
 
 ## OWED - named as metrics by the roadmap 3 specification, defined nowhere in the record
 

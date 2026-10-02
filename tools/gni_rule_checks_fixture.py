@@ -178,6 +178,10 @@ def _gen_stamps(root):
                gs.workflow_manifest(wfs)))
 
 
+ESC_LIB_OK = ("export function formatEscalation(s, raw) {\n"
+              "  return raw != null ? s + '/10 raw ' + raw : s + '/10'\n}\n")
+ESC_PAGE_OK = ("import { formatEscalation } from '@/lib/escalation'\n"
+               "const t = formatEscalation(r.escalation_score, r.escalation_score_raw)\n")
 ORIGIN_OK = "# origin\nS94 recorded the fixture tree.\n"
 
 
@@ -234,6 +238,9 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     w(root + "/.github/workflows/b.yml", "on:\n  push:\njobs:\n  y:\n")
     w(root + "/ai_engine/ok.py", "rows = q.order('created_at', desc=True).execute().data\n")
     w(root + "/src/app/api/r/route.ts", "const s = createNoStoreClient()\n")
+    # S106: C11 needs the lib and one page that formats through it.
+    w(root + "/src/lib/escalation.ts", ESC_LIB_OK)
+    w(root + "/src/app/brief/page.tsx", ESC_PAGE_OK)
     w(root + "/ai_engine/monitoring_pipeline.py", watcher)
     w(root + "/docs/gni_runtime_snapshot_S94.json",
       snap if snap is not None else _snap_text())
@@ -367,6 +374,17 @@ CASES["35-origin-missing"] = lambda r: (
 CASES["36-emphasis-word-passes"] = lambda r: (
     base(r), ap(r + "/docs/HANDOFF_S94.md", "state: RECORDED\n"), r)[-1]
 
+# S106, item 9.22(c) / DoD D2. 39 is the DISCRIMINATOR for 37 (R-S90-1): the
+# uncapped field rendered directly is not the capped score, and must pass.
+CASES["37-escalation-direct-render"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx", "<b>{r.escalation_score.toFixed(1)}/10</b>\n"), r)[-1]
+CASES["38-escalation-lib-missing"] = lambda r: (
+    base(r), os.remove(r + "/src/lib/escalation.ts"), r)[-1]
+CASES["39-escalation-raw-field-passes"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx", "<b>{r.escalation_score_raw.toFixed(1)}</b>\n"), r)[-1]
+CASES["40-escalation-capped-average"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx", "<b>avg {c.avg_escalation_score?.toFixed(1)}/10</b>\n"), r)[-1]
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -389,6 +407,8 @@ EXPECT = {
     "32-origin-session-unrecorded": 1, "33-origin-chat-only-declared": 0,
     "34-origin-hash-cited": 1, "35-origin-missing": 2,
     "36-emphasis-word-passes": 0,
+    "37-escalation-direct-render": 1, "38-escalation-lib-missing": 2,
+    "39-escalation-raw-field-passes": 0, "40-escalation-capped-average": 1,
 }
 
 if __name__ == "__main__":

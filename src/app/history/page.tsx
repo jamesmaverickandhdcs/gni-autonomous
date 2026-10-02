@@ -2,6 +2,7 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 
 interface PipelineRun {
   id: string
@@ -32,6 +33,7 @@ interface Report {
   mad_verdict: string
   mad_confidence: number
   escalation_score: number
+  escalation_score_raw?: number | null
   escalation_level: string
   weakness_identified: string
   threat_horizon: string
@@ -231,7 +233,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 )}
                 {report.escalation_level && (
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${report.escalation_level?.toLowerCase() === 'critical' ? 'bg-red-700 text-red-100' : report.escalation_level?.toLowerCase() === 'high' ? 'bg-orange-700 text-orange-100' : 'bg-gray-700 text-gray-300'}`}>
-                    ⚡ {report.escalation_level?.toUpperCase()} {report.escalation_score ? report.escalation_score.toFixed(1) + '/10' : ''}
+                    ⚡ {report.escalation_level?.toUpperCase()} {report.escalation_score ? formatEscalation(report.escalation_score, report.escalation_score_raw) : ''}
                   </span>
                 )}
               </div>

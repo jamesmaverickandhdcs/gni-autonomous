@@ -1,12 +1,14 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 
 interface BriefData {
   title: string
   summary: string
   escalation_level: string
   escalation_score: number
+  escalation_score_raw?: number | null
   mad_verdict: string
   mad_confidence: number
   mad_arb_failed?: boolean
@@ -98,7 +100,7 @@ export default function BriefPage() {
                   {cfg.label}
                 </span>
                 <span className="text-xs text-gray-400">
-                  Escalation: <span className={`font-bold ${cfg.text}`}>{brief.escalation_score?.toFixed(1)}/10</span>
+                  Escalation: <span className={`font-bold ${cfg.text}`}>{formatEscalation(brief.escalation_score, brief.escalation_score_raw)}</span>
                 </span>
               </div>
               <h2 className="text-base font-bold text-white leading-snug mb-1">{brief.title}</h2>

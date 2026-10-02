@@ -2,6 +2,7 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 
 interface RoundPositions {
   bull: string
@@ -41,6 +42,7 @@ interface Report {
   mad_round3_positions: RoundPositions | null
   mad_arb_feedbacks: ArbFeedbacks | null
   escalation_score: number
+  escalation_score_raw?: number | null
   risk_level: string
   location_name: string
   created_at: string
@@ -261,7 +263,7 @@ export default function DebatePage() {
                       }`}>{selected.risk_level?.toUpperCase()}</span>
                       {selected.escalation_score > 0 && (
                         <span className="text-xs font-bold px-2 py-1 rounded-full bg-red-900 border border-red-700 text-red-200">
-                          ⚡ {selected.escalation_score.toFixed(1)}/10
+                          ⚡ {formatEscalation(selected.escalation_score, selected.escalation_score_raw)}
                         </span>
                       )}
                       {isQuadratic(selected) && (

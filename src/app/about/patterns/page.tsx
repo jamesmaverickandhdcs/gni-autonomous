@@ -1,11 +1,12 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 
 interface PipelineRun {
   id: string
   created_at: string
-  reports: { escalation_score: number | null; quality_score: number | null; sentiment: string | null } | null
+  reports: { escalation_score: number | null; escalation_score_raw?: number | null; quality_score: number | null; sentiment: string | null } | null
 }
 interface Outcome {
   direction_correct_3d: boolean | null
@@ -95,7 +96,7 @@ export default function AboutPatternsPage() {
                       <div className="flex-1">
                         <span className={"text-xs px-2 py-0.5 rounded " + (run.reports?.sentiment ? (run.reports.sentiment.toLowerCase() === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-green-900 text-green-300') : 'bg-gray-700 text-gray-500')}>{run.reports?.sentiment || 'N/A'}</span>
                       </div>
-                      <div className="text-xs text-gray-400">ESC: {run.reports?.escalation_score != null ? run.reports.escalation_score.toFixed(1) + '/10' : 'N/A'}</div>
+                      <div className="text-xs text-gray-400">ESC: {run.reports?.escalation_score != null ? formatEscalation(run.reports.escalation_score, run.reports.escalation_score_raw) : 'N/A'}</div>
                       <div className="text-xs text-gray-400">Q: {run.reports?.quality_score?.toFixed(1) || 'N/A'}</div>
                     </div>
                   ))}

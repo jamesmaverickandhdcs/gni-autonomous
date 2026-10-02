@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 
 interface Report {
   id: string
@@ -10,6 +11,7 @@ interface Report {
   mad_verdict: string
   mad_confidence: number
   escalation_score: number
+  escalation_score_raw?: number | null
   escalation_level: string
   created_at: string
   risk_level: string
@@ -240,7 +242,7 @@ export default function ComparisonPage() {
                       <div className="flex justify-between text-xs">
                         <span className="text-gray-500">Escalation Score</span>
                         <span className={`font-bold ${escalationColor(latest.escalation_score)}`}>
-                          {latest.escalation_score?.toFixed(1)}/10
+                          {formatEscalation(latest.escalation_score, latest.escalation_score_raw)}
                         </span>
                       </div>
                       <div className="flex justify-between text-xs">
@@ -395,7 +397,7 @@ export default function ComparisonPage() {
                         </div>
                         <div className="col-span-1 text-center">
                           <span className={`font-bold ${escalationColor(report.escalation_score)}`}>
-                            {report.escalation_score?.toFixed(1) || 'N/A'}
+                            {formatEscalation(report.escalation_score, report.escalation_score_raw)}
                           </span>
                         </div>
                         <div className="col-span-1 text-right text-gray-500">

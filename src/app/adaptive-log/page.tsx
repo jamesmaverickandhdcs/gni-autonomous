@@ -1,6 +1,7 @@
 ﻿'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 import { FRESHNESS_LINE } from '@/lib/freshness'
 
 interface AdaptiveRun {
@@ -17,6 +18,7 @@ interface AdaptiveReport {
   id: string
   title: string
   escalation_score: number
+  escalation_score_raw?: number | null
   escalation_level: string
   created_at: string
 }
@@ -159,7 +161,7 @@ export default function AdaptiveLogPage() {
                         </div>
                         <div className="text-right">
                           <div className={`text-sm font-bold ${(r.escalation_score || 0) >= 8 ? 'text-red-400' : (r.escalation_score || 0) >= 5 ? 'text-orange-400' : 'text-gray-400'}`}>
-                            {(r.escalation_score || 0).toFixed(1)}/10
+                            {formatEscalation(r.escalation_score || 0, r.escalation_score_raw)}
                           </div>
                           <div className="text-xs text-gray-500">{r.escalation_level}</div>
                         </div>

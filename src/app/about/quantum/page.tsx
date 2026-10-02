@@ -1,12 +1,14 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 
 interface Report {
   title: string
   sentiment: string
   sentiment_score: number
   escalation_score: number
+  escalation_score_raw?: number | null
   escalation_level: string
   mad_verdict: string
   mad_confidence: number
@@ -84,7 +86,7 @@ export default function AboutQuantumPage() {
                 {[
                   { label: 'Sentiment', value: report.sentiment, color: sColor(report.sentiment) },
                   { label: 'Score', value: report.sentiment_score?.toFixed(2), color: 'text-white' },
-                  { label: 'Escalation', value: (report.escalation_score?.toFixed(1) || '0') + '/10', color: 'text-orange-400' },
+                  { label: 'Escalation', value: formatEscalation(report.escalation_score, report.escalation_score_raw), color: 'text-orange-400' },
                   { label: 'Risk Level', value: report.risk_level?.toUpperCase(), color: 'text-yellow-400' },
                 ].map(item => (
                   <div key={item.label} className="bg-gray-800 rounded-lg p-3 text-center">

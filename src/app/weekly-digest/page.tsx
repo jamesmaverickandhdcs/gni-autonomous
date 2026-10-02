@@ -1,6 +1,7 @@
 ﻿'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { formatEscalation, formatCappedAverage } from '@/lib/escalation'
 
 interface PillarReport {
   id: string
@@ -19,6 +20,7 @@ interface Report {
   id: string
   title: string
   escalation_score: number
+  escalation_score_raw?: number | null
   escalation_level: string
   sentiment: string
   created_at: string
@@ -92,7 +94,7 @@ export default function WeeklyDigestPage() {
                 </div>
                 <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 text-center">
                   <div className={`text-3xl font-bold ${parseFloat(avgEscalation) >= 7 ? 'text-red-400' : parseFloat(avgEscalation) >= 4 ? 'text-orange-400' : 'text-green-400'}`}>
-                    {avgEscalation}
+                    {formatCappedAverage(parseFloat(avgEscalation))}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">Avg Escalation /10</div>
                 </div>
@@ -150,7 +152,7 @@ export default function WeeklyDigestPage() {
                         {r.sentiment?.toUpperCase()}
                       </span>
                       <span className={`text-xs font-bold ${(r.escalation_score || 0) >= 8 ? 'text-red-400' : (r.escalation_score || 0) >= 5 ? 'text-orange-400' : 'text-gray-500'}`}>
-                        {(r.escalation_score || 0).toFixed(1)}/10
+                        {formatEscalation(r.escalation_score || 0, r.escalation_score_raw)}
                       </span>
                       <span className="text-xs text-gray-600">
                         {new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}

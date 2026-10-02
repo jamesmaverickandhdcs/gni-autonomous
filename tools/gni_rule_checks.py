@@ -29,6 +29,8 @@ count it, because a count written here went stale twice (protocol v18).
                 glossary, and every check below has a glossary row (S106)
   C10 R3-1      every session ORIGIN cites has a record, and ORIGIN cites
                 no commit hash (S106)
+  C11 D2        no page under src/app formats an escalation score itself;
+                src/lib/escalation.ts does, with its magnitude (S106)
 
 CONSTRAINTS THIS SCRIPT HONOURS, ON PURPOSE:
   - stdlib only. No pip install step is needed or wanted (item 6.9).
@@ -917,6 +919,46 @@ def check_c10_origin_citations(ctx):
                   % (len(cited), len(cited & records), len(cited - records)))
 
 
+# ---- S106, order item 9.22(c) / definition-of-done line D2 ------------
+# The S105 command for D2 grepped for FILES containing `escalation_score` and
+# was blind both ways: it listed pages that only declare the field, and its
+# pathspec could not see src/app/page.tsx - the home page, which rendered the
+# capped score twice. This check reads RENDERING by grammar instead, the way
+# C4 reads client construction: the identifier followed by `.toFixed(` or by
+# `}/10`. LIMIT, written down: a score formatted through an intermediate
+# variable (`const s = r.escalation_score; s.toFixed(1)`) is not seen.
+ESC_LIB = os.path.join("src", "lib", "escalation.ts")
+ESC_RENDER_RE = re.compile(
+    r"(?<![\w])(?:avg_)?escalation_score(?![\w])[^\n;]{0,25}?\.toFixed\("
+    r"|(?<![\w])(?:avg_)?escalation_score(?![\w])\s*\}\s*/10")
+
+
+def check_c11_escalation_magnitude(ctx):
+    """D2. Every escalation score a page shows goes through the one lib that
+    shows its uncapped magnitude beside it (ICD 203 tradecraft 1 and 2)."""
+    root = ctx["root"]
+    lib = read(os.path.join(root, ESC_LIB))
+    require_nonempty("formatEscalation exported by " + ESC_LIB,
+                     "export function formatEscalation" in lib)
+    app = os.path.join(root, "src", "app")
+    pages = sorted(os.path.join(d, n) for d, _, fs in os.walk(app)
+                   for n in fs if n.endswith(".tsx"))
+    require_nonempty("page files under src/app", pages)
+    bad, users = [], []
+    for p in pages:
+        text = read(p)
+        if "@/lib/escalation" in text:
+            users.append(p)
+        for i, ln in enumerate(text.split("\n"), 1):
+            if ESC_RENDER_RE.search(ln):
+                bad.append("%s:%d" % (os.path.relpath(p, root), i))
+    require_nonempty("pages importing @/lib/escalation", users)
+    if bad:
+        return False, "escalation score formatted outside the lib at " + ", ".join(bad)
+    return True, "%d pages format escalation through %s; none format it directly" % (
+        len(users), ESC_LIB)
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -928,6 +970,7 @@ CHECKS = (
     ("C8 R-S104-1 generated sections", check_c8_generated_sections_fresh),
     ("C9 R3-1     glossary", check_c9_glossary),
     ("C10 R3-1    origin citations", check_c10_origin_citations),
+    ("C11 D2      escalation magnitude", check_c11_escalation_magnitude),
 )
 
 

@@ -2,6 +2,7 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
+import { formatEscalation } from '@/lib/escalation'
 
 interface HealthData {
   status: string
@@ -176,7 +177,7 @@ export default function HealthPage() {
                       </div>
                       <div className="bg-gray-800 rounded-lg p-3 text-center">
                         <div className="text-2xl font-bold text-white">
-                          {latest.escalation_score.toFixed(1)}/10
+                          {formatEscalation(latest.escalation_score, null)}
                         </div>
                         <div className="text-xs text-gray-500 mt-1">Escalation Score</div>
                       </div>
