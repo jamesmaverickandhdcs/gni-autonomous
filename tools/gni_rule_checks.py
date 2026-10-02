@@ -2,13 +2,17 @@
 """tools/gni_rule_checks.py - S95, seventh check added S101. Layer 0 detector
 for DOCUMENT law.
 
-Converts seven GNI engineering rules from prose into executable checks.
+Converts GNI engineering rules from prose into executable checks. The
+CHECKS tuple at the foot of this file is the list; this header does not
+count it, because a count written here went stale twice (protocol v18).
 
   C1  R-S90-2   every rule ID cited by a live doc is registered, or carries a
                 status row in the PART 0 UNREGISTERED MANIFEST
   C2  R-S91-5   workflow/trigger counts derived from .github/workflows/*.yml
                 equal the counts stated in ARCHITECTURE section 7.1
-  C3  R-S92-2   no selection by absolute position into a growing collection
+  C3  R-S74-1   no rule id is defined twice in the register unless the later
+                line declares itself an amendment (this line said R-S92-2,
+                position selection, until S106; no check implements that)
   C4  R-S62-3   no direct createClient under src/app/api/ (no-store only)
   C5  R-S81-5   self-lint: no check may hold a hand-written expected integer,
       R-S81-1   and every check must prove its input was non-empty first
@@ -19,6 +23,12 @@ Converts seven GNI engineering rules from prose into executable checks.
   C7  SLO-2+3   the freshness bound published in ARCHITECTURE section 10 is the
                 smallest whole hour inside the error budget, and the published
                 window holds ONE regime, not two averaged together
+  C8  R-S104-1  the three GENERATED sections of ARCHITECTURE resolve live
+                and match their inputs (S104; absent from this header until S106)
+  C9  R3-1      every abbreviation a live doc or ORIGIN uses is in the
+                glossary, and every check below has a glossary row (S106)
+  C10 R3-1      every session ORIGIN cites has a record, and ORIGIN cites
+                no commit hash (S106)
 
 CONSTRAINTS THIS SCRIPT HONOURS, ON PURPOSE:
   - stdlib only. No pip install step is needed or wanted (item 6.9).
@@ -729,6 +739,184 @@ def check_c7_slo_freshness(ctx):
                   % (cfg["BOUND_HOURS"], emax, over, len(gaps),
                      "none" if worst is None else "%.2f" % worst))
 
+# ---- S106, ROADMAP 3 row R3-1: GLOSSARY + ORIGIN -----------------------
+# C9 is C1 generalised (spec S102 section 3), with the one difference S106
+# measured: an id has a grammar and an abbreviation does not. 593 distinct
+# all-capitals tokens in the S105 live docs, most of them emphasis. So a
+# token is a CANDIDATE only when no part of it is used as a lowercase word
+# anywhere in docs/ prose, and the glossary must then define it, list it as
+# NOT an abbreviation, or cover it with a NAMESPACES pattern. Every list the
+# check consults lives in the glossary, never in this file (C1's manifest
+# discipline).
+# LIMITS, written down (IEEE 828 D.3), not discovered later:
+#   - an abbreviation spelled like an English word used lowercase in docs/
+#     (MAD, AI, EU, ARB, SHA, GEO at S106) is invisible to the filter; it is
+#     defined because a human wrote it, not because the check forced it.
+#   - fenced and inline code are not prose and are not scanned.
+#   - a DEFINED row nobody uses any more is not detected.
+GLOSSARY_RE = re.compile(r"^GNI_GLOSSARY_S(\d+)\.md$")
+ORIGIN_NAME = "GNI_ORIGIN.md"
+GLOSSARY_SECTIONS = ("DEFINED", "NOT ABBREVIATIONS", "NAMESPACES",
+                     "SESSION INDEX", "CHECKS")
+SESSION_STATUSES = {"CHAT-ONLY"}
+FENCE_RE = re.compile(r"```.*?```", re.S)
+INLINE_RE = re.compile(r"`[^`\n]*`")
+TOKEN_RE = re.compile(r"(?<![\w./-])[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*(?![\w./]|-[A-Z0-9])")
+LOWER_RE = re.compile(r"(?<![\w./-])[a-z]+(?![\w./-])")
+SESSION_CITE_RE = re.compile(r"(?<![\w])S(\d+)(?![\w])")
+RECORD_RE = re.compile(r"_S(\d+)\.[A-Za-z]+$")
+SHA_RE = re.compile(r"(?<![\w])(?=[0-9a-f]*[0-9])(?=[0-9a-f]*[a-f])[0-9a-f]{7,40}(?![\w])")
+
+
+def prose(text):
+    """Text with fenced and inline code removed. Code is not prose."""
+    return INLINE_RE.sub(" ", FENCE_RE.sub(" ", text))
+
+
+def glossary_paths(root):
+    docs = os.path.join(root, "docs")
+    if not os.path.isdir(docs):
+        raise InstrumentError("missing dir: " + docs)
+    return [(int(m.group(1)), os.path.join(docs, n))
+            for n in os.listdir(docs) for m in [GLOSSARY_RE.match(n)] if m]
+
+
+def live_glossary_path(root):
+    """Highest session number, parsed as an integer (R-S92-2)."""
+    gens = glossary_paths(root)
+    if not gens:
+        raise InstrumentError("no glossary generation found")
+    return max(gens)[1]
+
+
+def origin_path(root):
+    return os.path.join(root, "docs", ORIGIN_NAME)
+
+
+def glossary_sections(text):
+    """Each section is found by its exact heading, exactly once. A renamed
+    or doubled heading HALTS: an absent section must never read as an empty
+    allowlist (the C1 manifest lesson)."""
+    lines = text.split("\n")
+    out = {}
+    for sec in GLOSSARY_SECTIONS:
+        idx = [i for i, ln in enumerate(lines) if ln.strip() == "## " + sec]
+        if len(idx) != 1:
+            raise InstrumentError("glossary section not found exactly once: " + sec)
+        rows = []
+        for ln in lines[idx[0] + 1:]:
+            if ln.startswith("## "):
+                break
+            if not ln.startswith("|"):
+                continue
+            cells = [c.strip() for c in ln.strip().strip("|").split("|")]
+            if set(cells[0]) <= set("-: "):
+                continue
+            rows.append(cells)
+        out[sec] = rows[1:]
+    return out
+
+
+def first_cells(rows):
+    return {r[0].strip("`* ") for r in rows if r[0].strip("`* ")}
+
+
+def english_words(root):
+    """Lowercase prose words of every .md under docs/, glossaries excluded:
+    a definition's own words must not hide the term it defines."""
+    skip = {os.path.abspath(p) for _, p in glossary_paths(root)}
+    words = set()
+    for dirpath, _, files in os.walk(os.path.join(root, "docs")):
+        for n in sorted(files):
+            p = os.path.join(dirpath, n)
+            if n.endswith(".md") and os.path.abspath(p) not in skip:
+                words |= set(LOWER_RE.findall(prose(read(p))))
+    return require_nonempty("english corpus", words)
+
+
+def candidate_tokens(text, english):
+    """{token} a reader cannot decode from English, ids removed first (C1
+    owns them). Single letters are not abbreviations."""
+    out = set()
+    for tok in TOKEN_RE.findall(ID_RE.sub(" ", prose(text))):
+        if not tok[1:]:
+            continue
+        parts = [p for p in tok.split("-") if re.search(r"[A-Z]", p)]
+        if parts and all(p.lower() in english for p in parts):
+            continue
+        out.add(tok)
+    return out
+
+
+def scanned_docs(ctx):
+    out = dict(ctx["docs"])
+    out["GNI_ORIGIN"] = origin_path(ctx["root"])
+    return out
+
+
+def check_c9_glossary(ctx):
+    """R3-1. Every candidate token in a live doc or in ORIGIN is defined,
+    declared not-an-abbreviation, or matched by a declared namespace; and
+    every check this file runs has a row in the glossary's CHECKS section,
+    so the check rows are verified against CHECKS rather than typed twice."""
+    sec = glossary_sections(read(live_glossary_path(ctx["root"])))
+    defined = require_nonempty("glossary DEFINED rows", first_cells(sec["DEFINED"]))
+    allowed = defined | first_cells(sec["NOT ABBREVIATIONS"])
+    try:
+        pats = [re.compile(p) for p in first_cells(sec["NAMESPACES"])]
+    except re.error as exc:
+        raise InstrumentError("bad NAMESPACES pattern: %s" % exc)
+    require_nonempty("glossary NAMESPACES rows", pats)
+    english = english_words(ctx["root"])
+    bad, seen = {}, set()
+    for stem, path in sorted(scanned_docs(ctx).items()):
+        cands = candidate_tokens(require_nonempty("text of " + stem, read(path)), english)
+        seen |= cands
+        for tok in sorted(cands):
+            if tok in allowed or any(p.fullmatch(tok) for p in pats):
+                continue
+            bad.setdefault(tok, []).append(stem)
+    require_nonempty("candidate tokens across live docs", seen)
+    rows = first_cells(sec["CHECKS"])
+    missing = [name.split()[0] for name, _ in CHECKS if name.split()[0] not in rows]
+    problems = ["%s undefined (%s)" % (t, ",".join(s)) for t, s in sorted(bad.items())]
+    problems += ["no CHECKS row for %s" % m for m in missing]
+    if problems:
+        return False, "; ".join(problems)
+    return True, ("%d candidates resolve: %d defined, %d declared not abbreviations, "
+                  "%d namespaces; every check has a row"
+                  % (len(seen), len(defined), len(allowed - defined), len(pats)))
+
+
+def check_c10_origin_citations(ctx):
+    """R3-1. Every session ORIGIN cites has a record: a file under docs/
+    carrying that session number, or a SESSION INDEX row declaring it
+    CHAT-ONLY. Commit hashes are refused outright: ORIGIN is append-only and
+    never regenerated, and the declared history rewrite changes every hash,
+    so a hash cited there breaks by construction (DECISION S106-2)."""
+    root = ctx["root"]
+    text = read(origin_path(root))
+    cited = {int(n) for n in SESSION_CITE_RE.findall(ID_RE.sub(" ", text))}
+    require_nonempty("ORIGIN session citations", cited)
+    docs = os.path.join(root, "docs")
+    records = {int(m.group(1)) for n in os.listdir(docs) for m in [RECORD_RE.search(n)] if m}
+    require_nonempty("session records under docs/", records)
+    sec = glossary_sections(read(live_glossary_path(root)))
+    chat = set()
+    for r in sec["SESSION INDEX"]:
+        m = SESSION_CITE_RE.fullmatch(r[0].strip("`* "))
+        if m and r[-1].strip("`* ") in SESSION_STATUSES:
+            chat.add(int(m.group(1)))
+    unresolved = sorted(cited - records - chat)
+    hashes = sorted(set(SHA_RE.findall(text)))
+    problems = ["S%d has no record and no CHAT-ONLY row" % n for n in unresolved]
+    problems += ["commit hash %s cited (rewrite-unsafe)" % h for h in hashes]
+    if problems:
+        return False, "; ".join(problems)
+    return True, ("%d sessions cited: %d by a record under docs/, %d declared CHAT-ONLY"
+                  % (len(cited), len(cited & records), len(cited - records)))
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -738,6 +926,8 @@ CHECKS = (
     ("C6 R-S95-4  macro map fresh", check_c6_macro_map_fresh),
     ("C7 SLO-2+3  freshness bound", check_c7_slo_freshness),
     ("C8 R-S104-1 generated sections", check_c8_generated_sections_fresh),
+    ("C9 R3-1     glossary", check_c9_glossary),
+    ("C10 R3-1    origin citations", check_c10_origin_citations),
 )
 
 
@@ -771,6 +961,9 @@ def control_probe(root):
     arch = read(live_docs(root)["GNI_ARCHITECTURE"])
     _probe_halts("a renamed GENERATED stamp still parsed", arch_stamps,
                  arch.replace("**GENERATED by `tools/", "XX-RENAMED-XX `tools/"))
+    gloss = read(live_glossary_path(root))
+    _probe_halts("a renamed glossary section still parsed", glossary_sections,
+                 gloss.replace("## DEFINED", "## XX-RENAMED-XX", 1))
 
 
 def main(argv):

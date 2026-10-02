@@ -1,4 +1,4 @@
-import os, shutil, sys, tempfile
+import os, re, shutil, sys, tempfile
 
 def w(p, s):
     os.makedirs(os.path.dirname(p), exist_ok=True)
@@ -178,6 +178,38 @@ def _gen_stamps(root):
                gs.workflow_manifest(wfs)))
 
 
+ORIGIN_OK = "# origin\nS94 recorded the fixture tree.\n"
+
+
+def _glossary_text(root, drop_check=None, session_rows=""):
+    """S106. The glossary C9 and C10 read, built from the tree AS WRITTEN by
+    the detector's OWN collector -- the discipline _map_text follows. Every
+    candidate the tree yields is declared NOT an abbreviation, so the clean
+    family passes by construction and a family goes red only on what it adds
+    afterwards. A hand-typed list here would agree with the fixture's memory
+    instead of with the tree."""
+    import gni_rule_checks as rc
+    english = rc.english_words(root)
+    docs = rc.live_docs(root)
+    docs["GNI_ORIGIN"] = rc.origin_path(root)
+    cands = set()
+    for path in docs.values():
+        cands |= rc.candidate_tokens(rc.read(path), english)
+    ns = (r"S\d+", r"C\d+")
+    words = sorted(t for t in cands if not any(re.fullmatch(p, t) for p in ns))
+    checks = [n.split()[0] for n, _ in rc.CHECKS if n.split()[0] != drop_check]
+    return ("# GNI GLOSSARY -- S94\n\n## DEFINED\n| term | definition |\n|---|---|\n"
+            "| GNI | the fixture's system |\n\n"
+            "## NOT ABBREVIATIONS\n| word | why |\n|---|---|\n"
+            + "".join("| %s | fixture |\n" % t for t in words) +
+            "\n## NAMESPACES\n| pattern | meaning |\n|---|---|\n"
+            + "".join("| `%s` | fixture |\n" % p for p in ns) +
+            "\n## SESSION INDEX\n| session | record | status |\n|---|---|---|\n"
+            + session_rows +
+            "\n## CHECKS\n| check | meaning |\n|---|---|\n"
+            + "".join("| %s | fixture |\n" % c for c in checks))
+
+
 def ap(p, s):
     with open(p, "a", encoding="utf-8") as fh:
         fh.write(s)
@@ -186,7 +218,8 @@ def ap(p, s):
 def base(root, arch=ARCH_OK, rules=RULES, contract=None,
          map_n_delta=0, map_present=True,
          slo_bound="1", slo_from=None, slo_to=None,
-         watcher=WATCHER, snap=None, extra_arch=None, web_bound=None, web=True):
+         watcher=WATCHER, snap=None, extra_arch=None, web_bound=None, web=True,
+         origin_extra="", gloss_drop=None, session_rows=""):
     if os.path.isdir(root):
         shutil.rmtree(root)
     w(root + "/docs/GNI_RULES_S94.md", rules)
@@ -232,6 +265,11 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
         w(root + "/docs/GNI_MACRO_MAP_S94.md",
           _map_text(root + "/docs/GNI_RULES_S94.md",
                     root + "/docs/GNI_ARCHITECTURE_S94.md", map_n_delta))
+    # S106: ORIGIN before the glossary, because C9 scans ORIGIN too and the
+    # glossary is derived from everything C9 scans.
+    w(root + "/docs/GNI_ORIGIN.md", ORIGIN_OK + origin_extra)
+    w(root + "/docs/GNI_GLOSSARY_S94.md",
+      _glossary_text(root, drop_check=gloss_drop, session_rows=session_rows))
     return root
 
 CASES = {}
@@ -308,6 +346,27 @@ CASES["25-arch-unknown-generator"] = lambda r: base(
 CASES["26-web-bound-stale"] = lambda r: base(r, web_bound="12")
 CASES["27-web-constant-missing"] = lambda r: base(r, web=False)
 
+# S106, roadmap 3 row R3-1. One family per shape C9 and C10 can detect, and a
+# DISCRIMINATOR beside each red one (R-S90-1): 36 proves C9 does not flag every
+# capitalised word, 33 proves C10 honours a declared CHAT-ONLY session.
+CASES["28-glossary-undefined-term"] = lambda r: (
+    base(r), ap(r + "/docs/HANDOFF_S94.md", "state: QZXV broke it\n"), r)[-1]
+CASES["29-glossary-check-row-missing"] = lambda r: base(r, gloss_drop="C1")
+CASES["30-glossary-missing"] = lambda r: (
+    base(r), os.remove(r + "/docs/GNI_GLOSSARY_S94.md"), r)[-1]
+CASES["31-glossary-section-renamed"] = lambda r: (
+    base(r), w(r + "/docs/GNI_GLOSSARY_S94.md",
+               open(r + "/docs/GNI_GLOSSARY_S94.md", encoding="utf-8").read()
+               .replace("## NAMESPACES", "## NAME SPACES")), r)[-1]
+CASES["32-origin-session-unrecorded"] = lambda r: base(r, origin_extra="S53 designed it.\n")
+CASES["33-origin-chat-only-declared"] = lambda r: base(
+    r, origin_extra="S53 designed it.\n", session_rows="| S53 | chat | CHAT-ONLY |\n")
+CASES["34-origin-hash-cited"] = lambda r: base(r, origin_extra="shipped in af010a2.\n")
+CASES["35-origin-missing"] = lambda r: (
+    base(r), os.remove(r + "/docs/GNI_ORIGIN.md"), r)[-1]
+CASES["36-emphasis-word-passes"] = lambda r: (
+    base(r), ap(r + "/docs/HANDOFF_S94.md", "state: RECORDED\n"), r)[-1]
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -325,6 +384,11 @@ EXPECT = {
     "22-sec5-stale-manifest": 1, "23-sec6-snapshot-renamed": 1,
     "24-sec7-workflow-edited": 1, "25-arch-unknown-generator": 2,
     "26-web-bound-stale": 1, "27-web-constant-missing": 1,
+    "28-glossary-undefined-term": 1, "29-glossary-check-row-missing": 1,
+    "30-glossary-missing": 2, "31-glossary-section-renamed": 2,
+    "32-origin-session-unrecorded": 1, "33-origin-chat-only-declared": 0,
+    "34-origin-hash-cited": 1, "35-origin-missing": 2,
+    "36-emphasis-word-passes": 0,
 }
 
 if __name__ == "__main__":
