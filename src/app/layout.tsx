@@ -77,6 +77,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn("font-sans", GeistSans.variable, GeistMono.variable)}>
       <body className="min-h-screen bg-background antialiased">
+        <div className="w-full border-b border-gray-800 bg-gray-950 px-3 py-1 text-center text-[11px] text-gray-400">
+          AI-generated analysis, published automatically without human editorial review. Not financial advice.
+        </div>
         {children}
         <Analytics />
       </body>
