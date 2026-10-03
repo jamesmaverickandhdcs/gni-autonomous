@@ -214,6 +214,45 @@ def _glossary_text(root, drop_check=None, session_rows=""):
             + "".join("| %s | fixture |\n" % c for c in checks))
 
 
+# S107, roadmap 3 row R3-2. A one-line White Paper and one page carrying one
+# claim; the verdicts and the claims document are built from the tree AS
+# WRITTEN by the tool's own extractor and renderer (the _map_text discipline).
+WP_OK = "# white paper\n\n---\n\nThe fixture system answers every query in plain words.\n"
+CLAIM_TEXT = "GNI checks every source twice daily."
+CLAIM_KEPT = "GNI publishes every report for free."
+CLAIM_PAGE = ("export default function P() { return <div><p>%s</p>\n<p>%s</p></div> }\n"
+              % (CLAIM_TEXT, CLAIM_KEPT))
+CLAIM_NEW = "GNI verifies every forecast after seven days."
+
+
+def _verdict_row(gcl, text, verdict, kind="-", cid="-"):
+    return "\t".join((gcl.key_of(text), verdict, kind, cid, text))
+
+
+def _claims_files(root, claim_texts=(CLAIM_TEXT, CLAIM_KEPT)):
+    """Every manual unit the tree yields gets a verdict: the named texts are
+    CLAIMs, everything else UI. Then the claims document is rendered."""
+    import gni_claims as gcl
+    rows, seen, n = [], set(), 0
+    for _, _, kind, t in gcl.candidates(root):
+        k = gcl.key_of(t)
+        if k in seen or gcl.tier(kind, t) != "manual":
+            continue
+        seen.add(k)
+        if t in claim_texts:
+            n += 1
+            rows.append(_verdict_row(gcl, t, "CLAIM", "STATE", "CLM-%03d" % n))
+        else:
+            rows.append(_verdict_row(gcl, t, "UI"))
+    w(root + "/docs/GNI_CLAIM_VERDICTS_S94.tsv", "# fixture verdicts\n" + "\n".join(rows) + "\n")
+    _claims_doc(root)
+
+
+def _claims_doc(root):
+    import gni_claims as gcl
+    w(root + "/docs/GNI_CLAIMS_S94.md", gcl.render(root, 94))
+
+
 def ap(p, s):
     with open(p, "a", encoding="utf-8") as fh:
         fh.write(s)
@@ -274,6 +313,11 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
                     root + "/docs/GNI_ARCHITECTURE_S94.md", map_n_delta))
     # S106: ORIGIN before the glossary, because C9 scans ORIGIN too and the
     # glossary is derived from everything C9 scans.
+    # S107: the claims files before the glossary, because the glossary's
+    # English corpus is every .md under docs/ and these are two of them.
+    w(root + "/docs/GNI_WHITE_PAPER_S94.md", WP_OK)
+    w(root + "/src/app/claims/page.tsx", CLAIM_PAGE)
+    _claims_files(root)
     w(root + "/docs/GNI_ORIGIN.md", ORIGIN_OK + origin_extra)
     w(root + "/docs/GNI_GLOSSARY_S94.md",
       _glossary_text(root, drop_check=gloss_drop, session_rows=session_rows))
@@ -385,6 +429,46 @@ CASES["39-escalation-raw-field-passes"] = lambda r: (
 CASES["40-escalation-capped-average"] = lambda r: (
     base(r), w(r + "/src/app/x/page.tsx", "<b>avg {c.avg_escalation_score?.toFixed(1)}/10</b>\n"), r)[-1]
 
+# S107, roadmap 3 row R3-2. The row's DONE asks the fixture to prove a claim
+# added is counted and a claim removed is not: 41/42 and 43. 42 is the
+# DISCRIMINATOR for 41 (R-S90-1): the same added claim passes once the
+# document is regenerated, so 41 fails on staleness, not on the claim. 45 is
+# the KNOWN LIMIT of DECISION S107-3 carried as a family: a claim of under four
+# words with no lexicon word is filed UI by rule and the check cannot see it.
+def _add_claim(r, regenerate):
+    import gni_claims as gcl
+    base(r)
+    w(r + "/src/app/claims2/page.tsx", "export default function Q() { return <p>%s</p> }\n" % CLAIM_NEW)
+    ap(r + "/docs/GNI_CLAIM_VERDICTS_S94.tsv",
+       _verdict_row(gcl, CLAIM_NEW, "CLAIM", "PROMISE", "CLM-900") + "\n")
+    if regenerate:
+        _claims_doc(r)
+    return r
+
+
+def _forge_key(r):
+    import gni_claims as gcl
+    base(r)
+    ap(r + "/docs/GNI_CLAIM_VERDICTS_S94.tsv",
+       "\t".join(("0" * 10, "UI", "-", "-", "a row whose key is not its text")) + "\n")
+    return r
+
+
+CASES["41-claim-added-not-regenerated"] = lambda r: _add_claim(r, False)
+CASES["42-claim-added-regenerated"] = lambda r: _add_claim(r, True)
+CASES["43-claim-removed"] = lambda r: (
+    base(r), w(r + "/src/app/claims/page.tsx", CLAIM_PAGE.replace("<p>%s</p>\n" % CLAIM_TEXT, "")),
+    r)[-1]
+CASES["44-literal-unclassified"] = lambda r: (
+    base(r), w(r + "/src/app/claims3/page.tsx",
+               "export default function R() { return <p>GNI never sleeps at night.</p> }\n"), r)[-1]
+CASES["45-short-claim-escapes-known-limit"] = lambda r: (
+    base(r), w(r + "/src/app/claims3/page.tsx",
+               "export default function R() { return <p>Runs itself.</p> }\n"), r)[-1]
+CASES["46-claims-doc-missing"] = lambda r: (
+    base(r), os.remove(r + "/docs/GNI_CLAIMS_S94.md"), r)[-1]
+CASES["47-verdict-key-forged"] = _forge_key
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -409,6 +493,10 @@ EXPECT = {
     "36-emphasis-word-passes": 0,
     "37-escalation-direct-render": 1, "38-escalation-lib-missing": 2,
     "39-escalation-raw-field-passes": 0, "40-escalation-capped-average": 1,
+    "41-claim-added-not-regenerated": 1, "42-claim-added-regenerated": 0,
+    "43-claim-removed": 1, "44-literal-unclassified": 1,
+    "45-short-claim-escapes-known-limit": 0, "46-claims-doc-missing": 2,
+    "47-verdict-key-forged": 2,
 }
 
 if __name__ == "__main__":

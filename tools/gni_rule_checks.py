@@ -959,6 +959,46 @@ def check_c11_escalation_magnitude(ctx):
         len(users), ESC_LIB)
 
 
+def check_c12_claims_resolve(ctx):
+    """Roadmap 3 row R3-2 (absorbs item 9.21). The live claims document is the
+    one the tree and the live verdict file imply. Four ways to be wrong, each
+    named: a row that no longer resolves at its file:line (read here directly,
+    NOT through the extractor), a manual unit with no verdict, a stamp that
+    names a superseded or edited verdict file, and a claim or location count
+    that differs from what the tree now yields."""
+    import gni_claims as gcl
+    root = ctx["root"]
+    try:
+        doc = gcl.live(root, gcl.CLAIMS_RE, "claims document")
+        vrel, vmd5, n_claims, n_locs, rows = gcl.parse_doc(doc)
+        vpath, built, todo = gcl.build(root)
+    except gcl.InstrumentError as exc:
+        raise InstrumentError(str(exc))
+    require_nonempty("claim rows in " + os.path.basename(doc), rows)
+    require_nonempty("claims the tree and verdicts imply", built)
+    problems = []
+    live_vrel = os.path.relpath(vpath, root).replace(os.sep, "/")
+    if vrel != live_vrel:
+        problems.append("stamp names %s, live verdict file is %s" % (vrel, live_vrel))
+    elif vmd5 != gcl.norm_md5(vpath):
+        problems.append("verdict file changed since the claims document was generated")
+    if todo:
+        problems.append("%d manual units have no verdict (first %s:%d)" % (
+            len(todo), todo[0][0], todo[0][1]))
+    unresolved = ["%s %s:%d" % (c, r, ln) for c, _, r, ln, t in rows
+                  if not gcl.resolves(root, r, ln, t)]
+    if unresolved:
+        problems.append("%d rows do not resolve: %s" % (len(unresolved), ", ".join(unresolved)))
+    ids_now = {r[0] for r in built}
+    if (len(ids_now), len(built)) != (n_claims, n_locs) or len(rows) != n_locs:
+        problems.append("stamp says %d claims at %d locations (%d rows); the tree yields %d at %d"
+                        % (n_claims, n_locs, len(rows), len(ids_now), len(built)))
+    if problems:
+        return False, "; ".join(problems)
+    return True, "%d claims at %d locations resolve; every manual unit has a verdict" % (
+        n_claims, n_locs)
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -971,6 +1011,7 @@ CHECKS = (
     ("C9 R3-1     glossary", check_c9_glossary),
     ("C10 R3-1    origin citations", check_c10_origin_citations),
     ("C11 D2      escalation magnitude", check_c11_escalation_magnitude),
+    ("C12 R3-2    claims resolve", check_c12_claims_resolve),
 )
 
 
