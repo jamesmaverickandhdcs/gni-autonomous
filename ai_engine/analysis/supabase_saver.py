@@ -198,6 +198,7 @@ def save_pipeline_run(
     status: str,
     duration_seconds: float,
     pipeline_type: str = 'main',
+    mode: str | None = None,
 ) -> str | None:
     """Save a pipeline run record. Returns run_id or None."""
     client = get_client()
@@ -217,6 +218,8 @@ def save_pipeline_run(
             "duration_seconds": duration_seconds,
             "pipeline_type": pipeline_type,
         }
+        if mode is not None:   # S108 9.23: which branch ran (PROV-DM generation attribute)
+            record["mode"] = mode
         result = client.table("pipeline_runs").insert(record).execute()
         if result.data:
             run_id = result.data[0]["id"]

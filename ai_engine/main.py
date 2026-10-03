@@ -314,7 +314,7 @@ def run_pipeline():
         report['score_breakdown'] = escalation.get('score_breakdown', {})
         report['factors']         = escalation.get('factors', [])
         recommended_interval = get_recommended_interval(escalation['escalation_level'], escalation['escalation_score'])
-        log_frequency_decision(escalation['escalation_score'], escalation['escalation_level'], recommended_interval, f"Escalation {escalation['escalation_level']} {escalation['escalation_score']}/10")
+        log_frequency_decision(escalation['escalation_score'], escalation['escalation_level'], recommended_interval, f"Escalation {escalation['escalation_level']} {escalation['escalation_score']}/10", escalation_score_raw=(escalation.get('score_breakdown') or {}).get('raw_score'))
         print(f"   ?  Next run recommended in {recommended_interval:.1f}h ({escalation['escalation_level']})")
         hist_context = get_historical_context(escalation['escalation_score'])
         if hist_context:

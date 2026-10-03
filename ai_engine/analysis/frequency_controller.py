@@ -92,6 +92,7 @@ def log_frequency_decision(
     escalation_level: str,
     recommended_interval: float,
     reason: str,
+    escalation_score_raw: float | None = None,
 ) -> bool:
     """Log frequency decision to Supabase."""
     client = _get_client()
@@ -104,6 +105,8 @@ def log_frequency_decision(
             "escalation_level": escalation_level,
             "recommended_interval_hours": recommended_interval,
             "reason": reason,
+            **({"escalation_score_raw": escalation_score_raw}
+               if escalation_score_raw is not None else {}),
         }).execute()
         return True
     except Exception as e:

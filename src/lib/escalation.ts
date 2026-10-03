@@ -13,7 +13,7 @@ export const ESCALATION_CAP = 10
 // A single report: "10.0/10 · raw 24.5".
 // A missing raw value has TWO causes, and the text must not merge them (S106 live read):
 //   'row'    - this row is a report written before S90, when no raw value was stored;
-//   'report' - this row lives in a table with no raw column (frequency_log, alerts); the raw
+//   'report' - this row lives in a table with no raw column (alerts; frequency_log before S108); the raw
 //              value of the same run IS stored, on its report. "Not recorded" would be false.
 export type RawHome = 'row' | 'report'
 export function formatEscalation(

@@ -311,6 +311,7 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
             status='success',
             duration_seconds=total,
             pipeline_type='adaptive',
+            mode=result.get('mode'),
         )
         print('  OK Adaptive run logged to pipeline_runs')
     except Exception as _e:
