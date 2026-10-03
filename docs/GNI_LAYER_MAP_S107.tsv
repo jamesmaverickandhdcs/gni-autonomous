@@ -1,0 +1,30 @@
+# GNI LAYER MAP - generation S107 (roadmap 3 row R3-3, check `declared layers wired`).
+# One row per declared layer. Columns: era  key  n  layer  module:symbol|-  evidence|-
+# key = sha1[:10] of the declaring sentence (tools/gni_claims.py key_of); the check finds
+# every "N-layer" sentence on the public surface itself and demands N rows here.
+# era LIVE = a declaration on the surface now; a LIVE row whose sentence leaves fails.
+# era S68 = the S68 tree's two "7-layer" declarations, mapped to the S68 code at S107 so
+# the replay (Test 1) judges that tree by evidence: `-` means no code implements the layer.
+# evidence = a fragment that must occur in the symbol's own code, comments stripped.
+LIVE	9b04443241	1	source pre-classification	ai_engine/funnel/intelligence_funnel.py:_REVIEW_ONLY_SOURCES	-
+LIVE	9b04443241	2	URL pattern matching	ai_engine/funnel/intelligence_funnel.py:_REVIEW_URL_RE	-
+LIVE	9b04443241	3	structural heuristics	ai_engine/funnel/intelligence_funnel.py:_REVIEW_HEU_RE	-
+LIVE	9b04443241	4	LLM spot-check	ai_engine/funnel/intelligence_funnel.py:_classify_content_type	_l4_cap
+LIVE	6ad4bbc70b	1	source pre-classification	ai_engine/funnel/intelligence_funnel.py:_REVIEW_ONLY_SOURCES	-
+LIVE	6ad4bbc70b	2	URL pattern matching	ai_engine/funnel/intelligence_funnel.py:_REVIEW_URL_RE	-
+LIVE	6ad4bbc70b	3	structural heuristics	ai_engine/funnel/intelligence_funnel.py:_REVIEW_HEU_RE	-
+LIVE	6ad4bbc70b	4	LLM spot-check	ai_engine/funnel/intelligence_funnel.py:_classify_content_type	_l4_cap
+S68	0340af7e4d	1	Unicode/NFKC normalization	ai_engine/funnel/intelligence_funnel.py:_normalize_text_funnel	-
+S68	0340af7e4d	2	prompt-boundary detection	ai_engine/funnel/intelligence_funnel.py:INJECTION_PATTERNS	<<SYS>>
+S68	0340af7e4d	3	source-credibility scoring	ai_engine/analysis/credibility_model.py:update_credibility_scores	-
+S68	0340af7e4d	4	70-pattern injection scan	ai_engine/funnel/prompt_injection_detector.py:INJECTION_PATTERNS	-
+S68	0340af7e4d	5	hardened-JSON response guardian	ai_engine/groq_guardian.py:validate_response	-
+S68	0340af7e4d	6	input language normalization	-	-
+S68	0340af7e4d	7	SHA-256 audit chain	ai_engine/analysis/audit_trail.py:log_audit_event	-
+S68	a2e76804de	1	Unicode/NFKC normalization	ai_engine/funnel/intelligence_funnel.py:_normalize_text_funnel	-
+S68	a2e76804de	2	prompt-boundary detection	ai_engine/funnel/intelligence_funnel.py:INJECTION_PATTERNS	<<SYS>>
+S68	a2e76804de	3	source-credibility scoring	ai_engine/analysis/credibility_model.py:update_credibility_scores	-
+S68	a2e76804de	4	70-pattern injection scan	ai_engine/funnel/prompt_injection_detector.py:INJECTION_PATTERNS	-
+S68	a2e76804de	5	hardened-JSON response guardian	ai_engine/groq_guardian.py:validate_response	-
+S68	a2e76804de	6	input language normalization	-	-
+S68	a2e76804de	7	SHA-256 audit chain	ai_engine/analysis/audit_trail.py:log_audit_event	-

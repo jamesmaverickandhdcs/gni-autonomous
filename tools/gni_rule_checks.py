@@ -1130,6 +1130,149 @@ def check_c14_dead_symbols(ctx):
         len(unref), len(derived), by["WIRE"], by["DELETE"], by["DECLARE"])
 
 
+LAYER_MAP_RE = re.compile(r"^GNI_LAYER_MAP_S(\d+)\.tsv$")
+LAYER_MAP_COLUMNS = ("era", "key", "n", "layer", "target", "evidence")
+LAYER_DECL_RE = re.compile(r"\b(\d+|two|three|four|five|six|seven|eight|nine|ten)[- ]"
+                           r"(?:security |defen[cs]e )?layers?\b", re.I)
+NUMBER_WORDS = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+                "eight": 8, "nine": 9, "ten": 10}
+
+
+def layer_declarations(root):
+    """{key: (count, 'file:line', sentence)} - every sentence on the public
+    surface that declares a number of layers. Read from the page text with the
+    claims extractor's own sentence splitter, so it works on any era's tree,
+    including one that predates the claims files."""
+    import glob as _glob
+    import gni_claims as gcl
+    out = {}
+    files = sorted({p for g in gcl.PAGE_GLOBS
+                    for p in _glob.glob(os.path.join(root, g), recursive=True)})
+    for p in files:
+        rel = os.path.relpath(p, root).replace(os.sep, "/")
+        for _, ln, _, t in gcl.tsx_candidates(p, rel):
+            m = LAYER_DECL_RE.search(t)
+            if m:
+                word = m.group(1).lower()
+                n = int(word) if word.isdigit() else NUMBER_WORDS[word]
+                out.setdefault(gcl.key_of(t), (n, "%s:%d" % (rel, ln), t))
+    return out
+
+
+def _code_only(src):
+    """The source with comments removed, so evidence cannot be a comment."""
+    import io
+    import tokenize
+    keep = []
+    try:
+        for tok in tokenize.generate_tokens(io.StringIO(src).readline):
+            if tok.type != tokenize.COMMENT:
+                keep.append(tok.string)
+    except (tokenize.TokenError, IndentationError):
+        return src
+    return " ".join(keep)
+
+
+def layer_wired(root, mods, reachable, target, evidence):
+    """'' when the layer is wired, else why not. Wired = the module exists and
+    is reachable from a workflow entrypoint by static imports, the symbol is
+    defined at its top level and READ by a reachable module, and the evidence
+    fragment (when given) occurs in the symbol's own code, comments stripped.
+    LIMIT: a read inside a function nothing calls still counts - module-level
+    reachability, the same granularity section 5 discloses."""
+    import ast as _ast
+    if target == "-":
+        return "no implementing code (paper layer)"
+    rel, _, sym = target.partition(":")
+    owner = [n for n, v in mods.items() if v["rel"] == rel]
+    if not owner:
+        return "%s is not in the tree" % rel
+    name = owner[0]
+    if sym not in mods[name]["symbols"]:
+        return "%s defines no top-level %s" % (rel, sym)
+    if name not in reachable:
+        return "%s is reached by no workflow entrypoint" % rel
+    if not any(sym in mods[m]["refs"] for m in reachable):
+        return "%s is read by no reachable module" % sym
+    if evidence != "-":
+        src = read(os.path.join(root, rel))
+        node = next((n for n in _ast.parse(src).body
+                     if getattr(n, "name", None) == sym
+                     or any(getattr(t, "id", None) == sym for t in getattr(n, "targets", []))), None)
+        seg = _ast.get_source_segment(src, node) if node is not None else ""
+        if evidence not in _code_only(seg or ""):
+            return "evidence %r is not in the code of %s" % (evidence, sym)
+    return ""
+
+
+def check_c15_declared_layers_wired(ctx):
+    """Roadmap 3 row R3-3: the paper-layer gate (S69 found three of seven
+    declared defence layers with no running code). Every sentence on the public
+    surface that declares N layers must be mapped, layer by layer, in
+    docs/GNI_LAYER_MAP_S<N>.tsv, and every mapped layer must be wired. In a full
+    run a LIVE map row whose declaration has left the surface fails too. In a
+    replay (`--only`) of a tree with no map, the detector's own repository's
+    map is used: an old tree is judged by today's knowledge of it."""
+    import glob as _glob
+    from pathlib import Path
+    import gni_blocks as gb
+    root = ctx["root"]
+    decls = layer_declarations(root)
+    homes = [os.path.join(root, "docs")]
+    if ctx.get("replay"):
+        homes.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs"))
+    rows = None
+    for d in homes:
+        gens = [(int(m.group(1)), n) for n in (os.listdir(d) if os.path.isdir(d) else [])
+                for m in [LAYER_MAP_RE.match(n)] if m]
+        if gens:
+            rows = []
+            for i, ln in enumerate(read(os.path.join(d, max(gens)[1])).split("\n"), 1):
+                ln = ln.rstrip("\r")
+                if not ln or ln.startswith("#"):
+                    continue
+                row = dict(zip(LAYER_MAP_COLUMNS, ln.split("\t")))
+                if len(ln.split("\t")) != len(LAYER_MAP_COLUMNS) or not row["n"].isdigit():
+                    raise InstrumentError("layer map row %d is not: %s" % (i, ", ".join(LAYER_MAP_COLUMNS)))
+                rows.append(row)
+            break
+    rows = rows or []
+    snap = gb.collect(Path(root))
+    mods = snap["modules"]
+    edges = gb.analyse(snap)["edges"]
+    wf = "".join(read(p) for p in sorted(_glob.glob(os.path.join(root, ".github", "workflows", "*.yml"))))
+    entry = [n for n, v in mods.items() if "tests/" not in v["rel"]
+             and (v["rel"] in wf or os.path.basename(v["rel"]) in wf)]
+    require_nonempty("workflow entrypoints", entry)
+    reachable, stack = set(entry), list(entry)
+    while stack:
+        for nxt in edges.get(stack.pop(), ()):
+            if nxt not in reachable:
+                reachable.add(nxt)
+                stack.append(nxt)
+    problems, layers = [], 0
+    for key, (n, where, _) in sorted(decls.items(), key=lambda kv: kv[1][1]):
+        mapped = [r for r in rows if r["key"] == key]
+        if len(mapped) != n:
+            problems.append("%s declares %d layers, the map gives %d" % (where, n, len(mapped)))
+            continue
+        for r in sorted(mapped, key=lambda r: int(r["n"])):
+            layers += 1
+            why = layer_wired(root, mods, reachable, r["target"], r["evidence"])
+            if why:
+                problems.append("%s layer %s (%s): %s" % (where, r["n"], r["layer"], why))
+    if not ctx.get("replay"):
+        rot = sorted({r["key"] for r in rows if r["era"] == "LIVE" and r["key"] not in decls})
+        if rot:
+            problems.append("%d LIVE map declarations are no longer on the surface: %s" % (
+                len(rot), ", ".join(rot)))
+    require_nonempty("layer declarations on the public surface", decls)
+    if problems:
+        return False, "; ".join(problems)
+    return True, "%d declarations, %d layers, every one wired from a workflow entrypoint" % (
+        len(decls), layers)
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -1145,6 +1288,7 @@ CHECKS = (
     ("C12 R3-2    claims resolve", check_c12_claims_resolve),
     ("C13 R3-3    claim status derived", check_c13_claim_status_derived),
     ("C14 R3-3    dead symbols", check_c14_dead_symbols),
+    ("C15 R3-3    declared layers wired", check_c15_declared_layers_wired),
 )
 
 
@@ -1176,7 +1320,7 @@ def replay(pattern, root):
     failed = 0
     for name, fn in chosen:
         try:
-            ok, detail = fn({"root": root})
+            ok, detail = fn({"root": root, "replay": True})
         except InstrumentError as exc:
             print("[ERROR] %-32s %s" % (name, exc))
             return 2

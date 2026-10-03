@@ -215,6 +215,7 @@ CHECKS tuple entry without a row here, so this list cannot fall behind the code.
 | C12 | every claim row in the live claims document resolves at its file:line, every manual unit has a verdict, and the stamp matches the verdicts and the tree (R3-2) |
 | C13 | every claim has a status, and every status and the COVERAGE figure in the claims document are the ones `tools/gni_fitness.py` derives from the tree; none is typed (R3-3) |
 | C14 | every module section 5 finds with no static reference is in exactly one bucket - WIRE, DELETE or DECLARE - and no bucket row names a module that is referenced again (R3-3) |
+| C15 | every sentence on the public surface that declares N layers is mapped layer by layer, and every mapped layer is code a workflow entrypoint reaches (R3-3) |
 
 ## OWED - named as metrics by the roadmap 3 specification, defined nowhere in the record
 

@@ -226,8 +226,13 @@ CLAIM_KEPT = "GNI publishes every report for free."
 # page count would turn them red on C13 for a reason they do not test.
 CLAIM_PAGES = "GNI exposes 1 API endpoint to readers."
 PAGES_FRAG = "1 API endpoint"
-CLAIM_PAGE = ("export default function P() { return <div><p>%s</p>\n<p>%s</p>\n<p>%s</p></div> }\n"
-              % (CLAIM_TEXT, CLAIM_KEPT, CLAIM_PAGES))
+# S107 R3-3: one layer declaration, implemented by an entrypoint a workflow runs.
+LAYER_DECL = "GNI filters every article through a 2-layer shield."
+CLAIM_PAGE = ("export default function P() { return <div><p>%s</p>\n<p>%s</p>\n<p>%s</p>\n<p>%s</p></div> }\n"
+              % (CLAIM_TEXT, CLAIM_KEPT, CLAIM_PAGES, LAYER_DECL))
+ENTRY_PY = ("def layer_one(x):\n    return x\n\n\ndef layer_two(x):\n"
+            "    # guard_token lives only in this comment\n    return x\n\n\n"
+            "def run(x):\n    return layer_two(layer_one(x))\n")
 CLAIM_NEW = "GNI verifies every forecast after seven days."
 
 
@@ -269,6 +274,18 @@ BUCKETS_OK = (("ai_engine/ok.py", "DECLARE", "fixture module"),
 ORPHAN = {"ai_engine/orphan.py": "def lonely():\n    return 1\n"}
 
 
+def _layer_rows(gcl, second=("ai_engine/entry.py:layer_two", "-")):
+    k = gcl.key_of(LAYER_DECL)
+    return [("LIVE", k, "1", "first", "ai_engine/entry.py:layer_one", "-"),
+            ("LIVE", k, "2", "second") + tuple(second)]
+
+
+def _layers(r, second=None, drop=False, extra=()):
+    import gni_claims as gcl
+    rows = _layer_rows(gcl) if second is None else _layer_rows(gcl, second)
+    return base(r, layer_rows=(rows[:1] if drop else rows) + list(extra))
+
+
 def ap(p, s):
     with open(p, "a", encoding="utf-8") as fh:
         fh.write(s)
@@ -278,7 +295,8 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
          map_n_delta=0, map_present=True,
          slo_bound="1", slo_from=None, slo_to=None,
          watcher=WATCHER, snap=None, extra_arch=None, web_bound=None, web=True,
-         origin_extra="", gloss_drop=None, session_rows="", extra_py=None, buckets=None):
+         origin_extra="", gloss_drop=None, session_rows="", extra_py=None, buckets=None,
+         layer_rows=None):
     if os.path.isdir(root):
         shutil.rmtree(root)
     w(root + "/docs/GNI_RULES_S94.md", rules)
@@ -290,7 +308,9 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     w(root + "/docs/GNI_TARGET_AND_ORDER_S94.md", "queue: GNI-L-003\n")
     w(root + "/docs/HANDOFF_S94.md", "state: R-S81-1\n")
     w(root + "/.github/workflows/a.yml", "on:\n  schedule:\n    - cron: '0 2 * * *'\njobs:\n  x:\n")
-    w(root + "/.github/workflows/b.yml", "on:\n  push:\njobs:\n  y:\n")
+    w(root + "/.github/workflows/b.yml",
+      "on:\n  push:\njobs:\n  y:\n    steps:\n      - run: python ai_engine/entry.py\n")
+    w(root + "/ai_engine/entry.py", ENTRY_PY)
     w(root + "/ai_engine/ok.py", "rows = q.order('created_at', desc=True).execute().data\n")
     w(root + "/src/app/api/r/route.ts", "const s = createNoStoreClient()\n")
     # S106: C11 needs the lib and one page that formats through it.
@@ -338,6 +358,9 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     # S107: the claims files before the glossary, because the glossary's
     # English corpus is every .md under docs/ and these are two of them.
     w(root + "/docs/GNI_WHITE_PAPER_S94.md", WP_OK)
+    import gni_claims as _gcl
+    w(root + "/docs/GNI_LAYER_MAP_S94.tsv", "# fixture layer map\n" + "".join(
+        "\t".join(r) + "\n" for r in (layer_rows if layer_rows is not None else _layer_rows(_gcl))))
     w(root + "/src/app/claims/page.tsx", CLAIM_PAGE)
     _claims_files(root)
     w(root + "/docs/GNI_ORIGIN.md", ORIGIN_OK + origin_extra)
@@ -551,6 +574,19 @@ CASES["55-bucket-row-stale"] = lambda r: base(
 CASES["56-bucket-wire-without-claim"] = lambda r: base(
     r, extra_py=ORPHAN, buckets=BUCKETS_OK + (("ai_engine/orphan.py", "WIRE", "serves something"),))
 
+# S107, roadmap 3 row R3-3, check `declared layers wired` (the S69 paper-layer
+# shape). 62 is the DISCRIMINATOR for 60 (R-S90-1): evidence that is code
+# passes where evidence that is only a comment does not.
+CASES["57-layer-map-short"] = lambda r: _layers(r, drop=True)
+CASES["58-layer-paper"] = lambda r: _layers(r, second=("-", "-"))
+CASES["59-layer-unreachable"] = lambda r: _layers(r, second=("ai_engine/ok.py:rows", "-"))
+CASES["60-layer-evidence-only-in-comment"] = lambda r: _layers(
+    r, second=("ai_engine/entry.py:layer_two", "guard_token"))
+CASES["61-layer-live-row-rotted"] = lambda r: _layers(
+    r, extra=[("LIVE", "0000000000", "1", "gone", "ai_engine/entry.py:run", "-")])
+CASES["62-layer-evidence-in-code"] = lambda r: _layers(
+    r, second=("ai_engine/entry.py:layer_two", "return x"))
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -584,6 +620,9 @@ EXPECT = {
     "52-fragment-not-verbatim": 2,
     "53-dead-module-unbucketed": 1, "54-dead-module-bucketed": 0,
     "55-bucket-row-stale": 1, "56-bucket-wire-without-claim": 2,
+    "57-layer-map-short": 1, "58-layer-paper": 1, "59-layer-unreachable": 1,
+    "60-layer-evidence-only-in-comment": 1, "61-layer-live-row-rotted": 1,
+    "62-layer-evidence-in-code": 0,
 }
 
 if __name__ == "__main__":
