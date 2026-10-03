@@ -1,0 +1,334 @@
+# GNI CLAIM VERDICTS - generation S107. One row per unique harvested sentence, keyed by
+# sha1[:10] of its whitespace-normalised text (tools/gni_claims.py key_of). Columns:
+# key  verdict(CLAIM|DATA|UI)  kind(STATE|PROMISE|MIXED|-)  id(CLM-###|-)  text
+# CLAIM = a proposition about GNI itself that a reader could hold GNI to (DECISION S107-1;
+# ISO/IEC/IEEE 15026-2:2022 assurance-case claim). Ids are minted once and never reused.
+86b4417c8c	UI	-	-	WHITE PAPER
+62e4c987e3	UI	-	-	Global Nexus Insights (GNI)
+e58d7982f4	UI	-	-	From Automated Pipeline to Fully Autonomous
+0a7b57eda3	UI	-	-	Self-Healing Agentic AI Intelligence System
+fc247f75aa	UI	-	-	A Vision for Open-Source Democratised Geopolitical Intelligence
+62b650ac3a	CLAIM	STATE	CLM-001	Higher Diploma in Computer Science
+1f7d9a0413	CLAIM	STATE	CLM-002	Spring University Myanmar (SUM)
+5400eb7941	UI	-	-	March 2026
+1bfc2d0d06	CLAIM	STATE	CLM-003	Live System: gni-dusky.vercel.app | @GNI_Alerts
+3abcc2cf04	UI	-	-	Executive Summary
+843b59b22e	CLAIM	STATE	CLM-004	Global Nexus Insights (GNI) began as a Higher Diploma project at Spring University Myanmar — a demonstration that institutional-grade geopolitical intelligence could be delivered at zero cost using open-source AI infrastructure.
+87fa281f10	CLAIM	STATE	CLM-005	In seven development days, GNI achieved a production-grade automated intelligence pipeline: collecting 93 articles twice daily from five international news sources, processing them through a four-stage Intelligence Funnel, generating structured AI analysis connecting technology, geopolitical, and financial intelligence, and delivering reports via a live web dashboard and Telegram channel.
+3627b4b53f	CLAIM	PROMISE	CLM-006	This White Paper presents GNI's visionary trajectory beyond the diploma project — a detailed roadmap for evolving GNI from its current Level 4 autonomy (automated, explainable, CI/CD-deployed) to Level 7: a fully autonomous, self-healing, self-improving agentic AI intelligence system that requires zero human intervention for normal operation, diagnoses its own failures, repairs broken components autonomously, and continuously improves its own analytical quality through evidence-based self-modification.
+43fdecd9be	DATA	-	-	The vision is not merely technical.
+8176699b79	CLAIM	PROMISE	CLM-007	GNI's ultimate purpose is to permanently remove the access barrier that has historically limited institutional-grade geopolitical intelligence to Bloomberg Terminal subscribers and government agencies — making the same quality of analysis available to any person on Earth with an internet connection.
+ecc3c14d29	DATA	-	-	The autonomous pipeline is the vehicle.
+a2aa52d93f	DATA	-	-	Democratised intelligence is the destination.
+575ffe4453	DATA	-	-	| Core Thesis: A self-autonomous AI intelligence system that costs nothing to operate, improves continuously without human intervention, and delivers institutional-grade geopolitical analysis freely to anyone is not a distant aspiration — it is an engineering problem with a defined solution path. |
+6e638adb37	UI	-	-	The Intelligence Access Problem
+5f933f4811	UI	-	-	1.1 The Structural Asymmetry
+878a4bfc5e	DATA	-	-	The geopolitical forces that reshape financial markets and affect the lives of billions of people — conflicts, sanctions, technology competition, alliance shifts, resource competition — are analysed with extraordinary sophistication by a small number of institutions.
+6d408654e7	DATA	-	-	Bloomberg's Geopolitical Risk Indicator (BGRI), Stratfor's intelligence service, the analytical capabilities of sovereign wealth funds, hedge funds, and intelligence agencies represent the frontier of geopolitical-to-financial intelligence.
+b93730b2d6	DATA	-	-	These capabilities are not available to most of the world.
+68c085e5ad	DATA	-	-	Bloomberg Terminal costs approximately USD 24,000 per year.
+cd5c56a338	DATA	-	-	Stratfor's professional subscription starts at USD 4,999 per year.
+1c84cfb98a	DATA	-	-	The analytical teams that produce comparable work in-house at major financial institutions represent millions in annual salary costs.
+cc69e3610a	DATA	-	-	The result is a structural asymmetry: the entities best positioned to act on geopolitical intelligence — large financial institutions — are the only ones with access to it.
+acc73e1169	DATA	-	-	The same event — an escalation of Iran-US hostilities — is simultaneously analysed by a JPMorgan quant team with access to 47 proprietary data feeds, and by a small business owner in Mandalay who reads about it on Facebook three days later.
+7ca7752c4a	DATA	-	-	The information asymmetry is not incidental.
+87d4fc19fb	DATA	-	-	It is structural.
+e3c7537e5d	CLAIM	PROMISE	CLM-008	GNI exists to close it.
+e2fc708da8	UI	-	-	1.2 The Accountability Gap
+dad68c608c	DATA	-	-	A second, less-discussed problem exists even within institutions that can afford intelligence services: the accountability gap.
+5bc17d7461	DATA	-	-	Existing AI-powered intelligence tools — including commercial chatbots increasingly used for market analysis — generate analysis without documenting their reasoning, validating their predictions, or acknowledging the conditions under which their analysis should be distrusted.
+a8dae967e3	DATA	-	-	In geopolitical analysis specifically, this accountability gap is dangerous.
+ef997b9c41	DATA	-	-	State actors deliberately seed false narratives into media channels.
+87c3f3bc56	DATA	-	-	Black swan events regularly invalidate correct analysis.
+ac08294c41	DATA	-	-	Geopolitical effects on financial markets often manifest weeks or months after the precipitating event, making naive accuracy measurement misleading.
+aefe245663	DATA	-	-	An intelligence system that produces confident outputs without explaining how it reached them, validating them over time, or flagging conditions of high uncertainty provides false precision rather than genuine intelligence.
+6b8e1312da	UI	-	-	1.3 The Convergence Problem
+8576c3e454	DATA	-	-	A third problem is analytical fragmentation.
+e73b024921	DATA	-	-	Modern geopolitical events do not fit neatly into single domains.
+22ae0199a2	DATA	-	-	The Iran-US conflict is simultaneously a military event (affecting defence sector equities), an energy event (affecting oil prices), a technology event (affecting semiconductor supply chains through potential Strait of Hormuz closure), and a currency event (driving safe-haven flows into USD and gold).
+a7c47331d7	DATA	-	-	Systems that analyse these dimensions in isolation produce incomplete intelligence.
+9f641a90af	CLAIM	STATE	CLM-009	GNI is the first open-source system designed to analyse the convergence of Technology Intelligence, Geopolitical Intelligence, and Financial Impact as an integrated whole — not three separate domains but three dimensions of a single interconnected system.
+a88d4bf62f	UI	-	-	Current State — GNI Version 1.0
+92e4eba911	UI	-	-	2.1 What GNI Achieves Today
+fe2535b408	CLAIM	STATE	CLM-010	As of March 2026, GNI Version 1.0 operates as a production-grade automated intelligence pipeline at zero monthly cost.
+0e0411aa87	UI	-	-	The following table documents its current capabilities:
+d582a28041	UI	-	-	| Capability | Implementation | Performance |
+c961a2de95	CLAIM	STATE	CLM-011	| Automated data collection | 5 RSS sources, 93 articles per run, 2x daily via GitHub Actions | 100% pipeline success rate |
+a1288aa2c2	CLAIM	STATE	CLM-012	| Intelligence filtering | 4-stage funnel: relevance, injection detection, deduplication, significance scoring | 93 → 5-10 articles selected |
+03e5a7c986	CLAIM	STATE	CLM-013	| AI analysis | Llama 3 via Groq API, 11-field structured JSON report | ~14s cloud execution |
+36ab63385d	CLAIM	STATE	CLM-014	| Self-healing | Groq → Ollama fallback, JSON parse recovery, runtime logging | Zero catastrophic failures |
+656b2466ad	CLAIM	STATE	CLM-015	| Explainable AI | Full article funnel trace stored per run, publicly queryable via /transparency | 1,300+ article records |
+cc69c6ddbf	CLAIM	STATE	CLM-016	| Prediction validation | GPVS framework: 20 reports verified, 3d + 7d directional accuracy | 100% accuracy (20 reports) |
+7473e71517	CLAIM	STATE	CLM-017	| Market intelligence | 12 instruments tracked, live prices, AI context per instrument | Yahoo Finance integration |
+890a3d0d11	CLAIM	STATE	CLM-018	| Notification delivery | 2-message Telegram format: report + AI thinking | @GNI_Alerts channel live |
+fb369a9392	CLAIM	STATE	CLM-019	| Infrastructure cost | Vercel + Supabase + GitHub Actions + Groq + Telegram | $0/month |
+efb0200f2b	UI	-	-	2.2 The Seven Levels of Autonomy — Current Position
+cf6f8b171e	CLAIM	STATE	CLM-020	GNI's evolution is structured across seven levels of autonomous operation.
+91b1293977	DATA	-	-	Each level represents a qualitative increase in system independence — from scheduled automation at Level 1 to fully agentic self-modification at Level 7.
+93ce43f75d	UI	-	-	| Level | Name | Definition | GNI Status |
+9298dcf932	CLAIM	STATE	CLM-021	| L1 | Automated | Pipeline executes on schedule without human trigger | ACHIEVED — March 2026 |
+b718f1d738	CLAIM	STATE	CLM-022	| L2 | Self-Healing (Basic) | Automatic fallback when components fail — Ollama, JSON recovery | ACHIEVED — March 2026 |
+6c4eb0f764	CLAIM	STATE	CLM-023	| L3 | CI/CD | Code push automatically deploys to production | ACHIEVED — March 2026 |
+ae0f135e3a	CLAIM	STATE	CLM-024	| L4 | Explainable AI | Every decision documented, publicly queryable, auditable | ACHIEVED — March 2026 |
+34c5813253	CLAIM	PROMISE	CLM-025	| L5 | Agentic | Goal-based decisions: outcome tracking, quality scoring, source weighting | PHASE 1 — 2026 Q2 |
+c694630556	CLAIM	PROMISE	CLM-026	| L6 | Self-Autonomous | Self-improving prompts, adaptive configuration, source reliability learning | PHASE 2-3 — 2026-2027 |
+11fd3b0880	CLAIM	PROMISE	CLM-027	| L7 | Full Agentic System | Multi-agent debate, autonomous experimentation, self-modification with audit trail | PHASE 4 — 2027-2028 |
+77642a8d06	UI	-	-	The Vision — Fully Autonomous GNI
+649dbdc25e	UI	-	-	3.1 Three Architectural Principles
+281033263e	CLAIM	PROMISE	CLM-028	The fully autonomous GNI system is grounded in three foundational architectural principles that guide every design decision from Level 5 onwards:
+c1d1c62857	UI	-	-	Principle 1: Self-Awareness
+460d979f9c	CLAIM	PROMISE	CLM-029	The system maintains a complete, real-time model of its own health, performance, and quality.
+1eab5dce75	CLAIM	PROMISE	CLM-030	Every component — the RSS collector, Intelligence Funnel, LLM analyzer, database layer, delivery system — generates structured telemetry that feeds into a Health Assessment Agent.
+49100fe86f	CLAIM	PROMISE	CLM-031	This agent continuously evaluates system state across five dimensions: data quality (article volume, source diversity, relevance rate), analysis quality (LLM quality scores, prediction accuracy trends), delivery health (pipeline success rate, notification delivery confirmation), infrastructure health (API latency, database response times, storage usage), and threat posture (injection attempt rate, source credibility drift).
+534f040f22	CLAIM	PROMISE	CLM-032	The self-aware system knows when it is degraded before human operators notice.
+58c44453be	CLAIM	PROMISE	CLM-033	It does not wait for a human to observe that Telegram messages stopped arriving — it detects the delivery failure within the same pipeline run and triggers the repair protocol autonomously.
+816ac34a59	UI	-	-	Principle 2: Self-Healing
+f4d92f96de	CLAIM	PROMISE	CLM-034	When the Health Assessment Agent detects degradation in any dimension, it triggers a tiered repair protocol.
+942eeae730	CLAIM	PROMISE	CLM-035	Tier 1 repairs execute automatically without any human involvement: switching to backup APIs, retrying with alternative parameters, clearing corrupted state, rebuilding cached data.
+39302c896d	CLAIM	PROMISE	CLM-036	Tier 2 repairs involve automated notification to a human operator with a specific diagnosis and proposed resolution — the human approves or modifies the repair, the system executes it.
+4ac2a1f0d3	CLAIM	PROMISE	CLM-037	Tier 3 events — situations where automated repair and human-assisted repair have both failed — trigger a graceful degradation protocol: the system continues operating at reduced capability, clearly signals its degraded state to users, and queues the failed repair for scheduled maintenance.
+6c3131227b	CLAIM	PROMISE	CLM-038	The design philosophy is simple: fail gracefully, repair autonomously, escalate rarely, and never surprise the user.
+100a416722	DATA	-	-	A system that fails silently is more dangerous than one that fails loudly.
+f6470a6e9e	CLAIM	PROMISE	CLM-039	GNI will always know what it is doing and always tell users what it knows.
+5a08520c2e	UI	-	-	Principle 3: Self-Improvement
+c5b0f1a1fa	CLAIM	PROMISE	CLM-040	The system accumulates evidence about its own performance over time and uses that evidence to improve its own configuration — without human reprogramming.
+1f7681ecd5	CLAIM	PROMISE	CLM-041	Prompt templates that consistently produce lower quality scores (measured by the LLM Quality Scorer) are flagged for replacement.
+38b8e42f07	CLAIM	PROMISE	CLM-042	Source weights are dynamically adjusted based on which sources contributed most frequently to high-accuracy reports.
+df34971397	CLAIM	PROMISE	CLM-043	The injection detector pattern library grows as new adversarial patterns are identified.
+9c7ad45a43	CLAIM	PROMISE	CLM-044	The geocoding dictionary expands as new conflict locations emerge.
+42d8f20a65	CLAIM	PROMISE	CLM-045	The Intelligence Funnel relevance thresholds are tuned based on the correlation between article selection decisions and final report quality.
+a3ab05ba06	CLAIM	PROMISE	CLM-046	The self-improving system becomes more capable with every passing week, without a human writing a single line of new code.
+3e39664738	CLAIM	PROMISE	CLM-047	Its improvement trajectory is bounded only by the quality of its measurement frameworks — which is why the GPVS prediction validation framework and the LLM quality scoring rubric are not nice-to-have features but foundational infrastructure for the autonomous future.
+bc1ea25ccf	UI	-	-	Evolution Roadmap — Five Phases
+4f090943b0	CLAIM	STATE	CLM-048	4.1 Phase 0 — Foundation (Completed: March 2026)
+1e2fc98f06	CLAIM	STATE	CLM-049	| STATUS: COMPLETE — GNI v1.0 is live at gni-dusky.vercel.app |
+9f8963eae8	CLAIM	STATE	CLM-050	Phase 0 established the architectural foundation for all future autonomous evolution.
+b786119f5d	CLAIM	STATE	CLM-051	Every feature built in Phase 0 was designed with future autonomy in mind: the GPVS framework provides the measurement infrastructure for self-improvement; the transparency engine provides the audit trail for autonomous decisions; the engineering rules (L1-L27) codify the failure modes that the self-healing system must handle; the modular pipeline architecture enables component-level replacement without system-wide disruption.
+12d3af361b	UI	-	-	| Achievement | Evidence | Status |
+f88ae9d3bb	CLAIM	STATE	CLM-052	| L1-L4 autonomy levels achieved | Production pipeline running 2x daily | DONE |
+d6c9c87518	CLAIM	STATE	CLM-053	| GPVS framework operational | 100% accuracy on 20 verified reports | DONE |
+3fb7687250	CLAIM	STATE	CLM-054	| Explainable AI transparency | 1,300+ article funnel trace records | DONE |
+a2853da8ec	CLAIM	STATE	CLM-055	| 27 engineering rules documented | L1-L27 in Day 1-7 SWOT documents | DONE |
+d32da29e00	CLAIM	STATE	CLM-056	| Zero-cost infrastructure | $0/month confirmed for 7 days operation | DONE |
+0f5cd73c8c	CLAIM	STATE	CLM-057	| GNI Intelligence Framework v1.0 | Formal academic document published | DONE |
+b6d79573d9	CLAIM	PROMISE	CLM-058	4.2 Phase 1 — Agentic Foundation (April–June 2026)
+c97b5e160f	CLAIM	PROMISE	CLM-059	| TARGET: Achieve Level 5 Autonomy — Goal-based pipeline decisions and outcome measurement |
+6628a85f3c	CLAIM	PROMISE	CLM-060	Phase 1 transitions GNI from a fixed automation system to an agentic one — a system that makes decisions based on goals rather than following a fixed script.
+7e53ee434a	CLAIM	PROMISE	CLM-061	The pipeline stops being a rigid sequence of steps and starts being a goal-directed agent that decides how to achieve the objective of 'produce the highest-quality intelligence report possible from today's news.'
+976616fb69	UI	-	-	4.2.1 Automated GPVS Outcome Verification
+062c1966bf	CLAIM	STATE	CLM-062	The outcome_verifier.py script currently runs daily and stores results in the prediction_outcomes table.
+af7583c1f5	CLAIM	PROMISE	CLM-063	Phase 1 extends this into a full automated accuracy measurement framework: multi-timeframe verification (3-day, 7-day, 30-day), automated black swan detection using volatility spike analysis, and a human review dashboard that surfaces only the cases requiring judgment.
+648e634be0	CLAIM	PROMISE	CLM-064	The GPVS score becomes the primary KPI driving all self-improvement decisions.
+cf2674d621	UI	-	-	4.2.2 LLM Report Quality Scorer
+714f83596c	CLAIM	PROMISE	CLM-065	A 10-point quality rubric is implemented as an automated post-processing step after each report generation.
+827a1744d0	CLAIM	PROMISE	CLM-066	The scorer evaluates: factual specificity (does the report cite specific events or make vague generalisations?), market linkage quality (does the market impact analysis make specific instrument-level claims?), source consensus accuracy (does the sentiment reflect the actual consensus of the articles provided?), analytical novelty (does the report add analysis beyond what the articles explicitly state?), and prediction specificity (are the directional claims specific enough to be falsifiable?).
+805618d936	CLAIM	PROMISE	CLM-067	Reports scoring below 7/10 trigger a prompt refinement flag.
+6270231947	UI	-	-	4.2.3 Dynamic Source Weighting
+95ac51c6d6	CLAIM	STATE	CLM-068	The Intelligence Funnel's source diversity enforcement currently uses a fixed maximum of 3 articles per source.
+f909c8bfbd	CLAIM	PROMISE	CLM-069	Phase 1 replaces this with dynamic weighting: sources whose articles have historically contributed to high-GPVS-score reports receive higher selection priority.
+569cd245cb	CLAIM	PROMISE	CLM-070	Sources that consistently produce articles rejected at the injection detection stage have their weight reduced.
+3651946906	CLAIM	PROMISE	CLM-071	The weighting adjusts weekly based on the previous four weeks of GPVS data — a simple feedback loop that makes the funnel smarter over time without human intervention.
+9bf5532e32	UI	-	-	4.2.4 Infrastructure Resilience Upgrade
+f6d4379332	CLAIM	PROMISE	CLM-072	Phase 1 eliminates the Yahoo Finance single point of failure by implementing Alpha Vantage as a primary alternative with automatic failover.
+b2b019f621	CLAIM	PROMISE	CLM-073	The Nominatim geocoder is replaced with OpenCage API for accurate multi-region coordinate resolution.
+a5dfa188ac	CLAIM	PROMISE	CLM-074	The RSS source portfolio is expanded from 5 to 10 sources including Asian-perspective outlets.
+627ed4572f	CLAIM	PROMISE	CLM-075	Pipeline health metrics are visualised in a new /health dashboard page showing real-time system status.
+aa3727c49d	UI	-	-	| Feature | Autonomy Contribution | Effort | Priority |
+292e6b8789	CLAIM	PROMISE	CLM-076	| Full GPVS automation | Enables self-improvement measurement | 2 weeks | CRITICAL |
+e17a80b8b8	CLAIM	PROMISE	CLM-077	| LLM quality scorer | Enables prompt self-improvement | 1 week | CRITICAL |
+734415b506	CLAIM	PROMISE	CLM-078	| Dynamic source weighting | First self-improving component | 1 week | HIGH |
+15c3c2865d	CLAIM	PROMISE	CLM-079	| Alpha Vantage failover | Eliminates stock data fragility | 3 days | HIGH |
+b338bfe699	CLAIM	PROMISE	CLM-080	| OpenCage geocoder | Improves map intelligence quality | 2 days | MEDIUM |
+83e42854e9	CLAIM	PROMISE	CLM-081	| 10-source RSS expansion | Broader intelligence coverage | 1 week | MEDIUM |
+0e9a24df71	CLAIM	PROMISE	CLM-082	| /health dashboard page | Human oversight interface | 3 days | MEDIUM |
+a2806b7f8c	CLAIM	PROMISE	CLM-083	| Multilingual output (Phase 1) | Myanmar + Thai language summaries | 2 weeks | LOW |
+f5dca52ca3	CLAIM	PROMISE	CLM-084	4.3 Phase 2 — Intelligence Enhancement (July–September 2026)
+79f27b4147	CLAIM	PROMISE	CLM-085	| TARGET: Achieve Level 6 Autonomy — Self-improving analytical capability |
+28b4bbf672	CLAIM	PROMISE	CLM-086	Phase 2 deepens GNI's analytical capability and initiates the self-improvement feedback loop.
+7072e77f2b	CLAIM	PROMISE	CLM-087	The system begins making decisions about its own analytical configuration based on evidence — not just executing fixed algorithms but actively optimising them.
+1249b5b2a3	UI	-	-	4.3.1 Prompt Self-Optimisation Engine
+03aa9ef0ca	CLAIM	STATE	CLM-088	The LLM analysis prompt is the most important single configuration in GNI — it determines the quality of every intelligence report.
+e65d22dfa8	CLAIM	PROMISE	CLM-089	Phase 2 implements a prompt experimentation framework: the system maintains two prompt variants simultaneously, runs A/B testing across pipeline runs, measures the GPVS scores and quality scores produced by each variant, and autonomously promotes the higher-performing variant to production.
+9cc9e50ef4	CLAIM	PROMISE	CLM-090	This is the first component of GNI that genuinely rewrites its own configuration — a foundational step toward Level 6 autonomy.
+ec8ba6d9f3	UI	-	-	4.3.2 Historical Event-Market Correlation Engine
+d60a62de25	CLAIM	STATE	CLM-091	GNI currently analyses current events and predicts their market impact from first principles.
+f953027e96	CLAIM	PROMISE	CLM-092	Phase 2 adds a historical evidence layer: a database of past geopolitical events with their confirmed market impacts, enabling the LLM to ground its predictions in empirical precedent.
+1c118a9146	DATA	-	-	'US-Iran military escalation historically correlates with +8-15% oil price increases within 7 days' is a more reliable basis for market impact analysis than reasoning from general knowledge.
+8a2b7ee072	CLAIM	PROMISE	CLM-093	This correlation engine also powers the GPVS calibration — allowing the system to distinguish between predictions that were correct, predictions that were delayed in their market manifestation, and predictions that were genuinely wrong.
+c2f40ec531	UI	-	-	4.3.3 Multi-Event Pattern Detection
+4d8b31d376	CLAIM	PROMISE	CLM-094	Phase 2 implements an escalation scoring engine that detects when multiple simultaneous events collectively signal systemic risk exceeding what any individual event would suggest.
+6f9e761b2d	DATA	-	-	When the Iran-US conflict, a North Korea missile test, and a US-China semiconductor export control announcement occur within 48 hours of each other, the pattern is geopolitically significant in a way that no single-event analysis captures.
+487fd59486	CLAIM	PROMISE	CLM-095	The escalation engine tracks event clusters across GNI's three pillars and generates composite risk assessments for high-correlation periods.
+0a8299ba00	UI	-	-	4.3.4 Source Credibility Learning System
+a001a28a2c	CLAIM	PROMISE	CLM-096	Phase 2 implements a dynamic source credibility model that tracks each source's historical contribution to accurate predictions.
+1a515f9c29	CLAIM	PROMISE	CLM-097	Sources are scored not just on article volume but on prediction quality contribution: how often did articles from this source appear in reports that achieved high GPVS scores?
+d348fc363b	DATA	-	-	How often did articles from this source trigger injection detection flags?
+def3cb9440	DATA	-	-	How often did articles from this source introduce narratives that contradicted the eventual market outcome?
+dba3a0966c	CLAIM	PROMISE	CLM-098	The credibility model updates weekly and influences both source weighting in the funnel and the confidence level assigned to reports heavily influenced by any single source.
+1d91ac647f	CLAIM	PROMISE	CLM-099	4.4 Phase 3 — Agentic Operation (October 2026–March 2027)
+750a6b5830	CLAIM	PROMISE	CLM-100	| TARGET: Near-Zero Human Intervention — System manages its own configuration and quality |
+6bcc015fc1	CLAIM	PROMISE	CLM-101	Phase 3 is the critical transition from a self-improving system to a genuinely agentic one.
+8506914572	CLAIM	PROMISE	CLM-102	The pipeline stops following a fixed decision tree and starts reasoning about goals.
+4eaad0da8f	CLAIM	PROMISE	CLM-103	It asks not 'what is the next step in the sequence?' but 'what is the best action to take right now to produce the highest-quality intelligence output?'
+6fc045e3c8	UI	-	-	4.3.1 Multi-Agent Debate Protocol
+f6cd7310e7	CLAIM	PROMISE	CLM-104	The most significant Phase 3 feature is the Multi-Agent Debate (MAD) protocol — a framework where multiple LLM instances with different analytical perspectives debate before producing a final intelligence report.
+3721f27708	CLAIM	PROMISE	CLM-105	The debate involves three agents: the Bearish Analyst (tasked with finding all evidence supporting a negative market outlook), the Bullish Analyst (tasked with finding all evidence supporting a positive outlook), and the Synthesis Agent (tasked with producing the final report that honestly weighs the arguments from both sides).
+d39167e13c	CLAIM	PROMISE	CLM-106	This protocol directly addresses the single-perspective bias risk inherent in single-agent analysis.
+415163cecd	CLAIM	PROMISE	CLM-107	When the Bearish Analyst presents strong arguments and the Bullish Analyst presents weak rebuttals, the Synthesis Agent can confidently produce a Bearish report.
+b390eeecc9	CLAIM	PROMISE	CLM-108	When both analysts present equally strong cases, the Synthesis Agent produces a Neutral report with high uncertainty flag — a more honest output than a forced directional prediction.
+eecbbc0348	CLAIM	PROMISE	CLM-109	The debate transcript is stored and available through the transparency engine, providing the most detailed explainability of any intelligence system.
+8ca7436b4c	UI	-	-	4.3.2 Autonomous Pipeline Configuration
+5905a4572a	CLAIM	PROMISE	CLM-110	Phase 3 implements a Pipeline Configuration Agent that adjusts pipeline parameters in real-time based on current geopolitical conditions.
+71d0bf698e	CLAIM	PROMISE	CLM-111	During periods of high volatility (multiple simultaneous crises), the agent increases pipeline frequency to 4x daily and expands article selection from top 5 to top 10.
+a224489633	CLAIM	PROMISE	CLM-112	During quiet periods, it reduces to 1x daily.
+510f21d714	CLAIM	PROMISE	CLM-113	When a specific topic cluster (e.g., Taiwan Strait tension) shows high article volume, the agent temporarily adjusts source weights to prioritise outlets with the strongest historical track record on that topic.
+7aee701b66	CLAIM	PROMISE	CLM-114	All configuration changes are logged to the audit trail and reversible.
+b7f1346eae	UI	-	-	4.3.3 Deception Detection and Disinformation Resilience
+0b6daae1b1	CLAIM	PROMISE	CLM-115	Phase 3 implements an adversarial resilience layer designed specifically for the geopolitical intelligence domain.
+144e741baf	DATA	-	-	State actors and sophisticated market participants have both the motivation and capability to deliberately seed false narratives into the news sources GNI monitors.
+9a22d7dc67	CLAIM	PROMISE	CLM-116	The deception detection system uses cross-source contradiction analysis (flagging narratives that appear exclusively in one source with no corroboration), temporal pattern analysis (detecting sudden coordinated narrative shifts across multiple sources), and GPVS retroactive analysis (identifying past predictions that were contradicted by early market movements that then reversed — the signature of deliberate manipulation).
+26460b5368	CLAIM	PROMISE	CLM-117	Detected potential deception events are flagged prominently in the transparency engine and reduce the confidence weighting of affected reports.
+a8afe3b277	CLAIM	PROMISE	CLM-118	4.5 Phase 4 — Full Autonomous System (2027–2028)
+cfc58a90e2	CLAIM	PROMISE	CLM-119	| TARGET: Level 7 — Fully Autonomous Self-Healing Agentic AI Intelligence System |
+e63b47526e	CLAIM	PROMISE	CLM-120	Phase 4 represents the completion of GNI's autonomous evolution.
+c553379bc7	CLAIM	PROMISE	CLM-121	The fully autonomous system operates continuously without any routine human involvement.
+d6b2e5d335	CLAIM	PROMISE	CLM-122	Human operators interact with the system only at the Tier 3 escalation level — situations where all automated repair protocols have failed — and for strategic decisions about the system's mission and values.
+60c8c63ef6	CLAIM	PROMISE	CLM-123	All operational decisions are made autonomously.
+b2effb8afa	UI	-	-	4.5.1 Self-Modifying Code with Audit Trail
+c9ab13c615	CLAIM	PROMISE	CLM-124	The Phase 4 system includes a Code Evolution Agent that can propose and implement changes to its own source code.
+783135a1b3	CLAIM	PROMISE	CLM-125	This capability is strictly bounded: the agent can only modify configuration files, prompt templates, scoring weights, and data pipeline parameters — it cannot modify the core safety and explainability infrastructure.
+8f0da7fcb5	CLAIM	PROMISE	CLM-126	Every proposed code change is staged in a testing environment, evaluated against GPVS and quality benchmarks, and deployed only if it demonstrates measurable improvement.
+ef30fa7f9d	CLAIM	PROMISE	CLM-127	The full change history, rationale, and impact assessment are stored permanently in an immutable audit trail.
+4c0e260ad1	UI	-	-	4.5.2 Autonomous Capability Expansion
+287bb6633f	CLAIM	PROMISE	CLM-128	The Phase 4 system identifies gaps in its own analytical coverage and autonomously implements expansions within pre-approved boundaries.
+bb8dc453e9	CLAIM	PROMISE	CLM-129	When the system detects that a recurring geopolitical topic cluster (e.g., BRICS+ monetary policy) is consistently associated with low-quality source coverage, it autonomously identifies and integrates additional RSS sources with strong historical coverage of that topic, runs a validation period, and adds them to the permanent source portfolio if they improve accuracy metrics.
+a966e80bcf	CLAIM	PROMISE	CLM-130	The system grows its own capabilities in response to the world it is monitoring.
+6603abd188	UI	-	-	4.5.3 Global Intelligence Network
+21b33b3a9f	CLAIM	PROMISE	CLM-131	The fully autonomous GNI system is not a single pipeline but a distributed intelligence network.
+2bd2321d73	CLAIM	PROMISE	CLM-132	Regional GNI instances operate simultaneously — GNI-Asia monitoring semiconductor, trade, and geopolitical developments in the Asia-Pacific; GNI-MENA covering Middle Eastern energy, conflict, and sanctions dynamics; GNI-Europe tracking NATO, EU policy, and Russia-related intelligence.
+e37cfe878d	CLAIM	PROMISE	CLM-133	A Master Synthesis Agent aggregates regional intelligence into a global picture, identifying cross-regional correlations that no single regional system would detect.
+2d7deb4df4	CLAIM	PROMISE	CLM-134	The full network operates at zero marginal cost, scaling horizontally on free-tier infrastructure.
+c8e2e8393e	UI	-	-	Human Oversight in the Autonomous System
+7d1e75d84a	UI	-	-	5.1 Why Autonomy Requires More Oversight, Not Less
+86a115d7be	CLAIM	PROMISE	CLM-135	A counterintuitive but essential principle of GNI's autonomous design is that greater autonomy requires more sophisticated human oversight, not less.
+c6617c22bd	DATA	-	-	A manually-operated system is inherently constrained by human attention and intervention frequency.
+1379ba61e8	DATA	-	-	An autonomous system operating continuously without routine human involvement can compound errors, drift from intended behaviour, and be exploited by adversarial actors in ways that a manually-operated system cannot.
+2893100bcf	CLAIM	PROMISE	CLM-136	GNI's human oversight framework is therefore not a concession to the limitations of autonomous systems — it is a design requirement for safe and trustworthy autonomous operation.
+93ec7170f5	CLAIM	PROMISE	CLM-137	The framework defines four oversight tiers that persist across all phases of GNI's evolution:
+1058683648	UI	-	-	| Tier | Name | Scope | Trigger |
+c2ac0a8093	CLAIM	PROMISE	CLM-138	| Tier 0 | Automated | All routine operations: collection, analysis, delivery, self-repair | Always — no human needed |
+fb1ee6bbac	CLAIM	PROMISE	CLM-139	| Tier 1 | Monitoring | Review GPVS dashboard, quality scores, health metrics | Weekly — operator review cycle |
+483ce97ac0	CLAIM	PROMISE	CLM-140	| Tier 2 | Assisted Repair | Human approves autonomous repair proposals for complex failures | As triggered by Health Agent |
+6be5897b9e	CLAIM	PROMISE	CLM-141	| Tier 3 | Strategic Override | Mission and values decisions, black swan event framing, disinformation response | Rare — escalated by system |
+690d21c088	UI	-	-	5.2 The GPVS Human Review Protocol
+aaff77e2db	CLAIM	PROMISE	CLM-142	The GPVS framework includes a structured human review protocol that activates for predictions meeting specific criteria: market movement contradicting prediction by more than 3% within 48 hours; confirmed black swan event during validation period; source consensus score below 0.3 at prediction time; GPVS accuracy falling below 60% for 5 consecutive reports.
+03427d3bc2	CLAIM	PROMISE	CLM-143	Human reviewers do not simply approve or reject outcomes — they provide structured context that feeds back into the system's learning: was the analysis directionally correct but delayed?
+520ecfd84c	DATA	-	-	Was there an undetected deception campaign?
+c50476e62e	DATA	-	-	Was there a legitimate black swan override?
+7c20fa7c6b	DATA	-	-	This structured feedback is more valuable to the self-improving system than a binary pass/fail signal.
+9d3f15234f	UI	-	-	5.3 Immutable Audit Trail
+efb5a33b77	CLAIM	PROMISE	CLM-144	Every autonomous decision the system makes — every prompt modification, every source weight change, every configuration adjustment, every repair action — is recorded in an immutable audit trail stored in Supabase with cryptographic timestamping.
+ead959c6c7	CLAIM	PROMISE	CLM-145	This audit trail is the technical foundation of accountable autonomous operation: any stakeholder can reconstruct exactly what the system decided, when, why, and with what outcome.
+389ec429cc	CLAIM	PROMISE	CLM-146	The audit trail is publicly accessible via the transparency engine — maintaining GNI's commitment to explainability even as the system's operational complexity increases dramatically.
+c242d7fb56	UI	-	-	Target Architecture — Fully Autonomous GNI
+21d715f762	UI	-	-	6.1 Agent Ecosystem
+3d8cdaffb1	CLAIM	PROMISE	CLM-147	The fully autonomous GNI system consists of nine specialised agents, each with a defined scope, capability boundary, and communication protocol:
+b1cea826b5	UI	-	-	| Agent | Responsibility | Autonomy Level |
+f761e8c490	CLAIM	PROMISE	CLM-148	| Health Assessment Agent | Continuous monitoring of all system dimensions, anomaly detection | Full — always running |
+29fd065f4c	CLAIM	PROMISE	CLM-149	| Collection Agent | Adaptive RSS collection, source discovery, feed health monitoring | Full — Tier 2 for new sources |
+c265ca32fb	CLAIM	PROMISE	CLM-150	| Intelligence Funnel Agent | Dynamic threshold adjustment, injection pattern expansion, source weighting | Full — weekly config updates |
+5384d68bee	CLAIM	PROMISE	CLM-151	| Bearish Analysis Agent | LLM instance tasked with negative market outlook — MAD protocol | Full — bounded by MAD rules |
+d26daaf3e2	CLAIM	PROMISE	CLM-152	| Bullish Analysis Agent | LLM instance tasked with positive market outlook — MAD protocol | Full — bounded by MAD rules |
+5cff74c8e3	CLAIM	PROMISE	CLM-153	| Synthesis Agent | Final report generation from MAD debate outputs | Full — human review on flag |
+8499dce81e	CLAIM	PROMISE	CLM-154	| Quality Assessment Agent | GPVS measurement, quality scoring, prompt performance evaluation | Full — weekly human review |
+e309435d0b	CLAIM	PROMISE	CLM-155	| Configuration Evolution Agent | Prompt optimisation, source weight adjustment, parameter tuning | Bounded — audit trail required |
+c88009e39b	CLAIM	PROMISE	CLM-156	| Delivery Agent | Multi-channel delivery: Telegram, web push, email, API | Full — Tier 2 on failure |
+86b493c53c	UI	-	-	6.2 Infrastructure Evolution
+2900717055	UI	-	-	| Component | v1.0 (Current) | v2.0 (Phase 1-2) | v3.0 (Phase 3-4) |
+a63103aed8	CLAIM	MIXED	CLM-157	| LLM Inference | Groq API / Ollama fallback | Groq primary + Anthropic backup | Multi-model debate (MAD) |
+930184c8f8	CLAIM	MIXED	CLM-158	| Data Sources | 5 RSS feeds | 10 RSS + 2 APIs | 20+ sources + real-time feeds |
+cab068c3bc	CLAIM	MIXED	CLM-159	| Database | Supabase free tier | Supabase + audit tables | Supabase + immutable audit log |
+e66a1ecf65	CLAIM	MIXED	CLM-160	| Orchestration | GitHub Actions cron | GitHub Actions + health agent | Autonomous orchestration agent |
+cec8d17c7f	CLAIM	MIXED	CLM-161	| Delivery | Telegram + web | Telegram + web + email | Adaptive multi-channel agent |
+95a29d8792	CLAIM	MIXED	CLM-162	| Geocoding | Nominatim (free) | OpenCage API | Hybrid geocoding with learning |
+8c63ea08e1	CLAIM	MIXED	CLM-163	| Market Data | Yahoo Finance (unofficial) | Alpha Vantage + Yahoo fallback | Multi-source market data mesh |
+8e8adefa39	CLAIM	MIXED	CLM-164	| Monthly Cost | $0 | $0 (free tier maintained) | $0 (zero-cost commitment) |
+c7c6475718	UI	-	-	Key Performance Indicators
+82a01cb55b	CLAIM	PROMISE	CLM-165	The autonomous GNI system is measured against a comprehensive KPI framework that spans analytical quality, operational reliability, and autonomy progression.
+c3cf36f41c	CLAIM	PROMISE	CLM-166	These KPIs drive the self-improvement engine — every parameter adjustment must demonstrate measurable improvement against at least one KPI.
+aafe5f668a	UI	-	-	| KPI | v1.0 Baseline | Phase 1 Target | Phase 4 Target | Measurement Method |
+10ee290587	CLAIM	MIXED	CLM-167	| GPVS accuracy (3-day) | 100% (20 reports) | >65% | >75% | prediction_outcomes table |
+75b14d6424	CLAIM	MIXED	CLM-168	| GPVS accuracy (7-day) | 100% (20 reports) | >70% | >80% | prediction_outcomes table |
+c3729d3de2	CLAIM	MIXED	CLM-169	| LLM quality score | Not measured | >7.5/10 | >9.0/10 | Quality Assessment Agent |
+36c78b70e5	CLAIM	MIXED	CLM-170	| Pipeline success rate | 100% | 100% | 100% | runtime_logs table |
+f18995640a	CLAIM	MIXED	CLM-171	| Cloud execution time | ~14 seconds | <20 seconds | <10 seconds | step_timings field |
+efe325d448	CLAIM	MIXED	CLM-172	| Source diversity score | 4-5/5 sources | 8-10/10 sources | 18-20/20 sources | pipeline_runs table |
+1db045e522	CLAIM	MIXED	CLM-173	| Geocoding accuracy | ~70% | >90% | >98% | Manual spot check |
+a00a78a63d	CLAIM	MIXED	CLM-174	| Injection detection rate | 100% (synthetic) | 100% | 100% | Adversarial test suite |
+fc1b32bb7e	CLAIM	MIXED	CLM-175	| Human interventions/week | ~5 (development) | <2 | 0 (autonomous) | Incident log |
+c4870ad94e	CLAIM	MIXED	CLM-176	| Monthly infrastructure cost | $0 | $0 | $0 | Service billing dashboards |
+8a6b7faf68	CLAIM	MIXED	CLM-177	| MAD debate quality score | N/A | N/A | >8.5/10 | Synthesis Agent evaluator |
+684a80d43f	CLAIM	STATE	CLM-178	Note: The GPVS accuracy targets for Phase 1 and beyond (65-80%) are lower than the current 100% baseline.
+05fbfdd4f9	CLAIM	STATE	CLM-179	This is intentional — the 100% score reflects 20 reports in a single persistent geopolitical context (Iran-US conflict).
+b4d42b0738	CLAIM	PROMISE	CLM-180	As GNI operates across diverse and more complex geopolitical periods, the expected long-term accuracy is 65-75% for directional prediction, which compares favourably with professional analyst track records.
+7651cf5e17	UI	-	-	Ethical Framework for Autonomous Operation
+1f5931bb8b	UI	-	-	8.1 The Ethics of Autonomous Intelligence
+69e3dd579c	DATA	-	-	A fully autonomous AI intelligence system operating in the geopolitical domain presents ethical challenges that do not arise in most AI applications.
+4efc70b4b8	DATA	-	-	The system's outputs can influence financial decisions.
+d493289360	DATA	-	-	Its analytical framing of geopolitical events can shape how users understand those events.
+65793bc902	DATA	-	-	Its source selection decisions can amplify or marginalise particular perspectives.
+dadb67e4c8	DATA	-	-	Its prediction accuracy claims carry real-world weight.
+1b8225ae28	CLAIM	PROMISE	CLM-181	These responsibilities require an explicit ethical framework that persists across all autonomy levels.
+f4d2263d18	UI	-	-	8.2 Six Ethical Commitments
+87b27d2e05	CLAIM	PROMISE	CLM-182	Commitment 1: Transparency is Non-Negotiable
+b8439eed79	CLAIM	PROMISE	CLM-183	Every decision the autonomous system makes — from article selection to prompt modification to source weight adjustment — must be logged in the public audit trail.
+3da802f9c8	DATA	-	-	As the system becomes more autonomous, its decisions become harder for humans to anticipate or verify in real-time.
+146a22ec65	CLAIM	PROMISE	CLM-184	The audit trail is the mechanism that maintains accountability even when real-time oversight is not possible.
+8c554b42de	CLAIM	PROMISE	CLM-185	If a decision cannot be logged and explained, it will not be made.
+68187ae844	CLAIM	PROMISE	CLM-186	Commitment 2: Accuracy is Reported Honestly
+da3ce1a160	CLAIM	PROMISE	CLM-187	GNI will publish its GPVS accuracy scores including periods of poor performance.
+020b5b71d7	CLAIM	PROMISE	CLM-188	There will be no selective reporting of successes.
+d6901a85d2	CLAIM	PROMISE	CLM-189	When the system is wrong, it will say so clearly, document the failure, and use it to improve.
+1df864aa63	DATA	-	-	A system that hides its mistakes cannot be trusted by the users who depend on it.
+f6446f7f01	CLAIM	PROMISE	CLM-190	Commitment 3: Financial Disclaimer is Permanent
+25ffb30633	CLAIM	PROMISE	CLM-191	At no point in GNI's autonomous evolution will the financial disclaimer be removed or weakened.
+c229671ded	CLAIM	PROMISE	CLM-192	Every intelligence output — regardless of its source, quality score, or confidence level — will carry the explicit statement that GNI intelligence is for informational purposes only and does not constitute financial advice.
+b91660af70	DATA	-	-	As the system's accuracy improves, the temptation to remove this disclaimer will grow.
+6545240ef8	CLAIM	PROMISE	CLM-193	It will not be removed.
+031160945c	CLAIM	PROMISE	CLM-194	Commitment 4: Human Override is Always Possible
+75568128fd	CLAIM	PROMISE	CLM-195	At every level of autonomy, a human operator can override any autonomous decision.
+e7663dda77	CLAIM	PROMISE	CLM-196	The autonomous system is designed to make human intervention unnecessary in normal operation — but never impossible.
+f435011eac	CLAIM	PROMISE	CLM-197	The Tier 3 escalation pathway remains open at all times.
+558fd5d51c	CLAIM	PROMISE	CLM-198	Any autonomous decision that cannot be overridden by a human is a design defect.
+f0e1a62bd4	CLAIM	PROMISE	CLM-199	Commitment 5: Zero Cost is a Mission Commitment
+6add3a7986	CLAIM	PROMISE	CLM-200	GNI will remain free to access at every phase of its autonomous evolution.
+7ead29cf15	DATA	-	-	The moment GNI introduces a paywall, it becomes the same kind of system it was designed to replace.
+b384246702	CLAIM	PROMISE	CLM-201	The mission — democratising geopolitical intelligence — is incompatible with monetisation through access restriction.
+b740e1b568	CLAIM	PROMISE	CLM-202	Revenue models based on premium analytics, API access for developers, or institutional partnerships that do not restrict public access are acceptable.
+ff19c4725f	CLAIM	PROMISE	CLM-203	Paywalling the core intelligence product is not.
+98501e83b5	CLAIM	PROMISE	CLM-204	Commitment 6: Deception Awareness is a Permanent Responsibility
+6149cc2b8e	CLAIM	PROMISE	CLM-205	The autonomous system will never lower its guard against disinformation and state actor manipulation.
+ca214c6cca	DATA	-	-	As the system becomes more capable and more widely used, it becomes a more valuable target for adversarial influence operations.
+be249fca82	CLAIM	PROMISE	CLM-206	The deception detection capability will grow in sophistication at least as fast as the analytical capabilities it protects.
+160421d428	CLAIM	PROMISE	CLM-207	This is not a feature — it is a fiduciary responsibility to the users who trust GNI's intelligence.
+e9b4d15c9a	UI	-	-	Conclusion — The Destination
+94f9ea8145	CLAIM	STATE	CLM-208	GNI Version 1.0 proves that the architecture is sound.
+fd813b0764	CLAIM	STATE	CLM-209	A single developer, working for seven days, using exclusively free-tier infrastructure, built a production-grade automated intelligence pipeline that delivers institutional-quality geopolitical analysis at zero cost.
+279f2f2f98	CLAIM	STATE	CLM-210	The proof of principle is established.
+f14329cac0	DATA	-	-	The journey from Version 1.0 to the fully autonomous system described in this White Paper is a journey of engineering discipline, not theoretical innovation.
+7f800518f8	CLAIM	STATE	CLM-211	Every capability described — the Multi-Agent Debate protocol, the self-improving prompt optimisation engine, the autonomous source credibility model, the deception detection framework — is implementable with current technology.
+c26d08af98	DATA	-	-	The question is not whether it can be done.
+0b8d7d9181	DATA	-	-	The question is whether it will be done with the same commitment to transparency, accountability, and zero cost that produced Version 1.0.
+fcb1f44a2d	CLAIM	PROMISE	CLM-212	The vision is clear: a self-aware, self-healing, self-improving agentic AI intelligence system that operates continuously, learns from its own outputs, corrects its own errors, and delivers institutional-grade geopolitical intelligence to anyone on Earth who needs it — at zero cost, with complete transparency, and without a single human touching the system on a routine basis.
+d85b4c1118	DATA	-	-	The forces reshaping the world do not respect borders.
+b5429f2e51	DATA	-	-	The intelligence to understand them should not either.
+6e3d84c6d5	CLAIM	PROMISE	CLM-213	GNI exists to ensure that the quality of geopolitical intelligence available to a person is determined by their curiosity and their internet connection — not by their institutional affiliation, their nationality, or their wealth.
+ae9e538d6c	DATA	-	-	That is the destination.
+d18c628538	DATA	-	-	The autonomous pipeline is how we get there.
+95522a2beb	UI	-	-	| Phase | Timeline | Autonomy Level | Key Milestone |
+dac0206366	CLAIM	STATE	CLM-214	| Phase 0 — Foundation | March 2026 | L4 — XAI | COMPLETED |
+988c655f9c	CLAIM	PROMISE	CLM-215	| Phase 1 — Agentic | Q2 2026 | L5 — Goal-based | GPVS + Quality Scorer |
+a3d95858fe	CLAIM	PROMISE	CLM-216	| Phase 2 — Enhancement | Q3 2026 | L6 — Self-improving | Prompt optimisation live |
+e3a7099e0f	CLAIM	PROMISE	CLM-217	| Phase 3 — Agentic Ops | Q4 2026 - Q1 2027 | L6+ — Near-autonomous | MAD protocol deployed |
+86bd002707	CLAIM	PROMISE	CLM-218	| Phase 4 — Full Autonomy | 2027-2028 | L7 — Fully autonomous | Zero routine interventions |
+b6f7b35915	CLAIM	STATE	CLM-219	GNI White Paper: Autonomous Self-Healing Agentic AI Intelligence System | Global Nexus Insights | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | March 2026

@@ -2,7 +2,7 @@
 """tools/gni_claims.py - S107, roadmap 3 row R3-2 (absorbs item 9.21).
 
 STAGE 1 (this file, S107): the deterministic CANDIDATE extractor. It lists
-every human-readable literal the public surface renders, verbatim, anchored at
+every human-readable SENTENCE the public surface renders, verbatim, anchored at
 file:line, keyed by the hash of its whitespace-normalised text. Stage 2 adds
 the verdict file and generates docs/GNI_CLAIMS_S<N>.md; the detector check
 labelled `claims resolve` reads both.
@@ -71,6 +71,28 @@ def is_machine(text):
     return False
 
 
+# DECISION S107-4: the harvest unit is the SENTENCE. Measured S107: 61 of the
+# White Paper's 200 paragraph lines hold more than one sentence, and roadmap 3
+# row R3-3 derives ONE status per claim - a paragraph that is half true cannot
+# carry one. A sentence is the smallest unit that stays VERBATIM. LIMIT,
+# written down: one sentence can still hold several claims; splitting it
+# further would need words that are not in the source.
+SENT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z\"'(])")
+
+
+def sentences(raw):
+    """[(offset_in_raw, sentence)] - offsets index the UNnormalised text, so a
+    sentence on the third line of a JSX run is anchored on that line."""
+    out, pos = [], 0
+    for part in SENT_RE.split(raw):
+        at = raw.index(part, pos)
+        pos = at + len(part)
+        lead = len(part) - len(part.lstrip())
+        if part.strip():
+            out.append((at + lead, norm(part)))
+    return out
+
+
 def line_of(text, pos):
     return text.count("\n", 0, pos) + 1
 
@@ -83,7 +105,9 @@ def tsx_candidates(path, rel):
     for m in JSX_TEXT_RE.finditer(text):
         t = m.group(1)
         if norm(t) and not is_machine(t):
-            out.append((rel, line_of(text, m.start(1) + len(t) - len(t.lstrip())), "jsx", norm(t)))
+            for off, sent in sentences(t):
+                if not is_machine(sent):
+                    out.append((rel, line_of(text, m.start(1) + off), "jsx", sent))
         taken.append((m.start(1), m.end(1)))
     for m in STR_RE.finditer(text):
         s, e = m.span()
@@ -94,7 +118,9 @@ def tsx_candidates(path, rel):
             continue
         t = next(g for g in m.groups() if g is not None)
         if t and not is_machine(t):
-            out.append((rel, line_of(text, s), "str", norm(t)))
+            for off, sent in sentences(t):
+                if not is_machine(sent):
+                    out.append((rel, line_of(text, s + 1 + off), "str", sent))
     return out
 
 
@@ -114,8 +140,14 @@ def wp_candidates(root):
     if WP_BODY_MARK not in lines:
         raise InstrumentError("White Paper body marker not found: " + rel)
     start = lines.index(WP_BODY_MARK) + 1
-    return [(rel, i + 1, "wp", norm(ln)) for i, ln in enumerate(lines)
-            if i >= start and norm(ln) and WORD_RE.search(ln)]
+    out = []
+    for i, ln in enumerate(lines):
+        if i < start or not norm(ln) or not WORD_RE.search(ln):
+            continue
+        # A table row is one unit: its cells only mean something together.
+        units = [(0, norm(ln))] if ln.startswith("|") else sentences(ln)
+        out += [(rel, i + 1, "wp", u) for _, u in units if WORD_RE.search(u)]
+    return out
 
 
 def candidates(root):
