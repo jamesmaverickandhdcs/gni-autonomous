@@ -72,7 +72,7 @@ export default function AboutDevopsPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
           <h1 className="text-2xl font-bold text-purple-400">Dev Console — Autonomous Architecture</h1>
-          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the 8 GitHub Actions workflows (4 core pipelines, 4 support) to the self-healing heartbeat to the multi-layer injection security stack. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the $0.00/month evidence.</p>
+          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the self-healing heartbeat to the multi-layer injection security stack. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the $0.00/month evidence.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">

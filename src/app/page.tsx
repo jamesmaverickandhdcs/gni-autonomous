@@ -515,7 +515,7 @@ export default function Home() {
         {!loading && !error && reports.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">📡</div>
-            <p>No reports yet. Pipeline runs at 09:00 and 17:00 Myanmar time.</p>
+            <p>No reports yet. Pipeline is scheduled for 08:43 and 16:43 Myanmar time.</p>
           </div>
         )}
 
@@ -1015,7 +1015,7 @@ export default function Home() {
 
                   <div className="px-6 pt-2 pb-3 text-xs text-gray-400 leading-relaxed">
                     <span className="text-white font-bold">How AI Thinking works: </span>
-                    GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 70 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
+                    GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 81 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
                   </div>
 
                   {showAIThinking && (
