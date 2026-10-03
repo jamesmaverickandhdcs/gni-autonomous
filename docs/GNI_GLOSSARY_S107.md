@@ -213,6 +213,7 @@ CHECKS tuple entry without a row here, so this list cannot fall behind the code.
 | C10 | every session ORIGIN cites has a record, and ORIGIN cites no commit hash (R3-1) |
 | C11 | no page formats an escalation score itself; `src/lib/escalation.ts` shows it with its uncapped magnitude (DoD D2) |
 | C12 | every claim row in the live claims document resolves at its file:line, every manual unit has a verdict, and the stamp matches the verdicts and the tree (R3-2) |
+| C13 | every claim has a status, and every status and the COVERAGE figure in the claims document are the ones `tools/gni_fitness.py` derives from the tree; none is typed (R3-3) |
 
 ## OWED - named as metrics by the roadmap 3 specification, defined nowhere in the record
 

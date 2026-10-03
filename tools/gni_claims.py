@@ -211,6 +211,7 @@ def candidates(root):
 CLAIMS_RE = re.compile(r"^GNI_CLAIMS_S(\d+)\.md$")
 VERDICTS = ("CLAIM", "DATA", "UI")
 KINDS = ("STATE", "PROMISE", "MIXED")
+STATUSES = ("SUPPORTED", "DEFEATED", "UNMEASURED")
 ID_RE = re.compile(r"^CLM-\d{3,}$")
 
 
@@ -278,6 +279,76 @@ def build(root):
     return vpath, rows, todo
 
 
+BIND_RE = re.compile(r"^GNI_CLAIM_BINDINGS_S(\d+)\.tsv$")
+
+
+def load_bindings(root, claim_text, minted):
+    """{id: [(fitness, fragment)] or [('UNMEASURED', reason)]}. Validated: a
+    binding to an id that is not a claim, an unknown fitness id or reason, a
+    fragment that is not verbatim in its claim, or UNMEASURED mixed with a
+    fitness row halts the tool. Every claim having a row is C13's to judge."""
+    import gni_fitness as gf
+    path = live(root, BIND_RE, "claim binding file")
+    with open(path, "rb") as fh:
+        lines = fh.read().decode("utf-8").replace("\r\n", "\n").split("\n")
+    out = {}
+    for n, ln in enumerate(lines, 1):
+        if not ln or ln.startswith("#"):
+            continue
+        parts = ln.split("\t")
+        if len(parts) != 3:
+            raise InstrumentError("binding row %d has %d columns, not 3" % (n, len(parts)))
+        cid, fid, arg = parts
+        if cid not in minted:
+            raise InstrumentError("binding row %d: %s was never minted as a claim id" % (n, cid))
+        if cid not in claim_text:
+            continue   # a retired claim: its text left the surface; C12 sees that
+        if fid == "UNMEASURED":
+            if arg not in gf.UNMEASURED_REASONS:
+                raise InstrumentError("binding row %d: unknown reason %r" % (n, arg))
+        elif fid not in gf.FITNESS:
+            raise InstrumentError("binding row %d: unknown fitness function %s" % (n, fid))
+        elif arg not in claim_text[cid]:
+            raise InstrumentError("binding row %d: fragment %r is not in %s's text" % (n, arg, cid))
+        out.setdefault(cid, []).append((fid, arg))
+    for cid, rows in out.items():
+        if any(f == "UNMEASURED" for f, _ in rows) and len(rows) > 1:
+            raise InstrumentError("%s is UNMEASURED and also bound" % cid)
+    return path, out
+
+
+def statuses(root, ids_text):
+    """{id: (status, evidence)} for every claim id given; BLANK when unbound.
+    DEFEATED if any bound fitness function defeats it, SUPPORTED if all bear
+    it out, UNMEASURED when declared so (SACM needsSupport)."""
+    import gni_fitness as gf
+    _, verdicts = load_verdicts(root)
+    minted = {v[2] for v in verdicts.values() if v[0] == "CLAIM"}
+    bpath, binds = load_bindings(root, ids_text, minted)
+    cache, out = {}, {}
+    for cid in ids_text:
+        rows = binds.get(cid)
+        if not rows:
+            out[cid] = ("BLANK", "-")
+        elif rows[0][0] == "UNMEASURED":
+            out[cid] = ("UNMEASURED", rows[0][1])
+        else:
+            res = []
+            for fid, frag in rows:
+                try:
+                    st, claimed, measured = gf.derive(root, fid, frag, cache)
+                except gf.FitnessError as exc:
+                    raise InstrumentError("%s %s: %s" % (cid, fid, exc))
+                res.append((st, "%s claims %s, measured %s" % (fid, fmt(claimed), fmt(measured))))
+            st = "DEFEATED" if any(r[0] == "DEFEATED" for r in res) else "SUPPORTED"
+            out[cid] = (st, "; ".join(r[1] for r in res))
+    return bpath, out
+
+
+def fmt(v):
+    return "+".join(v) if isinstance(v, list) else str(v)
+
+
 def cell(text):
     return text.replace("\\", "\\\\").replace("|", "\\|")
 
@@ -291,12 +362,20 @@ def render(root, session):
     if todo:
         raise InstrumentError("%d manual units have no verdict; first: %s:%d" % (
             len(todo), todo[0][0], todo[0][1]))
-    ids = {}
-    for cid, kind, _, _, _ in rows:
+    ids, texts = {}, {}
+    for cid, kind, _, _, t in rows:
         ids[cid] = kind
+        texts[cid] = t
     by = {k: sum(v == k for v in ids.values()) for k in KINDS}
     files = len({r[2] for r in rows})
     vrel = os.path.relpath(vpath, root).replace(os.sep, "/")
+    bpath, st = statuses(root, texts)
+    blank = [c for c, v in st.items() if v[0] == "BLANK"]
+    if blank:
+        raise InstrumentError("%d claims have no binding row; first %s" % (len(blank), blank[0]))
+    sc = {k: sum(v[0] == k for v in st.values()) for k in STATUSES}
+    measured = sc["SUPPORTED"] + sc["DEFEATED"]
+    brel = os.path.relpath(bpath, root).replace(os.sep, "/")
     head = [
         "# GNI CLAIMS -- S%d" % session,
         "",
@@ -311,17 +390,28 @@ def render(root, session):
         "%d MIXED) at **%d locations** in %d files; 0 unclassified."
         % (vrel, norm_md5(vpath), len(ids), by["STATE"], by["PROMISE"], by["MIXED"], len(rows), files),
         "",
-        "| id | kind | where | claim |",
-        "|---|---|---|---|",
+        "STATUS bindings `%s` md5 `%s` (EOL-normalised) -- **COVERAGE %d/%d = %.1f%%** "
+        "(%d SUPPORTED, %d DEFEATED, %d UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, "
+        "never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated)."
+        % (brel, norm_md5(bpath), measured, len(ids), 100.0 * measured / len(ids),
+           sc["SUPPORTED"], sc["DEFEATED"], sc["UNMEASURED"]),
+        "",
+        "| id | kind | status | evidence | where | claim |",
+        "|---|---|---|---|---|---|",
     ]
-    body = ["| %s | %s | `%s:%d` | %s |" % (cid, kind, rel, ln, cell(t))
-            for cid, kind, rel, ln, t in rows]
+    body = ["| %s | %s | %s | %s | `%s:%d` | %s |" % (
+        cid, kind, st[cid][0], cell(st[cid][1]), rel, ln, cell(t))
+        for cid, kind, rel, ln, t in rows]
     return "\n".join(head + body) + "\n"
 
 
 STAMP_RE = re.compile(r"^STAMP verdicts `([^`]+)` md5 `([0-9a-f]{32})` \(EOL-normalised\) -- "
                       r"\*\*(\d+) claims\*\* .* at \*\*(\d+) locations\*\*", re.M)
-ROW_RE = re.compile(r"^\| (CLM-\d+) \| (STATE|PROMISE|MIXED) \| `([^`]+):(\d+)` \| (.*) \|$")
+ROW_RE = re.compile(r"^\| (CLM-\d+) \| (STATE|PROMISE|MIXED) \| (\w+) \| ((?:[^|\\]|\\.)*) \| "
+                    r"`([^`]+):(\d+)` \| (.*) \|$")
+STATUS_RE = re.compile(r"^STATUS bindings `([^`]+)` md5 `([0-9a-f]{32})` \(EOL-normalised\) -- "
+                       r"\*\*COVERAGE (\d+)/(\d+) = [\d.]+%\*\* \((\d+) SUPPORTED, (\d+) DEFEATED, "
+                       r"(\d+) UNMEASURED\)", re.M)
 
 
 def parse_doc(path):
@@ -334,8 +424,19 @@ def parse_doc(path):
     for ln in text.split("\n"):
         r = ROW_RE.match(ln)
         if r:
-            rows.append((r.group(1), r.group(2), r.group(3), int(r.group(4)), uncell(r.group(5))))
+            rows.append((r.group(1), r.group(2), r.group(5), int(r.group(6)), uncell(r.group(7)),
+                         r.group(3), uncell(r.group(4))))
     return m.group(1), m.group(2), int(m.group(3)), int(m.group(4)), rows
+
+
+def parse_status(path):
+    with open(path, "rb") as fh:
+        text = fh.read().decode("utf-8").replace("\r\n", "\n")
+    m = STATUS_RE.search(text)
+    if not m:
+        raise InstrumentError("no STATUS line in " + path)
+    g = m.groups()
+    return g[0], g[1], tuple(int(x) for x in g[2:])
 
 
 def resolves(root, rel, line, text):

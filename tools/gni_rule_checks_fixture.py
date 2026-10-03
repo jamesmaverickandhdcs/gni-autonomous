@@ -220,8 +220,14 @@ def _glossary_text(root, drop_check=None, session_rows=""):
 WP_OK = "# white paper\n\n---\n\nThe fixture system answers every query in plain words.\n"
 CLAIM_TEXT = "GNI checks every source twice daily."
 CLAIM_KEPT = "GNI publishes every report for free."
-CLAIM_PAGE = ("export default function P() { return <div><p>%s</p>\n<p>%s</p></div> }\n"
-              % (CLAIM_TEXT, CLAIM_KEPT))
+# S107 R3-3: one claim a fitness function can measure. F-ROUTES counts route.ts
+# files under src/app/api; the base tree has one, so this claim starts
+# SUPPORTED. Not F-PAGES: several older families add a page, and a measured
+# page count would turn them red on C13 for a reason they do not test.
+CLAIM_PAGES = "GNI exposes 1 API endpoint to readers."
+PAGES_FRAG = "1 API endpoint"
+CLAIM_PAGE = ("export default function P() { return <div><p>%s</p>\n<p>%s</p>\n<p>%s</p></div> }\n"
+              % (CLAIM_TEXT, CLAIM_KEPT, CLAIM_PAGES))
 CLAIM_NEW = "GNI verifies every forecast after seven days."
 
 
@@ -229,11 +235,11 @@ def _verdict_row(gcl, text, verdict, kind="-", cid="-"):
     return "\t".join((gcl.key_of(text), verdict, kind, cid, text))
 
 
-def _claims_files(root, claim_texts=(CLAIM_TEXT, CLAIM_KEPT)):
+def _claims_files(root, claim_texts=(CLAIM_TEXT, CLAIM_KEPT, CLAIM_PAGES)):
     """Every manual unit the tree yields gets a verdict: the named texts are
     CLAIMs, everything else UI. Then the claims document is rendered."""
     import gni_claims as gcl
-    rows, seen, n = [], set(), 0
+    rows, binds, seen, n = [], [], set(), 0
     for _, _, kind, t in gcl.candidates(root):
         k = gcl.key_of(t)
         if k in seen or gcl.tier(kind, t) != "manual":
@@ -241,10 +247,14 @@ def _claims_files(root, claim_texts=(CLAIM_TEXT, CLAIM_KEPT)):
         seen.add(k)
         if t in claim_texts:
             n += 1
-            rows.append(_verdict_row(gcl, t, "CLAIM", "STATE", "CLM-%03d" % n))
+            cid = "CLM-%03d" % n
+            rows.append(_verdict_row(gcl, t, "CLAIM", "STATE", cid))
+            binds.append("%s\tF-ROUTES\t%s" % (cid, PAGES_FRAG) if t == CLAIM_PAGES
+                         else "%s\tUNMEASURED\tUNREVIEWED" % cid)
         else:
             rows.append(_verdict_row(gcl, t, "UI"))
     w(root + "/docs/GNI_CLAIM_VERDICTS_S94.tsv", "# fixture verdicts\n" + "\n".join(rows) + "\n")
+    w(root + "/docs/GNI_CLAIM_BINDINGS_S94.tsv", "# fixture bindings\n" + "\n".join(binds) + "\n")
     _claims_doc(root)
 
 
@@ -441,6 +451,7 @@ def _add_claim(r, regenerate):
     w(r + "/src/app/claims2/page.tsx", "export default function Q() { return <p>%s</p> }\n" % CLAIM_NEW)
     ap(r + "/docs/GNI_CLAIM_VERDICTS_S94.tsv",
        _verdict_row(gcl, CLAIM_NEW, "CLAIM", "PROMISE", "CLM-900") + "\n")
+    ap(r + "/docs/GNI_CLAIM_BINDINGS_S94.tsv", "CLM-900\tUNMEASURED\tPROMISE\n")
     if regenerate:
         _claims_doc(r)
     return r
@@ -468,6 +479,54 @@ CASES["45-short-claim-escapes-known-limit"] = lambda r: (
 CASES["46-claims-doc-missing"] = lambda r: (
     base(r), os.remove(r + "/docs/GNI_CLAIMS_S94.md"), r)[-1]
 CASES["47-verdict-key-forged"] = _forge_key
+
+# S107, roadmap 3 row R3-3. The row's cert: flip one claim wired -> unwired and
+# the verdict must flip (48). 49 flips the MEASUREMENT instead: one more route
+# file and "1 API endpoint" is defeated, while the document still says SUPPORTED. 50
+# is the DISCRIMINATOR for 49 (R-S90-1): regenerated, the same tree passes with
+# a DEFEATED claim on record, so 49 fails on an underived status and not on the
+# defeat. 51 is a status typed by hand. Each of 48, 49, 51 is red on C13 alone.
+# 49 flips the measurement with one more route file (a no-store one, so C4
+# stays green).
+def _bindings(r):
+    return r + "/docs/GNI_CLAIM_BINDINGS_S94.tsv"
+
+
+def _unwire(r):
+    base(r)
+    text = open(_bindings(r), encoding="utf-8").read()
+    w(_bindings(r), "\n".join(l for l in text.split("\n") if "\tF-ROUTES\t" not in l))
+    return r
+
+
+def _extra_page(r, regenerate):
+    base(r)
+    w(r + "/src/app/api/extra/route.ts", "const s = createNoStoreClient()\n")
+    if regenerate:
+        _claims_doc(r)
+    return r
+
+
+def _hand_typed(r):
+    base(r)
+    doc = r + "/docs/GNI_CLAIMS_S94.md"
+    text = open(doc, encoding="utf-8").read()
+    w(doc, text.replace("| STATE | SUPPORTED | F-ROUTES", "| STATE | DEFEATED | F-ROUTES"))
+    return r
+
+
+def _fragment_forged(r):
+    base(r)
+    text = open(_bindings(r), encoding="utf-8").read()
+    w(_bindings(r), text.replace("\tF-ROUTES\t%s" % PAGES_FRAG, "\tF-ROUTES\t9 API endpoint"))
+    return r
+
+
+CASES["48-claim-unwired"] = _unwire
+CASES["49-measurement-flips"] = lambda r: _extra_page(r, False)
+CASES["50-measurement-flips-regenerated"] = lambda r: _extra_page(r, True)
+CASES["51-status-hand-typed"] = _hand_typed
+CASES["52-fragment-not-verbatim"] = _fragment_forged
 
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
@@ -497,6 +556,9 @@ EXPECT = {
     "43-claim-removed": 1, "44-literal-unclassified": 1,
     "45-short-claim-escapes-known-limit": 0, "46-claims-doc-missing": 2,
     "47-verdict-key-forged": 2,
+    "48-claim-unwired": 1, "49-measurement-flips": 1,
+    "50-measurement-flips-regenerated": 0, "51-status-hand-typed": 1,
+    "52-fragment-not-verbatim": 2,
 }
 
 if __name__ == "__main__":

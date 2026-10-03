@@ -985,7 +985,7 @@ def check_c12_claims_resolve(ctx):
     if todo:
         problems.append("%d manual units have no verdict (first %s:%d)" % (
             len(todo), todo[0][0], todo[0][1]))
-    unresolved = ["%s %s:%d" % (c, r, ln) for c, _, r, ln, t in rows
+    unresolved = ["%s %s:%d" % (c, r, ln) for c, _, r, ln, t, _, _ in rows
                   if not gcl.resolves(root, r, ln, t)]
     if unresolved:
         problems.append("%d rows do not resolve: %s" % (len(unresolved), ", ".join(unresolved)))
@@ -997,6 +997,51 @@ def check_c12_claims_resolve(ctx):
         return False, "; ".join(problems)
     return True, "%d claims at %d locations resolve; every manual unit has a verdict" % (
         n_claims, n_locs)
+
+
+def check_c13_claim_status_derived(ctx):
+    """Roadmap 3 row R3-3. Every claim carries a status, and every status in the
+    claims document is the one tools/gni_fitness.py derives from the tree now -
+    none typed (spec section 2). A DEFEATED claim does not fail this check: it
+    is a finding the document publishes. A BLANK one does (DONE: no blank
+    statuses), and so does a status or a COVERAGE figure the tree no longer
+    produces - which is how a claim flipped wired -> unwired is seen."""
+    import gni_claims as gcl
+    root = ctx["root"]
+    try:
+        doc = gcl.live(root, gcl.CLAIMS_RE, "claims document")
+        _, _, _, _, rows = gcl.parse_doc(doc)
+        brel, bmd5, published = gcl.parse_status(doc)
+        _, built, _ = gcl.build(root)
+        texts = {cid: t for cid, _, _, _, t in built}
+        bpath, derived = gcl.statuses(root, texts)
+    except gcl.InstrumentError as exc:
+        raise InstrumentError(str(exc))
+    require_nonempty("claim rows in " + os.path.basename(doc), rows)
+    require_nonempty("claims the tree and verdicts imply", texts)
+    problems = []
+    live_brel = os.path.relpath(bpath, root).replace(os.sep, "/")
+    if brel != live_brel:
+        problems.append("STATUS names %s, live binding file is %s" % (brel, live_brel))
+    elif bmd5 != gcl.norm_md5(bpath):
+        problems.append("binding file changed since the claims document was generated")
+    blank = sorted(c for c, v in derived.items() if v[0] == "BLANK")
+    if blank:
+        problems.append("%d claims have a blank status: %s" % (len(blank), ", ".join(blank)))
+    drift = sorted({c for c, _, _, _, _, st, ev in rows
+                    if c in derived and (st, ev) != derived[c]})
+    if drift:
+        problems.append("%d statuses differ from what the tree derives: %s" % (
+            len(drift), ", ".join(drift)))
+    sup, dft, unm = (sum(v[0] == k for v in derived.values()) for k in gcl.STATUSES)
+    now = (sup + dft, len(derived), sup, dft, unm)
+    if now != published:
+        problems.append("STATUS publishes %s, the tree derives %s (COVERAGE, total, "
+                        "SUPPORTED, DEFEATED, UNMEASURED)" % (published, now))
+    if problems:
+        return False, "; ".join(problems)
+    return True, "%d statuses derived, none blank: COVERAGE %d/%d, %d SUPPORTED, %d DEFEATED" % (
+        len(derived), sup + dft, len(derived), sup, dft)
 
 
 CHECKS = (
@@ -1012,6 +1057,7 @@ CHECKS = (
     ("C10 R3-1    origin citations", check_c10_origin_citations),
     ("C11 D2      escalation magnitude", check_c11_escalation_magnitude),
     ("C12 R3-2    claims resolve", check_c12_claims_resolve),
+    ("C13 R3-3    claim status derived", check_c13_claim_status_derived),
 )
 
 
