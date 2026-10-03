@@ -35,7 +35,15 @@ detected.
 | Epistemic failure | a failure in which the system works but the record of it is wrong; contrasted with a runtime failure, in which something stops working | ARCHITECTURE section 8.1 |
 | rho | findings opened divided by items closed, per session | ARCHITECTURE section 11 |
 | Z | the share of CHECKABLE markers in the rules register that read yes; the macro map's vision-to-executable axis | `GNI_MACRO_MAP_S<N>.md` |
-| COVERAGE | the share of claims whose status a check derives; reserved by roadmap 3 for row R3-3 | ROADMAP 3 |
+| COVERAGE | the share of claims whose status a fitness function derives (SUPPORTED or DEFEATED) rather than declares UNMEASURED; published on the STATUS line of the claims document, 25/745 at S107 | ROADMAP 3 row R3-3; `docs/GNI_CLAIMS_S<N>.md` |
+| lambda | arrivals per close: the queue ids present in an order generation and absent from the one before it, by the order's own published scan; measured by `tools/gni_lambda.py`. Defined at S107; the "~6.5 per session" the specification carried had no command | ROADMAP 3 row R3-4 |
+| ORPHAN RATE | the share of order items bound to no claim; derived by the check labelled `order bound to claims` and printed in the live order | ROADMAP 3 row R3-4 |
+| OMG | the Object Management Group, the standards body that publishes SACM | `tools/gni_fitness.py` |
+| PDF | Portable Document Format; the White Paper's .pdf is a render of its .docx | `docs/GNI_WHITE_PAPER_S107.md` |
+| SUPPORTED | a claim status: every fitness function the claim is bound to bears the claimed value out | `docs/GNI_CLAIMS_S<N>.md` |
+| UNREVIEWED | the reason given for an UNMEASURED claim when nobody has yet looked for a fitness function for it; it says nothing about the claim | `docs/GNI_CLAIM_BINDINGS_S<N>.tsv` |
+| SACM | the Structured Assurance Case Metamodel (OMG). Its assertion statuses name two of the three claim statuses: UNMEASURED is its needsSupport, DEFEATED its defeated | `tools/gni_fitness.py` |
+| fitness function | any mechanism performing an objective integrity assessment of an architectural characteristic (Ford, Parsons, Kua); here a repository measurement a claim is bound to | `tools/gni_fitness.py` |
 | LOAD CHECK | the five lines a session echoes at its open to prove it loaded the right state | protocol PART B |
 | cert | a measurement that certifies a change did what it claimed, built so that it can fail (R-S90-1) | GNI_RULES |
 | fixture family | one synthetic repository in `tools/gni_rule_checks_fixture.py` with the exit code the detector must return on it | protocol PART C step 9a |
@@ -164,6 +172,7 @@ name two series each; the row says which document each meaning lives in.
 | `NN-PHI-\d+` | a non-negotiable of the founding philosophy |
 | `C\d+` | a check in `tools/gni_rule_checks.py`; see CHECKS |
 | `R3-\d+` | a row of roadmap 3 (ARCHITECTURE, ROADMAP 3) |
+| `CLM-\d+` | a public claim harvested by `tools/gni_claims.py`; one id per claim, minted once (`docs/GNI_CLAIMS_S<N>.md`) |
 | `D\d+` | TWO SERIES: in the ORDER, a line of the definition of done (D1-D4); in the ARCHITECTURE, a defect homed at S92 (D1-D7). The letter is shared, the meanings are not |
 | `D\d+-D\d+` | a range of either D series |
 | `L\d+` | TWO SERIES: in a HANDOFF STATE section, a GNI layer (L1 pipeline, L2 MAD, L3 GPVS, L4 quota, L5 public); inside a rule's evidence, a source line number (L299) |
@@ -216,10 +225,9 @@ CHECKS tuple entry without a row here, so this list cannot fall behind the code.
 | C13 | every claim has a status, and every status and the COVERAGE figure in the claims document are the ones `tools/gni_fitness.py` derives from the tree; none is typed (R3-3) |
 | C14 | every module section 5 finds with no static reference is in exactly one bucket - WIRE, DELETE or DECLARE - and no bucket row names a module that is referenced again (R3-3) |
 | C15 | every sentence on the public surface that declares N layers is mapped layer by layer, and every mapped layer is code a workflow entrypoint reaches (R3-3) |
+| C16 | every item of the live order is bound to minted claims or marked ORPHAN on its defining line, and the ORPHAN RATE the order prints is the one the bindings give (R3-4) |
 
 ## OWED - named as metrics by the roadmap 3 specification, defined nowhere in the record
 
-- **lambda** - the specification cites "~6.5 per session" at S102, S103 and S104 with no
-  definition and no command. Owed before R3-4.
 - **mu** - listed among the metrics in the specification's glossary plan; no definition and
   no use anywhere in `docs/`.

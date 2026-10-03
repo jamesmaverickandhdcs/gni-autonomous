@@ -286,6 +286,11 @@ def _layers(r, second=None, drop=False, extra=()):
     return base(r, layer_rows=(rows[:1] if drop else rows) + list(extra))
 
 
+# S107 R3-4: two items, one bound to the base tree's first claim, one an orphan.
+ORDER_BODY = ("\n## THE ORDER\n\n- **1.1** OPEN - COR. A fixture item. {claims: CLM-001}\n"
+              "- **1.2** OPEN - PER. A fixture chore. {ORPHAN}\n\n**ORPHAN RATE: 1/2**\n\n## ARCHIVED\n")
+
+
 def ap(p, s):
     with open(p, "a", encoding="utf-8") as fh:
         fh.write(s)
@@ -296,7 +301,7 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
          slo_bound="1", slo_from=None, slo_to=None,
          watcher=WATCHER, snap=None, extra_arch=None, web_bound=None, web=True,
          origin_extra="", gloss_drop=None, session_rows="", extra_py=None, buckets=None,
-         layer_rows=None):
+         layer_rows=None, order=None):
     if os.path.isdir(root):
         shutil.rmtree(root)
     w(root + "/docs/GNI_RULES_S94.md", rules)
@@ -305,7 +310,7 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     w(root + "/docs/CONTRACT_S94.md",
       contract if contract is not None else "law: R-S90-2 and `GNI-R-076` apply\n")
     w(root + "/docs/GNI_Session_Transfer_Protocol_S94.md", "see R-S92-2\n")
-    w(root + "/docs/GNI_TARGET_AND_ORDER_S94.md", "queue: GNI-L-003\n")
+    w(root + "/docs/GNI_TARGET_AND_ORDER_S94.md", "queue: GNI-L-003\n" + (ORDER_BODY if order is None else order))
     w(root + "/docs/HANDOFF_S94.md", "state: R-S81-1\n")
     w(root + "/.github/workflows/a.yml", "on:\n  schedule:\n    - cron: '0 2 * * *'\njobs:\n  x:\n")
     w(root + "/.github/workflows/b.yml",
@@ -587,6 +592,18 @@ CASES["61-layer-live-row-rotted"] = lambda r: _layers(
 CASES["62-layer-evidence-in-code"] = lambda r: _layers(
     r, second=("ai_engine/entry.py:layer_two", "return x"))
 
+# S107, roadmap 3 row R3-4, check `order bound to claims`. 67 is the
+# DISCRIMINATOR for 64 (R-S90-1): bind the orphan and print 0/2, and it passes.
+CASES["63-order-item-unbound"] = lambda r: base(r, order=ORDER_BODY.replace(" {ORPHAN}", ""))
+CASES["64-order-orphan-rate-wrong"] = lambda r: base(
+    r, order=ORDER_BODY.replace("ORPHAN RATE: 1/2", "ORPHAN RATE: 0/2"))
+CASES["65-order-claim-unminted"] = lambda r: base(
+    r, order=ORDER_BODY.replace("{claims: CLM-001}", "{claims: CLM-999}"))
+CASES["66-order-id-cited-not-defined"] = lambda r: base(
+    r, order=ORDER_BODY.replace("A fixture chore.", "A fixture chore, see **1.3**."))
+CASES["67-order-all-bound"] = lambda r: base(r, order=ORDER_BODY.replace(
+    "{ORPHAN}", "{claims: CLM-002}").replace("ORPHAN RATE: 1/2", "ORPHAN RATE: 0/2"))
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -623,6 +640,9 @@ EXPECT = {
     "57-layer-map-short": 1, "58-layer-paper": 1, "59-layer-unreachable": 1,
     "60-layer-evidence-only-in-comment": 1, "61-layer-live-row-rotted": 1,
     "62-layer-evidence-in-code": 0,
+    "63-order-item-unbound": 1, "64-order-orphan-rate-wrong": 1,
+    "65-order-claim-unminted": 1, "66-order-id-cited-not-defined": 1,
+    "67-order-all-bound": 0,
 }
 
 if __name__ == "__main__":

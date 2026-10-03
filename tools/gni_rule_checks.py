@@ -1273,6 +1273,67 @@ def check_c15_declared_layers_wired(ctx):
         len(decls), layers)
 
 
+ORDER_GEN_RE = re.compile(r"^GNI_TARGET_AND_ORDER_S(\d+)\.md$")
+ITEM_DEF_RE = re.compile(r"^\s*-\s+\*\*(\d+\.\d+)\*\*")
+BIND_TAG_RE = re.compile(r"\{(?P<kind>ORPHAN|claims: (?P<ids>CLM-\d+(?:, CLM-\d+)*))\}")
+ORPHAN_LINE_RE = re.compile(r"^\*\*ORPHAN RATE: (?P<orph>\d+)/(?P<total>\d+)\*\*", re.M)
+
+
+def check_c16_order_bound_to_claims(ctx):
+    """Roadmap 3 row R3-4 (BIND). Every item of the live order carries, on its
+    defining line, either {claims: CLM-###, ...} naming minted claims or
+    {ORPHAN}; the ORPHAN RATE the order prints equals the one derived here.
+    The ids are the order's own published scan (bold `**N.N` between
+    `## THE ORDER` and `## ARCHIVED`), so an id counted but never defined fails
+    too. S91's order - the one S92 abandoned - is the replay case: an order
+    that serves no claim cannot say which claim it serves."""
+    root = ctx["root"]
+    docs = os.path.join(root, "docs")
+    gens = [(int(m.group(1)), n) for n in os.listdir(docs) for m in [ORDER_GEN_RE.match(n)] if m]
+    if not gens:
+        raise InstrumentError("no GNI_TARGET_AND_ORDER_S<N>.md under docs/")
+    name = max(gens)[1]
+    text = read(os.path.join(docs, name)).replace("\r\n", "\n")
+    if "\n## THE ORDER" not in text:
+        raise InstrumentError(name + " has no ## THE ORDER section")
+    body = text.split("\n## THE ORDER", 1)[1].split("\n## ARCHIVED", 1)[0]
+    ids = set(re.findall(r"\*\*(\d+\.\d+)", body))
+    require_nonempty("items in " + name, ids)
+    defs = {}
+    for ln in body.split("\n"):
+        m = ITEM_DEF_RE.match(ln)
+        if m and m.group(1) not in defs:
+            defs[m.group(1)] = ln
+    minted = minted_claims(root) if any(BIND_TAG_RE.search(v) for v in defs.values()) else set()
+    problems, orphans = [], 0
+    undefined = sorted(ids - set(defs), key=lambda x: [int(p) for p in x.split(".")])
+    if undefined:
+        problems.append("%d ids counted but never defined: %s" % (len(undefined), ", ".join(undefined)))
+    unbound, unknown = [], []
+    for iid in sorted(defs, key=lambda x: [int(p) for p in x.split(".")]):
+        tag = BIND_TAG_RE.search(defs[iid])
+        if not tag:
+            unbound.append(iid)
+        elif tag.group("kind") == "ORPHAN":
+            orphans += 1
+        else:
+            unknown += [c for c in tag.group("ids").split(", ") if c not in minted]
+    if unbound:
+        problems.append("%d of %d items carry no claim binding: %s" % (
+            len(unbound), len(defs), ", ".join(unbound)))
+    if unknown:
+        problems.append("bindings name unminted claims: %s" % ", ".join(sorted(set(unknown))))
+    printed = ORPHAN_LINE_RE.search(text)
+    if not printed:
+        problems.append("%s prints no ORPHAN RATE line" % name)
+    elif (int(printed.group("orph")), int(printed.group("total"))) != (orphans, len(defs)):
+        problems.append("%s prints ORPHAN RATE %s/%s, the bindings give %d/%d" % (
+            name, printed.group("orph"), printed.group("total"), orphans, len(defs)))
+    if problems:
+        return False, "; ".join(problems)
+    return True, "%d items bound: ORPHAN RATE %d/%d" % (len(defs), orphans, len(defs))
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -1289,6 +1350,7 @@ CHECKS = (
     ("C13 R3-3    claim status derived", check_c13_claim_status_derived),
     ("C14 R3-3    dead symbols", check_c14_dead_symbols),
     ("C15 R3-3    declared layers wired", check_c15_declared_layers_wired),
+    ("C16 R3-4    order bound to claims", check_c16_order_bound_to_claims),
 )
 
 
