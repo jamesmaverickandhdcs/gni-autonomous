@@ -26,8 +26,8 @@ interface AdaptiveReport {
 export default function AdaptiveLogPage() {
   const [runs, setRuns] = useState<AdaptiveRun[]>([])
   const [reports, setReports] = useState<AdaptiveReport[]>([])
-  const [counts, setCounts] = useState<{ total: number | null; reports: number | null; last: string | null }>(
-    { total: null, reports: null, last: null })
+  const [counts, setCounts] = useState<{ total: number | null; reports: number | null; last: string | null; activity: number | null }>(
+    { total: null, reports: null, last: null, activity: null })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -38,7 +38,7 @@ export default function AdaptiveLogPage() {
         setRuns(data.runs || [])
         setReports(data.reports || [])
         setCounts({ total: data.adaptive_total ?? null, reports: data.adaptive_reports ?? null,
-                    last: data.last_adaptive_run ?? null })
+                    last: data.last_adaptive_run ?? null, activity: data.activity_total ?? null })
       })
       .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
@@ -66,7 +66,7 @@ export default function AdaptiveLogPage() {
             </div>
             <div className="bg-orange-950 border border-orange-800 rounded-lg p-3 text-center">
               <div className="text-2xl font-bold text-orange-400">{totalTokens.toLocaleString()}</div>
-              <div className="text-xs text-orange-600">Total Tokens</div>
+              <div className="text-xs text-orange-600">Tokens in the {runs.length} entries shown</div>
             </div>
             <div className="bg-green-950 border border-green-800 rounded-lg p-3 text-center">
               <div className="text-2xl font-bold text-green-400">{counts.reports ?? '—'}</div>
@@ -125,7 +125,7 @@ export default function AdaptiveLogPage() {
         {!loading && runs.length > 0 && (
           <>
             <section className="mb-8">
-              <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Activity log — runs that performed an analysis ({runs.length} entries{lastEntry ? `, last ${fmtDay(lastEntry)}` : ''})</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Activity log — runs that performed an analysis ({counts.activity ?? '—'} entries, latest {runs.length} shown{lastEntry ? `, last ${fmtDay(lastEntry)}` : ''})</div>
               <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
                 <div className="grid grid-cols-5 gap-2 px-4 py-2 border-b border-gray-800 text-xs text-gray-500 uppercase">
                   <div>Entry</div>
@@ -136,7 +136,7 @@ export default function AdaptiveLogPage() {
                 </div>
                 {runs.map((run, i) => (
                   <div key={run.id} className="grid grid-cols-5 gap-2 px-4 py-3 border-b border-gray-800 text-sm hover:bg-gray-800">
-                    <div className="text-blue-400 font-bold text-xs">#{runs.length - i}</div>
+                    <div className="text-blue-400 font-bold text-xs">{counts.activity != null ? `#${counts.activity - i}` : '—'}</div>
                     <div className="text-xs text-gray-300 truncate" title={run.reason || ''}>{run.reason || <span className="text-gray-600">—</span>}</div>
                     <div className="text-right text-orange-400 font-bold text-xs">{(run.tokens_used || 0).toLocaleString()}</div>
                     <div className="text-right text-gray-400 text-xs">{run.requests_used || 0}</div>
