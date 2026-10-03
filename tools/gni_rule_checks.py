@@ -1044,6 +1044,92 @@ def check_c13_claim_status_derived(ctx):
         len(derived), sup + dft, len(derived), sup, dft)
 
 
+BUCKETS_RE = re.compile(r"^GNI_MODULE_BUCKETS_S(\d+)\.tsv$")
+BUCKETS = ("WIRE", "DELETE", "DECLARE")
+
+
+def module_buckets(root):
+    """Roadmap 3 row R3-3's three buckets for every module section 5 finds no
+    static reference to. Two kinds are DERIVED, never listed: a module a
+    workflow names (DECLARE, entrypoint) and a module under tools/ (DECLARE,
+    tooling). Every other one needs a row in docs/GNI_MODULE_BUCKETS_S<N>.tsv:
+    WIRE with the claim id it serves, DELETE (serves no claim; git remembers),
+    or DECLARE with how it is reached. A tree with no bucket file has no rows -
+    that is the S68 tree's case, and the replay's point (Test 1)."""
+    import glob as _glob
+    from pathlib import Path
+    import gni_blocks as gb
+    snap = gb.collect(Path(root))
+    unref = gb.analyse(snap)["unreferenced_modules"]
+    mods = snap["modules"]
+    wf = "".join(read(p) for p in sorted(_glob.glob(
+        os.path.join(root, ".github", "workflows", "*.yml"))))
+    derived, rest = {}, []
+    for name in unref:
+        rel = mods[name]["rel"]
+        stem = os.path.splitext(os.path.basename(rel))[0]
+        if rel in wf or os.path.basename(rel) in wf or re.search(
+                r"-m\s+[\w.]*\b%s\b" % re.escape(stem), wf):
+            derived[rel] = ("DECLARE", "entrypoint: a workflow names it")
+        elif rel.startswith("tools/"):
+            derived[rel] = ("DECLARE", "tooling: tools/")
+        else:
+            rest.append(rel)
+    docs = os.path.join(root, "docs")
+    gens = [(int(m.group(1)), n) for n in os.listdir(docs)
+            for m in [BUCKETS_RE.match(n)] if m] if os.path.isdir(docs) else []
+    rows = {}
+    if gens:
+        for n, ln in enumerate(read(os.path.join(docs, max(gens)[1])).split("\n"), 1):
+            ln = ln.rstrip("\r")
+            if not ln or ln.startswith("#"):
+                continue
+            parts = ln.split("\t")
+            if len(parts) != 3 or parts[1] not in BUCKETS or not parts[2].strip():
+                raise InstrumentError("bucket row %d is not: path, WIRE|DELETE|DECLARE, reason" % n)
+            if parts[0] in rows:
+                raise InstrumentError("bucket row %d: %s listed twice" % (n, parts[0]))
+            if parts[1] == "WIRE":
+                m = re.match(r"(CLM-\d+)\b", parts[2])
+                if not m or m.group(1) not in minted_claims(root):
+                    raise InstrumentError("bucket row %d: WIRE must open with a minted claim id" % n)
+            rows[parts[0]] = (parts[1], parts[2])
+    return unref, derived, rest, rows
+
+
+def minted_claims(root):
+    import gni_claims as gcl
+    try:
+        _, verdicts = gcl.load_verdicts(root)
+    except gcl.InstrumentError as exc:
+        raise InstrumentError(str(exc))
+    return {v[2] for v in verdicts.values() if v[0] == "CLAIM"}
+
+
+def check_c14_dead_symbols(ctx):
+    """Roadmap 3 row R3-3: the dead-symbol gate. Fails when a module with no
+    static reference sits in no bucket (the DET-DEAD shape: S69 found a
+    detector nothing had imported since March), or when a bucket row names a
+    module that is no longer unreferenced (the list may not rot). WIRE and
+    DELETE rows are published findings, as DEFEATED claims are under C13."""
+    root = ctx["root"]
+    unref, derived, rest, rows = module_buckets(root)
+    require_nonempty("modules section 5 finds with no static reference", unref)
+    problems = []
+    loose = sorted(r for r in rest if r not in rows)
+    if loose:
+        problems.append("%d unreferenced modules in no bucket: %s" % (len(loose), ", ".join(loose)))
+    stale = sorted(r for r in rows if r not in rest)
+    if stale:
+        problems.append("%d bucket rows name a module that is not unreferenced: %s" % (
+            len(stale), ", ".join(stale)))
+    if problems:
+        return False, "; ".join(problems)
+    by = {b: sum(v[0] == b for v in rows.values()) for b in BUCKETS}
+    return True, "%d unreferenced modules bucketed: %d derived DECLARE, %d WIRE, %d DELETE, %d DECLARE" % (
+        len(unref), len(derived), by["WIRE"], by["DELETE"], by["DECLARE"])
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -1058,6 +1144,7 @@ CHECKS = (
     ("C11 D2      escalation magnitude", check_c11_escalation_magnitude),
     ("C12 R3-2    claims resolve", check_c12_claims_resolve),
     ("C13 R3-3    claim status derived", check_c13_claim_status_derived),
+    ("C14 R3-3    dead symbols", check_c14_dead_symbols),
 )
 
 
@@ -1074,6 +1161,29 @@ def _probe_halts(what, fn, arg):
     except InstrumentError:
         return
     raise InstrumentError("control probe FAILED: " + what)
+
+
+def replay(pattern, root):
+    """`--only <regex> [root]`: run the checks whose label matches, against ANY
+    tree, without the live-document preconditions a full run demands. This is
+    roadmap 3's Test 1 (historical replay): an S68 tree has no CONTRACT_S<N>,
+    so a full run halts before any check and the replay would read nothing.
+    It never stands in for a full run; CI runs the full detector."""
+    chosen = [(n, f) for n, f in CHECKS if re.search(pattern, n)]
+    if not chosen:
+        print("INSTRUMENT ERROR: no check label matches %r" % pattern)
+        return 2
+    failed = 0
+    for name, fn in chosen:
+        try:
+            ok, detail = fn({"root": root})
+        except InstrumentError as exc:
+            print("[ERROR] %-32s %s" % (name, exc))
+            return 2
+        print("[%s] %-32s %s" % ("PASS" if ok else "FAIL", name, detail))
+        failed += not ok
+    print("REPLAY: %d checked, %d failed" % (len(chosen), failed))
+    return 1 if failed else 0
 
 
 def control_probe(root):
@@ -1097,6 +1207,8 @@ def control_probe(root):
 
 
 def main(argv):
+    if len(argv) > 2 and argv[1] == "--only":
+        return replay(argv[2], argv[3] if len(argv) > 3 else ".")
     root = argv[1] if len(argv) > 1 else "."
     self_path = os.path.abspath(__file__)
     try:

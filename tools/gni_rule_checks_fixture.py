@@ -263,6 +263,12 @@ def _claims_doc(root):
     w(root + "/docs/GNI_CLAIMS_S94.md", gcl.render(root, 94))
 
 
+# The base tree's two modules nothing imports and no workflow names.
+BUCKETS_OK = (("ai_engine/ok.py", "DECLARE", "fixture module"),
+              ("ai_engine/monitoring_pipeline.py", "DECLARE", "fixture watcher"))
+ORPHAN = {"ai_engine/orphan.py": "def lonely():\n    return 1\n"}
+
+
 def ap(p, s):
     with open(p, "a", encoding="utf-8") as fh:
         fh.write(s)
@@ -272,7 +278,7 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
          map_n_delta=0, map_present=True,
          slo_bound="1", slo_from=None, slo_to=None,
          watcher=WATCHER, snap=None, extra_arch=None, web_bound=None, web=True,
-         origin_extra="", gloss_drop=None, session_rows=""):
+         origin_extra="", gloss_drop=None, session_rows="", extra_py=None, buckets=None):
     if os.path.isdir(root):
         shutil.rmtree(root)
     w(root + "/docs/GNI_RULES_S94.md", rules)
@@ -291,6 +297,12 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     w(root + "/src/lib/escalation.ts", ESC_LIB_OK)
     w(root + "/src/app/brief/page.tsx", ESC_PAGE_OK)
     w(root + "/ai_engine/monitoring_pipeline.py", watcher)
+    # S107 R3-3: extra modules go in BEFORE the git index and the section-5
+    # stamp, so a family that adds one is red on C14 and not also on C8.
+    for rel, body in (extra_py or {}).items():
+        w(root + "/" + rel, body)
+    w(root + "/docs/GNI_MODULE_BUCKETS_S94.tsv", "# fixture buckets\n" + "".join(
+        "%s\t%s\t%s\n" % r for r in (BUCKETS_OK if buckets is None else buckets)))
     w(root + "/docs/gni_runtime_snapshot_S94.json",
       snap if snap is not None else _snap_text())
     ap(root + "/docs/GNI_ARCHITECTURE_S94.md",
@@ -528,6 +540,17 @@ CASES["50-measurement-flips-regenerated"] = lambda r: _extra_page(r, True)
 CASES["51-status-hand-typed"] = _hand_typed
 CASES["52-fragment-not-verbatim"] = _fragment_forged
 
+# S107, roadmap 3 row R3-3, check `dead symbols`. 53 is the DET-DEAD shape: a
+# module nothing imports and no bucket names. 54 is its DISCRIMINATOR
+# (R-S90-1): the same module, bucketed, passes. 55 is a row that rotted.
+CASES["53-dead-module-unbucketed"] = lambda r: base(r, extra_py=ORPHAN)
+CASES["54-dead-module-bucketed"] = lambda r: base(
+    r, extra_py=ORPHAN, buckets=BUCKETS_OK + (("ai_engine/orphan.py", "DELETE", "serves no claim"),))
+CASES["55-bucket-row-stale"] = lambda r: base(
+    r, buckets=BUCKETS_OK + (("ai_engine/gone.py", "DELETE", "already deleted"),))
+CASES["56-bucket-wire-without-claim"] = lambda r: base(
+    r, extra_py=ORPHAN, buckets=BUCKETS_OK + (("ai_engine/orphan.py", "WIRE", "serves something"),))
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -559,6 +582,8 @@ EXPECT = {
     "48-claim-unwired": 1, "49-measurement-flips": 1,
     "50-measurement-flips-regenerated": 0, "51-status-hand-typed": 1,
     "52-fragment-not-verbatim": 2,
+    "53-dead-module-unbucketed": 1, "54-dead-module-bucketed": 0,
+    "55-bucket-row-stale": 1, "56-bucket-wire-without-claim": 2,
 }
 
 if __name__ == "__main__":

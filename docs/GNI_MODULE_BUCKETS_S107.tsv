@@ -1,0 +1,11 @@
+# GNI MODULE BUCKETS - generation S107 (roadmap 3 row R3-3, check `dead symbols`).
+# One row per module section 5 finds with NO STATIC REFERENCE that is neither named by a
+# workflow nor under tools/ (those two are DECLARE by derivation and never listed here).
+# Columns:  path  WIRE|DELETE|DECLARE  reason. WIRE names the claim the module serves.
+# DELETE serves no claim; it is a finding, not a deletion - git remembers, and the delete
+# is an order item. The check fails on an unbucketed module and on a row that rots.
+ai_engine/analysis/keyword_sensor.py	DELETE	disabled in main.py (Groq quota); its header declares "7 Security Layers" that no page claims any more; its one live idea, NFKC, was copied into the funnel at S52
+ai_engine/self_healing_runner.py	DELETE	"Day 16" retry wrapper that nothing invokes; the self-healing claims on the pages are served by gni_heartbeat and gni_adaptive
+dryrun_two_account_split.py	WIRE	CLM-621 (MAD morning/evening account split); CI runs ai_engine/tests/dryrun_*.py only, so this harness never runs - order item 5.32
+mad_model_probe.py	DECLARE	manual read-only probe harness (S56-S57), run by hand
+patch_arch_s99.py	DECLARE	S99 close patch script at the repo root; an executable record, never re-run
