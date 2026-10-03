@@ -10,7 +10,11 @@ export async function GET(request: NextRequest) {
   const authError = validateApiKey(request)
   if (authError) return authError
   try {
-    const [adaptive, adaptive2, reports] = await Promise.all([
+    // S106, item 9.22(b): counts come from the RUN table, exactly. The activity log
+    // (groq_daily_usage) holds a row only when a run performed an analysis, and its LENGTH
+    // was rendered as "Adaptive Runs". Adaptive writes report_id=None on every run row, so
+    // "reports written by adaptive" is counted from the run table too, never assumed.
+    const [adaptive, adaptive2, reports, total, withReport, last] = await Promise.all([
       // Try both column names
       supabase.from('groq_daily_usage').select('*')
         .eq('pipeline', 'gni_adaptive')
@@ -19,13 +23,22 @@ export async function GET(request: NextRequest) {
         .eq('pipeline', 'gni-adaptive')
         .order('created_at', { ascending: false }).limit(50),
       supabase.from('reports').select('id,title,escalation_score,escalation_score_raw,escalation_level,created_at')
-        .order('created_at', { ascending: false }).limit(20)
         .order('created_at', { ascending: false }).limit(20),
+      supabase.from('pipeline_runs').select('id', { count: 'exact', head: true })
+        .eq('pipeline_type', 'adaptive'),
+      supabase.from('pipeline_runs').select('id', { count: 'exact', head: true })
+        .eq('pipeline_type', 'adaptive').not('report_id', 'is', null),
+      supabase.from('pipeline_runs').select('run_at')
+        .eq('pipeline_type', 'adaptive').order('run_at', { ascending: false }).limit(1),
     ])
     // Combine results from both column name attempts
     const runs = [...(adaptive.data || []), ...(adaptive2.data || [])]
     return NextResponse.json(
-      { runs, reports: reports.data || [], note: runs.length === 0 ? 'No adaptive runs logged yet -- adaptive pipeline may not have triggered or log_usage() may need pipeline column fix' : null },
+      { runs, reports: reports.data || [],
+        adaptive_total: total.count ?? null,
+        adaptive_reports: withReport.count ?? null,
+        last_adaptive_run: last.data && last.data.length > 0 ? last.data[0].run_at : null,
+        note: runs.length === 0 ? 'No adaptive runs logged yet -- adaptive pipeline may not have triggered or log_usage() may need pipeline column fix' : null },
       { headers: { 'Cache-Control': 'no-store' } }
     )
   } catch {

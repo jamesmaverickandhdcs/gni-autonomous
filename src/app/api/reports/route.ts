@@ -47,7 +47,20 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({ reports: data, baseline }, { headers: { 'Cache-Control': 'no-store' } })
+    // S106, item 9.22(b) kin: the home page rendered the LENGTH of this limit=10 query as its
+    // report count. The exact count comes from the database, not from the page.
+    // A failed count leaves total null (the page shows a dash); it never fails the reports.
+    let total: number | null = null
+    try {
+      const countRes = await fetch(supabaseUrl + '/rest/v1/reports?select=id',
+        { method: 'HEAD', headers: { ...headers, Prefer: 'count=exact' }, cache: 'no-store' })
+      const range = countRes.headers.get('content-range')
+      if (range && range.includes('/')) {
+        const n = parseInt(range.split('/')[1], 10)
+        total = Number.isFinite(n) ? n : null
+      }
+    } catch { total = null }
+    return NextResponse.json({ reports: data, baseline, total }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json({ error: 'Failed to fetch reports' }, { status: 500 })
   }

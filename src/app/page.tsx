@@ -253,6 +253,7 @@ export default function Home() {
   const [mapEvents, setMapEvents] = useState<{id: string, source: string, bias: string, title: string, url: string, summary: string, stage3_score: number, stage4_rank: number, location_name: string, lat: number, lng: number, created_at: string}[]>([])
   const [btcChartData, setBtcChartData] = useState<{date: string, close: number}[]>([])
   const [btcPrice, setBtcPrice] = useState<{price: number, changePercent: string} | null>(null)
+  const [reportTotal, setReportTotal] = useState<number | null>(null)
   const [baseline, setBaseline] = useState<{score: number, percentile: number, raw_total: number, total_non_zero: number} | null>(null)
 
   useEffect(() => {
@@ -292,6 +293,7 @@ export default function Home() {
         else {
           setReports(data.reports || [])
           setBaseline(data.baseline || null)
+          setReportTotal(typeof data.total === 'number' ? data.total : null)
         }
       })
       .catch(() => setError('Failed to load reports'))
@@ -460,7 +462,7 @@ export default function Home() {
                   <><span className="inline-block w-2 h-2 rounded-full bg-red-400"></span><span className="text-red-400">Offline</span></>
                 )}
               </span></div>
-              <div>Intelligence Reports: <span className="text-white font-bold">{reports.length}</span></div>
+              <div>Intelligence Reports: <span className="text-white font-bold">{reportTotal ?? '—'}</span></div>
               {baseline && baseline.score > 0 && (
                 <div className="text-xs mt-1">
                   <span className={`font-bold ${baseline.percentile >= 75 ? 'text-red-400' : baseline.percentile >= 50 ? 'text-orange-400' : 'text-yellow-400'}`}>
