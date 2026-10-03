@@ -210,7 +210,7 @@ export default function QuotaPage() {
                 <div className="text-xs text-gray-400 leading-relaxed">
                   GNI_Autonomous runs entirely on free tiers. Groq provides 100,000 tokens/day per account at no cost.
                   MAD is split across dedicated morning and evening accounts, each drawing on its own 100K pool.
-                  Total monthly cost: $0.00. This page provides real-time per-account verification of that claim.
+                  Total monthly cost: $0.00. This page verifies that claim per account.
                 </div>
                 <div className="mt-3 grid grid-cols-3 gap-3 text-center text-xs">
                   <div className="bg-green-900 rounded-lg p-2">

@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation, ESCALATION_CAP } from '@/lib/escalation'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
@@ -1075,7 +1076,7 @@ export default function Home() {
 
       <footer className="border-t border-gray-800 mt-12">
         <div className="max-w-6xl mx-auto px-6 py-4 text-center text-xs text-gray-600">
-          Global Nexus Insights (Autonomous) | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipelines runs 2x daily via GitHub Actions
+          Global Nexus Insights (Autonomous) | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipeline runs {PIPELINE_CADENCE} via GitHub Actions
         </div>
       </footer>
     </div>

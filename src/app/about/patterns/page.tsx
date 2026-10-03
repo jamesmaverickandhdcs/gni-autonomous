@@ -113,7 +113,7 @@ export default function AboutPatternsPage() {
               { phase: 'Phase 1', title: 'Prediction Generation', desc: 'Every MAD debate produces a directional prediction (BULLISH or BEARISH) with a specific verify date at 3-day and 7-day horizons. The prediction is tied to exact articles and sources that drove the analysis.' },
               { phase: 'Phase 2', title: 'Market Measurement', desc: 'After 3 and 7 days, actual SPY market movement is measured against the prediction. Binary outcome measurement — correct or wrong — eliminates ambiguity and enables statistical analysis.' },
               { phase: 'Phase 3', title: 'Weight Adjustment', desc: 'Sources whose articles led to correct predictions have their trust weight multiplied by 1.1 via EMA. Wrong predictions multiply by 0.9. Weights are bounded between 0.5 (penalised) and 2.0 (highly trusted).' },
-              { phase: 'Phase 4', title: 'Evidence Accumulation', desc: 'As predictions accumulate, statistical confidence of accuracy claims increases. The GPVS Prediction Scorecard provides real-time evidence for every accuracy claim in the IEEE paper — not theoretical, empirical.' },
+              { phase: 'Phase 4', title: 'Evidence Accumulation', desc: 'As predictions accumulate, statistical confidence of accuracy claims increases. The GPVS Prediction Scorecard provides the evidence for every accuracy claim in the IEEE paper — not theoretical, empirical.' },
             ].map(item => (
               <div key={item.phase} className="flex gap-4 bg-gray-800 rounded-lg p-4">
                 <div className="bg-green-900 border border-green-700 rounded-lg px-3 py-2 shrink-0 text-center min-w-16">

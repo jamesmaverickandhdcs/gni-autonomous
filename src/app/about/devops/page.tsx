@@ -1,7 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
-import { FRESHNESS_LINE, FRESHNESS_SHORT, SCHEDULE_REQUESTED_30 } from '@/lib/freshness'
+import { FRESHNESS_LINE, FRESHNESS_SHORT, SCHEDULE_REQUESTED_30, PIPELINE_CADENCE } from '@/lib/freshness'
 
 interface QuotaData {
   today_tokens: number
@@ -82,7 +82,7 @@ export default function AboutDevopsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (100K tokens/day), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero vendor lock-in. Zero credit card required. Zero maintenance cost.' },
-              { title: 'Zero Human Intervention', desc: 'Once deployed, GNI runs 2x daily without any human action. The frequency controller adjusts run intervals based on world escalation score. The adaptive pipeline responds to breaking threats automatically without any trigger from a human.' },
+              { title: 'Zero Human Intervention', desc: `Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. The frequency controller adjusts run intervals based on world escalation score. The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis.` },
               { title: 'Self-Healing by Design', desc: `Mission Control monitors 6 health dimensions, ${SCHEDULE_REQUESTED_30}. Telegram alerts fire before failures cascade. The heartbeat detects anomalies and triggers corrective pipelines autonomously. The system fixes itself.` },
             ].map(item => (
               <div key={item.title} className="bg-purple-900 bg-opacity-30 rounded-lg p-4">

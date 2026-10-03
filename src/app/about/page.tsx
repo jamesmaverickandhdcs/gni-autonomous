@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { MONITOR_SHORT } from '@/lib/freshness'
 
 export default function AboutPage() {
   const [liveStats, setLiveStats] = useState<{
@@ -200,8 +201,8 @@ export default function AboutPage() {
               <div className="text-xs text-gray-500">$0.00/month forever</div>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
-              <div className="text-sm font-bold text-yellow-400">Always On</div>
-              <div className="text-xs text-gray-500">Self-healing 24/7</div>
+              <div className="text-sm font-bold text-yellow-400">Health checks</div>
+              <div className="text-xs text-gray-500">{MONITOR_SHORT}</div>
             </div>
             <div className="bg-gray-800 rounded-lg p-3 text-center">
               <div className="text-sm font-bold text-yellow-400">For Everyone</div>

@@ -2,6 +2,7 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
+import { MONITOR_DELIVERY } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
 
 interface FrequencyEntry {
@@ -97,7 +98,7 @@ export default function AutonomyPage() {
             <p className="text-xs text-gray-500 mt-1 max-w-6xl">
               GNI manages itself. The frequency controller decides how often to run based on world escalation.
               The A/B system tests prompt variants and auto-promotes the winner.
-              The health agent monitors pipeline quality 24/7.
+              The health agent&apos;s checks are {MONITOR_DELIVERY}.
             </p>
           </div>
 </div>

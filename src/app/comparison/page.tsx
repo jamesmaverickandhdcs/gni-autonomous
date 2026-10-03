@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
 
 interface Report {
@@ -182,7 +183,7 @@ export default function ComparisonPage() {
         {!loading && reports.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">&#x1F4E1;</div>
-            <p>No reports yet. Pipeline runs twice daily.</p>
+            <p>No reports yet. The pipeline runs {PIPELINE_CADENCE}.</p>
           </div>
         )}
 

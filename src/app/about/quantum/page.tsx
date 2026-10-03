@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
 
 interface Report {
@@ -46,7 +47,7 @@ export default function AboutQuantumPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
           <h1 className="text-2xl font-bold text-blue-400">Quantum Strategist — Outcomes</h1>
-          <p className="text-sm text-gray-400">What GNI decides, why it decides it, and what it means for global markets. This page shows the Quantum Strategist perspective — actionable intelligence outcomes from the MAD Protocol, real-time threat verdicts, and market implications from 42 global news sources running 2x daily.</p>
+          <p className="text-sm text-gray-400">What GNI decides, why it decides it, and what it means for global markets. This page shows the Quantum Strategist perspective — actionable intelligence outcomes from the MAD Protocol, the latest threat verdicts, and market implications from 42 global news sources, in a pipeline that runs {PIPELINE_CADENCE}.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">

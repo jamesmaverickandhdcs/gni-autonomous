@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { PIPELINE_CADENCE } from '@/lib/freshness'
 
 interface Report {
   id: string
@@ -280,7 +281,7 @@ export default function ScenariosPage() {
         {!loading && withScenarios.length === 0 && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-4">📊</div>
-            <p>No scenario data yet. Pipeline runs twice daily.</p>
+            <p>No scenario data yet. The pipeline runs {PIPELINE_CADENCE}.</p>
           </div>
         )}
 

@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
 
 interface BriefData {
@@ -195,7 +196,7 @@ export default function BriefPage() {
                 Brief generated from latest pipeline run —{' '}
                 {brief.created_at ? new Date(brief.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A'}
               </p>
-              <p className="text-xs text-gray-700 mt-1">Updates every pipeline run (twice daily)</p>
+              <p className="text-xs text-gray-700 mt-1">Updates every pipeline run: {PIPELINE_CADENCE}</p>
             </section>
 
             {/* DISCLAIMER */}

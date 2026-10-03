@@ -108,7 +108,7 @@ export default function SourceHealthPage() {
             <div>
               <h1 className="text-2xl font-bold text-white">📡 Source Health Dashboard</h1>
               <p className="text-sm text-gray-400">
-                Real-time RSS feed monitoring across {totalSources} intelligence sources.
+                RSS feed monitoring across {totalSources} intelligence sources, as of the latest check.
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 Updated after every pipeline run. Admin alerted via Telegram when sources go down.
