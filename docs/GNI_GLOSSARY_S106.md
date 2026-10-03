@@ -138,6 +138,7 @@ detected.
 | SYNONYMS | emphasis |
 | UNCONDITIONALLY | emphasis |
 | WEAKER | emphasis |
+| INDEXED | emphasis (R-S106-5) |
 | INTRODUCTION | an arc42 section heading |
 | GOALS | an arc42 section heading |
 | REQUIREMENTS | an arc42 section heading |
