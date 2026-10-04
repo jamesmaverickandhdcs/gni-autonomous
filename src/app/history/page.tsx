@@ -2,6 +2,7 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
+import { verdictIcon } from '@/lib/verdict'
 import { formatEscalation } from '@/lib/escalation'
 
 interface PipelineRun {
@@ -228,7 +229,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 {(report.quality_score > 0) && (() => { const b = qualityBadge(report.quality_score); return <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${b.color}`}>Q:{report.quality_score}/10 {b.label}</span> })()}
                 {report.mad_verdict && (
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${report.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300' : report.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-gray-700 text-gray-300'}`}>
-                    {report.mad_verdict === 'bullish' ? '🐂' : '🐻'} {report.mad_verdict?.toUpperCase()} {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : ''}
+                    {verdictIcon(report.mad_verdict)} {report.mad_verdict?.toUpperCase()} {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : ''}
                   </span>
                 )}
                 {report.escalation_level && (

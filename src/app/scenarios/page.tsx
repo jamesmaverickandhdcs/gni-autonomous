@@ -1,6 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import { verdictIcon } from '@/lib/verdict'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 
 interface Report {
@@ -103,7 +104,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
                   report.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' :
                   'bg-gray-700 text-gray-300'
                 }`}>
-                  {report.mad_verdict === 'bullish' ? '🐂' : '🐻'} {report.mad_verdict?.toUpperCase()} {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : ''}
+                  {verdictIcon(report.mad_verdict)} {report.mad_verdict?.toUpperCase()} {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : ''}
                 </span>
               )}
               {report.quality_score > 0 && (

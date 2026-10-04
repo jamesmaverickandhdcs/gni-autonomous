@@ -3,6 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
+import { verdictRelation, RELATION_LABEL, RELATION_NOTE, type VerdictRelation } from '@/lib/verdict'
 
 interface Report {
   id: string
@@ -11,6 +12,7 @@ interface Report {
   sentiment_score: number
   mad_verdict: string
   mad_confidence: number
+  mad_arb_failed?: boolean
   escalation_score: number
   escalation_score_raw?: number | null
   escalation_level: string
@@ -18,14 +20,11 @@ interface Report {
   risk_level: string
 }
 
-const isDisagree = (sentiment: string, madVerdict: string): boolean => {
-  const s = sentiment?.toLowerCase()
-  const m = madVerdict?.toLowerCase()
-  if (!s || !m) return false
-  if (s === m) return false
-  if (s === 'neutral' || m === 'neutral') return false
-  return true
-}
+// S109 F14: the relation comes from src/lib/verdict.ts - 'pending' and a failed arbitrator are
+// never a disagreement, and a neutral debate is not an agreement.
+const relationOf = (r: Report): VerdictRelation =>
+  verdictRelation(r.sentiment, r.mad_verdict, r.mad_arb_failed)
+const isDisagree = (r: Report): boolean => relationOf(r) === 'disagree'
 
 const sentimentColor = (s: string) => {
   switch (s?.toLowerCase()) {
@@ -75,11 +74,12 @@ export default function ComparisonPage() {
   }, [])
 
   const latest = reports[0]
-  const latestDisagree = latest ? isDisagree(latest.sentiment, latest.mad_verdict) : false
-  const disagreeCount = reports.filter(r => isDisagree(r.sentiment, r.mad_verdict)).length
-  const agreeCount = reports.length - disagreeCount
+  const latestDisagree = latest ? isDisagree(latest) : false
+  const disagreeCount = reports.filter(r => isDisagree(r)).length
+  const agreeCount = reports.filter(r => relationOf(r) === 'agree').length
+  const latestRel: VerdictRelation = latest ? relationOf(latest) : 'unknown'
   const filtered = filter === 'disagree'
-    ? reports.filter(r => isDisagree(r.sentiment, r.mad_verdict))
+    ? reports.filter(r => isDisagree(r))
     : reports
 
   const now = new Date()
@@ -92,9 +92,9 @@ export default function ComparisonPage() {
   const trend15 = reports.filter(r => inWindow(r, 15))
   const trend30 = reports.filter(r => inWindow(r, 30))
 
-  const disagree7  = trend7.filter(r => isDisagree(r.sentiment, r.mad_verdict)).length
-  const disagree15 = trend15.filter(r => isDisagree(r.sentiment, r.mad_verdict)).length
-  const disagree30 = trend30.filter(r => isDisagree(r.sentiment, r.mad_verdict)).length
+  const disagree7  = trend7.filter(r => isDisagree(r)).length
+  const disagree15 = trend15.filter(r => isDisagree(r)).length
+  const disagree30 = trend30.filter(r => isDisagree(r)).length
 
   const disagreeRate = (d: number, t: number) =>
     t === 0 ? 0 : Math.round((d / t) * 100)
@@ -193,6 +193,20 @@ export default function ComparisonPage() {
             <section className="mb-8">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Current Run &mdash; Latest Signal</div>
 
+              {latest && (latestRel === 'pending' || latestRel === 'no-ruling') && (
+                <div className="bg-gray-900 border border-gray-600 rounded-xl p-4 mb-4 flex items-center gap-4">
+                  <span className="text-2xl">{latestRel === 'pending' ? '\u23F3' : '\u26A0'}</span>
+                  <div>
+                    <div className="text-gray-200 font-bold">{latestRel === 'pending' ? <>PENDING &mdash; No Debate Yet</> : <>NO RULING &mdash; Arbitrator Failed</>}</div>
+                    <div className="text-gray-400 text-sm">
+                      {latestRel === 'pending'
+                        ? <>The report reached {latest.sentiment?.toLowerCase()}. The MAD debate runs after the intelligence pipeline; until it does there is nothing to compare.</>
+                        : <>The report reached {latest.sentiment?.toLowerCase()}. The debate&apos;s arbitrator failed, so the stored verdict is a default, not a ruling, and is not compared.</>}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {latestDisagree && (
                 <div className="bg-red-950 border-2 border-red-500 rounded-xl p-4 mb-4 flex items-center gap-4">
                   <span className="text-3xl">&#x26A0;&#xFE0F;</span>
@@ -209,7 +223,7 @@ export default function ComparisonPage() {
                 </div>
               )}
 
-              {!latestDisagree && latest && (
+              {latest && (latestRel === 'agree' || latestRel === 'compatible') && (
                 <div className="bg-green-950 border border-green-800 rounded-xl p-4 mb-4 flex items-center gap-4">
                   <span className="text-2xl">&#x2705;</span>
                   <div>
@@ -353,7 +367,7 @@ export default function ComparisonPage() {
 
                 <div className="divide-y divide-gray-800">
                   {filtered.map((report, i) => {
-                    const disagree = isDisagree(report.sentiment, report.mad_verdict)
+                    const disagree = isDisagree(report)
                     return (
                       <div
                         key={report.id}
@@ -390,9 +404,9 @@ export default function ComparisonPage() {
                           ) : (
                             <div>
                               <span className="bg-green-950 border border-green-800 text-green-500 px-2 py-0.5 rounded-full">
-                                &#x2713; AGREE
+                                {RELATION_LABEL[relationOf(report)]}
                               </span>
-                              <div className="text-xs text-green-600 mt-1 opacity-70">Both signals aligned</div>
+                              <div className="text-xs text-green-600 mt-1 opacity-70">{RELATION_NOTE[relationOf(report)]}</div>
                             </div>
                           )}
                         </div>

@@ -2,6 +2,7 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
+import { verdictRelation, RELATION_LABEL } from '@/lib/verdict'
 import { formatEscalation, ESCALATION_CAP } from '@/lib/escalation'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
@@ -665,14 +666,11 @@ export default function Home() {
                       MAD: <span className="text-white font-bold">{latest?.mad_confidence ? (latest.mad_confidence * 2 - 1).toFixed(2) : 'N/A'}</span>
                     </div>
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                      latest?.sentiment && latest?.mad_verdict &&
-                      latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
+                      verdictRelation(latest?.sentiment, latest?.mad_verdict, latest?.mad_arb_failed) === 'disagree'
                         ? 'bg-orange-900 text-orange-300 border border-orange-700'
                         : 'bg-green-900 text-green-300 border border-green-700'
                     }`}>
-                      {latest?.sentiment && latest?.mad_verdict &&
-                       latest.sentiment.toLowerCase() !== latest.mad_verdict.toLowerCase()
-                        ? '⚠️ DIVERGING' : '✓ ALIGNED'}
+                      {RELATION_LABEL[verdictRelation(latest?.sentiment, latest?.mad_verdict, latest?.mad_arb_failed)]}
                     </span>
                   </div>
                   <a href="/comparison" className="text-xs font-bold text-white bg-blue-700 hover:bg-blue-600 rounded-lg px-3 py-1.5 shrink-0 transition-colors">
