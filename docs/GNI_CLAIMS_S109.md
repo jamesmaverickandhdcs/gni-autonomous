@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S108.tsv` md5 `a0849d11bd7d21ac48198851361500a2` (EOL-normalised) -- **745 claims** (519 STATE, 204 PROMISE, 22 MIXED) at **798 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S109.tsv` md5 `1d84575fc3d4d6901c7372dd950c8951` (EOL-normalised) -- **746 claims** (520 STATE, 204 PROMISE, 22 MIXED) at **799 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S108.tsv` md5 `705a956ba90e3ebed9ab539b8ac88d02` (EOL-normalised) -- **COVERAGE 21/745 = 2.8%** (21 SUPPORTED, 0 DEFEATED, 724 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S109.tsv` md5 `31b61a690b9374583284ef51b2cfb68e` (EOL-normalised) -- **COVERAGE 21/746 = 2.8%** (21 SUPPORTED, 0 DEFEATED, 725 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -469,7 +469,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S108.tsv` md5 `705a956ba90e3ebed9ab539b
 | CLM-438 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:430` | Highest-value intelligence event &mdash; investigate further. |
 | CLM-439 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:434` | How strongly the 4 agents (Bull, Bear, Black Swan, Ostrich) agreed after 3 rounds. |
 | CLM-440 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:438` | Pipeline escalation 0-10. |
-| CLM-441 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:166` | GNI reports are for informational purposes only and do not constitute financial advice. |
+| CLM-441 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:134` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:452` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | UNREVIEWED | `src/app/debate/page.tsx:496` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | UNREVIEWED | `src/app/model-learning/page.tsx:79` | GNI reports are for informational purposes only and do not constitute financial advice. |
@@ -747,11 +747,10 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S108.tsv` md5 `705a956ba90e3ebed9ab539b
 | CLM-688 | STATE | UNMEASURED | UNREVIEWED | `src/app/scenarios/page.tsx:58` | Known risks playing out — most likely path |
 | CLM-689 | STATE | UNMEASURED | UNREVIEWED | `src/app/scenarios/page.tsx:68` | Opportunity cost — what happens if we act on known positives |
 | CLM-690 | STATE | UNMEASURED | UNREVIEWED | `src/app/scenarios/page.tsx:78` | Black Swan + Ostrich combined — unknown and ignored threats |
-| CLM-691 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:57` | Heartbeat + Adaptive + System alerts — full web archive |
-| CLM-692 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:94` | Alerts fire via Telegram when escalation spikes, NYSE opens/closes, or adaptive pipeline triggers. |
-| CLM-693 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:95` | This page archives all alerts for web review. |
-| CLM-694 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:95` | Data populates automatically. |
-| CLM-695 | STATE | UNMEASURED | PROVENANCE | `src/app/alerts/page.tsx:172` | GNI Autonomous \| Alert History \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
+| CLM-692 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:86` | Alerts fire via Telegram when escalation spikes, NYSE opens/closes, or adaptive pipeline triggers. |
+| CLM-693 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:87` | This page archives all alerts for web review. |
+| CLM-694 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:87` | Data populates automatically. |
+| CLM-695 | STATE | UNMEASURED | PROVENANCE | `src/app/alerts/page.tsx:140` | GNI Autonomous \| Alert History \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-696 | STATE | UNMEASURED | UNREVIEWED | `src/app/transparency/page.tsx:109` | Explainable AI — Full Intelligence Funnel Trace |
 | CLM-697 | STATE | UNMEASURED | UNREVIEWED | `src/app/transparency/page.tsx:111` | This page shows exactly how GNI selects news articles and generates intelligence reports. |
 | CLM-698 | STATE | UNMEASURED | UNREVIEWED | `src/app/transparency/page.tsx:112` | Every algorithmic decision is documented — from collected articles down to the final report. |
@@ -811,3 +810,5 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S108.tsv` md5 `705a956ba90e3ebed9ab539b
 | CLM-752 | STATE | SUPPORTED | F-RSS claims 42, measured 42; F-INJ claims 81, measured 81 | `src/app/page.tsx:1018` | GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 81 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. |
 | CLM-753 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:105` | Full geopolitical intelligence platform running autonomous GitHub Actions workflows -- core (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) plus support (entity graph, market, self-bias, mission control) -- entirely on free tiers. |
 | CLM-754 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/security/page.tsx:65` | Every article is scanned for 81 prompt injection patterns before entering the AI pipeline. |
+| CLM-755 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:55` | Health Agent alerts from the main pipeline — full web archive |
+| CLM-756 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:65` | adaptive runs are counted there |

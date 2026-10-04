@@ -44,8 +44,6 @@ export default function AlertsPage() {
     }
   }
 
-  const recentTriggers = usage.filter(u => u.pipeline === 'gni_adaptive')
-
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
@@ -54,24 +52,18 @@ export default function AlertsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">&#x1F6A8; Alert History</h1>
-              <p className="text-sm text-gray-400">Heartbeat + Adaptive + System alerts — full web archive</p>
+              <p className="text-sm text-gray-400">Health Agent alerts from the main pipeline — full web archive</p>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3 mt-4">
+          <div className="grid grid-cols-2 gap-3 mt-4">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center">
               <div className="text-2xl font-bold text-white">{alerts.length}</div>
               <div className="text-xs text-gray-500">Total Alerts</div>
             </div>
-            <div className="bg-blue-950 border border-blue-800 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-blue-400">{recentTriggers.length}</div>
-              <div className="text-xs text-blue-600">Adaptive Triggers</div>
-            </div>
-            <div className="bg-red-950 border border-red-800 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-red-400">
-                {alerts.filter(a => a.alert_type?.toUpperCase() === 'CRITICAL').length}
-              </div>
-              <div className="text-xs text-red-600">Critical Alerts</div>
-            </div>
+            <a href="/adaptive-log" className="bg-blue-950 border border-blue-800 hover:border-blue-600 rounded-lg p-3 text-center transition-colors">
+              <div className="text-sm font-bold text-blue-400 mt-1">Adaptive Log &rarr;</div>
+              <div className="text-xs text-blue-600">adaptive runs are counted there</div>
+            </a>
           </div>
 </div>
       </header>
@@ -127,30 +119,6 @@ export default function AlertsPage() {
                     </span>
                   </div>
                   <p className="text-sm leading-relaxed">{alert.message}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {!loading && recentTriggers.length > 0 && (
-          <section>
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Recent Adaptive Triggers (from quota log)</div>
-            <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
-              {recentTriggers.slice(0, 10).map((u, i) => (
-                <div key={u.id} className="flex items-center justify-between px-4 py-3 border-b border-gray-800 text-sm">
-                  <div className="flex items-center gap-3">
-                    <span className="text-blue-400 font-bold text-xs">#{i + 1}</span>
-                    <span className="text-gray-300 font-mono text-xs">{u.pipeline}</span>
-                  </div>
-                  <div className="flex items-center gap-4 text-xs">
-                    <span className="text-orange-400 font-bold">{(u.tokens_used || 0).toLocaleString()} tokens</span>
-                    <span className="text-gray-500">
-                      {new Date(u.created_at).toLocaleDateString('en-US', {
-                        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                      })}
-                    </span>
-                  </div>
                 </div>
               ))}
             </div>
