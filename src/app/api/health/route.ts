@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
   if (authError) return authError
   try {
     const [runsRes, reportsRes, weightsRes, credibilityRes, promptsRes, alertsRes, freqRes, escalationRes, rosterRes] = await Promise.all([
-      supabase.from('pipeline_runs').select('*').order('run_at', { ascending: false }).limit(5),
+      supabase.from('pipeline_runs').select('*').eq('pipeline_type', 'main').order('run_at', { ascending: false }).limit(5),
       supabase.from('reports').select('quality_score, quality_breakdown, created_at, llm_source').order('created_at', { ascending: false }).limit(10),
       supabase.from('source_weights').select('*').order('weight', { ascending: false }),
       supabase.from('source_credibility').select('*').order('credibility_score', { ascending: false }),

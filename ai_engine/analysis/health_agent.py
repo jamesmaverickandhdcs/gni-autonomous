@@ -70,7 +70,7 @@ def run_health_checks() -> dict:
     # ── Check 1: Recent run gap ─────────────────────────────
     checks_total += 1
     try:
-        result = client.table("pipeline_runs")             .select("run_at, status")             .eq("status", "success")             .order("run_at", desc=True)             .limit(1)             .execute()
+        result = client.table("pipeline_runs")             .select("run_at, status")             .eq("status", "success")             .eq("pipeline_type", "main")             .order("run_at", desc=True)             .limit(1)             .execute()
 
         if result.data:
             last_run = datetime.fromisoformat(result.data[0]["run_at"].replace("Z", "+00:00"))
@@ -121,7 +121,7 @@ def run_health_checks() -> dict:
     # ── Check 3: Article collection volume ──────────────────
     checks_total += 1
     try:
-        result = client.table("pipeline_runs")             .select("total_collected")             .order("run_at", desc=True)             .limit(3)             .execute()
+        result = client.table("pipeline_runs")             .select("total_collected")             .eq("pipeline_type", "main")             .order("run_at", desc=True)             .limit(3)             .execute()
 
         if result.data:
             avg_collected = sum(r["total_collected"] for r in result.data) / len(result.data)

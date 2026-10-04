@@ -65,7 +65,7 @@ def should_run_now(escalation_level: str = 'LOW', escalation_score: float = 0.0)
 
     try:
         # Get most recent successful pipeline run
-        result = client.table("pipeline_runs")             .select("run_at, status")             .eq("status", "success")             .order("run_at", desc=True)             .limit(1)             .execute()
+        result = client.table("pipeline_runs")             .select("run_at, status")             .eq("status", "success")             .eq("pipeline_type", "main")             .order("run_at", desc=True)             .limit(1)             .execute()
 
         if not result.data:
             return True, "No previous runs found — first run"
