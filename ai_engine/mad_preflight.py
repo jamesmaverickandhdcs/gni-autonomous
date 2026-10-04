@@ -112,7 +112,7 @@ def run_preflight() -> bool:
     try:
         gap_result = client.table('pipeline_runs') \
             .select('created_at,pipeline_type') \
-            .eq('pipeline_type', 'gni_pipeline') \
+            .eq('pipeline_type', 'main') \
             .order('created_at', desc=True) \
             .limit(1) \
             .execute()
