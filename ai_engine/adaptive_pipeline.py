@@ -214,6 +214,36 @@ def check_mission_control_flag(client) -> str:
         print('  WARNING: Cannot read mission_control_flag: ' + str(e)[:60])
         return ''
 
+def _log_adaptive_run(now: datetime, total: float, mode: str | None) -> str | None:
+    """Write the adaptive run row; say OK only when the write returned an id.
+
+    S109 9.23: save_pipeline_run swallows its own exception and returns None,
+    so the line printed here reports the row, not the writer (R-S108-3).
+    """
+    run_id = None
+    try:
+        run_id = save_pipeline_run(
+            run_at=now.isoformat(),
+            report_id=None,
+            total_collected=0,
+            total_after_relevance=0,
+            total_after_dedup=0,
+            total_after_funnel=0,
+            llm_source='adaptive',
+            status='success',
+            duration_seconds=total,
+            pipeline_type='adaptive',
+            mode=mode,
+        )
+    except Exception as _e:
+        print('  WARNING: save_pipeline_run raised: ' + str(_e)[:60])
+    if run_id:
+        print('  OK Adaptive run logged to pipeline_runs (id ' + str(run_id)[:8] + ')')
+    else:
+        print('  FAILED: adaptive run NOT logged to pipeline_runs - save_pipeline_run returned no id')
+    return run_id
+
+
 def run_adaptive_pipeline(reason: str = 'scheduled'):
     now = datetime.now(timezone.utc)
     print('=' * 60)
@@ -299,23 +329,7 @@ def run_adaptive_pipeline(reason: str = 'scheduled'):
 
     # -- Log this adaptive run so get_last_adaptive_run() finds it
     total = round((datetime.now(timezone.utc) - now).total_seconds(), 2)
-    try:
-        save_pipeline_run(
-            run_at=now.isoformat(),
-            report_id=None,
-            total_collected=0,
-            total_after_relevance=0,
-            total_after_dedup=0,
-            total_after_funnel=0,
-            llm_source='adaptive',
-            status='success',
-            duration_seconds=total,
-            pipeline_type='adaptive',
-            mode=result.get('mode'),
-        )
-        print('  OK Adaptive run logged to pipeline_runs')
-    except Exception as _e:
-        print('  WARNING: Could not log adaptive run: ' + str(_e)[:60])
+    _log_adaptive_run(now, total, result.get('mode'))
 
     # -- Log adaptive run activity.
     # GNI-R-223: adaptive is Cerebras-only (zero Groq, no Groq fallback in production).

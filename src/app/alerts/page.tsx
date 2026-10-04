@@ -1,13 +1,11 @@
 ﻿'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
-import { formatEscalation } from '@/lib/escalation'
 
 interface Alert {
   id: string
   alert_type: string
   message: string
-  escalation_score: number
   created_at: string
 }
 
@@ -129,11 +127,6 @@ export default function AlertsPage() {
                     </span>
                   </div>
                   <p className="text-sm leading-relaxed">{alert.message}</p>
-                  {alert.escalation_score > 0 && (
-                    <div className="mt-2 text-xs text-gray-400">
-                      Escalation: <span className="font-bold text-red-400">{formatEscalation(alert.escalation_score, null, 'report')}</span>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
