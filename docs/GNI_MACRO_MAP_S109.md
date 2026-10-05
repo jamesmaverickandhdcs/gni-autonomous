@@ -7,20 +7,20 @@ No clock is written into this file, so an unchanged input reproduces it byte-ide
 |---|---|---|
 | X | session number | rule ids of the form `R-S##-#` |
 | Y | White Paper layer | `docs/GNI_ARCHITECTURE_S109.md`, ROADMAP table |
-| Z | vision -> executable | `**CHECKABLE:**` markers in `docs/GNI_RULES_S108.md` |
+| Z | vision -> executable | `**CHECKABLE:**` markers in `docs/GNI_RULES_S109.md` |
 
-INPUT `docs/GNI_RULES_S108.md` md5 `605b57b4409ffa14611f3df44cb50422` (EOL-normalised)
-INPUT `docs/GNI_ARCHITECTURE_S109.md` md5 `84ac286a4a36f226baec5155aaada5ba` (EOL-normalised)
-GENERATED from `docs/GNI_RULES_S108.md` -- 215 CHECKABLE markers, register generation 108.
+INPUT `docs/GNI_RULES_S109.md` md5 `ed2b40fd0d78ecea32c6922cdbe825e4` (EOL-normalised)
+INPUT `docs/GNI_ARCHITECTURE_S109.md` md5 `3c2b7ac446fc6f0f2e81e91c9138c08d` (EOL-normalised)
+GENERATED from `docs/GNI_RULES_S109.md` -- 219 CHECKABLE markers, register generation 109.
 
 ## TOTALS
 
-- CHECKABLE markers in the register: **215** -- **96** yes, **119** no -- Z = **44.7%**
-- bound to exactly one rule id: **197**
-- AMBIGUOUS (one id claimed by several markers, 18 markers over 7 ids): **18**
+- CHECKABLE markers in the register: **219** -- **98** yes, **121** no -- Z = **44.7%**
+- bound to exactly one rule id: **199**
+- AMBIGUOUS (one id claimed by several markers, 20 markers over 8 ids): **20**
 - bound to no rule at all: **0**
-- placeable on X: **173** rules across **51** sessions (S54-S108); NOT placeable: **24** (`GNI-R-###`, `GNI-L-###`, `NN-PHI-*` carry no session)
-- Y: **2** of the **55** sessions on this axis name a layer
+- placeable on X: **175** rules across **52** sessions (S54-S109); NOT placeable: **24** (`GNI-R-###`, `GNI-L-###`, `NN-PHI-*` carry no session)
+- Y: **2** of the **56** sessions on this axis name a layer
 
 ## THE SERIES
 
@@ -29,102 +29,104 @@ and it is not a zero.
 
 | X | rules | Z yes | Z no | Z ratio | Y layer | source (file:line) |
 |---|---|---|---|---|---|---|
-| S54 | 4 | 0 | 4 | 0% | ABSENT | GNI_RULES_S108.md:46-60 |
-| S55 | 5 | 0 | 5 | 0% | ABSENT | GNI_RULES_S108.md:416-424 |
-| S56 | 1 | 1 | 0 | 100% | ABSENT | GNI_RULES_S108.md:427-427 |
-| S57 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S108.md:429-429 |
-| S58 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S108.md:432-432 |
-| S59 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S108.md:437-437 |
-| S60 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S108.md:440-446 |
+| S54 | 4 | 0 | 4 | 0% | ABSENT | GNI_RULES_S109.md:46-60 |
+| S55 | 5 | 0 | 5 | 0% | ABSENT | GNI_RULES_S109.md:416-424 |
+| S56 | 1 | 1 | 0 | 100% | ABSENT | GNI_RULES_S109.md:427-427 |
+| S57 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S109.md:429-429 |
+| S58 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S109.md:432-432 |
+| S59 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S109.md:437-437 |
+| S60 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S109.md:440-446 |
 | S61 | ABSENT | ABSENT | ABSENT | ABSENT | ABSENT | none |
-| S62 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S108.md:451-458 |
-| S63 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S108.md:462-470 |
-| S64 | 3 | 2 | 1 | 67% | ABSENT | GNI_RULES_S108.md:474-482 |
-| S65 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S108.md:486-494 |
-| S66 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S108.md:499-508 |
-| S67 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S108.md:512-516 |
-| S68 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S108.md:522-524 |
-| S69 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S108.md:526-535 |
-| S70 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S108.md:539-544 |
-| S71 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S108.md:548-552 |
-| S72 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S108.md:557-557 |
-| S73 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S108.md:562-566 |
-| S74 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S108.md:575-579 |
-| S75 | 3 | 2 | 1 | 67% | ABSENT | GNI_RULES_S108.md:584-592 |
-| S76 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S108.md:597-601 |
-| S77 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S108.md:603-607 |
-| S78 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S108.md:609-613 |
-| S79 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S108.md:617-621 |
-| S80 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S108.md:625-633 |
-| S81 | 8 | 5 | 3 | 62% | ABSENT | GNI_RULES_S108.md:640-695 |
-| S82 | 5 | 3 | 2 | 60% | ABSENT | GNI_RULES_S108.md:708-745 |
-| S83 | 6 | 0 | 6 | 0% | ABSENT | GNI_RULES_S108.md:756-810 |
-| S84 | 4 | 2 | 2 | 50% | ABSENT | GNI_RULES_S108.md:838-872 |
-| S85 | 6 | 4 | 2 | 67% | ABSENT | GNI_RULES_S108.md:903-959 |
-| S86 | 6 | 1 | 5 | 17% | ABSENT | GNI_RULES_S108.md:968-1019 |
-| S87 | 7 | 4 | 3 | 57% | ABSENT | GNI_RULES_S108.md:1030-1089 |
-| S88 | 5 | 1 | 4 | 20% | ABSENT | GNI_RULES_S108.md:1098-1131 |
-| S89 | 3 | 3 | 0 | 100% | ABSENT | GNI_RULES_S108.md:1148-1171 |
-| S90 | 4 | 1 | 3 | 25% | ABSENT | GNI_RULES_S108.md:1183-1209 |
-| S91 | 5 | 3 | 2 | 60% | ABSENT | GNI_RULES_S108.md:1255-1312 |
-| S92 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S108.md:1325-1336 |
-| S93 | 1 | 1 | 0 | 100% | Layer 0 | GNI_RULES_S108.md:1356-1356 + GNI_ARCHITECTURE_S109.md:917 |
-| S94 | 4 | 2 | 2 | 50% | Layer 2 | GNI_RULES_S108.md:1398-1422 + GNI_ARCHITECTURE_S109.md:918 |
-| S95 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S108.md:1441-1482 + GNI_ARCHITECTURE_S109.md:919 |
-| S96 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S108.md:1493-1530 + GNI_ARCHITECTURE_S109.md:920 |
+| S62 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S109.md:451-458 |
+| S63 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S109.md:462-470 |
+| S64 | 3 | 2 | 1 | 67% | ABSENT | GNI_RULES_S109.md:474-482 |
+| S65 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S109.md:486-494 |
+| S66 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S109.md:499-508 |
+| S67 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S109.md:512-516 |
+| S68 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S109.md:522-524 |
+| S69 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S109.md:526-535 |
+| S70 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S109.md:539-544 |
+| S71 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S109.md:548-552 |
+| S72 | 1 | 0 | 1 | 0% | ABSENT | GNI_RULES_S109.md:557-557 |
+| S73 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S109.md:562-566 |
+| S74 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S109.md:575-579 |
+| S75 | 3 | 2 | 1 | 67% | ABSENT | GNI_RULES_S109.md:584-592 |
+| S76 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S109.md:597-601 |
+| S77 | 3 | 1 | 2 | 33% | ABSENT | GNI_RULES_S109.md:603-607 |
+| S78 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S109.md:609-613 |
+| S79 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S109.md:617-621 |
+| S80 | 3 | 0 | 3 | 0% | ABSENT | GNI_RULES_S109.md:625-633 |
+| S81 | 8 | 5 | 3 | 62% | ABSENT | GNI_RULES_S109.md:640-695 |
+| S82 | 5 | 3 | 2 | 60% | ABSENT | GNI_RULES_S109.md:708-745 |
+| S83 | 6 | 0 | 6 | 0% | ABSENT | GNI_RULES_S109.md:756-810 |
+| S84 | 4 | 2 | 2 | 50% | ABSENT | GNI_RULES_S109.md:838-872 |
+| S85 | 6 | 4 | 2 | 67% | ABSENT | GNI_RULES_S109.md:903-959 |
+| S86 | 6 | 1 | 5 | 17% | ABSENT | GNI_RULES_S109.md:968-1019 |
+| S87 | 7 | 4 | 3 | 57% | ABSENT | GNI_RULES_S109.md:1030-1089 |
+| S88 | 5 | 1 | 4 | 20% | ABSENT | GNI_RULES_S109.md:1098-1131 |
+| S89 | 3 | 3 | 0 | 100% | ABSENT | GNI_RULES_S109.md:1148-1171 |
+| S90 | 4 | 1 | 3 | 25% | ABSENT | GNI_RULES_S109.md:1183-1209 |
+| S91 | 5 | 3 | 2 | 60% | ABSENT | GNI_RULES_S109.md:1255-1312 |
+| S92 | 2 | 0 | 2 | 0% | ABSENT | GNI_RULES_S109.md:1325-1336 |
+| S93 | 1 | 1 | 0 | 100% | Layer 0 | GNI_RULES_S109.md:1356-1356 + GNI_ARCHITECTURE_S109.md:919 |
+| S94 | 4 | 2 | 2 | 50% | Layer 2 | GNI_RULES_S109.md:1398-1422 + GNI_ARCHITECTURE_S109.md:920 |
+| S95 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S109.md:1441-1482 + GNI_ARCHITECTURE_S109.md:921 |
+| S96 | 5 | 4 | 1 | 80% | row, no layer named | GNI_RULES_S109.md:1493-1530 + GNI_ARCHITECTURE_S109.md:922 |
 | S97 | ABSENT | ABSENT | ABSENT | ABSENT | ABSENT | none |
-| S98 | 6 | 5 | 1 | 83% | ABSENT | GNI_RULES_S108.md:1542-1586 |
-| S99 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S108.md:1609-1619 |
-| S100 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S108.md:1675-1688 |
+| S98 | 6 | 5 | 1 | 83% | ABSENT | GNI_RULES_S109.md:1542-1586 |
+| S99 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S109.md:1609-1619 |
+| S100 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S109.md:1675-1688 |
 | S101 | ABSENT | ABSENT | ABSENT | ABSENT | ABSENT | none |
 | S102 | ABSENT | ABSENT | ABSENT | ABSENT | ABSENT | none |
-| S103 | 4 | 4 | 0 | 100% | ABSENT | GNI_RULES_S108.md:1719-1752 |
-| S104 | 4 | 2 | 2 | 50% | ABSENT | GNI_RULES_S108.md:1764-1804 |
-| S105 | 7 | 5 | 2 | 71% | ABSENT | GNI_RULES_S108.md:1815-1865 |
-| S106 | 5 | 3 | 2 | 60% | ABSENT | GNI_RULES_S108.md:1873-1905 |
-| S107 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S108.md:1928-1935 |
-| S108 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S108.md:1959-1967 |
+| S103 | 4 | 4 | 0 | 100% | ABSENT | GNI_RULES_S109.md:1719-1752 |
+| S104 | 4 | 2 | 2 | 50% | ABSENT | GNI_RULES_S109.md:1764-1804 |
+| S105 | 7 | 5 | 2 | 71% | ABSENT | GNI_RULES_S109.md:1815-1865 |
+| S106 | 5 | 3 | 2 | 60% | ABSENT | GNI_RULES_S109.md:1873-1905 |
+| S107 | 2 | 2 | 0 | 100% | ABSENT | GNI_RULES_S109.md:1928-1935 |
+| S108 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S109.md:1959-1967 |
+| S109 | 2 | 1 | 1 | 50% | ABSENT | GNI_RULES_S109.md:2000-2007 |
 
-## AMBIGUOUS -- the register cannot say which marker belongs to which rule (18)
+## AMBIGUOUS -- the register cannot say which marker belongs to which rule (20)
 
 | id claimed | markers | verdicts | marker lines |
 |---|---|---|---|
-| `NN-PHI-7` | 3 | no, yes, no | GNI_RULES_S108.md:397, GNI_RULES_S108.md:406, GNI_RULES_S108.md:414 |
-| `R-S100-3` | 2 | yes, yes | GNI_RULES_S108.md:1704, GNI_RULES_S108.md:1714 |
-| `R-S106-6` | 2 | yes, no | GNI_RULES_S108.md:1918, GNI_RULES_S108.md:1926 |
-| `R-S107-3` | 2 | no, yes | GNI_RULES_S108.md:1947, GNI_RULES_S108.md:1955 |
-| `R-S108-3` | 3 | no, no, no | GNI_RULES_S108.md:1980, GNI_RULES_S108.md:1988, GNI_RULES_S108.md:1996 |
-| `R-S74-1` | 2 | no, yes | GNI_RULES_S108.md:338, GNI_RULES_S108.md:574 |
-| `R-S99-3` | 4 | yes, no, yes, yes | GNI_RULES_S108.md:1635, GNI_RULES_S108.md:1650, GNI_RULES_S108.md:1661, GNI_RULES_S108.md:1671 |
+| `NN-PHI-7` | 3 | no, yes, no | GNI_RULES_S109.md:397, GNI_RULES_S109.md:406, GNI_RULES_S109.md:414 |
+| `R-S100-3` | 2 | yes, yes | GNI_RULES_S109.md:1704, GNI_RULES_S109.md:1714 |
+| `R-S106-6` | 2 | yes, no | GNI_RULES_S109.md:1918, GNI_RULES_S109.md:1926 |
+| `R-S107-3` | 2 | no, yes | GNI_RULES_S109.md:1947, GNI_RULES_S109.md:1955 |
+| `R-S108-3` | 3 | no, no, no | GNI_RULES_S109.md:1980, GNI_RULES_S109.md:1988, GNI_RULES_S109.md:1996 |
+| `R-S109-3` | 2 | yes, no | GNI_RULES_S109.md:2025, GNI_RULES_S109.md:2033 |
+| `R-S74-1` | 2 | no, yes | GNI_RULES_S109.md:338, GNI_RULES_S109.md:574 |
+| `R-S99-3` | 4 | yes, no, yes, yes | GNI_RULES_S109.md:1635, GNI_RULES_S109.md:1650, GNI_RULES_S109.md:1661, GNI_RULES_S109.md:1671 |
 
 ## NOT PLACEABLE ON X (24)
 
 | id | Z | source |
 |---|---|---|
-| `GNI-L-001` | no | GNI_RULES_S108.md:351 |
-| `GNI-L-002` | yes | GNI_RULES_S108.md:354 |
-| `GNI-L-003` | yes | GNI_RULES_S108.md:357 |
-| `GNI-L-004` | no | GNI_RULES_S108.md:360 |
-| `GNI-L-005` | no | GNI_RULES_S108.md:363 |
-| `GNI-L-006` | yes | GNI_RULES_S108.md:366 |
-| `GNI-L-007` | no | GNI_RULES_S108.md:368 |
-| `GNI-L-008` | no | GNI_RULES_S108.md:370 |
-| `GNI-L-009` | no | GNI_RULES_S108.md:372 |
-| `GNI-L-010` | no | GNI_RULES_S108.md:374 |
-| `GNI-L-011` | no | GNI_RULES_S108.md:377 |
-| `GNI-R-114` | yes | GNI_RULES_S108.md:80 |
-| `GNI-R-115` | no | GNI_RULES_S108.md:84 |
-| `GNI-R-116` | yes | GNI_RULES_S108.md:89 |
-| `GNI-R-122` | yes | GNI_RULES_S108.md:94 |
-| `GNI-R-240` | yes | GNI_RULES_S108.md:340 |
-| `GNI-R-241` | yes | GNI_RULES_S108.md:343 |
-| `GNI-R-242` | no | GNI_RULES_S108.md:346 |
-| `NN-PHI-1` | no | GNI_RULES_S108.md:382 |
-| `NN-PHI-2` | no | GNI_RULES_S108.md:384 |
-| `NN-PHI-3` | no | GNI_RULES_S108.md:386 |
-| `NN-PHI-4` | yes | GNI_RULES_S108.md:388 |
-| `NN-PHI-5` | no | GNI_RULES_S108.md:390 |
-| `NN-PHI-6` | no | GNI_RULES_S108.md:392 |
+| `GNI-L-001` | no | GNI_RULES_S109.md:351 |
+| `GNI-L-002` | yes | GNI_RULES_S109.md:354 |
+| `GNI-L-003` | yes | GNI_RULES_S109.md:357 |
+| `GNI-L-004` | no | GNI_RULES_S109.md:360 |
+| `GNI-L-005` | no | GNI_RULES_S109.md:363 |
+| `GNI-L-006` | yes | GNI_RULES_S109.md:366 |
+| `GNI-L-007` | no | GNI_RULES_S109.md:368 |
+| `GNI-L-008` | no | GNI_RULES_S109.md:370 |
+| `GNI-L-009` | no | GNI_RULES_S109.md:372 |
+| `GNI-L-010` | no | GNI_RULES_S109.md:374 |
+| `GNI-L-011` | no | GNI_RULES_S109.md:377 |
+| `GNI-R-114` | yes | GNI_RULES_S109.md:80 |
+| `GNI-R-115` | no | GNI_RULES_S109.md:84 |
+| `GNI-R-116` | yes | GNI_RULES_S109.md:89 |
+| `GNI-R-122` | yes | GNI_RULES_S109.md:94 |
+| `GNI-R-240` | yes | GNI_RULES_S109.md:340 |
+| `GNI-R-241` | yes | GNI_RULES_S109.md:343 |
+| `GNI-R-242` | no | GNI_RULES_S109.md:346 |
+| `NN-PHI-1` | no | GNI_RULES_S109.md:382 |
+| `NN-PHI-2` | no | GNI_RULES_S109.md:384 |
+| `NN-PHI-3` | no | GNI_RULES_S109.md:386 |
+| `NN-PHI-4` | yes | GNI_RULES_S109.md:388 |
+| `NN-PHI-5` | no | GNI_RULES_S109.md:390 |
+| `NN-PHI-6` | no | GNI_RULES_S109.md:392 |
 
 ## WHAT THIS MAP CANNOT SAY
 
