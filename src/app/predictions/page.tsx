@@ -17,7 +17,7 @@ interface Prediction {
 }
 
 export default function PredictionsPage() {
-  const [predictions, setPredictions] = useState<Prediction[]>([])
+  const [predictions, setPredictions] = useState<Prediction[]>([]); const [counts, setCounts] = useState<Record<string, number> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [filter, setFilter] = useState<'all' | 'pending' | 'verified'>('all')
@@ -25,7 +25,7 @@ export default function PredictionsPage() {
   useEffect(() => {
     fetch('/api/predictions-list', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
-      .then(data => setPredictions(data.predictions || []))
+      .then(data => { setPredictions(data.predictions || []); setCounts(data.counts || null) })
       .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
@@ -36,9 +36,9 @@ export default function PredictionsPage() {
     return true
   })
 
-  const pending = predictions.filter(p => !p.verified_at).length
-  const verified = predictions.filter(p => !!p.verified_at).length
-  const correct = predictions.filter(p => p.verified_at && p.accurate === true).length
+  const listPending = predictions.filter(p => !p.verified_at).length; const pending = counts?.pending ?? listPending
+  const listVerified = predictions.filter(p => !!p.verified_at).length; const verified = counts?.verified ?? listVerified
+  const materialized = counts?.materialized ?? predictions.filter(p => p.verified_at && p.accurate === true).length; const inconclusive = counts?.inconclusive ?? predictions.filter(p => p.verified_at && p.accurate == null).length
 
   const horizonColor = (h: string) => {
     if (h === 'short') return 'bg-blue-900 text-blue-300'
@@ -59,7 +59,7 @@ export default function PredictionsPage() {
           </div>
           <div className="grid grid-cols-3 gap-3 mt-4">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-white">{predictions.length}</div>
+              <div className="text-2xl font-bold text-white">{counts?.total ?? predictions.length}</div>
               <div className="text-xs text-gray-500">Total Predictions</div>
             </div>
             <div className="bg-yellow-950 border border-yellow-800 rounded-lg p-3 text-center">
@@ -68,7 +68,7 @@ export default function PredictionsPage() {
             </div>
             <div className="bg-green-950 border border-green-800 rounded-lg p-3 text-center">
               <div className="text-2xl font-bold text-green-400">{verified}</div>
-              <div className="text-xs text-green-600">Verified ({correct} correct)</div>
+              <div className="text-xs text-green-600">Verified ({materialized} materialized, {inconclusive} inconclusive)</div>
             </div>
           </div>
 </div>
@@ -92,7 +92,7 @@ export default function PredictionsPage() {
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize ${
                     filter === f ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                   }`}>
-                  {f} ({f === 'all' ? predictions.length : f === 'pending' ? pending : verified})
+                  {f} ({f === 'all' ? predictions.length : f === 'pending' ? listPending : listVerified}){f === 'all' && counts && counts.total > predictions.length ? ` - latest ${predictions.length} of ${counts.total}` : ''}
                 </button>
               ))}
             </div>

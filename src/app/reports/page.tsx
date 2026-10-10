@@ -13,13 +13,13 @@ interface Prediction {
 }
 
 export default function ReportsHub() {
-  const [predictions, setPredictions] = useState<Prediction[]>([])
+  const [predictions, setPredictions] = useState<Prediction[]>([]); const [counts, setCounts] = useState<Record<string, number> | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/predictions-list', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
-      .then(data => setPredictions(data.predictions || []))
+      .then(data => { setPredictions(data.predictions || []); setCounts(data.counts || null) })
       .catch(() => setError('Failed to load data.'))
   }, [])
 
@@ -77,15 +77,15 @@ export default function ReportsHub() {
         {/* GPVS Status */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-amber-950 border border-amber-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-amber-300">{predictions.length}</div>
+            <div className="text-2xl font-bold text-amber-300">{counts?.total ?? predictions.length}</div>
             <div className="text-xs text-gray-500 mt-1">Total Predictions</div>
           </div>
           <div className="bg-amber-950 border border-amber-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-amber-300">{pending.length}</div>
+            <div className="text-2xl font-bold text-amber-300">{counts?.pending ?? pending.length}</div>
             <div className="text-xs text-gray-500 mt-1">Pending Verification</div>
           </div>
           <div className="bg-amber-950 border border-amber-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-amber-300">{verified.length}</div>
+            <div className="text-2xl font-bold text-amber-300">{counts?.verified ?? verified.length}</div>
             <div className="text-xs text-gray-500 mt-1">Verified by GPVS</div>
           </div>
         </div>
@@ -120,8 +120,8 @@ export default function ReportsHub() {
           <p className="text-xs text-gray-300 leading-relaxed mb-3">All MAD agent predictions with verify dates, confidence levels, and GPVS accuracy scores — the complete prediction ledger. Each prediction is tagged with the agent that made it (Bull, Bear, Black Swan, or Ostrich) and the specific time horizon for verification. Active insights are surfaced automatically when predictions reach their verify date and reality confirms or contradicts GNI&apos;s forecast.</p>
           <div className="flex items-center justify-between">
             <div className="flex gap-4 text-xs">
-              <span className="text-amber-400">{pending.length} pending</span>
-              <span className="text-green-400">{verified.length} verified</span>
+              <span className="text-amber-400">{counts?.pending ?? pending.length} pending</span>
+              <span className="text-green-400">{counts?.verified ?? verified.length} verified</span>
               <span className="text-gray-500">Earliest: April 10, 2026</span>
             </div>
             <span className="text-xs font-bold text-amber-200 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 transition-colors">View Predictions →</span>

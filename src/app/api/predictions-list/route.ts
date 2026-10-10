@@ -19,7 +19,23 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(1000)
     if (error) throw error
-    return NextResponse.json({ predictions: data || [] }, { headers: { 'Cache-Control': 'no-store' } })
+    // S110 9.5 (F19): the list above is the newest 1000 rows and the table held 1299 non-fossil rows on
+    // 2026-10-10, so its length is not a count (R-S106-3). Exact counts under the same filter.
+    const fossil = 'verified_by.is.null,verified_by.neq.fossil_error_row'
+    const head = () => supabase.from('debate_predictions').select('id', { count: 'exact', head: true }).or(fossil)
+    const [all, pend, ver, mat, notm, inc] = await Promise.all([
+      head(),
+      head().is('verified_at', null),
+      head().not('verified_at', 'is', null),
+      head().not('verified_at', 'is', null).eq('accurate', true),
+      head().not('verified_at', 'is', null).eq('accurate', false),
+      head().not('verified_at', 'is', null).is('accurate', null),
+    ])
+    const counts = [all, pend, ver, mat, notm, inc].some(r => r.error || r.count == null) ? null : {
+      total: all.count, pending: pend.count, verified: ver.count, materialized: mat.count,
+      not_materialized: notm.count, inconclusive: inc.count,
+    }
+    return NextResponse.json({ predictions: data || [], counts }, { headers: { 'Cache-Control': 'no-store' } })
   } catch {
     return NextResponse.json({ predictions: [] }, { status: 500 })
   }

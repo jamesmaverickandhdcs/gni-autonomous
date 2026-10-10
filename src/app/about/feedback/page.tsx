@@ -12,21 +12,21 @@ interface Prediction {
 }
 
 export default function AboutFeedbackPage() {
-  const [predictions, setPredictions] = useState<Prediction[]>([])
+  const [predictions, setPredictions] = useState<Prediction[]>([]); const [counts, setCounts] = useState<Record<string, number> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
     fetch('/api/predictions-list', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
-      .then(data => setPredictions(data.predictions || []))
+      .then(data => { setPredictions(data.predictions || []); setCounts(data.counts || null) })
       .catch(() => setError('Failed to load live data.'))
       .finally(() => setLoading(false))
   }, [])
 
-  const pending = predictions.filter(p => !p.verified_at).length
-  const verified = predictions.filter(p => !!p.verified_at).length
-  const correct = predictions.filter(p => p.accurate === true).length
+  const pending = counts?.pending ?? predictions.filter(p => !p.verified_at).length
+  const verified = counts?.verified ?? predictions.filter(p => !!p.verified_at).length
+  const materialized = counts?.materialized ?? predictions.filter(p => p.verified_at && p.accurate === true).length
 
   const swot = {
     strengths: [
@@ -80,9 +80,9 @@ export default function AboutFeedbackPage() {
         {!loading && (
           <div className="grid grid-cols-3 gap-4">
             {[
-              { label: 'Total Predictions', value: String(predictions.length), color: 'text-amber-400' },
+              { label: 'Total Predictions', value: String(counts?.total ?? predictions.length), color: 'text-amber-400' },
               { label: 'Pending Verification', value: String(pending), color: 'text-yellow-400' },
-              { label: 'Verified Correct', value: String(correct) + '/' + String(verified), color: 'text-green-400' },
+              { label: 'Threats Materialized', value: String(materialized) + '/' + String(verified), color: 'text-green-400' },
             ].map(item => (
               <div key={item.label} className="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center">
                 <div className={"text-3xl font-bold mb-1 " + item.color}>{item.value}</div>
