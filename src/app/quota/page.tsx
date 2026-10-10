@@ -208,14 +208,14 @@ export default function QuotaPage() {
               <div className="bg-green-950 border border-green-800 rounded-xl p-5">
                 <div className="text-sm font-bold text-green-300 mb-2">IEEE Paper Evidence &mdash; $0.00/month claim</div>
                 <div className="text-xs text-gray-400 leading-relaxed">
-                  GNI_Autonomous runs entirely on free tiers. Groq provides 100,000 tokens/day per account at no cost.
+                  GNI_Autonomous runs entirely on free tiers. GNI plans against 100K Groq tokens/day per account, at no cost.
                   MAD is split across dedicated morning and evening accounts, each drawing on its own 100K pool.
                   Total monthly cost: $0.00. This page verifies that claim per account.
                 </div>
                 <div className="mt-3 grid grid-cols-3 gap-3 text-center text-xs">
                   <div className="bg-green-900 rounded-lg p-2">
                     <div className="font-bold text-green-300">Groq</div>
-                    <div className="text-gray-400">100K tokens/day/account</div>
+                    <div className="text-gray-400">100K tokens/day/account (planning limit)</div>
                   </div>
                   <div className="bg-green-900 rounded-lg p-2">
                     <div className="font-bold text-green-300">Supabase</div>

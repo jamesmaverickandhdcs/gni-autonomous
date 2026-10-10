@@ -99,6 +99,27 @@ def _cron(root, workflow):
     return sorted("%02d:%02d" % (int(h), int(m)) for m, h in crons)
 
 
+def _int_k(fragment):
+    """'100K' -> 100000. A figure written in thousands is compared in units."""
+    m = re.search(r"(\d+)\s*K\b", fragment)
+    if not m:
+        raise FitnessError("no <n>K figure in fragment %r" % fragment)
+    return int(m.group(1)) * 1000
+
+
+def _ast_int_const(root, rel, name):
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == name for t in node.targets):
+            if isinstance(node.value, ast.Constant) and isinstance(node.value.value, int):
+                return node.value.value
+    raise FitnessError("no top-level integer %s in %s" % (name, rel))
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -130,6 +151,10 @@ FITNESS = {
                     _times_utc, lambda r: _cron(r, "gni_pipeline.yml"), _scheduled),
     "F-CRON-MAD": ("MAD schedule, UTC, from gni_mad.yml cron lines",
                    _times_utc, lambda r: _cron(r, "gni_mad.yml"), _scheduled),
+    # S110 (item 9.11): the per-account daily token limit GNI PLANS against. Not the provider's
+    # limit - GNI has never measured that - which is why the page labels it as GNI's.
+    "F-TPD": ("per-account daily Groq token limit GNI plans against: TPD_HARD_LIMIT in quota_guard.py (AST)",
+              _int_k, lambda r: _ast_int_const(r, "ai_engine/quota_guard.py", "TPD_HARD_LIMIT"), _equal),
 }
 
 # Why a claim has no fitness function. HISTORICAL: the claim states a past

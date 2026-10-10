@@ -38,7 +38,7 @@ export default function AboutFeedbackPage() {
       'L7 autonomous operation — zero human intervention required after deployment',
     ],
     weaknesses: [
-      'Free-tier rate limits (100K tokens/day Groq) constrain analysis depth in high-escalation periods',
+      'Free-tier rate limits (Groq, planned at 100K tokens/day per account) constrain analysis depth in high-escalation periods',
       'GPVS verification requires real time to pass — accuracy record still accumulating',
       'Binary BULLISH/BEARISH prediction oversimplifies complex multi-directional market movements',
       'English-language only — misses non-English geopolitical signals from ASEAN and beyond',

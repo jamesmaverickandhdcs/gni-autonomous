@@ -24,7 +24,7 @@ export default function AboutPage() {
       .catch(() => setError('Failed to load data.'))
   }, [])
   const infra = [
-    { name: 'Groq API', role: 'Cloud AI — free tier, 100K tokens/day', cost: '$0.00' },
+    { name: 'Groq API', role: 'Cloud AI — free tier, planned at 100K tokens/day per account', cost: '$0.00' },
     { name: 'Groq API', role: 'Cloud AI fallback — free tier (public repo)', cost: '$0.00' },
     { name: 'Supabase', role: 'Database — free tier (500MB)', cost: '$0.00' },
     { name: 'Vercel', role: 'Web hosting — free tier (100GB bandwidth)', cost: '$0.00' },

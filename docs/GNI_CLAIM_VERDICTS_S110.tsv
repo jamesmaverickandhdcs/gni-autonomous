@@ -1413,3 +1413,12 @@ fe71150b3b	DATA	-	-	Main runs collected fewer articles than the minimum
 dfabb4df15	DATA	-	-	Report quality is drifting down across recent runs
 12220e83e9	DATA	-	-	Average debate confidence fell below the minimum
 3d90ee4afb	CLAIM	STATE	CLM-761	NO CONTRADICTION &mdash; One Side Neutral
+239aafcaec	CLAIM	STATE	CLM-762	Groq 100K tokens/day per account (a planning limit set by GNI) + Supabase 500MB + Vercel + GitHub Actions.
+4f993f99a1	CLAIM	STATE	CLM-763	100K tokens/day per account (planning limit)
+363307a9c1	CLAIM	STATE	CLM-764	model set by GROQ_MODEL secret — free tier, planned at 100K tokens/day per account
+cd8762d507	CLAIM	STATE	CLM-765	console.groq.com — free tier; GNI plans against 100K tokens/day per account.
+a7019ddd63	CLAIM	STATE	CLM-766	GNI plans against 100K Groq tokens/day per account, at no cost.
+4d60b6790f	CLAIM	STATE	CLM-767	100K tokens/day/account (planning limit)
+22860c840b	CLAIM	STATE	CLM-768	Free-tier rate limits (Groq, planned at 100K tokens/day per account) constrain analysis depth in high-escalation periods
+84f1e54f26	CLAIM	STATE	CLM-769	Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes).
+c2c912ee3f	CLAIM	STATE	CLM-770	Cloud AI — free tier, planned at 100K tokens/day per account

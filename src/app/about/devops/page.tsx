@@ -81,7 +81,7 @@ export default function AboutDevopsPage() {
           <div className="text-xs text-purple-400 uppercase tracking-wider mb-3">The Autonomy Philosophy</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (100K tokens/day), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero vendor lock-in. Zero credit card required. Zero maintenance cost.' },
+              { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero vendor lock-in. Zero credit card required. Zero maintenance cost.' },
               { title: 'Zero Human Intervention', desc: `Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. The frequency controller adjusts run intervals based on world escalation score. The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis.` },
               { title: 'Self-Healing by Design', desc: `Mission Control monitors 6 health dimensions, ${SCHEDULE_REQUESTED_30}. Telegram alerts fire before failures cascade. The heartbeat detects anomalies and triggers corrective pipelines autonomously. The system fixes itself.` },
             ].map(item => (

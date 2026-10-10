@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S110.tsv` md5 `47696dc8776e36b32e92b061feb60c9e` (EOL-normalised) -- **749 claims** (523 STATE, 204 PROMISE, 22 MIXED) at **802 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S110.tsv` md5 `c195840c76bf938857f04bdc44d7410b` (EOL-normalised) -- **752 claims** (526 STATE, 204 PROMISE, 22 MIXED) at **805 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870a173ad0d` (EOL-normalised) -- **COVERAGE 21/749 = 2.8%** (21 SUPPORTED, 0 DEFEATED, 728 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `dcb7a71f05b894bbf93bf06707a4e736` (EOL-normalised) -- **COVERAGE 30/752 = 4.0%** (30 SUPPORTED, 0 DEFEATED, 722 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -297,7 +297,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870
 | CLM-267 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:113` | Next.js 14 + TypeScript |
 | CLM-268 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:113` | Web app + API routes |
 | CLM-269 | STATE | SUPPORTED | F-PAGES claims 35, measured 35 | `src/app/methodology/page.tsx:113` | 35 pages live on Vercel |
-| CLM-270 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:114` | model set by GROQ_MODEL secret — 100K tokens/day free |
 | CLM-271 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:115` | 33 tables — reports, predictions, audit_trail, groq_daily_usage... |
 | CLM-273 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:117` | Sacred completion, CRITICAL escalation, NYSE alerts, divergence |
 | CLM-274 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:118` | Auto-deploy on git push to main |
@@ -443,7 +442,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870
 | CLM-412 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:36` | Self-improving source weights via EMA — gets smarter every verified prediction |
 | CLM-413 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:37` | Layered injection detection with NFKC normalization and sanitization — adversarially robust pipeline |
 | CLM-414 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:38` | L7 autonomous operation — zero human intervention required after deployment |
-| CLM-415 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:41` | Free-tier rate limits (100K tokens/day Groq) constrain analysis depth in high-escalation periods |
 | CLM-416 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:42` | GPVS verification requires real time to pass — accuracy record still accumulating |
 | CLM-417 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:43` | Binary BULLISH/BEARISH prediction oversimplifies complex multi-directional market movements |
 | CLM-418 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:44` | English-language only — misses non-English geopolitical signals from ASEAN and beyond |
@@ -498,7 +496,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870
 | CLM-457 | STATE | UNMEASURED | PROVENANCE | `src/app/about/page.tsx:219` | Spring University Myanmar (SUM) · 2026 |
 | CLM-458 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:221` | Pipeline runs autonomously via GitHub Actions (public repo — unlimited free minutes) · gni-autonomous.vercel.app |
 | CLM-459 | STATE | UNMEASURED | PROVENANCE | `src/app/about/page.tsx:234` | GNI — Global Nexus Insights (Autonomous) \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) \| © 2026 |
-| CLM-460 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:27` | Cloud AI — free tier, 100K tokens/day |
 | CLM-461 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:28` | Cloud AI fallback — free tier (public repo) |
 | CLM-462 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:29` | Database — free tier (500MB) |
 | CLM-463 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:30` | Web hosting — free tier (100GB bandwidth) |
@@ -575,10 +572,8 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870
 | CLM-534 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:100` | Adds statistical rigor to qualitative AI analysis. |
 | CLM-535 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:100` | First CI framework for LLM-based geopolitical sentiment. |
 | CLM-536 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:104` | $0.00/month Autonomous Operation |
-| CLM-538 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:105` | Groq 100K tokens/day + Supabase 500MB + Vercel + GitHub Actions. |
 | CLM-539 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:105` | Zero cost, unlimited operation. |
 | CLM-540 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:105` | Challenges assumption that AI research requires paid infrastructure. |
-| CLM-541 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:160` | 100K tokens/day |
 | CLM-542 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:161` | 500MB PostgreSQL |
 | CLM-543 | STATE | UNMEASURED | UNREVIEWED | `src/app/debate/page.tsx:144` | Bull → Bear → Black Swan → Ostrich → Arbitrator — 3 Live Rounds on Future Threats |
 | CLM-544 | STATE | UNMEASURED | UNREVIEWED | `src/app/debate/page.tsx:146` | Four agents debate future threats across two axes: Known/Unknown × Proactive/Ignored. |
@@ -672,7 +667,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870
 | CLM-621 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:212` | MAD is split across dedicated morning and evening accounts, each drawing on its own 100K pool. |
 | CLM-622 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:213` | Total monthly cost: $0.00. |
 | CLM-623 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:213` | This page verifies that claim per account. |
-| CLM-624 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:218` | 100K tokens/day/account |
 | CLM-625 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:222` | 500MB free tier |
 | CLM-626 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:226` | Free tier unlimited |
 | CLM-627 | STATE | UNMEASURED | PROVENANCE | `src/app/quota/page.tsx:242` | GNI Autonomous \| Token Quota Monitor \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
@@ -815,3 +809,12 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870
 | CLM-759 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:86` | The Health Agent writes an alert here when one of its checks on the main pipeline fails. |
 | CLM-760 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:87` | Telegram messages are not archived on this page. |
 | CLM-761 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:230` | NO CONTRADICTION &mdash; One Side Neutral |
+| CLM-762 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/research/page.tsx:105` | Groq 100K tokens/day per account (a planning limit set by GNI) + Supabase 500MB + Vercel + GitHub Actions. |
+| CLM-763 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/research/page.tsx:160` | 100K tokens/day per account (planning limit) |
+| CLM-764 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/methodology/page.tsx:114` | model set by GROQ_MODEL secret — free tier, planned at 100K tokens/day per account |
+| CLM-765 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/developer/page.tsx:227` | console.groq.com — free tier; GNI plans against 100K tokens/day per account. |
+| CLM-766 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/quota/page.tsx:211` | GNI plans against 100K Groq tokens/day per account, at no cost. |
+| CLM-767 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/quota/page.tsx:218` | 100K tokens/day/account (planning limit) |
+| CLM-768 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/feedback/page.tsx:41` | Free-tier rate limits (Groq, planned at 100K tokens/day per account) constrain analysis depth in high-escalation periods |
+| CLM-769 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/devops/page.tsx:84` | Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). |
+| CLM-770 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/page.tsx:27` | Cloud AI — free tier, planned at 100K tokens/day per account |

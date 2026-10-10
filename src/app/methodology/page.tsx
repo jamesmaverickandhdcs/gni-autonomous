@@ -111,7 +111,7 @@ export default function MethodologyPage() {
             {[
               ['Python 3.10+', 'Pipeline scripts', 'main.py, mad_runner.py, monitoring_pipeline.py, adaptive_pipeline.py'],
               ['Next.js 14 + TypeScript', 'Web app + API routes', '35 pages live on Vercel'],
-              ['Groq API', 'LLM inference', 'model set by GROQ_MODEL secret — 100K tokens/day free'],
+              ['Groq API', 'LLM inference', 'model set by GROQ_MODEL secret — free tier, planned at 100K tokens/day per account'],
               ['Supabase', 'PostgreSQL database', '33 tables — reports, predictions, audit_trail, groq_daily_usage...'],
               ['GitHub Actions', 'Cron + CI/CD', 'core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; support: graph, market, self-bias, mission control; CI: test harnesses on push'],
               ['Telegram Bot API', 'Alert notifications', 'Sacred completion, CRITICAL escalation, NYSE alerts, divergence'],
