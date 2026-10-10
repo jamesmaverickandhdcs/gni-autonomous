@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S110.tsv` md5 `02def60a8a27411ef2ade5f9ed916467` (EOL-normalised) -- **748 claims** (522 STATE, 204 PROMISE, 22 MIXED) at **801 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S110.tsv` md5 `47696dc8776e36b32e92b061feb60c9e` (EOL-normalised) -- **749 claims** (523 STATE, 204 PROMISE, 22 MIXED) at **802 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `cc025dc9a4f094917828340f3873a023` (EOL-normalised) -- **COVERAGE 21/748 = 2.8%** (21 SUPPORTED, 0 DEFEATED, 727 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `041d6651ae4de097906f6870a173ad0d` (EOL-normalised) -- **COVERAGE 21/749 = 2.8%** (21 SUPPORTED, 0 DEFEATED, 728 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -814,3 +814,4 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `cc025dc9a4f094917828340f
 | CLM-758 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:200` | NO RULING &mdash; Arbitrator Failed |
 | CLM-759 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:86` | The Health Agent writes an alert here when one of its checks on the main pipeline fails. |
 | CLM-760 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:87` | Telegram messages are not archived on this page. |
+| CLM-761 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:230` | NO CONTRADICTION &mdash; One Side Neutral |
