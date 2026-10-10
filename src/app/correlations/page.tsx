@@ -62,7 +62,7 @@ function SpyChange({ value }: { value: number | null }) {
 }
 
 export default function CorrelationsPage() {
-  const [correlations, setCorrelations] = useState<Correlation[]>([])
+  const [correlations, setCorrelations] = useState<Correlation[]>([]); const [snapshotAt, setSnapshotAt] = useState<string | null>(null)
   const [patterns, setPatterns] = useState<Pattern[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -71,7 +71,7 @@ export default function CorrelationsPage() {
   useEffect(() => {
     fetch('/api/correlations', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
-      .then(data => { setCorrelations(data.correlations || []); setPatterns(data.patterns || []) })
+      .then(data => { setCorrelations(data.correlations || []); setSnapshotAt(data.snapshot_at || null); setPatterns(data.patterns || []) })
       .catch(() => setError('Failed to load data.'))
       .finally(() => setLoading(false))
   }, [])
@@ -89,7 +89,7 @@ export default function CorrelationsPage() {
             <div>
               <h1 className="text-2xl font-bold text-white">📊 Correlation Engine v2</h1>
               <p className="text-sm text-gray-400">
-                Pattern intelligence from {totalSamples} verified predictions.
+                Latest refresh{snapshotAt ? ` (${snapshotAt.slice(0, 10)})` : ''}: {totalSamples} GPVS report outcomes.
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 3 horizons: Short (7d) · Medium (30d) · Long (180d) — CFA + Geopolitical standard

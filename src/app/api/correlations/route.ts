@@ -15,17 +15,17 @@ export async function GET(request: NextRequest) {
       supabase.from('historical_correlations').select('*').order('avg_escalation_score', { ascending: false }),
       supabase.from('correlation_patterns').select('*').order('sample_count', { ascending: false }),
     ])
-    // Deduplicate by escalation_level — keep highest sample_count per level
-    const seen = new Set<string>()
-    const deduped = (corr.data || [])
-      .sort((a: {sample_count: number}, b: {sample_count: number}) => (b.sample_count || 0) - (a.sample_count || 0))
-      .filter((row: {escalation_level: string}) => {
-        if (seen.has(row.escalation_level)) return false
-        seen.add(row.escalation_level)
-        return true
-      })
-      .sort((a: {avg_escalation_score: number}, b: {avg_escalation_score: number}) => (b.avg_escalation_score || 0) - (a.avg_escalation_score || 0))
-    return NextResponse.json({ correlations: deduped, patterns: patterns.data || [] })
+    // S110 9.5 (F18): the writer appends one row per level at every refresh (no unique key),
+    // so this table holds every snapshot since March. Show the LATEST refresh only - the rows
+    // sharing the newest last_updated. Keeping the largest row per level mixed snapshots months
+    // apart, and the header summed outcomes no longer stored (422 shown, 271 in the table).
+    type Row = { last_updated: string; avg_escalation_score: number }
+    const rows: Row[] = corr.data || []
+    const latest = rows.reduce((m, r) => (r.last_updated > m ? r.last_updated : m), '')
+    const snapshot = rows
+      .filter(r => r.last_updated === latest)
+      .sort((a, b) => (b.avg_escalation_score || 0) - (a.avg_escalation_score || 0))
+    return NextResponse.json({ correlations: snapshot, snapshot_at: latest || null, patterns: patterns.data || [] })
   } catch {
     return NextResponse.json({ correlations: [], patterns: [] })
   }

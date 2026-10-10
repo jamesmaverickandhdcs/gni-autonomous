@@ -272,9 +272,19 @@ def get_historical_context(escalation_score: float) -> str:
 
     try:
         level = _score_to_level(escalation_score)
+        # S110 9.5 (F18): every refresh appends rows (no unique key), so read the newest
+        # refresh only - an unordered select returned whichever snapshot came first.
+        newest = client.table("historical_correlations") \
+            .select("last_updated") \
+            .order("last_updated", desc=True) \
+            .limit(1) \
+            .execute()
+        if not newest.data:
+            return ""
         result = client.table("historical_correlations") \
             .select("*") \
             .eq("escalation_level", level) \
+            .eq("last_updated", newest.data[0]["last_updated"]) \
             .execute()
 
         if not result.data:
