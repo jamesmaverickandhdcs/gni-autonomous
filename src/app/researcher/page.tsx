@@ -1,10 +1,10 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
-import { formatCappedAverage } from '@/lib/escalation'
+import { formatCappedAverage, trendSeries } from '@/lib/escalation'
 
 interface ReportSummary {
-  escalation_score: number
+  escalation_score: number; escalation_score_raw?: number | null
   sentiment_score: number
   created_at: string
   mad_confidence: number
@@ -21,7 +21,7 @@ export default function ResearcherHub() {
       .catch(() => setError('Failed to load data.'))
   }, [])
 
-  const last7 = reports.slice(0, 7).reverse()
+  const last7 = reports.slice(0, 7).reverse(); const trend = trendSeries(last7)
   const avgEsc = reports.length > 0
     ? (reports.reduce((s, r) => s + (r.escalation_score || 0), 0) / reports.length).toFixed(2)
     : 'N/A'
@@ -92,12 +92,12 @@ export default function ResearcherHub() {
         {/* Escalation Trend Sparkline */}
         {last7.length >= 2 && (
           <div className="bg-gray-900 border border-green-800 rounded-xl p-4 mb-6">
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Escalation Trend — Last 7 Runs</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Escalation Trend — Last 7 Runs{trend.useRaw ? ' (raw magnitude)' : ' (capped score)'}</div>
             <svg width="100%" height="60" viewBox="0 0 400 60" preserveAspectRatio="none">
               <polyline
-                points={last7.map((r, i) => {
+                points={trend.scores.map((s, i) => {
                   const x = (i / (last7.length - 1)) * 400
-                  const y = 54 - ((r.escalation_score || 0) / 10) * 48
+                  const y = 54 - (s / trend.max) * 48
                   return `${x},${y}`
                 }).join(' ')}
                 fill="none"

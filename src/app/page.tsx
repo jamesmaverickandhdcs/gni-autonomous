@@ -3,7 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { verdictRelation, RELATION_LABEL } from '@/lib/verdict'
-import { formatEscalation, ESCALATION_CAP } from '@/lib/escalation'
+import { formatEscalation, trendSeries } from '@/lib/escalation'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 const MiniMapView = dynamic(() => import('@/components/MapView'), { ssr: false })
@@ -194,9 +194,9 @@ function EscalationSparkline({ reports }: { reports: { escalation_score: number;
   if (last7.length < 2) return null
   // S106: the capped score sat at 10.0 on 262 of 263 runs, so a capped trend is a flat line
   // that always reads 'stable'. Plot the raw magnitude when all seven runs carry one.
-  const useRaw = last7.every(r => r.escalation_score_raw != null)
-  const scores = last7.map(r => (useRaw ? r.escalation_score_raw : r.escalation_score) || 0)
-  const maxScore = useRaw ? Math.max(...scores) : ESCALATION_CAP
+  const series = trendSeries(last7); const useRaw = series.useRaw
+  const scores = series.scores
+  const maxScore = series.max
   const last = last7[last7.length - 1]
   const width = 160
   const height = 40

@@ -33,5 +33,18 @@ export function formatCappedAverage(avg: number | null | undefined, digits = 1):
 }
 
 // Hover text for any element that shows a score.
+// The series a trend chart plots (S110, item 9.5 F16). The capped score sits at the cap on nearly every
+// run, so a capped trend is a flat line: plot the raw magnitude when EVERY run in the window carries one,
+// scaled to the window's own maximum; otherwise fall back to the capped score on the 0..cap scale and
+// let the caller say which it drew. One rule for every chart (R-S73-1).
+export function trendSeries(
+  rows: { escalation_score?: number | null; escalation_score_raw?: number | null }[],
+): { scores: number[]; max: number; useRaw: boolean } {
+  const useRaw = rows.length > 0 && rows.every(r => r.escalation_score_raw != null)
+  const scores = rows.map(r => (useRaw ? r.escalation_score_raw : r.escalation_score) || 0)
+  const max = useRaw ? Math.max(...scores, 1) : ESCALATION_CAP
+  return { scores, max, useRaw }
+}
+
 export const ESCALATION_NOTE =
   `Escalation is capped at ${ESCALATION_CAP}; "raw" is the uncapped magnitude the pipeline measured.`
