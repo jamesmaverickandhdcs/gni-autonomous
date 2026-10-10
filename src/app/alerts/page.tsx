@@ -35,11 +35,11 @@ export default function AlertsPage() {
 
   const alertTypeColor = (type: string) => {
     switch (type?.toUpperCase()) {
-      case 'CRITICAL': return 'bg-red-950 border-red-700 text-red-300'
-      case 'NYSE_OPEN': return 'bg-green-950 border-green-700 text-green-300'
-      case 'NYSE_CLOSE': return 'bg-orange-950 border-orange-700 text-orange-300'
-      case 'ADAPTIVE_TRIGGER': return 'bg-blue-950 border-blue-700 text-blue-300'
-      case 'SOURCE_DOWN': return 'bg-yellow-950 border-yellow-700 text-yellow-300'
+      case 'RUN_GAP': return 'bg-red-950 border-red-700 text-red-300'
+      case 'LOW_COLLECTION': return 'bg-orange-950 border-orange-700 text-orange-300'
+      case 'LOW_QUALITY': return 'bg-yellow-950 border-yellow-700 text-yellow-300'
+      case 'QUALITY_DRIFT': return 'bg-yellow-950 border-yellow-700 text-yellow-300'
+      case 'MAD_CONFIDENCE': return 'bg-blue-950 border-blue-700 text-blue-300'
       default: return 'bg-gray-900 border-gray-700 text-gray-300'
     }
   }
@@ -83,17 +83,17 @@ export default function AlertsPage() {
             <div className="text-4xl mb-4">&#x1F6A8;</div>
             <p className="text-lg font-bold mb-2">No alerts yet</p>
             <p className="text-sm max-w-md mx-auto">
-              Alerts fire via Telegram when escalation spikes, NYSE opens/closes, or adaptive pipeline triggers.
-              This page archives all alerts for web review. Data populates automatically.
+              The Health Agent writes an alert here when one of its checks on the main pipeline fails.
+              Telegram messages are not archived on this page. Data populates automatically.
             </p>
             <div className="mt-6 bg-gray-900 border border-gray-700 rounded-xl p-4 text-left max-w-md mx-auto">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Alert Types</div>
               {[
-                { type: 'CRITICAL', desc: 'Escalation score 9+/10 — immediate attention', color: 'text-red-400' },
-                { type: 'NYSE_OPEN', desc: 'US markets opened — heightened monitoring', color: 'text-green-400' },
-                { type: 'NYSE_CLOSE', desc: 'US markets closed — after-hours watch', color: 'text-orange-400' },
-                { type: 'ADAPTIVE_TRIGGER', desc: 'Escalation delta fired adaptive pipeline', color: 'text-blue-400' },
-                { type: 'SOURCE_DOWN', desc: 'RSS source health degraded', color: 'text-yellow-400' },
+                { type: 'RUN_GAP', desc: 'No successful main pipeline run within the allowed gap', color: 'text-red-400' },
+                { type: 'LOW_COLLECTION', desc: 'Main runs collected fewer articles than the minimum', color: 'text-orange-400' },
+                { type: 'LOW_QUALITY', desc: 'Average report quality fell below the minimum', color: 'text-yellow-400' },
+                { type: 'QUALITY_DRIFT', desc: 'Report quality is drifting down across recent runs', color: 'text-yellow-400' },
+                { type: 'MAD_CONFIDENCE', desc: 'Average debate confidence fell below the minimum', color: 'text-blue-400' },
               ].map(a => (
                 <div key={a.type} className="flex items-center gap-3 py-2 border-b border-gray-800">
                   <span className={`text-xs font-bold font-mono w-36 shrink-0 ${a.color}`}>{a.type}</span>
