@@ -182,6 +182,9 @@ ESC_LIB_OK = ("export function formatEscalation(s, raw) {\n"
               "  return raw != null ? s + '/10 raw ' + raw : s + '/10'\n}\n")
 ESC_PAGE_OK = ("import { formatEscalation } from '@/lib/escalation'\n"
                "const t = formatEscalation(r.escalation_score, r.escalation_score_raw)\n")
+VERDICT_LIB_OK = "export function verdictRelation(s, m) {\n  return s === m ? 'agree' : 'other'\n}\n"
+VERDICT_PAGE_OK = ("import { verdictRelation } from '@/lib/verdict'\n"
+                   "const rel = verdictRelation(r.sentiment, r.mad_verdict)\n")
 ORIGIN_OK = "# origin\nS94 recorded the fixture tree.\n"
 
 
@@ -321,6 +324,9 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     # S106: C11 needs the lib and one page that formats through it.
     w(root + "/src/lib/escalation.ts", ESC_LIB_OK)
     w(root + "/src/app/brief/page.tsx", ESC_PAGE_OK)
+    # S110: C17 needs the verdict lib and one page that decides through it.
+    w(root + "/src/lib/verdict.ts", VERDICT_LIB_OK)
+    w(root + "/src/app/comparison/page.tsx", VERDICT_PAGE_OK)
     w(root + "/ai_engine/monitoring_pipeline.py", watcher)
     # S107 R3-3: extra modules go in BEFORE the git index and the section-5
     # stamp, so a family that adds one is red on C14 and not also on C8.
@@ -597,6 +603,21 @@ CASES["62-layer-evidence-in-code"] = lambda r: _layers(
 CASES["63-order-item-unbound"] = lambda r: base(r, order=ORDER_BODY.replace(" {ORPHAN}", ""))
 CASES["64-order-orphan-rate-wrong"] = lambda r: base(
     r, order=ORDER_BODY.replace("ORPHAN RATE: 1/2", "ORPHAN RATE: 0/2"))
+# S110 (item 9.5(c)). 68/69 differ ONLY in the field divided by the cap; 70/72 differ ONLY in
+# whether the verdict is compared with the sentiment; 73 is /comparison's exact pre-S110 shape.
+CASES["68-escalation-chart-arithmetic"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx", "const y = 54 - ((r.escalation_score || 0) / 10) * 48\n"), r)[-1]
+CASES["69-escalation-raw-arithmetic-passes"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx", "const y = 54 - ((r.escalation_score_raw || 0) / 10) * 48\n"), r)[-1]
+CASES["70-verdict-compared-on-page"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx", "const same = r.sentiment === r.mad_verdict\n"), r)[-1]
+CASES["71-verdict-lib-missing"] = lambda r: (
+    base(r), os.remove(r + "/src/lib/verdict.ts"), r)[-1]
+CASES["72-verdict-styled-passes"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx", "const c = r.mad_verdict === 'bullish' ? 'g' : 'r'\n"), r)[-1]
+CASES["73-verdict-compared-uppercase"] = lambda r: (
+    base(r), w(r + "/src/app/x/page.tsx",
+               "const t = l.sentiment?.toUpperCase() === l.mad_verdict?.toUpperCase() ? 1 : 0\n"), r)[-1]
 CASES["65-order-claim-unminted"] = lambda r: base(
     r, order=ORDER_BODY.replace("{claims: CLM-001}", "{claims: CLM-999}"))
 CASES["66-order-id-cited-not-defined"] = lambda r: base(
@@ -643,6 +664,9 @@ EXPECT = {
     "63-order-item-unbound": 1, "64-order-orphan-rate-wrong": 1,
     "65-order-claim-unminted": 1, "66-order-id-cited-not-defined": 1,
     "67-order-all-bound": 0,
+    "68-escalation-chart-arithmetic": 1, "69-escalation-raw-arithmetic-passes": 0,
+    "70-verdict-compared-on-page": 1, "71-verdict-lib-missing": 2,
+    "72-verdict-styled-passes": 0, "73-verdict-compared-uppercase": 1,
 }
 
 if __name__ == "__main__":

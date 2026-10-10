@@ -930,7 +930,11 @@ def check_c10_origin_citations(ctx):
 ESC_LIB = os.path.join("src", "lib", "escalation.ts")
 ESC_RENDER_RE = re.compile(
     r"(?<![\w])(?:avg_)?escalation_score(?![\w])[^\n;]{0,25}?\.toFixed\("
-    r"|(?<![\w])(?:avg_)?escalation_score(?![\w])\s*\}\s*/10")
+    r"|(?<![\w])(?:avg_)?escalation_score(?![\w])\s*\}\s*/10"
+    # S110 (item 9.5(c), census flag F16): the capped score DIVIDED by the cap is a chart that
+    # plots the cap - /researcher drew a flat line this way. A quote in the gap is a code sample
+    # printed as text (/developer), not a rendering, and is left alone.
+    r"|(?<![\w])(?:avg_)?escalation_score(?![\w])(?:[^\n;'\"/]{0,25}?\))?\s*/\s*(?:10|ESCALATION_CAP)(?![\w.])")
 
 
 def check_c11_escalation_magnitude(ctx):
@@ -957,6 +961,43 @@ def check_c11_escalation_magnitude(ctx):
         return False, "escalation score formatted outside the lib at " + ", ".join(bad)
     return True, "%d pages format escalation through %s; none format it directly" % (
         len(users), ESC_LIB)
+
+
+# ---- S110, order item 9.5(c) / R-S109-3 -----------------------------------
+# One rule decides whether a report and its debate agree: src/lib/verdict.ts. A page that
+# compares sentiment with mad_verdict itself has a second rule, and S109 measured four pages
+# holding four. Read by grammar on one line, like C11. LIMIT, written down: a comparison
+# through an intermediate variable (`const s = r.sentiment; s === v`) is not seen, and
+# styling a verdict by its own value (`mad_verdict === 'bullish'`) is not a comparison.
+VERDICT_LIB = os.path.join("src", "lib", "verdict.ts")
+VERDICT_CMP_RE = re.compile(
+    r"(?<![\w])sentiment(?![\w])[^\n;]{0,40}?[!=]==?[^\n;]{0,40}?(?<![\w])mad_verdict(?![\w])"
+    r"|(?<![\w])mad_verdict(?![\w])[^\n;]{0,40}?[!=]==?[^\n;]{0,40}?(?<![\w])sentiment(?![\w])")
+
+
+def check_c17_verdict_in_lib(ctx):
+    """R-S109-3. No page decides by itself whether the report and the debate agree."""
+    root = ctx["root"]
+    lib = read(os.path.join(root, VERDICT_LIB))
+    require_nonempty("verdictRelation exported by " + VERDICT_LIB,
+                     "export function verdictRelation" in lib)
+    app = os.path.join(root, "src", "app")
+    pages = sorted(os.path.join(d, n) for d, _, fs in os.walk(app)
+                   for n in fs if n.endswith(".tsx"))
+    require_nonempty("page files under src/app", pages)
+    bad, users = [], []
+    for p in pages:
+        text = read(p)
+        if "@/lib/verdict" in text:
+            users.append(p)
+        for i, ln in enumerate(text.split("\n"), 1):
+            if VERDICT_CMP_RE.search(ln):
+                bad.append("%s:%d" % (os.path.relpath(p, root), i))
+    require_nonempty("pages importing @/lib/verdict", users)
+    if bad:
+        return False, "sentiment compared with mad_verdict outside the lib at " + ", ".join(bad)
+    return True, "%d pages decide agreement through %s; none compare it directly" % (
+        len(users), VERDICT_LIB)
 
 
 def check_c12_claims_resolve(ctx):
@@ -1351,6 +1392,7 @@ CHECKS = (
     ("C14 R3-3    dead symbols", check_c14_dead_symbols),
     ("C15 R3-3    declared layers wired", check_c15_declared_layers_wired),
     ("C16 R3-4    order bound to claims", check_c16_order_bound_to_claims),
+    ("C17 R-S109-3 verdict in lib", check_c17_verdict_in_lib),
 )
 
 
