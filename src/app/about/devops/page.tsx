@@ -104,7 +104,7 @@ export default function AboutDevopsPage() {
                 { label: 'Tokens Today (All Accounts)', value: quota.today_tokens?.toLocaleString() || '0', color: 'text-white' },
                 { label: 'Limit Per Account', value: quota.daily_limit?.toLocaleString() || '100,000', color: 'text-gray-400' },
                 { label: 'Worst Account Today', value: String(pct) + '%', color: pct > 85 ? 'text-red-400' : pct > 70 ? 'text-yellow-400' : 'text-green-400' },
-                { label: 'Cost Today', value: '.00', color: 'text-green-400' },
+                { label: 'Cost Today', value: '$0.00', color: 'text-green-400' },
               ].map(item => (
                 <div key={item.label} className="bg-gray-800 rounded-lg p-4 text-center">
                   <div className={"text-2xl font-bold mb-1 " + item.color}>{item.value}</div>
@@ -116,7 +116,7 @@ export default function AboutDevopsPage() {
               <div className={"h-3 rounded-full " + (pct > 85 ? 'bg-red-500' : pct > 70 ? 'bg-yellow-500' : 'bg-green-500')} style={{width: Math.min(pct, 100) + '%'}}></div>
             </div>
             <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>0</span><span className="text-yellow-600">85K safe ceiling</span><span>100K limit</span>
+              <span>0</span><span className="text-yellow-600">safe ceiling 85K = 85% of the bar</span><span>100K planning limit</span>
             </div>
           </div>
         )}

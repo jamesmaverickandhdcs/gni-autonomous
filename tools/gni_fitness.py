@@ -155,6 +155,8 @@ FITNESS = {
     # limit - GNI has never measured that - which is why the page labels it as GNI's.
     "F-TPD": ("per-account daily Groq token limit GNI plans against: TPD_HARD_LIMIT in quota_guard.py (AST)",
               _int_k, lambda r: _ast_int_const(r, "ai_engine/quota_guard.py", "TPD_HARD_LIMIT"), _equal),
+    "F-TPD-SAFE": ("per-account daily safe ceiling GNI plans against: TPD_SAFE_CEILING in quota_guard.py (AST)",
+                   _int_k, lambda r: _ast_int_const(r, "ai_engine/quota_guard.py", "TPD_SAFE_CEILING"), _equal),
 }
 
 # Why a claim has no fitness function. HISTORICAL: the claim states a past

@@ -1422,3 +1422,5 @@ a7019ddd63	CLAIM	STATE	CLM-766	GNI plans against 100K Groq tokens/day per accoun
 22860c840b	CLAIM	STATE	CLM-768	Free-tier rate limits (Groq, planned at 100K tokens/day per account) constrain analysis depth in high-escalation periods
 84f1e54f26	CLAIM	STATE	CLM-769	Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes).
 c2c912ee3f	CLAIM	STATE	CLM-770	Cloud AI — free tier, planned at 100K tokens/day per account
+b7289ddd5b	CLAIM	STATE	CLM-771	safe ceiling 85K = 85% of the bar
+14fae21e03	CLAIM	STATE	CLM-772	100K planning limit

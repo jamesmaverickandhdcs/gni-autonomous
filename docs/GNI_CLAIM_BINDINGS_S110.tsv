@@ -778,3 +778,5 @@ CLM-767	F-TPD	100K tokens/day/account
 CLM-768	F-TPD	100K tokens/day per account
 CLM-769	F-TPD	100K tokens/day per account
 CLM-770	F-TPD	100K tokens/day per account
+CLM-771	F-TPD-SAFE	safe ceiling 85K
+CLM-772	F-TPD	100K planning limit
