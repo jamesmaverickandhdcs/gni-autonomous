@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `bbd617a6277a6735bce34ed25adbd9e7` (EOL-normalised) -- **741 claims** (515 STATE, 204 PROMISE, 22 MIXED) at **794 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `d0a1e4655b583094c48e4b751cc66d30` (EOL-normalised) -- **741 claims** (515 STATE, 204 PROMISE, 22 MIXED) at **794 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `3adfe1b428e00889acbbe072c1e4caaf` (EOL-normalised) -- **COVERAGE 34/741 = 4.6%** (34 SUPPORTED, 0 DEFEATED, 707 UNMEASURED); **UNREVIEWED 370**, **NUMBERS UNDERIVED 126** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `0d2792a67817cca19ee76a5da02993ab` (EOL-normalised) -- **COVERAGE 35/741 = 4.7%** (35 SUPPORTED, 0 DEFEATED, 706 UNMEASURED); **UNREVIEWED 364**, **NUMBERS UNDERIVED 122** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -239,7 +239,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `3adfe1b428e00889acbbe072
 | CLM-224 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:27` | Every day it collects global news, analyzes it with AI, produces sentiment reports with 95% confidence intervals, runs a 4-agent multi-perspective debate, and publishes everything to this live web app. |
 | CLM-225 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:82` | Quadratic MAD Protocol — Novel Contribution #1 |
 | CLM-226 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:85` | The MAD (Multi-Agent Debate) protocol applies the Johari Window framework to geopolitical intelligence. |
-| CLM-227 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:88` | After 3 rounds of debate with Arbitrator coaching, a BULLISH/BEARISH/NEUTRAL verdict is reached with confidence score. |
 | CLM-228 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:230` | ⚠️ GNI data is for informational purposes only. |
 | CLM-228 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:187` | ⚠️ GNI data is for informational purposes only. |
 | CLM-228 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:297` | ⚠️ GNI data is for informational purposes only. |
@@ -502,8 +501,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `3adfe1b428e00889acbbe072
 | CLM-493 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:881` | Each pillar uses the same top articles but focuses its analysis on its domain, giving a multi-dimensional view of the same global events. |
 | CLM-494 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:957` | Four AI agents debate future threats across two axes: Known/Unknown × Proactive/Ignored. |
 | CLM-495 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:957` | Bull identifies opportunity costs, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. |
-| CLM-496 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:957` | After 3 rounds with Arbitrator coaching, a final verdict is reached. |
-| CLM-496 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:90` | After 3 rounds with Arbitrator coaching, a final verdict is reached. |
 | CLM-497 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:957` | This is GNI&apos;s Novel Contribution #1 — the Johari Window applied to AI geopolitical intelligence. |
 | CLM-499 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:1016` | Only the best articles reach the AI for analysis. |
 | CLM-500 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:755` | 🧠 Llama 3 Local |
@@ -515,11 +512,9 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `3adfe1b428e00889acbbe072
 | CLM-506 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:59` | GNI delivers actionable intelligence within minutes of pipeline completion. |
 | CLM-507 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:60` | No single AI perspective is trusted. |
 | CLM-508 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:60` | Four agents — Bull, Bear, Black Swan, Ostrich — debate every scenario across the Johari Window framework. |
-| CLM-509 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:60` | Only consensus after 3 coached rounds becomes a verdict. |
 | CLM-510 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:61` | GNI links threat verdicts directly to investment implications. |
 | CLM-511 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:122` | BEARISH / BULLISH / NEUTRAL with confidence score 0-100%. |
 | CLM-512 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:122` | Derived from 3 rounds of 4-agent MAD debate using Johari Window framework. |
-| CLM-513 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:122` | Each verdict includes Arbitrator reasoning and coaching notes. |
 | CLM-514 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:123` | Specific diplomatic, economic, or strategic action for the next 4-6 weeks. |
 | CLM-515 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:123` | Geopolitical posture recommendation based on full threat assessment across all four agent perspectives. |
 | CLM-516 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:124` | The Black Swan agent identifies one weak signal that all other agents are ignoring. |
@@ -659,10 +654,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `3adfe1b428e00889acbbe072
 | CLM-642 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:49` | The prediction verifier was restored in S57 and wired to scheduled runs in S60; it now verifies continuously and the historical backlog has been processed. |
 | CLM-643 | MIXED | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:49` | Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature. |
 | CLM-644 | STATE | UNMEASURED | PROVENANCE | `src/app/validation-log/page.tsx:85` | GNI Autonomous \| Validation Log \| Higher Diploma in Computer Science \| SUM |
-| CLM-645 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:124` | ⚡ Frequency Controller — Autonomous Run Scheduling |
-| CLM-645 | STATE | UNMEASURED | UNREVIEWED | `src/app/health/page.tsx:154` | ⚡ Frequency Controller — Autonomous Run Scheduling |
-| CLM-646 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:148` | CRITICAL=30min · HIGH=2h · ELEVATED=4h · MODERATE=6h · LOW=12h — AI decides run frequency autonomously |
-| CLM-646 | STATE | UNMEASURED | UNREVIEWED | `src/app/health/page.tsx:198` | CRITICAL=30min · HIGH=2h · ELEVATED=4h · MODERATE=6h · LOW=12h — AI decides run frequency autonomously |
 | CLM-647 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:195` | Final score is capped at 10 and has been at the cap on every measured run. |
 | CLM-648 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:195` | Raw magnitude is the uncapped signal. |
 | CLM-649 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:239` | Measured by the frequency controller and stored. |
@@ -807,3 +798,12 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `3adfe1b428e00889acbbe072
 | CLM-787 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:87` | When something breaks, an alert reaches the operator, and the repair is done by a person. |
 | CLM-788 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:114` | Adaptive runs one Cerebras analysis, or only an alert at CRITICAL — no Groq call |
 | CLM-789 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:35` | Fresh analysis when escalation spikes — an alert only at CRITICAL, one Cerebras analysis at every other level |
+| CLM-790 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:60` | The Arbitrator rules only after the final round, once peer consultants have developed each case. |
+| CLM-791 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:122` | Each verdict carries the reasoning of the Arbitrator. |
+| CLM-792 | STATE | UNMEASURED | QUALITATIVE | `src/app/autonomy/page.tsx:124` | ⚡ Frequency Controller — Recommended Interval |
+| CLM-792 | STATE | UNMEASURED | QUALITATIVE | `src/app/health/page.tsx:154` | ⚡ Frequency Controller — Recommended Interval |
+| CLM-793 | STATE | SUPPORTED | F-ADAPT-GAP claims CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h, measured CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h | `src/app/autonomy/page.tsx:148` | The adaptive run waits at least CRITICAL 30 min · HIGH 2 h · ELEVATED 4 h · MODERATE 6 h · LOW 12 h between runs; this panel shows the frequency controller&apos;s logged recommendation, and the cron schedule does not change. |
+| CLM-793 | STATE | SUPPORTED | F-ADAPT-GAP claims CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h, measured CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h | `src/app/health/page.tsx:198` | The adaptive run waits at least CRITICAL 30 min · HIGH 2 h · ELEVATED 4 h · MODERATE 6 h · LOW 12 h between runs; this panel shows the frequency controller&apos;s logged recommendation, and the cron schedule does not change. |
+| CLM-794 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:88` | Peer consultants develop each agent&apos;s case between rounds, and the Arbitrator rules BULLISH, BEARISH or NEUTRAL, with a confidence score, only after the final round. |
+| CLM-795 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:957` | Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. |
+| CLM-795 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:90` | Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. |

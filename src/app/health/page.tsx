@@ -151,7 +151,7 @@ export default function HealthPage() {
 
             {health.frequency_log && health.frequency_log.length > 0 && (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">⚡ Frequency Controller — Autonomous Run Scheduling</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">⚡ Frequency Controller — Recommended Interval</div>
                 {(() => {
                   const latest = health.frequency_log[0]
                   // The MEASURED interval from frequency_log (frequency_controller.py:104).
@@ -185,7 +185,7 @@ export default function HealthPage() {
                         <div className="text-2xl font-bold text-blue-400">
                           {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : intervalMap[latest.escalation_level]}
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">Run Interval</div>
+                        <div className="text-xs text-gray-500 mt-1">Recommended Interval</div>
                       </div>
                       <div className="bg-gray-800 rounded-lg p-3 text-center">
                         <div className="text-xs text-gray-300 leading-relaxed">{latest.reason}</div>
@@ -195,7 +195,7 @@ export default function HealthPage() {
                   )
                 })()}
                 <div className="text-xs text-gray-600 mt-3">
-                  CRITICAL=30min · HIGH=2h · ELEVATED=4h · MODERATE=6h · LOW=12h — AI decides run frequency autonomously
+                  The adaptive run waits at least CRITICAL 30 min · HIGH 2 h · ELEVATED 4 h · MODERATE 6 h · LOW 12 h between runs; this panel shows the frequency controller&apos;s logged recommendation, and the cron schedule does not change.
                 </div>
               </div>
             )}

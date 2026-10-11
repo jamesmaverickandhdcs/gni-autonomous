@@ -85,7 +85,7 @@ export default function MethodologyPage() {
               The MAD (Multi-Agent Debate) protocol applies the Johari Window framework to geopolitical intelligence.
               Four agents represent four quadrants: Bull (Known Positives), Bear (Known Negatives),
               Black Swan (Unknown Negatives), Ostrich (Ignored Realities).
-              After 3 rounds of debate with Arbitrator coaching, a BULLISH/BEARISH/NEUTRAL verdict is reached with confidence score.
+              Peer consultants develop each agent&apos;s case between rounds, and the Arbitrator rules BULLISH, BEARISH or NEUTRAL, with a confidence score, only after the final round.
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[

@@ -87,7 +87,7 @@ export default function ResearchPage() {
             {[
               {
                 num: '1', title: 'Quadratic MAD Protocol',
-                desc: 'Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window matrix (Known/Unknown × Proactive/Ignored). After 3 rounds with Arbitrator coaching, a final verdict is reached. First application of Johari Window to AI geopolitical intelligence.',
+                desc: 'Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window matrix (Known/Unknown × Proactive/Ignored). Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. First application of Johari Window to AI geopolitical intelligence.',
                 color: 'border-red-800 bg-red-950', accent: 'text-red-400'
               },
               {

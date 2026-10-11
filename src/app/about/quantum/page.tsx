@@ -57,7 +57,7 @@ export default function AboutQuantumPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               { title: 'Speed over Perfection', desc: 'GNI delivers actionable intelligence within minutes of pipeline completion. In geopolitical risk, timeliness beats completeness. A verdict with 80% confidence delivered now beats a perfect analysis delivered tomorrow.' },
-              { title: 'Multi-Agent Consensus', desc: 'No single AI perspective is trusted. Four agents — Bull, Bear, Black Swan, Ostrich — debate every scenario across the Johari Window framework. Only consensus after 3 coached rounds becomes a verdict.' },
+              { title: 'Multi-Agent Debate', desc: 'No single AI perspective is trusted. Four agents — Bull, Bear, Black Swan, Ostrich — debate every scenario across the Johari Window framework. The Arbitrator rules only after the final round, once peer consultants have developed each case.' },
               { title: 'Market-Linked Intelligence', desc: 'Every report connects geopolitical events to specific market instruments (SPY, GLD, USO, DXY). Intelligence without market linkage is academic. GNI links threat verdicts directly to investment implications.' },
             ].map(item => (
               <div key={item.title} className="bg-blue-900 bg-opacity-40 rounded-lg p-4">
@@ -119,7 +119,7 @@ export default function AboutQuantumPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Outcome Framework — What QS Produces</div>
           <div className="space-y-3">
             {[
-              { step: '01', title: 'Threat Verdict', desc: 'BEARISH / BULLISH / NEUTRAL with confidence score 0-100%. Derived from 3 rounds of 4-agent MAD debate using Johari Window framework. Each verdict includes Arbitrator reasoning and coaching notes.' },
+              { step: '01', title: 'Threat Verdict', desc: 'BEARISH / BULLISH / NEUTRAL with confidence score 0-100%. Derived from 3 rounds of 4-agent MAD debate using Johari Window framework. Each verdict carries the reasoning of the Arbitrator.' },
               { step: '02', title: 'Action Recommendation', desc: 'Specific diplomatic, economic, or strategic action for the next 4-6 weeks. Geopolitical posture recommendation based on full threat assessment across all four agent perspectives.' },
               { step: '03', title: 'Blind Spot Warning', desc: 'The Black Swan agent identifies one weak signal that all other agents are ignoring. This is the highest-value intelligence output — the thing nobody else is watching but should be.' },
               { step: '04', title: 'Market Implications', desc: 'Specific tickers (SPY, GLD, USO, DXY) with directional bias. Links geopolitical threat directly to investable market instruments with sentiment scoring.' },

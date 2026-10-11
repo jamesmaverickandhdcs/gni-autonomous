@@ -121,7 +121,7 @@ export default function AutonomyPage() {
             {/* Current Frequency Status */}
             {latest && latestLevel && (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">⚡ Frequency Controller — Autonomous Run Scheduling</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">⚡ Frequency Controller — Recommended Interval</div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className={`bg-gray-800 border rounded-xl p-4 text-center ${levelColor[latestLevel] || 'border-gray-700'}`}>
                     <div className={`text-3xl font-bold ${levelColor[latestLevel]?.split(' ')[0] || 'text-gray-400'}`}>
@@ -137,7 +137,7 @@ export default function AutonomyPage() {
                     <div className="text-3xl font-bold text-blue-400">
                       {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : intervalMap[latestLevel]}
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">Run Interval</div>
+                    <div className="text-xs text-gray-500 mt-1">Recommended Interval</div>
                   </div>
                   <div className="bg-gray-800 border border-gray-700 rounded-xl p-4 text-center">
                     <div className="text-sm font-bold text-gray-300">{latestLevel} {formatEscalation(latest.escalation_score, latest.escalation_score_raw, 'report')}</div>
@@ -145,7 +145,7 @@ export default function AutonomyPage() {
                   </div>
                 </div>
                 <div className="mt-3 text-xs text-gray-600 text-center">
-                  CRITICAL=30min · HIGH=2h · ELEVATED=4h · MODERATE=6h · LOW=12h — AI decides run frequency autonomously
+                  The adaptive run waits at least CRITICAL 30 min · HIGH 2 h · ELEVATED 4 h · MODERATE 6 h · LOW 12 h between runs; this panel shows the frequency controller&apos;s logged recommendation, and the cron schedule does not change.
                 </div>
               </div>
             )}
