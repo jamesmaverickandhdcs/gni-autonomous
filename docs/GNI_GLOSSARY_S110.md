@@ -48,7 +48,7 @@ detected.
 | cert | a measurement that certifies a change did what it claimed, built so that it can fail (R-S90-1) | GNI_RULES |
 | fixture family | one synthetic repository in `tools/gni_rule_checks_fixture.py` with the exit code the detector must return on it | protocol PART C step 9a |
 | control probe | an instrument's test of its own expectations on perturbed real bytes before it reports (R-S93-1) | `tools/gni_rule_checks.py` |
-| Smart Office | the direction GNI took at S92: make the system's state visible from outside instead of rewriting the code | DECISION S92-3; `docs/GNI_ORIGIN.md` |
+| Smart Office | the direction GNI took at S92: make the system's state visible from outside instead of rewriting the code. S92 named it the Smart Desk (ARCHITECTURE section 4); the name Smart Office first appears at the S96 close, as roadmap 2's title | ARCHITECTURE, ROADMAP 2; `docs/GNI_ORIGIN.md` |
 | WHACK-A-MOLE | James's name for the state, until S92, in which every fix surfaced more errors | `docs/GNI_ORIGIN.md` step 5 |
 | SUBPAGE-IC | the sub-page integrity check: whether each Web App sub-page displays what the backend computed; ran five months without a completion test | ARCHITECTURE defect D4 |
 | DET-DEAD | the defect class of a detector that exists in the code and is imported by nothing | ARCHITECTURE; ORDER |
@@ -87,6 +87,13 @@ detected.
 | OK | the success word a script prints about its own action; it certifies nothing unless the action's result was checked first (R-S108-3) | HANDOFF S108; `ai_engine/adaptive_pipeline.py` |
 | RSS | Really Simple Syndication: the feed format of the sources the collector reads | `ai_engine/collectors/rss_collector.py`; GNI_RULES |
 | ASCII | the 7-bit character set; every patch anchor is kept inside it |
+| AES-256 | the Advanced Encryption Standard with a 256-bit key; the cipher the backup artifact is encrypted with, by gpg | `.github/workflows/gni_backup.yml` |
+| BYPASSRLS | the Postgres role attribute that lets a role read past row-level security; the backup role carries it and nothing beyond SELECT | `.github/workflows/gni_backup.yml` |
+| DDL | data definition language: the CREATE, ALTER and GRANT statements a dump carries; the restore test reads from them the roles and schemas it needs | `.github/workflows/gni_backup.yml` |
+| PGDMP | the five bytes that open every Postgres custom-format dump; the S110 offsite proof read them from the decrypted artifact | HANDOFF S110 |
+| RLS | row-level security: Postgres policies that decide which rows a role may read; the backup role reads past them with BYPASSRLS | `.github/workflows/gni_backup.yml`; ORDER |
+| NUMBERS UNDERIVED | the count printed beside UNREVIEWED from S111: STATE or MIXED claims with a location under `src/`, a digit in their text, not SUPPORTED and with no HISTORICAL or PROVENANCE reason; 139 at S110 | ARCHITECTURE, ROADMAP 4 row R4-1 |
+| NIST | the United States National Institute of Standards and Technology; its AI Risk Management Framework and SP 800-53 are cited by roadmap 4 and by the backup policy | ARCHITECTURE, ROADMAP 4; `.github/workflows/gni_backup.yml` |
 | SQL | the query language of the Supabase database | CONTRACT; GNI_RULES |
 | DB | the Supabase Postgres database | GNI_RULES |
 | UTC | coordinated universal time; every published clock is stated in it | CONTRACT; HANDOFF |
@@ -157,6 +164,7 @@ detected.
 | SOLUTION | an arc42 section heading |
 | CROSSCUTTING | an arc42 section heading |
 | TECHNICAL | an arc42 section heading |
+| UNDERIVED | second word of NUMBERS UNDERIVED, defined above |
 | SMART | first word of Smart Office, defined above |
 | OFFICE | second word of Smart Office, defined above |
 
@@ -176,6 +184,7 @@ name two series each; the row says which document each meaning lives in.
 | `NN-PHI-\d+` | a non-negotiable of the founding philosophy |
 | `C\d+` | a check in `tools/gni_rule_checks.py`; see CHECKS |
 | `R3-\d+` | a row of roadmap 3 (ARCHITECTURE, ROADMAP 3) |
+| `R4-\d+` | a row of roadmap 4 (ARCHITECTURE, ROADMAP 4) |
 | `CLM-\d+` | a public claim harvested by `tools/gni_claims.py`; one id per claim, minted once (`docs/GNI_CLAIMS_S<N>.md`) |
 | `F-[A-Z]+(?:-[A-Z]+){0,3}` | a fitness function in `tools/gni_fitness.py` (F-INJ, F-WF, F-CRON-PIPE); a binding row names one beside a verbatim fragment of its claim |
 | `D\d+` | TWO SERIES: in the ORDER, a line of the definition of done (D1-D4); in the ARCHITECTURE, a defect homed at S92 (D1-D7). The letter is shared, the meanings are not |
