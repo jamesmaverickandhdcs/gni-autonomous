@@ -46,7 +46,7 @@ export default function ValidationLogPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Why This Requires GPVS Accumulation</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 14, 2026. The prediction verifier was restored in S57 and wired to scheduled runs in S60; it now verifies continuously and the historical backlog has been processed. Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature.
+            This page requires verified prediction data from the GPVS system. Read from the database on 11 October 2026, the earliest stored debate prediction was made on 24 May 2026, with a verify-by date of 7 June 2026. The prediction verifier was restored in S57 and wired to scheduled runs in S60; it now verifies continuously and the historical backlog has been processed. Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature.
           </p>
         </div>
 
@@ -59,8 +59,8 @@ export default function ValidationLogPage() {
               <div className="text-xs text-gray-500">Verifier Status</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-amber-300">Apr 10</div>
-              <div className="text-xs text-gray-500">First Verification</div>
+              <div className="text-xl font-bold text-amber-300">Jun 7</div>
+              <div className="text-xs text-gray-500">First Stored Verify-By</div>
             </div>
             <div>
               <div className="text-xl font-bold text-amber-300">Accumulating</div>

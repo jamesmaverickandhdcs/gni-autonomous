@@ -49,17 +49,17 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
 
   const scenarios = [
     {
-      label: 'Base Case',
+      label: 'Bear Case',
       icon: '⚖️',
       color: 'border-gray-600',
       bg: 'bg-gray-800',
       accent: 'text-gray-300',
       header: 'bg-gray-700',
       content: report.mad_bear_case,
-      note: 'Known risks playing out — most likely path',
+      note: 'Bear agent case — known risks playing out; no likelihood is computed',
     },
     {
-      label: 'Upside Case',
+      label: 'Bull Case',
       icon: '🐂',
       color: 'border-green-700',
       bg: 'bg-green-950',
@@ -69,14 +69,14 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
       note: 'Known positives — what concretely stabilises or improves',
     },
     {
-      label: 'Downside Case',
+      label: 'Black Swan Case',
       icon: '🦢🦦',
       color: 'border-red-700',
       bg: 'bg-red-950',
       accent: 'text-red-300',
       header: 'bg-red-900',
       content: report.mad_black_swan_case || report.mad_ostrich_case || '',
-      note: 'Black Swan + Ostrich combined — unknown and ignored threats',
+      note: 'Black Swan agent case — the Ostrich case stands in only when it is empty',
     },
   ]
 
@@ -239,7 +239,7 @@ export default function ScenariosPage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">🔮 Scenario Planning</h1>
-              <p className="text-sm text-gray-400">Base / Upside / Downside scenarios from Quadratic MAD debate</p>
+              <p className="text-sm text-gray-400">Bear / Bull / Black Swan cases from the Quadratic MAD debate</p>
               <p className="text-xs text-gray-600 mt-1">Reliability improves as GPVS correlation data accumulates.</p>
             </div>
             
@@ -317,16 +317,16 @@ export default function ScenariosPage() {
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">💡 How to Read Scenarios</div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-gray-400">
                 <div>
-                  <div className="text-gray-300 font-bold mb-1">⚖️ Base Case</div>
-                  <p>Bear agent — known risks playing out. Most likely path.</p>
+                  <div className="text-gray-300 font-bold mb-1">⚖️ Bear Case</div>
+                  <p>Bear agent — known risks playing out. No case is ranked as most likely.</p>
                 </div>
                 <div>
-                  <div className="text-green-400 font-bold mb-1">🐂 Upside Case</div>
+                  <div className="text-green-400 font-bold mb-1">🐂 Bull Case</div>
                   <p>Bull agent — known positives: what concretely stabilises, de-escalates or improves.</p>
                 </div>
                 <div>
-                  <div className="text-red-400 font-bold mb-1">🦢 Downside Case</div>
-                  <p>Black Swan — unknown threats nobody is modelling.</p>
+                  <div className="text-red-400 font-bold mb-1">🦢 Black Swan Case</div>
+                  <p>Black Swan agent — reads the low-scoring articles the others dismissed, looking for a threat no one has modelled.</p>
                 </div>
               </div>
             </div>

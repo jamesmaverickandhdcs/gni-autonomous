@@ -588,6 +588,132 @@ def _gpvs_days(root):
     return ["%dd" % x for x in out]
 
 
+def _gpvs_window_claim(fragment):
+    m = re.search(r"(\d+)-Day", fragment)
+    if not m:
+        raise FitnessError("no '<n>-Day' in fragment %r" % fragment)
+    return ["%dd" % int(m.group(1))]
+
+
+_WORDNUM = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+            "eight": 8, "nine": 9, "ten": 10}
+
+
+def _swan_claim(fragment):
+    m = re.search(r"(\d+(?:\.\d+)?)% or more over the (\w+) trading days", fragment)
+    n = re.search(r"a fixed (\d+(?:\.\d+)?)", fragment)
+    if not m or not n or m.group(2) not in _WORDNUM:
+        raise FitnessError("no '<x>% or more over the <n> trading days ... a fixed <s>' in %r" % fragment)
+    return ["%g%%" % float(m.group(1)), "%dd" % _WORDNUM[m.group(2)], "%g" % float(n.group(1))]
+
+
+def _black_swan(root):
+    """The report check's black-swan rule in outcome_verifier.py (AST): the
+    BLACK_SWAN_THRESHOLD constant, the range=<n>d of the SPY chart URL that
+    detect_black_swan reads (hourly bars; its 48-bar slice keeps the whole range
+    when the range holds fewer bars), and the score calculate_accuracy_score
+    returns under `if black_swan or context_credit`."""
+    rel = "ai_engine/analysis/outcome_verifier.py"
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    thr = [_num(n.value) for n in tree.body if isinstance(n, ast.Assign)
+           and any(getattr(t, "id", "") == "BLACK_SWAN_THRESHOLD" for t in n.targets)]
+    if len(thr) != 1:
+        raise FitnessError("expected one BLACK_SWAN_THRESHOLD in %s" % rel)
+    det = _func(root, rel, "detect_black_swan")
+    rng = {m for n in ast.walk(det) if isinstance(n, ast.Constant) and isinstance(n.value, str)
+           for m in re.findall(r"range=(\d+)d", n.value)}
+    if len(rng) != 1:
+        raise FitnessError("expected one range=<n>d in detect_black_swan, got %r" % rng)
+    acc = _func(root, rel, "calculate_accuracy_score")
+    ret = [_num(s.value) for n in ast.walk(acc) if isinstance(n, ast.If) and isinstance(n.test, ast.BoolOp)
+           and "black_swan" in {getattr(v, "id", "") for v in n.test.values}
+           for s in n.body if isinstance(s, ast.Return)]
+    if len(ret) != 1:
+        raise FitnessError("expected one return under 'if black_swan or ...' in calculate_accuracy_score")
+    return ["%g%%" % thr[0], "%sd" % rng.pop(), "%g" % ret[0]]
+
+
+def _ab_claim(fragment):
+    m = re.search(r"(\d+) runs", fragment)
+    n = re.search(r"(?:≥|by) (\d+(?:\.\d+)?)", fragment)
+    if not m or not n:
+        raise FitnessError("no '<n> runs' and '≥ <x>' in fragment %r" % fragment)
+    return ["runs>=%d" % int(m.group(1)), "gap>=%g" % float(n.group(1))]
+
+
+def _ab_promote(root):
+    """The prompt A/B governor's promotion rule: the run_count >= N filter and the
+    diff >= X test in prompt_manager._check_promotion (AST)."""
+    fn = _func(root, "ai_engine/analysis/prompt_manager.py", "_check_promotion")
+    runs, gaps = set(), set()
+    for n in ast.walk(fn):
+        if isinstance(n, ast.Compare) and len(n.ops) == 1 and isinstance(n.ops[0], ast.GtE) \
+                and isinstance(n.comparators[0], ast.Constant):
+            left = n.left
+            if isinstance(left, ast.Subscript) and getattr(left.slice, "value", None) == "run_count":
+                runs.add(_num(n.comparators[0]))
+            elif getattr(left, "id", "") == "diff":
+                gaps.add(_num(n.comparators[0]))
+    if len(runs) != 1 or len(gaps) != 1:
+        raise FitnessError("expected one run_count >= N and one diff >= X in _check_promotion")
+    return ["runs>=%d" % runs.pop(), "gap>=%g" % gaps.pop()]
+
+
+def _window_claim(fragment):
+    out = re.findall(r"(\d+-\d+ (?:days|months))", fragment)
+    if not out:
+        raise FitnessError("no '<a>-<b> days|months' in fragment %r" % fragment)
+    return sorted(out)
+
+
+def _threat_windows(root):
+    """Windows the Arbitrator is asked to name threats in: the JSON template's
+    "short_focus_threats" and "long_shoot_threats" values in mad_protocol.py."""
+    path = os.path.join(root, "ai_engine", "analysis", "mad_protocol.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/mad_protocol.py not found")
+    with open(path, "rb") as fh:
+        text = fh.read().decode("utf-8-sig")
+    out = []
+    for key in ("short_focus_threats", "long_shoot_threats"):
+        got = set(re.findall(r'"%s": "[^"]*?(\d+-\d+ (?:days|months))"' % key, text))
+        if len(got) != 1:
+            raise FitnessError("expected one window for %s in mad_protocol.py, got %r" % (key, got))
+        out.append(got.pop())
+    return sorted(out)
+
+
+def _accounts_claim(fragment):
+    out = sorted(set(re.findall(r"\b(morning|evening)\b", fragment)))
+    if not out:
+        raise FitnessError("no morning/evening in fragment %r" % fragment)
+    return out
+
+
+def _mad_accounts(root):
+    """Accounts the MAD workflow runs under: the quoted names on gni_mad.yml's
+    GNI_MAD_ACCOUNT line. They count only if its GROQ_API_KEY line picks as many
+    distinct secrets; otherwise the names share one key and this says so."""
+    path = os.path.join(root, ".github", "workflows", "gni_mad.yml")
+    if not os.path.isfile(path):
+        raise FitnessError(".github/workflows/gni_mad.yml not found")
+    with open(path, "rb") as fh:
+        text = fh.read().decode("utf-8")
+    acct = [l for l in text.splitlines() if l.strip().startswith("GNI_MAD_ACCOUNT:")]
+    key = [l for l in text.splitlines() if l.strip().startswith("GROQ_API_KEY:")]
+    if len(acct) != 1 or len(key) != 1:
+        raise FitnessError("expected one GNI_MAD_ACCOUNT and one GROQ_API_KEY line in gni_mad.yml")
+    names = sorted(set(re.findall(r"'([a-z]+)'", acct[0].split(":", 1)[1])))
+    secrets = set(re.findall(r"secrets\.([A-Z0-9_]+)", key[0]))
+    if len(secrets) != len(names):
+        return ["%d names on %d key(s)" % (len(names), len(secrets))]
+    return names
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -666,6 +792,20 @@ FITNESS = {
                       _days_claim, _verify_days, _equal),
     "F-GPVS-DAYS": ("windows the report-level GPVS check fetches SPY for: fetch_price_change_with_fallback"
                     "('SPY', N) in outcome_verifier.py (AST)", _gpvs_days_claim, _gpvs_days, _equal),
+    "F-GPVS-WINDOW": ("one window of the report-level GPVS check: a claimed '<n>-Day' must be one of "
+                      "fetch_price_change_with_fallback('SPY', N) in outcome_verifier.py (AST)",
+                      _gpvs_window_claim, _gpvs_days, _scheduled),
+    "F-BLACK-SWAN": ("the report check's black-swan rule in outcome_verifier.py: BLACK_SWAN_THRESHOLD, "
+                     "the range of detect_black_swan's chart URL, and the fixed score (AST)",
+                     _swan_claim, _black_swan, _equal),
+    "F-AB-PROMOTE": ("the prompt A/B governor's promotion rule: run_count >= N and diff >= X in "
+                     "prompt_manager._check_promotion (AST)", _ab_claim, _ab_promote, _equal),
+    "F-THREAT-WINDOWS": ("windows of the Arbitrator's short_focus_threats and long_shoot_threats in "
+                         "mad_protocol.py's JSON template; a claimed window must be one of them",
+                         _window_claim, _threat_windows, _scheduled),
+    "F-MAD-ACCOUNTS": ("accounts the MAD workflow runs under: GNI_MAD_ACCOUNT names in gni_mad.yml, "
+                       "counted only when GROQ_API_KEY picks as many secrets", _accounts_claim,
+                       _mad_accounts, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that

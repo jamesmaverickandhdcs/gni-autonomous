@@ -138,7 +138,7 @@ export default function PredictionsPage() {
               Every MAD debate records a short-horizon prediction from each agent and a long-horizon one from the Arbitrator, each with a verify-by date, 14 and 180 days by default.
               After the verify date passes, actual SPY movement decides the verdict: a fall of 2% or more
               means the flagged threat materialized (accurate); a move staying above -1% means it did not; between is inconclusive.
-              Earliest verification: April 10, 2026.
+              Earliest stored verify-by date: 7 June 2026.
             </div>
           </>
         )}

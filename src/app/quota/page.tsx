@@ -93,7 +93,7 @@ export default function QuotaPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">Token Quota Monitor</h1>
-            <p className="text-sm text-gray-400">Groq free tier usage &mdash; per-account, $0.00/month proof for IEEE paper</p>
+            <p className="text-sm text-gray-400">Groq token use per account, read from the groq_daily_usage table</p>
           </div>
 </div>
           </div>
@@ -206,11 +206,11 @@ export default function QuotaPage() {
             {/* IEEE proof */}
             <section>
               <div className="bg-green-950 border border-green-800 rounded-xl p-5">
-                <div className="text-sm font-bold text-green-300 mb-2">IEEE Paper Evidence &mdash; $0.00/month claim</div>
+                <div className="text-sm font-bold text-green-300 mb-2">Cost &mdash; what this page can and cannot show</div>
                 <div className="text-xs text-gray-400 leading-relaxed">
                   GNI_Autonomous runs entirely on free tiers. GNI plans against 100K Groq tokens/day per account, at no cost.
-                  MAD is split across dedicated morning and evening accounts, each drawing on its own 100K pool.
-                  Total monthly cost: $0.00. This page verifies that claim per account.
+                  MAD runs on two Groq keys, a morning one and an evening one, picked by the schedule that starts it. The main pipeline uses a key of its own.
+                  Total monthly cost: $0.00. This page shows token use per account against that plan; it cannot see a bill.
                 </div>
                 <div className="mt-3 grid grid-cols-3 gap-3 text-center text-xs">
                   <div className="bg-green-900 rounded-lg p-2">
@@ -219,11 +219,11 @@ export default function QuotaPage() {
                   </div>
                   <div className="bg-green-900 rounded-lg p-2">
                     <div className="font-bold text-green-300">Supabase</div>
-                    <div className="text-gray-400">500MB free tier</div>
+                    <div className="text-gray-400">Free plan, storage capped</div>
                   </div>
                   <div className="bg-green-900 rounded-lg p-2">
                     <div className="font-bold text-green-300">Vercel + GitHub</div>
-                    <div className="text-gray-400">Free tier unlimited</div>
+                    <div className="text-gray-400">Free plans, within their usage limits</div>
                   </div>
                 </div>
               </div>

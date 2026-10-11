@@ -1577,3 +1577,45 @@ b6327e1be6	CLAIM	STATE	CLM-917	Cross-horizon Forecast Analysis (CFA) tracks GNI 
 0cc250f4c1	CLAIM	STATE	CLM-919	Each prediction is scored against the SPY move over its window.
 ba4f3a338d	CLAIM	STATE	CLM-920	These scores are the debate&apos;s accuracy record; source trust weights are fed by the report-level checks, not by them.
 c433c3d376	CLAIM	STATE	CLM-921	It shows how each agent has performed; it does not change how the next debate runs.
+2fd5f49ac9	CLAIM	STATE	CLM-922	Pipeline status, quality scores, source weights, source credibility, prompt variants
+46a6fd28a0	CLAIM	STATE	CLM-923	The health API answered; alerts are listed below
+3218c7ce60	CLAIM	STATE	CLM-924	No health alerts on record
+663f755aa1	CLAIM	STATE	CLM-925	The governor retires the lowest-scoring active variant once at least two have 10 runs each and the best and worst averages differ by 0.3 or more.
+cfd59b4e3c	CLAIM	STATE	CLM-926	Source Credibility — GPVS wins per source, shown and not fed back
+b317ce9540	CLAIM	STATE	CLM-927	Source Weights — moved by verified reports (EMA)
+f75cfadeb0	CLAIM	STATE	CLM-928	Fewer than two variants are active now, so no test is running.
+9148fe696b	CLAIM	STATE	CLM-929	The numbers are SPY moves; the colour is the direction judged on the report&apos;s own instrument (USO, GLD or SPY).
+d093498b28	CLAIM	STATE	CLM-930	Intelligence History lists the newest main pipeline runs, up to two hundred, with each run&apos;s status and article counts.
+c6b5748274	CLAIM	STATE	CLM-931	For runs whose report is among the newest ten, it adds the report&apos;s title, risk, sentiment, MAD verdict and escalation score; expanding a run loads its top articles.
+abc2e8de6b	CLAIM	STATE	CLM-932	Report saved; this page loads details for the newest ten reports only
+6748250709	CLAIM	STATE	CLM-933	No report saved for this run
+d415cfa5f0	CLAIM	STATE	CLM-934	🔍 Showing runs with a report
+64f3b89fa9	CLAIM	STATE	CLM-935	📋 Showing all main runs
+ac72b2b8b6	CLAIM	STATE	CLM-936	Runs with no saved report hidden
+d4a5a4d279	CLAIM	STATE	CLM-937	Including runs with no saved report
+af74d2098d	CLAIM	PROMISE	CLM-938	Model Learning will list the times GNI was surprised — a confident prediction that reality contradicted.
+a4b9117c71	CLAIM	STATE	CLM-939	No such registry exists yet.
+17b1224e3b	CLAIM	STATE	CLM-940	What already runs is broader: every verified report, surprise or not, moves the weights of the sources it cited by an Exponential Moving Average.
+a3eb9663e1	CLAIM	PROMISE	CLM-941	Model Learning will track the events where reality surprised GNI&apos;s predictions, and how the system responded.
+4fc3764956	CLAIM	STATE	CLM-942	Today the report check has one rule for surprises: when SPY has moved 5% or more over the five trading days before the check runs, it marks a black swan and gives every report it verifies in that run a fixed 0.25 instead of judging its direction.
+c4fc599b94	CLAIM	STATE	CLM-943	Prompt templates and escalation thresholds do not change in response.
+eb448fd149	CLAIM	STATE	CLM-944	Read from the database on 11 October 2026, the earliest stored debate prediction was made on 24 May 2026, with a verify-by date of 7 June 2026.
+b92fbc72cf	UI	-	-	Live count &rarr;
+b7f23cb379	CLAIM	STATE	CLM-945	Jun 7
+23bb2dd3e3	UI	-	-	First Stored Verify-By
+2995d5bcdd	CLAIM	PROMISE	CLM-946	Pattern Library will look for current escalation sequences that match validated patterns in GNI&apos;s prediction archive, and surface the historical outcome as a signal for what may come next.
+3b069d4ff4	CLAIM	STATE	CLM-947	Nothing in the engine matches sequences yet; this page holds the plan.
+264af3cba2	CLAIM	STATE	CLM-948	Earliest stored verify-by date: 7 June 2026.
+95fa05ea08	CLAIM	STATE	CLM-949	Groq token use per account, read from the groq_daily_usage table
+346e28a2a3	UI	-	-	Cost &mdash; what this page can and cannot show
+d2df0eb3cf	CLAIM	STATE	CLM-950	MAD runs on two Groq keys, a morning one and an evening one, picked by the schedule that starts it.
+ad623b0e1b	CLAIM	STATE	CLM-951	The main pipeline uses a key of its own.
+d0757ea237	CLAIM	STATE	CLM-952	This page shows token use per account against that plan; it cannot see a bill.
+cb25338c69	CLAIM	STATE	CLM-953	Free plan, storage capped
+92c70edf6f	CLAIM	STATE	CLM-954	Free plans, within their usage limits
+51f058dc48	CLAIM	STATE	CLM-955	Earliest stored verify-by: 7 June 2026
+3404beb6a6	CLAIM	STATE	CLM-956	Bear / Bull / Black Swan cases from the Quadratic MAD debate
+18a344c9d8	CLAIM	STATE	CLM-957	No case is ranked as most likely.
+1d42612355	CLAIM	STATE	CLM-958	Black Swan agent — reads the low-scoring articles the others dismissed, looking for a threat no one has modelled.
+262518b35c	CLAIM	STATE	CLM-959	Bear agent case — known risks playing out; no likelihood is computed
+4ea298748c	CLAIM	STATE	CLM-960	Black Swan agent case — the Ostrich case stands in only when it is empty

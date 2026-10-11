@@ -86,6 +86,10 @@ function credColor(score: number) {
   return 'bg-red-500'
 }
 
+function isActiveVariant(v: { active: boolean }) {
+  return v.active
+}
+
 export default function HealthPage() {
   const [health, setHealth] = useState<HealthData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -99,6 +103,9 @@ export default function HealthPage() {
       .finally(() => setLoading(false))
   }, [])
 
+  const activeVariants = (health?.prompt_variants || []).filter(isActiveVariant).length
+  const abNote = [0, 1].includes(activeVariants) ? ' Fewer than two variants are active now, so no test is running.' : ''
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
       <header className="border-b border-gray-800 bg-gray-900">
@@ -107,7 +114,7 @@ export default function HealthPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">System Health</h1>
-            <p className="text-sm text-gray-400">Pipeline status, quality scores, source weights, credibility, A/B test</p>
+            <p className="text-sm text-gray-400">Pipeline status, quality scores, source weights, source credibility, prompt variants</p>
           </div>
 </div>
           </div>
@@ -128,9 +135,9 @@ export default function HealthPage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">System Status</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Health API</div>
                 <div className={`text-3xl font-bold ${statusColor(health.status)}`}>{health.status?.toUpperCase()}</div>
-                <div className="text-xs text-gray-600 mt-1">All components operational</div>
+                <div className="text-xs text-gray-600 mt-1">The health API answered; alerts are listed below</div>
               </div>
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Avg Quality Score</div>
@@ -156,12 +163,12 @@ export default function HealthPage() {
                   const latest = health.frequency_log[0]
                   // The MEASURED interval from frequency_log (frequency_controller.py:104).
                   // intervalMap below is the SCHEDULER's band table, not a measurement: it
-                  // says '30 min' at 9.0-9.4 where the stored value is 1h. Item 9.9 (S90),
+                  // gives CRITICAL half an hour at 9.0-9.4 where the stored value is 1h. Item 9.9 (S90),
                   // sibling of the /autonomy fix (R-S55-1).
                   const formatInterval = (h: number): string =>
                     h < 1 ? `${Math.round(h * 60)} min` : `${h}h`
-                  const intervalMap: Record<string, string> = {
-                    'CRITICAL': '30 min', 'HIGH': '2h', 'ELEVATED': '4h', 'MODERATE': '6h', 'LOW': '12h'
+                  const intervalMap: Record<string, number> = {
+                    'CRITICAL': 0.5, 'HIGH': 2, 'ELEVATED': 4, 'MODERATE': 6, 'LOW': 12
                   }
                   const levelColor: Record<string, string> = {
                     'CRITICAL': 'text-red-400', 'HIGH': 'text-orange-400',
@@ -183,7 +190,7 @@ export default function HealthPage() {
                       </div>
                       <div className="bg-gray-800 rounded-lg p-3 text-center">
                         <div className="text-2xl font-bold text-blue-400">
-                          {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : intervalMap[latest.escalation_level]}
+                          {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : (intervalMap[latest.escalation_level] != null ? formatInterval(intervalMap[latest.escalation_level]) : null)}
                         </div>
                         <div className="text-xs text-gray-500 mt-1">Recommended Interval</div>
                       </div>
@@ -206,7 +213,7 @@ export default function HealthPage() {
                 {health.health_alerts.length === 0 ? (
                   <div className="flex items-center gap-3 text-green-400">
                     <span className="text-lg">✅</span>
-                    <span className="text-sm">All health checks passing — no alerts fired</span>
+                    <span className="text-sm">No health alerts on record</span>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -242,7 +249,7 @@ export default function HealthPage() {
 
             {health.prompt_variants && health.prompt_variants.length > 0 && (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Prompt A/B Test — L6 Self-Improvement</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Prompt Variants — A/B Governor</div>
                 <div className="grid grid-cols-2 gap-4">
                   {health.prompt_variants.map(v => (
                     <div key={v.version} className={`rounded-lg p-4 ${v.active ? 'border border-blue-600 bg-gray-800' : 'border border-gray-700 bg-gray-850 opacity-60'}`}>
@@ -256,12 +263,12 @@ export default function HealthPage() {
                     </div>
                   ))}
                 </div>
-                <div className="text-xs text-gray-600 mt-3">Auto-promotes winner after 10 runs per variant if difference ≥ 0.3</div>
+                <div className="text-xs text-gray-600 mt-3">The governor retires the lowest-scoring active variant once at least two have 10 runs each and the best and worst averages differ by 0.3 or more.<span>{abNote}</span></div>
               </div>
             )}
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Source Credibility — GPVS-Based Learning</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Source Credibility — GPVS wins per source, shown and not fed back</div>
               {health.source_credibility && health.source_credibility.length > 0 ? (
                 <div className="space-y-3">
                   {health.source_credibility.map(s => (
@@ -279,7 +286,7 @@ export default function HealthPage() {
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Source Weights — Dynamic Intelligence Weighting</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Source Weights — moved by verified reports (EMA)</div>
               {health.source_weights.length === 0 ? <div className="text-gray-600 text-sm">No source weights yet</div> : (
                 <div className="space-y-3">
                   {health.source_weights.map(sw => (

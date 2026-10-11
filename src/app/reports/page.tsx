@@ -122,7 +122,7 @@ export default function ReportsHub() {
             <div className="flex gap-4 text-xs">
               <span className="text-amber-400">{counts?.pending ?? pending.length} pending</span>
               <span className="text-green-400">{counts?.verified ?? verified.length} verified</span>
-              <span className="text-gray-500">Earliest: April 10, 2026</span>
+              <span className="text-gray-500">Earliest stored verify-by: 7 June 2026</span>
             </div>
             <span className="text-xs font-bold text-amber-200 bg-amber-900 hover:bg-amber-700 border border-amber-700 rounded-lg px-3 py-1.5 transition-colors">View Predictions →</span>
           </div>

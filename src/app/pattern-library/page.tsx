@@ -9,7 +9,7 @@ export default function PatternLibraryPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">📚 Pattern Library</h1>
-              <p className="text-xs text-gray-400">Pattern Library identifies when current geopolitical escalation sequences match historical validated patterns from GNI&apos;s prediction archive. When a match is found, GNI surfaces the historical outcome as a predictive signal for what is likely to happen next. This is GNI&apos;s most advanced predictive capability — pattern recognition across time rather than single-point analysis.</p>
+              <p className="text-xs text-gray-400">Pattern Library will look for current escalation sequences that match validated patterns in GNI&apos;s prediction archive, and surface the historical outcome as a signal for what may come next. Nothing in the engine matches sequences yet; this page holds the plan.</p>
             </div>
             <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">In development</span>
           </div>
@@ -46,7 +46,7 @@ export default function PatternLibraryPage() {
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-4 mb-6">
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-2">Why This Requires GPVS Accumulation</div>
           <p className="text-xs text-gray-400 leading-relaxed">
-            This page requires verified prediction data from the GPVS system. The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed — GNI&apos;s autonomous pipeline handles verification and scoring automatically.
+            This page requires verified prediction data from the GPVS system. Read from the database on 11 October 2026, the earliest stored debate prediction was made on 24 May 2026, with a verify-by date of 7 June 2026. As predictions verify over time, this page will automatically populate with real accuracy data. No manual intervention is needed — GNI&apos;s autonomous pipeline handles verification and scoring automatically.
           </p>
         </div>
 
@@ -55,12 +55,12 @@ export default function PatternLibraryPage() {
           <div className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-3">Current GPVS Status</div>
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
-              <div className="text-xl font-bold text-amber-300">0</div>
+              <a href="/predictions" className="text-xl font-bold text-amber-300 hover:text-amber-200">Live count &rarr;</a>
               <div className="text-xs text-gray-500">Verified Predictions</div>
             </div>
             <div>
-              <div className="text-xl font-bold text-amber-300">Apr 10</div>
-              <div className="text-xs text-gray-500">First Verification</div>
+              <div className="text-xl font-bold text-amber-300">Jun 7</div>
+              <div className="text-xs text-gray-500">First Stored Verify-By</div>
             </div>
             <div>
               <div className="text-xl font-bold text-amber-300">In development</div>

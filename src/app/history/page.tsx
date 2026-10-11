@@ -239,7 +239,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 )}
               </div>
             ) : (
-              <div className="text-xs text-gray-600">Adaptive scan — escalation monitoring only, no report generated</div>
+              <div className="text-xs text-gray-600">{run.report_id ? 'Report saved; this page loads details for the newest ten reports only' : 'No report saved for this run'}</div>
             )}
           </div>
           <span className="text-gray-600 text-xs shrink-0">
@@ -282,6 +282,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                   <div className="text-xs text-gray-500">Human Security</div>
                 </div>
               </div>
+              <p className="text-xs text-gray-600 mt-2">The numbers are SPY moves; the colour is the direction judged on the report&apos;s own instrument (USO, GLD or SPY).</p>
               {outcome.human_review_needed && (
                 <div className="mt-2 text-xs text-yellow-400">⚠️ Human review recommended</div>
               )}
@@ -358,13 +359,13 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {report.short_focus_threats && (
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
-                <div className="text-xs text-blue-400 font-bold mb-1">🔮 Short Focus (30d)</div>
+                <div className="text-xs text-blue-400 font-bold mb-1">🔮 Short Focus (7-30 days)</div>
                 <p className="text-xs text-gray-300 leading-relaxed">{report.short_focus_threats}</p>
               </div>
               )}
               {report.long_shoot_threats && (
               <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
-                <div className="text-xs text-blue-400 font-bold mb-1">🎯 Long Shoots (180d)</div>
+                <div className="text-xs text-blue-400 font-bold mb-1">🎯 Long Shoots (3-24 months)</div>
                 <p className="text-xs text-gray-300 leading-relaxed">{report.long_shoot_threats}</p>
               </div>
               )}
@@ -454,7 +455,7 @@ export default function HistoryPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">Intelligence History</h1>
-            <p className="text-sm text-gray-400">Intelligence History archives every GNI pipeline run with its full context — escalation score, sentiment, MAD verdict, confidence interval, and the top articles that drove the analysis. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
+            <p className="text-sm text-gray-400">Intelligence History lists the newest main pipeline runs, up to two hundred, with each run&apos;s status and article counts. For runs whose report is among the newest ten, it adds the report&apos;s title, risk, sentiment, MAD verdict and escalation score; expanding a run loads its top articles. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
           </div>
           <div className="mt-3 flex items-center gap-3">
             <button
@@ -465,10 +466,10 @@ export default function HistoryPage() {
                   : 'bg-gray-800 border-gray-600 text-gray-400'
               }`}
             >
-              {hideAdaptive ? '🔍 Showing intelligence runs only' : '📋 Showing all runs'}
+              {hideAdaptive ? '🔍 Showing runs with a report' : '📋 Showing all main runs'}
             </button>
             <span className="text-xs text-gray-600">
-              {hideAdaptive ? 'Adaptive monitoring scans hidden' : 'Including adaptive monitoring scans'}
+              {hideAdaptive ? 'Runs with no saved report hidden' : 'Including runs with no saved report'}
             </span>
           </div>
 </div>
