@@ -120,10 +120,10 @@ export default function AboutQuantumPage() {
           <div className="space-y-3">
             {[
               { step: '01', title: 'Threat Verdict', desc: 'BEARISH / BULLISH / NEUTRAL with confidence score 0-100%. Derived from 3 rounds of 4-agent MAD debate using Johari Window framework. Each verdict carries the reasoning of the Arbitrator.' },
-              { step: '02', title: 'Action Recommendation', desc: 'Specific diplomatic, economic, or strategic action for the next 4-6 weeks. Geopolitical posture recommendation based on full threat assessment across all four agent perspectives.' },
-              { step: '03', title: 'Blind Spot Warning', desc: 'The Black Swan agent identifies one weak signal that all other agents are ignoring. This is the highest-value intelligence output — the thing nobody else is watching but should be.' },
+              { step: '02', title: 'Action Recommendation', desc: 'One specific action to take now, aimed at the most probable development. Geopolitical posture recommendation based on full threat assessment across all four agent perspectives.' },
+              { step: '03', title: 'Blind Spot Warning', desc: 'The Arbitrator names the quadrant the debate neglected — Bull, Bear, Black Swan or Ostrich — and explains why. It points at what nobody in the debate was watching.' },
               { step: '04', title: 'Market Implications', desc: 'Specific tickers (SPY, GLD, USO, DXY) with directional bias. Links geopolitical threat directly to investable market instruments with sentiment scoring.' },
-              { step: '05', title: 'Scenario Planning', desc: 'Base, Upside, and Downside scenarios with probability weights. Allows decision-makers to prepare for multiple futures simultaneously across 7-30 day and 3-24 month horizons.' },
+              { step: '05', title: 'Scenario Planning', desc: 'Base, Upside and Downside cases, taken from the Bear, Bull and Black Swan arguments. Allows decision-makers to prepare for multiple futures simultaneously across 7-30 day and 3-24 month horizons.' },
             ].map(item => (
               <div key={item.step} className="flex gap-4 bg-gray-800 rounded-lg p-4">
                 <div className="text-2xl font-bold text-blue-600 shrink-0 w-10 text-center">{item.step}</div>

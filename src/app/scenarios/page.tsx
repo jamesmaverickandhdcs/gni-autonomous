@@ -66,7 +66,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
       accent: 'text-green-300',
       header: 'bg-green-900',
       content: report.mad_bull_case,
-      note: 'Opportunity cost — what happens if we act on known positives',
+      note: 'Known positives — what concretely stabilises or improves',
     },
     {
       label: 'Downside Case',

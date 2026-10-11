@@ -30,12 +30,12 @@ export default function AboutFeedbackPage() {
 
   const swot = {
     strengths: [
-      'Free-forever architecture — $0.00/month with zero compromise on capability',
-      'Multi-agent MAD Protocol eliminates single-point-of-failure in threat assessment',
+      'Free-tier architecture — $0.00/month, within the token limits listed under Weaknesses',
+      'Multi-agent MAD Protocol spreads threat assessment across four agent lenses and an Arbitrator',
       'GPVS creates an empirical accuracy record — not theoretical claims',
-      'Self-improving source weights via EMA — gets smarter every verified prediction',
-      'Layered injection detection with NFKC normalization and sanitization — adversarially robust pipeline',
-      'L7 autonomous operation — zero human intervention required after deployment',
+      'Source weights update via EMA after every verified prediction, and the funnel scores articles with them',
+      'Layered injection detection with NFKC normalization and sanitization',
+      'Scheduled runs start without a person; repairs are still done by one',
     ],
     weaknesses: [
       'Free-tier rate limits (Groq, planned at 100K tokens/day per account) constrain analysis depth in high-escalation periods',
@@ -69,7 +69,7 @@ export default function AboutFeedbackPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
           <h1 className="text-2xl font-bold text-amber-400">Feedback Loop — Active/Passive SWOT Analysis</h1>
-          <p className="text-sm text-gray-400">A rigorous self-assessment of GNI through the Feedback Loop lens. Active SWOT examines internal capabilities and limitations. Passive SWOT maps external opportunities and threats. Combined with live prediction verification data, this provides the most honest and complete picture of where GNI stands and where it is going.</p>
+          <p className="text-sm text-gray-400">A rigorous self-assessment of GNI through the Feedback Loop lens. Active SWOT examines internal capabilities and limitations. Passive SWOT maps external opportunities and threats. Combined with live prediction verification data, this gives a picture of where GNI stands and where it is going.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">

@@ -538,6 +538,33 @@ def _quality_dims(root):
     return len(dicts[0].keys)
 
 
+def _days_claim(fragment):
+    m = re.search(r"(\d+) and (\d+) days", fragment)
+    if not m:
+        raise FitnessError("no '<n> and <m> days' in fragment %r" % fragment)
+    return ["short=%d" % int(m.group(1)), "long=%d" % int(m.group(2))]
+
+
+def _verify_days(root):
+    """Default verify-by horizons of a debate's predictions: the fallback in
+    mad_result.get('short_verify_days', N) and ('long_verify_days', M) in
+    mad_runner.py (AST). Two different fallbacks for one key halt."""
+    path = os.path.join(root, "ai_engine", "mad_runner.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/mad_runner.py not found")
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    found = {}
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "get" \
+                and len(n.args) == 2 and isinstance(n.args[0], ast.Constant) \
+                and n.args[0].value in ("short_verify_days", "long_verify_days"):
+            found.setdefault(n.args[0].value, set()).add(_num(n.args[1]))
+    if set(found) != {"short_verify_days", "long_verify_days"} or any(len(v) != 1 for v in found.values()):
+        raise FitnessError("verify-day defaults missing or inconsistent in mad_runner.py: %r" % found)
+    return ["short=%d" % found["short_verify_days"].pop(), "long=%d" % found["long_verify_days"].pop()]
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -611,6 +638,9 @@ FITNESS = {
                       _sleeps_claim, _main_sleeps, _scheduled),
     "F-QUALITY-DIMS": ("dimensions of the report quality score: the score_fn entries of the breakdown in "
                        "quality_scorer.score_report (AST)", _count_word, _quality_dims, _equal),
+    "F-VERIFY-DAYS": ("default verify-by horizons of debate predictions: the .get fallbacks for "
+                      "short_verify_days and long_verify_days in mad_runner.py (AST)",
+                      _days_claim, _verify_days, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that

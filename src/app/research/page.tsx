@@ -92,17 +92,17 @@ export default function ResearchPage() {
               },
               {
                 num: '2', title: 'GPVS — GNI Prediction Validation Standard',
-                desc: 'Every MAD debate generates short (7d), medium (30d), and long (180d) horizon predictions. After verify dates, actual SPY market movement is compared. Correct predictions increase source trust weights via EMA. First automated geopolitical prediction validation framework.',
+                desc: 'Every MAD debate records a short-horizon prediction from each agent and a long-horizon one from the Arbitrator, each with a verify-by date, 14 and 180 days by default. After verify dates, actual SPY market movement is compared. Correct predictions increase source trust weights via EMA. First automated geopolitical prediction validation framework.',
                 color: 'border-blue-800 bg-blue-950', accent: 'text-blue-400'
               },
               {
                 num: '3', title: 'CI-Augmented Sentiment Analysis',
-                desc: 'Three independent LLM runs at different temperatures (0.1, 0.3, 0.7) generate 95% confidence intervals for sentiment scores. Uses t-distribution (t=4.303 for n=3). Adds statistical rigor to qualitative AI analysis. First CI framework for LLM-based geopolitical sentiment.',
+                desc: 'Three LLM runs at temperatures 0.1, 0.3, 0.7 give the main report a 95% confidence interval for its sentiment score. Uses t-distribution (t=4.303 for n=3). Adds statistical rigor to qualitative AI analysis. First CI framework for LLM-based geopolitical sentiment.',
                 color: 'border-green-800 bg-green-950', accent: 'text-green-400'
               },
               {
                 num: '4', title: '$0.00/month Autonomous Operation',
-                desc: 'Full geopolitical intelligence platform running autonomous GitHub Actions workflows -- core (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) plus support (entity graph, market, self-bias, mission control) -- entirely on free tiers. Groq 100K tokens/day per account (a planning limit set by GNI) + Supabase 500MB + Vercel + GitHub Actions. Zero cost, unlimited operation. Challenges assumption that AI research requires paid infrastructure.',
+                desc: 'Full geopolitical intelligence platform running autonomous GitHub Actions workflows -- core (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) plus support (entity graph, market, self-bias, mission control) -- entirely on free tiers. Groq 100K tokens/day per account (a planning limit set by GNI) + Supabase 500MB + Vercel + GitHub Actions. Zero cost, within the free-tier limits. Challenges assumption that AI research requires paid infrastructure.',
                 color: 'border-yellow-800 bg-yellow-950', accent: 'text-yellow-400'
               },
             ].map(c => (

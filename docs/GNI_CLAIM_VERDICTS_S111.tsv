@@ -1517,3 +1517,17 @@ b91c549530	CLAIM	STATE	CLM-857	A mini chart plots the articles each source deliv
 5f904ba23b	CLAIM	STATE	CLM-859	At the CRITICAL level the run sends an alert and writes no report.
 d7072d8fd6	CLAIM	STATE	CLM-860	The token figures here are the usage side of the $0.00/month claim; the cost side rests on the free tiers of the providers.
 af3ccda7cb	CLAIM	STATE	CLM-861	Health-agent alerts + recent token usage rows
+9800aabf89	CLAIM	STATE	CLM-862	Combined with live prediction verification data, this gives a picture of where GNI stands and where it is going.
+5497a2129d	CLAIM	STATE	CLM-863	Free-tier architecture — $0.00/month, within the token limits listed under Weaknesses
+0bd325af09	CLAIM	STATE	CLM-864	Multi-agent MAD Protocol spreads threat assessment across four agent lenses and an Arbitrator
+2cba534420	CLAIM	STATE	CLM-865	Source weights update via EMA after every verified prediction, and the funnel scores articles with them
+d6d2cb8e91	CLAIM	STATE	CLM-866	Layered injection detection with NFKC normalization and sanitization
+99f7f6a313	CLAIM	STATE	CLM-867	Scheduled runs start without a person; repairs are still done by one
+cf2ba206e1	CLAIM	STATE	CLM-868	One specific action to take now, aimed at the most probable development.
+0bc759dc3b	CLAIM	STATE	CLM-869	The Arbitrator names the quadrant the debate neglected — Bull, Bear, Black Swan or Ostrich — and explains why.
+a989d6acda	CLAIM	STATE	CLM-870	It points at what nobody in the debate was watching.
+210c5122ff	CLAIM	STATE	CLM-871	Base, Upside and Downside cases, taken from the Bear, Bull and Black Swan arguments.
+b61001d533	CLAIM	STATE	CLM-872	Every MAD debate records a short-horizon prediction from each agent and a long-horizon one from the Arbitrator, each with a verify-by date, 14 and 180 days by default.
+011a1bc746	CLAIM	STATE	CLM-873	Three LLM runs at temperatures 0.1, 0.3, 0.7 give the main report a 95% confidence interval for its sentiment score.
+d26b8f39d2	CLAIM	STATE	CLM-874	Zero cost, within the free-tier limits.
+6634a283b9	CLAIM	STATE	CLM-875	Known positives — what concretely stabilises or improves

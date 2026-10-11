@@ -135,7 +135,7 @@ export default function PredictionsPage() {
 
             <div className="mt-6 bg-gray-900 border border-gray-700 rounded-xl p-4 text-xs text-gray-400">
               <span className="text-white font-bold">How debate verification works: </span>
-              Every MAD debate generates short (7d), medium (30d), and long (180d) horizon predictions.
+              Every MAD debate records a short-horizon prediction from each agent and a long-horizon one from the Arbitrator, each with a verify-by date, 14 and 180 days by default.
               After the verify date passes, actual SPY movement decides the verdict: a fall of 2% or more
               means the flagged threat materialized (accurate); a move staying above -1% means it did not; between is inconclusive.
               Earliest verification: April 10, 2026.
