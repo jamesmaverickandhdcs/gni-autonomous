@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `52a9c21ea1746ce9b35ddb94a435a399` (EOL-normalised) -- **760 claims** (533 STATE, 205 PROMISE, 22 MIXED) at **814 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `ffd7de244f3df05adcdbb26bdb773fc6` (EOL-normalised) -- **760 claims** (533 STATE, 205 PROMISE, 22 MIXED) at **814 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `87448d5140315c86db7bbb175574a2bc` (EOL-normalised) -- **COVERAGE 66/760 = 8.7%** (66 SUPPORTED, 0 DEFEATED, 694 UNMEASURED); **UNREVIEWED 211**, **NUMBERS UNDERIVED 98** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1c6028448` (EOL-normalised) -- **COVERAGE 67/760 = 8.8%** (67 SUPPORTED, 0 DEFEATED, 693 UNMEASURED); **UNREVIEWED 197**, **NUMBERS UNDERIVED 93** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -235,7 +235,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `87448d5140315c86db7bbb17
 | CLM-219 | STATE | UNMEASURED | HISTORICAL | `docs/GNI_WHITE_PAPER_S107.md:208` | GNI White Paper: Autonomous Self-Healing Agentic AI Intelligence System \| Global Nexus Insights \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) \| March 2026 |
 | CLM-220 | STATE | UNMEASURED | UNREVIEWED | `src/app/stocks/page.tsx:224` | 6-Category Market View — Trading Economics Style — Yahoo Finance Data |
 | CLM-221 | STATE | UNMEASURED | PROVENANCE | `src/app/stocks/page.tsx:393` | Global Nexus Insights (Autonomous) \| Market Intelligence \| Yahoo Finance Data \| Higher Diploma in Computer Science \| SUM |
-| CLM-225 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:82` | Quadratic MAD Protocol — Novel Contribution #1 |
 | CLM-226 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:85` | The MAD (Multi-Agent Debate) protocol applies the Johari Window framework to geopolitical intelligence. |
 | CLM-228 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:230` | ⚠️ GNI data is for informational purposes only. |
 | CLM-228 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:187` | ⚠️ GNI data is for informational purposes only. |
@@ -435,8 +434,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `87448d5140315c86db7bbb17
 | CLM-475 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:56` | The Transparency Engine documents every algorithmic decision from 400 raw articles down to the final 3 selected for analysis. |
 | CLM-476 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:57` | Self-Improving Accuracy |
 | CLM-477 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:57` | GPVS scores every prediction against real SPY market movement after 3 and 7 days. |
-| CLM-478 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:58` | Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for every sentiment score. |
-| CLM-479 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:58` | This is Novel Contribution 3 in the academic paper. |
 | CLM-480 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:113` | Every MAD debate produces a directional prediction (BULLISH or BEARISH) with a specific verify date at 3-day and 7-day horizons. |
 | CLM-481 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:113` | The prediction is tied to exact articles and sources that drove the analysis. |
 | CLM-482 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:114` | After 3 and 7 days, actual SPY market movement is measured against the prediction. |
@@ -450,14 +447,8 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `87448d5140315c86db7bbb17
 | CLM-490 | PROMISE | UNMEASURED | PROMISE | `src/app/page.tsx:177` | Over time this builds a self-improving intelligence system where accuracy drives credibility. |
 | CLM-491 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:180` | Powered by GPVS v1.1 — GNI Prediction Validation Standard \| SPY directional accuracy vs actual market movements |
 | CLM-493 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:881` | Each pillar uses the same top articles but focuses its analysis on its domain, giving a multi-dimensional view of the same global events. |
-| CLM-494 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:957` | Four AI agents debate future threats across two axes: Known/Unknown × Proactive/Ignored. |
-| CLM-497 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:957` | This is GNI&apos;s Novel Contribution #1 — the Johari Window applied to AI geopolitical intelligence. |
 | CLM-499 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:1016` | Only the best articles reach the AI for analysis. |
 | CLM-500 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:755` | 🧠 Llama 3 Local |
-| CLM-501 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:156` | Academic Contribution — Novel Contribution 1 |
-| CLM-502 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:157` | The Quantum Strategist represents Novel Contribution 1 in GNI&apos;s IEEE paper: the application of the Johari Window framework to AI-based geopolitical threat assessment. |
-| CLM-503 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:157` | The four-quadrant Known/Unknown x Proactive/Ignored matrix provides a systematic way to ensure no threat dimension is overlooked. |
-| CLM-504 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/quantum/page.tsx:158` | This approach goes beyond standard sentiment analysis by explicitly modeling what the system does not know (Black Swan) and what institutions are actively ignoring (Ostrich) — dimensions absent from conventional intelligence platforms like Bloomberg Terminal or Stratfor. |
 | CLM-505 | STATE | UNMEASURED | PROVENANCE | `src/app/about/quantum/page.tsx:169` | GNI Autonomous \| About — Quantum Strategist \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-506 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:59` | GNI delivers actionable intelligence within minutes of pipeline completion. |
 | CLM-507 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:60` | No single AI perspective is trusted. |
@@ -470,17 +461,13 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `87448d5140315c86db7bbb17
 | CLM-519 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:125` | Links geopolitical threat directly to investable market instruments with sentiment scoring. |
 | CLM-521 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:126` | Allows decision-makers to prepare for multiple futures simultaneously across 7-30 day and 3-24 month horizons. |
 | CLM-522 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:48` | GNI intelligence for academic and research use — IEEE paper evidence |
-| CLM-523 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:85` | 4 Novel Contributions — IEEE Paper |
 | CLM-524 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:149` | CI Width 0.000 = full inter-run agreement (score saturation across the 3 temperature runs) - a real measurement, not missing data. |
 | CLM-525 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:157` | &#x1F4B0; $0.00/month — Free Tier Architecture |
 | CLM-526 | STATE | UNMEASURED | PROVENANCE | `src/app/research/page.tsx:187` | GNI Autonomous \| Research Data \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-527 | STATE | SUPPORTED | F-QUALITY-DIMS claims 5, measured 5 | `src/app/research/page.tsx:70` | Out of 10.0 (5 dimensions) |
-| CLM-528 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:90` | First application of Johari Window to AI geopolitical intelligence. |
 | CLM-530 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:95` | After verify dates, actual SPY market movement is compared. |
 | CLM-531 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:95` | Correct predictions increase source trust weights via EMA. |
-| CLM-532 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:95` | First automated geopolitical prediction validation framework. |
 | CLM-534 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:100` | Adds statistical rigor to qualitative AI analysis. |
-| CLM-535 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:100` | First CI framework for LLM-based geopolitical sentiment. |
 | CLM-536 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:104` | $0.00/month Autonomous Operation |
 | CLM-540 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:105` | Challenges assumption that AI research requires paid infrastructure. |
 | CLM-542 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:161` | 500MB PostgreSQL |
@@ -769,7 +756,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `87448d5140315c86db7bbb17
 | CLM-816 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:881` | Each pipeline run produces a separate AI analysis for every intelligence pillar that has selected articles: Geopolitical (conflict, diplomacy, alliances), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). |
 | CLM-817 | STATE | UNMEASURED | QUALITATIVE | `src/app/pillars/page.tsx:123` | Each pipeline run produces a separate AI analysis for every pillar that has selected articles — Geopolitical (conflict, diplomacy), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). |
 | CLM-818 | STATE | SUPPORTED | F-CI-T claims n=3, measured t=4.303+n=3 | `src/app/research/page.tsx:149` | The confidence interval needs three analysis runs inside one pipeline run (t-distribution, n=3). |
-| CLM-819 | STATE | UNMEASURED | UNREVIEWED | `src/app/research/page.tsx:90` | Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window matrix (Known/Unknown × Proactive/Ignored). |
 | CLM-820 | STATE | SUPPORTED | F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/research/page.tsx:100` | Uses t-distribution (t=4.303 for n=3). |
 | CLM-821 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:71` | The GPVS (GNI Prediction Validation Standard) system continuously scores each agent&apos;s directional predictions against reality, building an evidence-based accuracy record over multiple horizons (7d, 30d, 180d). |
 | CLM-822 | PROMISE | UNMEASURED | PROMISE | `src/app/scenarios/page.tsx:130` | — Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications). |
@@ -827,3 +813,17 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `87448d5140315c86db7bbb17
 | CLM-873 | STATE | SUPPORTED | F-CI-TEMPS claims 0.1+0.3+0.7, measured 0.1+0.3+0.7 | `src/app/research/page.tsx:100` | Three LLM runs at temperatures 0.1, 0.3, 0.7 give the main report a 95% confidence interval for its sentiment score. |
 | CLM-874 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:105` | Zero cost, within the free-tier limits. |
 | CLM-875 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:69` | Known positives — what concretely stabilises or improves |
+| CLM-876 | STATE | SUPPORTED | F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/about/patterns/page.tsx:58` | Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for the sentiment score of the main report. |
+| CLM-877 | STATE | UNMEASURED | PROVENANCE | `src/app/about/patterns/page.tsx:58` | This is contribution 3 in the academic paper. |
+| CLM-878 | STATE | UNMEASURED | PROVENANCE | `src/app/about/quantum/page.tsx:156` | Academic Contribution — Contribution 1 |
+| CLM-879 | STATE | UNMEASURED | PROVENANCE | `src/app/about/quantum/page.tsx:157` | The Quantum Strategist represents contribution 1 in GNI&apos;s IEEE paper: the application of the Johari Window framework to AI-based geopolitical threat assessment. |
+| CLM-880 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:157` | Its four quadrants — Known Positives, Known Negatives, Unknown Negatives and Ignored Realities — give a systematic way to look at each threat dimension. |
+| CLM-881 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:158` | This approach goes beyond standard sentiment analysis by explicitly modeling what the system does not know (Black Swan) and what institutions are actively ignoring (Ostrich). |
+| CLM-882 | STATE | UNMEASURED | PROVENANCE | `src/app/methodology/page.tsx:82` | Quadratic MAD Protocol — Contribution #1 |
+| CLM-883 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:957` | Four AI agents debate future threats across four quadrants: Known Positives, Known Negatives, Unknown Negatives and Ignored Realities. |
+| CLM-884 | STATE | UNMEASURED | PROVENANCE | `src/app/page.tsx:957` | This is contribution #1 of the GNI paper — the Johari Window applied to AI geopolitical intelligence. |
+| CLM-885 | STATE | UNMEASURED | PROVENANCE | `src/app/research/page.tsx:85` | 4 Contributions — IEEE Paper |
+| CLM-886 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:90` | Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window, in four quadrants: Known Positives, Known Negatives, Unknown Negatives and Ignored Realities. |
+| CLM-887 | STATE | UNMEASURED | HISTORICAL | `src/app/research/page.tsx:90` | A search in October 2026 found no earlier use of the Johari Window in AI geopolitical intelligence; known/unknown quadrants have been applied to LLM knowledge before (Amayuelas et al., 2023). |
+| CLM-888 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:95` | Automated resolution of geopolitical forecasts also exists elsewhere, for example ForecastBench (ICLR 2025), which resolves questions from ACLED conflict data. |
+| CLM-889 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:100` | Sampling several temperatures to measure LLM uncertainty is also studied elsewhere (Monte Carlo Temperature, TrustNLP 2025). |

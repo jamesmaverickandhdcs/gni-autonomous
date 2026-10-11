@@ -82,22 +82,22 @@ export default function ResearchPage() {
 
         {/* Novel Contributions */}
         <section className="mb-8">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">4 Novel Contributions — IEEE Paper</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">4 Contributions — IEEE Paper</div>
           <div className="space-y-3">
             {[
               {
                 num: '1', title: 'Quadratic MAD Protocol',
-                desc: 'Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window matrix (Known/Unknown × Proactive/Ignored). Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. First application of Johari Window to AI geopolitical intelligence.',
+                desc: 'Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window, in four quadrants: Known Positives, Known Negatives, Unknown Negatives and Ignored Realities. Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. A search in October 2026 found no earlier use of the Johari Window in AI geopolitical intelligence; known/unknown quadrants have been applied to LLM knowledge before (Amayuelas et al., 2023).',
                 color: 'border-red-800 bg-red-950', accent: 'text-red-400'
               },
               {
                 num: '2', title: 'GPVS — GNI Prediction Validation Standard',
-                desc: 'Every MAD debate records a short-horizon prediction from each agent and a long-horizon one from the Arbitrator, each with a verify-by date, 14 and 180 days by default. After verify dates, actual SPY market movement is compared. Correct predictions increase source trust weights via EMA. First automated geopolitical prediction validation framework.',
+                desc: 'Every MAD debate records a short-horizon prediction from each agent and a long-horizon one from the Arbitrator, each with a verify-by date, 14 and 180 days by default. After verify dates, actual SPY market movement is compared. Correct predictions increase source trust weights via EMA. Automated resolution of geopolitical forecasts also exists elsewhere, for example ForecastBench (ICLR 2025), which resolves questions from ACLED conflict data.',
                 color: 'border-blue-800 bg-blue-950', accent: 'text-blue-400'
               },
               {
                 num: '3', title: 'CI-Augmented Sentiment Analysis',
-                desc: 'Three LLM runs at temperatures 0.1, 0.3, 0.7 give the main report a 95% confidence interval for its sentiment score. Uses t-distribution (t=4.303 for n=3). Adds statistical rigor to qualitative AI analysis. First CI framework for LLM-based geopolitical sentiment.',
+                desc: 'Three LLM runs at temperatures 0.1, 0.3, 0.7 give the main report a 95% confidence interval for its sentiment score. Uses t-distribution (t=4.303 for n=3). Adds statistical rigor to qualitative AI analysis. Sampling several temperatures to measure LLM uncertainty is also studied elsewhere (Monte Carlo Temperature, TrustNLP 2025).',
                 color: 'border-green-800 bg-green-950', accent: 'text-green-400'
               },
               {

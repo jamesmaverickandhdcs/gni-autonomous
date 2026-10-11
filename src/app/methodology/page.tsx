@@ -79,7 +79,7 @@ export default function MethodologyPage() {
 
         {/* MAD Protocol detail */}
         <section>
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Quadratic MAD Protocol — Novel Contribution #1</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Quadratic MAD Protocol — Contribution #1</div>
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
             <div className="text-xs text-gray-400 leading-relaxed mb-4">
               The MAD (Multi-Agent Debate) protocol applies the Johari Window framework to geopolitical intelligence.
@@ -89,10 +89,10 @@ export default function MethodologyPage() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { agent: '&#x1F402; Bull', quad: 'Known + Proactive', desc: 'Finds what concretely stabilises, de-escalates or improves. What positive outcomes are being missed?', color: 'bg-green-950 border-green-800 text-green-400' },
-                { agent: '&#x1F43B; Bear', quad: 'Known + Ignored', desc: 'Finds systemic failures and fragile systems. What known risks are being dismissed?', color: 'bg-red-950 border-red-800 text-red-400' },
-                { agent: '&#x1F9A2; Black Swan', quad: 'Unknown + Negative', desc: 'Uncovers hidden dangers from low-scoring articles. What could catch everyone off guard?', color: 'bg-blue-950 border-blue-800 text-blue-400' },
-                { agent: '&#x1F9A6; Ostrich', quad: 'Unknown + Ignored', desc: 'Exposes what institutions are in denial about. What threat is everyone pretending does not exist?', color: 'bg-yellow-950 border-yellow-800 text-yellow-400' },
+                { agent: '&#x1F402; Bull', quad: 'Known Positives', desc: 'Finds what concretely stabilises, de-escalates or improves. What positive outcomes are being missed?', color: 'bg-green-950 border-green-800 text-green-400' },
+                { agent: '&#x1F43B; Bear', quad: 'Known Negatives', desc: 'Finds systemic failures and fragile systems. What known risks are being dismissed?', color: 'bg-red-950 border-red-800 text-red-400' },
+                { agent: '&#x1F9A2; Black Swan', quad: 'Unknown Negatives', desc: 'Uncovers hidden dangers from low-scoring articles. What could catch everyone off guard?', color: 'bg-blue-950 border-blue-800 text-blue-400' },
+                { agent: '&#x1F9A6; Ostrich', quad: 'Ignored Realities', desc: 'Exposes what institutions are in denial about. What threat is everyone pretending does not exist?', color: 'bg-yellow-950 border-yellow-800 text-yellow-400' },
               ].map(a => (
                 <div key={a.agent} className={`border rounded-lg p-3 ${a.color}`}>
                   <div className="text-sm font-bold mb-1" dangerouslySetInnerHTML={{ __html: a.agent }} />

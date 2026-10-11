@@ -1531,3 +1531,17 @@ b61001d533	CLAIM	STATE	CLM-872	Every MAD debate records a short-horizon predicti
 011a1bc746	CLAIM	STATE	CLM-873	Three LLM runs at temperatures 0.1, 0.3, 0.7 give the main report a 95% confidence interval for its sentiment score.
 d26b8f39d2	CLAIM	STATE	CLM-874	Zero cost, within the free-tier limits.
 6634a283b9	CLAIM	STATE	CLM-875	Known positives — what concretely stabilises or improves
+5a47f2ecb4	CLAIM	STATE	CLM-876	Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for the sentiment score of the main report.
+e18d109572	CLAIM	STATE	CLM-877	This is contribution 3 in the academic paper.
+ec41e588b4	CLAIM	STATE	CLM-878	Academic Contribution — Contribution 1
+a383e1c8c4	CLAIM	STATE	CLM-879	The Quantum Strategist represents contribution 1 in GNI&apos;s IEEE paper: the application of the Johari Window framework to AI-based geopolitical threat assessment.
+d1d2a3b555	CLAIM	STATE	CLM-880	Its four quadrants — Known Positives, Known Negatives, Unknown Negatives and Ignored Realities — give a systematic way to look at each threat dimension.
+e7d0f88461	CLAIM	STATE	CLM-881	This approach goes beyond standard sentiment analysis by explicitly modeling what the system does not know (Black Swan) and what institutions are actively ignoring (Ostrich).
+66576ea171	CLAIM	STATE	CLM-882	Quadratic MAD Protocol — Contribution #1
+b0fa001490	CLAIM	STATE	CLM-883	Four AI agents debate future threats across four quadrants: Known Positives, Known Negatives, Unknown Negatives and Ignored Realities.
+31cc480068	CLAIM	STATE	CLM-884	This is contribution #1 of the GNI paper — the Johari Window applied to AI geopolitical intelligence.
+4112869296	CLAIM	STATE	CLM-885	4 Contributions — IEEE Paper
+bc2b2c268e	CLAIM	STATE	CLM-886	Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window, in four quadrants: Known Positives, Known Negatives, Unknown Negatives and Ignored Realities.
+9f11f30842	CLAIM	STATE	CLM-887	A search in October 2026 found no earlier use of the Johari Window in AI geopolitical intelligence; known/unknown quadrants have been applied to LLM knowledge before (Amayuelas et al., 2023).
+7b9bc97a67	CLAIM	STATE	CLM-888	Automated resolution of geopolitical forecasts also exists elsewhere, for example ForecastBench (ICLR 2025), which resolves questions from ACLED conflict data.
+fe08029e02	CLAIM	STATE	CLM-889	Sampling several temperatures to measure LLM uncertainty is also studied elsewhere (Monte Carlo Temperature, TrustNLP 2025).

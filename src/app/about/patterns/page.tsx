@@ -55,7 +55,7 @@ export default function AboutPatternsPage() {
             {[
               { title: 'Evidence Over Opinion', desc: 'Every GNI claim is traceable to a specific pipeline run, specific articles, and a specific AI analysis chain. The Transparency Engine documents every algorithmic decision from 400 raw articles down to the final 3 selected for analysis.' },
               { title: 'Self-Improving Accuracy', desc: 'GPVS scores every prediction against real SPY market movement after 3 and 7 days. Sources that led to correct predictions gain higher trust weights via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.' },
-              { title: 'Statistical Rigor', desc: 'Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for every sentiment score. This is Novel Contribution 3 in the academic paper.' },
+              { title: 'Statistical Rigor', desc: 'Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for the sentiment score of the main report. This is contribution 3 in the academic paper.' },
             ].map(item => (
               <div key={item.title} className="bg-green-900 bg-opacity-30 rounded-lg p-4">
                 <div className="text-sm font-bold text-green-300 mb-2">{item.title}</div>

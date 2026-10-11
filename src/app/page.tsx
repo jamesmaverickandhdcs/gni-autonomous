@@ -954,7 +954,7 @@ export default function Home() {
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3 mb-4 text-xs text-gray-400 leading-relaxed">
                     <span className="text-white font-bold">How MAD works: </span>
-                    Four AI agents debate future threats across two axes: Known/Unknown × Proactive/Ignored. Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. This is GNI&apos;s Novel Contribution #1 — the Johari Window applied to AI geopolitical intelligence.
+                    Four AI agents debate future threats across four quadrants: Known Positives, Known Negatives, Unknown Negatives and Ignored Realities. Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. This is contribution #1 of the GNI paper — the Johari Window applied to AI geopolitical intelligence.
                   </div>
                   {latest.mad_confidence > 0 && (
                     <div className="w-full bg-gray-800 rounded-full h-2 mb-4">

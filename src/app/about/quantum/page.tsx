@@ -153,9 +153,9 @@ export default function AboutQuantumPage() {
         )}
 
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
-          <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — Novel Contribution 1</div>
-          <p className="text-sm text-gray-300 leading-relaxed mb-3">The Quantum Strategist represents Novel Contribution 1 in GNI&apos;s IEEE paper: the application of the Johari Window framework to AI-based geopolitical threat assessment. The four-quadrant Known/Unknown x Proactive/Ignored matrix provides a systematic way to ensure no threat dimension is overlooked.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">This approach goes beyond standard sentiment analysis by explicitly modeling what the system does not know (Black Swan) and what institutions are actively ignoring (Ostrich) — dimensions absent from conventional intelligence platforms like Bloomberg Terminal or Stratfor.</p>
+          <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — Contribution 1</div>
+          <p className="text-sm text-gray-300 leading-relaxed mb-3">The Quantum Strategist represents contribution 1 in GNI&apos;s IEEE paper: the application of the Johari Window framework to AI-based geopolitical threat assessment. Its four quadrants — Known Positives, Known Negatives, Unknown Negatives and Ignored Realities — give a systematic way to look at each threat dimension.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">This approach goes beyond standard sentiment analysis by explicitly modeling what the system does not know (Black Swan) and what institutions are actively ignoring (Ostrich).</p>
         </div>
 
       </main>
