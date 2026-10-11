@@ -322,7 +322,7 @@ export default function ScenariosPage() {
                 </div>
                 <div>
                   <div className="text-green-400 font-bold mb-1">🐂 Upside Case</div>
-                  <p>Bull agent — opportunity cost of inaction on known positives.</p>
+                  <p>Bull agent — known positives: what concretely stabilises, de-escalates or improves.</p>
                 </div>
                 <div>
                   <div className="text-red-400 font-bold mb-1">🦢 Downside Case</div>

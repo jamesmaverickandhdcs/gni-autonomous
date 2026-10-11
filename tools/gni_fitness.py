@@ -430,6 +430,102 @@ def _src_cap(root):
     return vals[0]
 
 
+def _version_claim(fragment):
+    """'Python 3.10+' or 'Next.js 14' -> the version as a tuple of ints."""
+    m = re.search(r"(\d+(?:\.\d+)*)\+?", fragment)
+    if not m:
+        raise FitnessError("no version in fragment %r" % fragment)
+    return tuple(int(x) for x in m.group(1).split("."))
+
+
+def _at_least(claimed, measured):
+    """'3.10+' holds when every measured version is at least the claimed one."""
+    return all(tuple(v[:len(claimed)]) >= claimed for v in measured)
+
+
+def _python_versions(root):
+    """Every python-version the workflows set up (setup-python)."""
+    out = []
+    for path in glob.glob(os.path.join(root, ".github", "workflows", "*.yml")):
+        with open(path, "rb") as fh:
+            out += re.findall(r"python-version:\s*['\"]?(\d+(?:\.\d+)+)", fh.read().decode("utf-8"))
+    if not out:
+        raise FitnessError("no python-version in any workflow")
+    # a tuple, not a list: gni_claims.fmt joins lists as strings
+    return tuple(sorted({tuple(int(x) for x in v.split(".")) for v in out}))
+
+
+def _next_major(root):
+    """Major version of the `next` dependency in package.json."""
+    import json
+    path = os.path.join(root, "package.json")
+    if not os.path.isfile(path):
+        raise FitnessError("package.json not found")
+    with open(path, "rb") as fh:
+        deps = json.loads(fh.read().decode("utf-8")).get("dependencies", {})
+    m = re.search(r"(\d+)", deps.get("next", ""))
+    if not m:
+        raise FitnessError("no next version in package.json dependencies")
+    return (int(m.group(1)),)
+
+
+def _major_equal(claimed, measured):
+    return claimed[:1] == measured[:1]
+
+
+def _py_names(fragment):
+    names = re.findall(r"\b([a-z_][a-z0-9_]*\.py)\b", fragment)
+    if not names:
+        raise FitnessError("no <name>.py in fragment %r" % fragment)
+    return sorted(set(names))
+
+
+def _workflow_entrypoints(root):
+    """Basenames of the python files the workflows run (`python <path>.py`)."""
+    out = set()
+    for path in glob.glob(os.path.join(root, ".github", "workflows", "*.yml")):
+        with open(path, "rb") as fh:
+            out |= {os.path.basename(x) for x in
+                    re.findall(r"python3? ([\w./-]+\.py)", fh.read().decode("utf-8"))}
+    if not out:
+        raise FitnessError("no `python <file>.py` in any workflow")
+    return sorted(out)
+
+
+def _dedup_words(root):
+    """How many title words the dedup key hashes: the slice bound in
+    intelligence_funnel._get_dedup_key (AST)."""
+    fn = _func(root, "ai_engine/funnel/intelligence_funnel.py", "_get_dedup_key")
+    vals = [_num(n.slice.upper) for n in ast.walk(fn)
+            if isinstance(n, ast.Subscript) and isinstance(n.slice, ast.Slice)
+            and n.slice.lower is None and n.slice.upper is not None]
+    if len(vals) != 1:
+        raise FitnessError("expected one [:n] slice in _get_dedup_key, got %d" % len(vals))
+    return vals[0]
+
+
+def _sleeps_claim(fragment):
+    m = re.search(r"(\d+)\s*s\b", fragment)
+    if not m:
+        raise FitnessError("no <n>s in fragment %r" % fragment)
+    return ["%ds" % int(m.group(1))]
+
+
+def _main_sleeps(root):
+    """Every literal time.sleep(N) in the main pipeline (main.py, AST)."""
+    path = os.path.join(root, "ai_engine", "main.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/main.py not found")
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    out = sorted({"%gs" % _num(n.args[0]) for n in ast.walk(tree) if isinstance(n, ast.Call)
+                  and isinstance(n.func, ast.Attribute) and n.func.attr == "sleep"
+                  and n.args and isinstance(n.args[0], ast.Constant)})
+    if not out:
+        raise FitnessError("no time.sleep(<literal>) in main.py")
+    return out
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -491,6 +587,16 @@ FITNESS = {
                   _secret_names, _workflow_secrets, _scheduled),
     "F-SRC-CAP": ("per-source article cap the main pipeline passes to run_funnel (main.py, AST)",
                   _first_int, _src_cap, _equal),
+    "F-PY-MIN": ("python versions the workflows set up; a claim 'X+' holds when every one is at least X",
+                 _version_claim, _python_versions, _at_least),
+    "F-NEXT": ("major version of the next dependency in package.json",
+               _version_claim, _next_major, _major_equal),
+    "F-ENTRY": ("python files the workflows run; a claim's file names must be among them",
+                _py_names, _workflow_entrypoints, _scheduled),
+    "F-DEDUP-WORDS": ("title words hashed by intelligence_funnel._get_dedup_key (AST slice bound)",
+                      _first_int, _dedup_words, _equal),
+    "F-PILLAR-WAIT": ("literal time.sleep waits in main.py; a claimed wait must be one of them",
+                      _sleeps_claim, _main_sleeps, _scheduled),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that

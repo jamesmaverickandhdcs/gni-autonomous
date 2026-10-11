@@ -23,13 +23,13 @@ export default function MethodologyPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Pipeline Architecture</div>
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
             <div className="text-sm text-gray-300 leading-relaxed mb-4">
-              GNI_Autonomous runs on autonomous GitHub Actions workflows -- core intelligence pipelines plus support workflows -- started by cron schedules, except the adaptive run, which the heartbeat triggers. No human intervention required.
-              Every day it collects global news, analyzes it with AI, produces sentiment reports with 95% confidence intervals,
-              runs a 4-agent multi-perspective debate, and publishes everything to this live web app.
+              GNI_Autonomous runs on autonomous GitHub Actions workflows -- core intelligence pipelines plus support workflows -- started by cron schedules, except the adaptive run, which the heartbeat triggers. No person starts a scheduled run.
+              Every day it collects global news, analyzes it with AI, gives the main report a confidence interval from three runs (n=3),
+              runs a four-agent debate, and publishes the results to this web app.
             </div>
             <div className="space-y-3">
               {[
-                { pipeline: 'gni_pipeline', cron: '02:13 + 10:13 UTC', tokens: '~17,780/run (measured avg, 61 runs, Aug 2026)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → pillar reports → save → verify' },
+                { pipeline: 'gni_pipeline', cron: '02:13 + 10:13 UTC', tokens: '~17,780/run (measured avg, 61 runs, Aug 2026)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → save → pillar reports → verify' },
                 { pipeline: 'gni_mad', cron: '02:43 + 10:43 UTC', tokens: '~68,509/run (measured avg, 61 runs, Aug 2026; range 7.4K-97K)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
                 { pipeline: 'gni_heartbeat', cron: FRESHNESS_SHORT, tokens: '0 (zero)', desc: 'Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection' },
                 { pipeline: 'gni_adaptive', cron: 'On trigger', tokens: '0 (Cerebras path)', desc: 'Fresh analysis when escalation spikes — an alert only at CRITICAL, one Cerebras analysis at every other level' },
@@ -55,14 +55,14 @@ export default function MethodologyPage() {
           <div className="space-y-3">
             {[
               { stage: 'Step 0', title: 'Quota Guard Pre-flight', desc: 'Reads groq_daily_usage → sums today\'s tokens → checks against 85K safe ceiling. If insufficient headroom: EXIT with Telegram alert. Sacred runs (02:13+10:13 UTC) always permitted.' },
-              { stage: 'Stage 1a', title: 'RSS Collection', desc: 'Fetches up to 20 articles per RSS source from 42+ global news feeds. Target: 400+ raw articles per run. All saved to pipeline_articles table.' },
-              { stage: 'Stage 1b', title: 'Injection Detection', desc: 'Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. The debate validates every LLM response with a hardened-JSON guardian, and so does the primary report analysis; each saved report is recorded in a SHA-256 hash-chained audit trail. Flagged articles written to audit_trail table.' },
-              { stage: 'Stage 2', title: 'Deduplication', desc: 'MD5 hash of first 6 title words. Articles with same hash within 6 hours are deduplicated. Prevents duplicate reporting on same event.' },
+              { stage: 'Stage 1a', title: 'RSS Collection', desc: 'Fetches up to 20 articles per RSS source from 42+ global news feeds. Target: 400+ raw articles per run. Every article the funnel evaluates is saved to the pipeline_articles table with its stage results.' },
+              { stage: 'Stage 1b', title: 'Injection Detection', desc: 'Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. The debate validates every LLM response with a hardened-JSON guardian, and so does the primary report analysis; each saved report is recorded in a SHA-256 hash-chained audit trail. A flagged article stays in the article trace of the run, with the reason it was stopped.' },
+              { stage: 'Stage 2', title: 'Deduplication', desc: 'MD5 hash of the first 6 title words. Articles with the same hash in one run are deduplicated, and URLs that a recent run already selected are excluded.' },
               { stage: 'Stage 3', title: 'Intelligence Funnel', desc: 'Each article gets a geopolitical significance score. The top articles are selected with source diversity enforced (max 2 per source). Pillar routing: geo/tech/fin tags assigned.' },
               { stage: 'Stage 4a', title: 'Primary Analysis + CI', desc: 'Groq LLM (model set by the GROQ_MODEL secret) analyzes top articles. 3 independent runs at temperatures 0.1, 0.3, 0.7 generate 95% confidence intervals using t-distribution (t=4.303 for n=3).' },
-              { stage: 'Stage 4b', title: 'Three Pillar Reports', desc: 'Three separate AI analyses for Geopolitical, Technology, Financial domains. Same top articles, domain-specific prompts. Runs after 120s rate limit reset.' },
-              { stage: 'Stage 5', title: 'Save + Telegram', desc: 'Report saved to Supabase reports table with SHA-256 audit chain. Telegram notification sent with escalation level, sentiment, and MAD verdict.' },
-              { stage: 'Stage 6', title: 'GPVS Verify', desc: 'After verify_date passes, actual SPY market movement compared to prediction direction. Accuracy logged. Source weights updated via EMA: correct=weight×1.1, wrong=weight×0.9.' },
+              { stage: 'Stage 4b', title: 'Three Pillar Reports', desc: 'A separate AI analysis for each of the Geopolitical, Technology and Financial pillars that has selected articles. Each pillar reads its own selected articles with a domain-specific prompt. Runs after a 120s wait for the rate limit.' },
+              { stage: 'Stage 5', title: 'Save + Telegram', desc: 'Report saved to Supabase reports table with SHA-256 audit chain. A Telegram message lists the articles of the run, and at a high escalation score the admin also gets an alert with the level and the sentiment; the debate runs later, so its verdict is not in it.' },
+              { stage: 'Stage 6', title: 'GPVS Verify', desc: 'After verify_date passes, actual SPY market movement compared to prediction direction. Accuracy logged. Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.' },
             ].map((s, i) => (
               <div key={s.stage} className={`border rounded-xl p-4 ${i % 2 === 0 ? 'border-gray-700 bg-gray-900' : 'border-gray-800 bg-gray-900'}`}>
                 <div className="flex items-start gap-4">
@@ -89,7 +89,7 @@ export default function MethodologyPage() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { agent: '&#x1F402; Bull', quad: 'Known + Proactive', desc: 'Identifies opportunity costs of inaction. What positive outcomes are being missed?', color: 'bg-green-950 border-green-800 text-green-400' },
+                { agent: '&#x1F402; Bull', quad: 'Known + Proactive', desc: 'Finds what concretely stabilises, de-escalates or improves. What positive outcomes are being missed?', color: 'bg-green-950 border-green-800 text-green-400' },
                 { agent: '&#x1F43B; Bear', quad: 'Known + Ignored', desc: 'Finds systemic failures and fragile systems. What known risks are being dismissed?', color: 'bg-red-950 border-red-800 text-red-400' },
                 { agent: '&#x1F9A2; Black Swan', quad: 'Unknown + Negative', desc: 'Uncovers hidden dangers from low-scoring articles. What could catch everyone off guard?', color: 'bg-blue-950 border-blue-800 text-blue-400' },
                 { agent: '&#x1F9A6; Ostrich', quad: 'Unknown + Ignored', desc: 'Exposes what institutions are in denial about. What threat is everyone pretending does not exist?', color: 'bg-yellow-950 border-yellow-800 text-yellow-400' },
@@ -112,7 +112,7 @@ export default function MethodologyPage() {
               ['Python 3.10+', 'Pipeline scripts', 'main.py, mad_runner.py, monitoring_pipeline.py, adaptive_pipeline.py'],
               ['Next.js 14 + TypeScript', 'Web app + API routes', '35 pages live on Vercel'],
               ['Groq API', 'LLM inference', 'model set by GROQ_MODEL secret — free tier, planned at 100K tokens/day per account'],
-              ['Supabase', 'PostgreSQL database', '33 tables — reports, predictions, audit_trail, groq_daily_usage...'],
+              ['Supabase', 'PostgreSQL database', '33 tables — reports, debate_predictions, audit_trail, groq_daily_usage...'],
               ['GitHub Actions', 'Cron + CI/CD', 'core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; support: graph, market, self-bias, mission control; CI: test harnesses on push'],
               ['Telegram Bot API', 'Alert notifications', 'Sacred completion, CRITICAL escalation, NYSE alerts, divergence'],
               ['Vercel', 'Deployment + CDN', 'Auto-deploy on git push to main'],

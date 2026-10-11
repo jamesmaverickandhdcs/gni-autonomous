@@ -1478,3 +1478,18 @@ d9691023ab	CLAIM	STATE	CLM-818	The confidence interval needs three analysis runs
 65a2cf7a1b	CLAIM	STATE	CLM-820	Uses t-distribution (t=4.303 for n=3).
 d5e1796be7	CLAIM	STATE	CLM-821	The GPVS (GNI Prediction Validation Standard) system continuously scores each agent&apos;s directional predictions against reality, building an evidence-based accuracy record over multiple horizons (7d, 30d, 180d).
 6daa6fce77	CLAIM	PROMISE	CLM-822	— Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications).
+ef4cfadd53	CLAIM	STATE	CLM-823	No person starts a scheduled run.
+dce18a8792	CLAIM	STATE	CLM-824	Every day it collects global news, analyzes it with AI, gives the main report a confidence interval from three runs (n=3), runs a four-agent debate, and publishes the results to this web app.
+ba3e038ad7	CLAIM	STATE	CLM-825	RSS collection → intelligence funnel → AI analysis → CI → save → pillar reports → verify
+99815a96c7	CLAIM	STATE	CLM-826	Every article the funnel evaluates is saved to the pipeline_articles table with its stage results.
+8332583dd9	CLAIM	STATE	CLM-827	A flagged article stays in the article trace of the run, with the reason it was stopped.
+180c1e9d3f	CLAIM	STATE	CLM-828	MD5 hash of the first 6 title words.
+a1516a09e4	CLAIM	STATE	CLM-829	Articles with the same hash in one run are deduplicated, and URLs that a recent run already selected are excluded.
+f22229c419	CLAIM	STATE	CLM-830	A separate AI analysis for each of the Geopolitical, Technology and Financial pillars that has selected articles.
+4c84999cfd	CLAIM	STATE	CLM-831	Each pillar reads its own selected articles with a domain-specific prompt.
+b0dc319662	CLAIM	STATE	CLM-832	Runs after a 120s wait for the rate limit.
+7cd5f224da	CLAIM	STATE	CLM-833	A Telegram message lists the articles of the run, and at a high escalation score the admin also gets an alert with the level and the sentiment; the debate runs later, so its verdict is not in it.
+cfd435d6dd	CLAIM	STATE	CLM-834	Finds what concretely stabilises, de-escalates or improves.
+eacc9451d9	CLAIM	STATE	CLM-835	33 tables — reports, debate_predictions, audit_trail, groq_daily_usage...
+4c56363fdb	CLAIM	STATE	CLM-836	Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored.
+c15760e3d8	CLAIM	STATE	CLM-837	Bull agent — known positives: what concretely stabilises, de-escalates or improves.
