@@ -1451,3 +1451,6 @@ f9570daa39	UI	-	-	Recommended Interval
 3a0c039e1b	CLAIM	STATE	CLM-793	The adaptive run waits at least CRITICAL 30 min · HIGH 2 h · ELEVATED 4 h · MODERATE 6 h · LOW 12 h between runs; this panel shows the frequency controller&apos;s logged recommendation, and the cron schedule does not change.
 96a4618099	CLAIM	STATE	CLM-794	Peer consultants develop each agent&apos;s case between rounds, and the Arbitrator rules BULLISH, BEARISH or NEUTRAL, with a confidence score, only after the final round.
 46a6d2b5ab	CLAIM	STATE	CLM-795	Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one.
+27879b2614	CLAIM	STATE	CLM-796	The debate validates every LLM response with a hardened-JSON guardian, and so does the primary report analysis; each saved report is recorded in a SHA-256 hash-chained audit trail.
+9dc5f3b7b7	CLAIM	STATE	CLM-797	Geopolitical significance scoring of each article that passes deduplication, top-N selection with source diversity enforcement, and, on the main pipeline, AI runs at temperatures 0.1/0.3/0.7 whose spread gives a t-distribution confidence interval (t=4.303, n=3) for the sentiment score.
+5b27cbd7a5	CLAIM	STATE	CLM-798	Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.

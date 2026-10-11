@@ -803,3 +803,7 @@ CLM-792	UNMEASURED	QUALITATIVE
 CLM-793	F-ADAPT-GAP	CRITICAL 30 min · HIGH 2 h · ELEVATED 4 h · MODERATE 6 h · LOW 12 h
 CLM-794	UNMEASURED	QUALITATIVE
 CLM-795	UNMEASURED	QUALITATIVE
+CLM-796	F-AUDIT-HASH	SHA-256 hash-chained
+CLM-797	F-CI-TEMPS	temperatures 0.1/0.3/0.7
+CLM-797	F-CI-T	t=4.303, n=3
+CLM-798	F-EMA	new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct

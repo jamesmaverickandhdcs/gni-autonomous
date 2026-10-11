@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `d0a1e4655b583094c48e4b751cc66d30` (EOL-normalised) -- **741 claims** (515 STATE, 204 PROMISE, 22 MIXED) at **794 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `14170ba40715b559070172f9362854a5` (EOL-normalised) -- **741 claims** (515 STATE, 204 PROMISE, 22 MIXED) at **794 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `0d2792a67817cca19ee76a5da02993ab` (EOL-normalised) -- **COVERAGE 35/741 = 4.7%** (35 SUPPORTED, 0 DEFEATED, 706 UNMEASURED); **UNREVIEWED 364**, **NUMBERS UNDERIVED 122** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f8e091f40b3cb53d2bd399084934ae9d` (EOL-normalised) -- **COVERAGE 38/741 = 5.1%** (38 SUPPORTED, 0 DEFEATED, 703 UNMEASURED); **UNREVIEWED 361**, **NUMBERS UNDERIVED 119** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -271,8 +271,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `0d2792a67817cca19ee76a5d
 | CLM-244 | PROMISE | UNMEASURED | PROMISE | `src/app/methodology/page.tsx:58` | Target: 400+ raw articles per run. |
 | CLM-245 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:58` | All saved to pipeline_articles table. |
 | CLM-246 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/methodology/page.tsx:59` | Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
-| CLM-247 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:51` | Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain. |
-| CLM-247 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:59` | Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain. |
 | CLM-248 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:59` | Flagged articles written to audit_trail table. |
 | CLM-249 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:60` | MD5 hash of first 6 title words. |
 | CLM-250 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:60` | Articles with same hash within 6 hours are deduplicated. |
@@ -314,9 +312,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `0d2792a67817cca19ee76a5d
 | CLM-302 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:50` | 42 global news sources, up to 20 articles each, 400-500 raw articles per run. |
 | CLM-304 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | 81-Pattern Injection Detection |
 | CLM-305 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
-| CLM-306 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:52` | Geopolitical significance scoring (0-20 points), top-N selection with source diversity enforcement, 3 independent AI runs at temperatures 0.1/0.3/0.7, t-distribution confidence interval (t=4.303, n=3, alpha=0.05) for every sentiment score. |
 | CLM-307 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:53` | After verify_date passes, actual SPY movement measured against prediction direction. |
-| CLM-308 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:53` | Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for inconclusive. |
 | CLM-311 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. |
 | CLM-313 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Telegram CRITICAL/WARNING alerts with specific action recommendations. |
 | CLM-314 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:85` | $0.00/Month Forever |
@@ -807,3 +803,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `0d2792a67817cca19ee76a5d
 | CLM-794 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:88` | Peer consultants develop each agent&apos;s case between rounds, and the Arbitrator rules BULLISH, BEARISH or NEUTRAL, with a confidence score, only after the final round. |
 | CLM-795 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:957` | Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. |
 | CLM-795 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:90` | Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. |
+| CLM-796 | STATE | SUPPORTED | F-AUDIT-HASH claims 256, measured 256 | `src/app/about/devops/page.tsx:51` | The debate validates every LLM response with a hardened-JSON guardian, and so does the primary report analysis; each saved report is recorded in a SHA-256 hash-chained audit trail. |
+| CLM-796 | STATE | SUPPORTED | F-AUDIT-HASH claims 256, measured 256 | `src/app/methodology/page.tsx:59` | The debate validates every LLM response with a hardened-JSON guardian, and so does the primary report analysis; each saved report is recorded in a SHA-256 hash-chained audit trail. |
+| CLM-797 | STATE | SUPPORTED | F-CI-TEMPS claims 0.1+0.3+0.7, measured 0.1+0.3+0.7; F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/about/devops/page.tsx:52` | Geopolitical significance scoring of each article that passes deduplication, top-N selection with source diversity enforcement, and, on the main pipeline, AI runs at temperatures 0.1/0.3/0.7 whose spread gives a t-distribution confidence interval (t=4.303, n=3) for the sentiment score. |
+| CLM-798 | STATE | SUPPORTED | F-EMA claims 0.7+0.3+1.5+0.7+1, measured 0.7+0.3+1.5+0.7+1 | `src/app/about/devops/page.tsx:53` | Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones. |

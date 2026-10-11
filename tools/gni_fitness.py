@@ -183,6 +183,131 @@ def _groq_refs(root):
     return n
 
 
+def _func(root, rel, name):
+    """The top-level FunctionDef `name` in `rel`, parsed (AST)."""
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name == name:
+            return node
+    raise FitnessError("no function %s in %s" % (name, rel))
+
+
+def _num(node):
+    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)) \
+            and not isinstance(node.value, bool):
+        return node.value
+    raise FitnessError("expected a numeric literal at line %d" % getattr(node, "lineno", 0))
+
+
+def _hash_claim(fragment):
+    m = re.search(r"SHA-(\d+)", fragment)
+    if not m:
+        raise FitnessError("no SHA-<n> in fragment %r" % fragment)
+    return int(m.group(1))
+
+
+def _audit_hash(root):
+    """Digest size of the audit chain: the hashlib.sha<N> call in
+    audit_trail._compute_hash (AST). More than one size is an instrument error."""
+    fn = _func(root, "ai_engine/analysis/audit_trail.py", "_compute_hash")
+    sizes = {int(n.func.attr[3:]) for n in ast.walk(fn)
+             if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+             and re.fullmatch(r"sha\d+", n.func.attr)}
+    if len(sizes) != 1:
+        raise FitnessError("_compute_hash uses %d digest sizes, not one" % len(sizes))
+    return sizes.pop()
+
+
+def _temps_claim(fragment):
+    m = re.search(r"temperatures ([\d.]+(?:/[\d.]+)+)", fragment)
+    if not m:
+        raise FitnessError("no 'temperatures a/b/c' in fragment %r" % fragment)
+    return ["%g" % v for v in sorted(float(x) for x in m.group(1).split("/"))]
+
+
+def _ci_temps(root):
+    """Temperatures of the main pipeline's analysis: the 'temperature' value of
+    _call_groq's request (the primary run) plus the list the CI loop in
+    analyze() iterates (AST). Cerebras (the adaptive run) is not this path."""
+    rel = "ai_engine/analysis/nexus_analyzer.py"
+    prim = [_num(v) for n in ast.walk(_func(root, rel, "_call_groq")) if isinstance(n, ast.Dict)
+            for k, v in zip(n.keys, n.values) if getattr(k, "value", None) == "temperature"]
+    loops = [[_num(e) for e in n.iter.elts] for n in ast.walk(_func(root, rel, "analyze"))
+             if isinstance(n, ast.For) and getattr(n.target, "id", "") == "temp"
+             and isinstance(n.iter, (ast.List, ast.Tuple))]
+    if len(set(prim)) != 1 or len(loops) != 1:
+        raise FitnessError("expected one primary temperature and one CI loop, got %d and %d"
+                           % (len(set(prim)), len(loops)))
+    return ["%g" % v for v in sorted([float(prim[0])] + [float(x) for x in loops[0]])]
+
+
+def _t_claim(fragment):
+    m = re.search(r"t=([\d.]+), n=(\d+)", fragment)
+    if not m:
+        raise FitnessError("no 't=<x>, n=<k>' in fragment %r" % fragment)
+    return ["t=%g" % float(m.group(1)), "n=%d" % int(m.group(2))]
+
+
+def _ci_t(root):
+    """The t value and the run count it is used for: `T if n == K else ...` in
+    nexus_analyzer._calculate_confidence_intervals (AST)."""
+    fn = _func(root, "ai_engine/analysis/nexus_analyzer.py", "_calculate_confidence_intervals")
+    hits = [["t=%g" % _num(n.body), "n=%d" % _num(n.test.comparators[0])] for n in ast.walk(fn)
+            if isinstance(n, ast.IfExp) and isinstance(n.test, ast.Compare)
+            and getattr(n.test.left, "id", "") == "n"]
+    if len(hits) != 1:
+        raise FitnessError("expected one `t if n == k` expression, got %d" % len(hits))
+    return hits[0]
+
+
+EMA_RE = (r"new = ([\d.]+) x old \+ ([\d.]+) x factor, where factor is ([\d.]+) for correct "
+          r"predictions, ([\d.]+) for wrong, ([\d.]+) for partly correct")
+
+
+def _ema_claim(fragment):
+    m = re.search(EMA_RE, fragment)
+    if not m:
+        raise FitnessError("fragment %r is not the EMA sentence's grammar" % fragment)
+    return ["%g" % float(x) for x in m.groups()]
+
+
+def _ema(root):
+    """[old coefficient, factor coefficient, correct, wrong, partly correct] from
+    source_weights.update_source_weight (AST): the two products in the blended
+    update, and the gpvs_factor the if / elif / else chain assigns - first
+    branch correct (score >= 1.0), second partly correct, else wrong."""
+    fn = _func(root, "ai_engine/analysis/source_weights.py", "update_source_weight")
+    coef = {}
+    for n in ast.walk(fn):
+        if isinstance(n, ast.BinOp) and isinstance(n.op, ast.Mult) \
+                and isinstance(n.right, ast.Name) and n.right.id in ("current", "gpvs_factor"):
+            coef[n.right.id] = float(_num(n.left))
+    chain = [n for n in ast.walk(fn) if isinstance(n, ast.If)
+             and any(getattr(t, "id", "") == "gpvs_factor" for s in n.body
+                     if isinstance(s, ast.Assign) for t in s.targets)]
+    if len(coef) != 2 or not chain:
+        raise FitnessError("update_source_weight: blended update or factor chain not found")
+    top = min(chain, key=lambda n: n.lineno)
+    vals = [float(_num(top.body[0].value))]
+    orelse = top.orelse
+    while orelse:
+        node = orelse[0]
+        if isinstance(node, ast.If):
+            vals.append(float(_num(node.body[0].value)))
+            orelse = node.orelse
+        else:
+            vals.append(float(_num(node.value)))
+            orelse = []
+    if len(vals) != 3:
+        raise FitnessError("expected three gpvs_factor branches, got %d" % len(vals))
+    correct, partly, wrong = vals
+    return ["%g" % v for v in (coef["current"], coef["gpvs_factor"], correct, wrong, partly)]
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -226,6 +351,14 @@ FITNESS = {
                     _gap_claim, _adaptive_gaps, _scheduled),
     "F-HB-GROQ": ("Groq imports and Groq() calls in the heartbeat module, monitoring_pipeline.py (AST)",
                   _first_int, _groq_refs, _equal),
+    "F-AUDIT-HASH": ("digest size of the audit chain: hashlib.sha<N> in audit_trail._compute_hash (AST)",
+                     _hash_claim, _audit_hash, _equal),
+    "F-CI-TEMPS": ("main-pipeline analysis temperatures: _call_groq's request plus analyze()'s CI loop "
+                   "(AST)", _temps_claim, _ci_temps, _equal),
+    "F-CI-T": ("the t value and its run count in nexus_analyzer._calculate_confidence_intervals (AST)",
+               _t_claim, _ci_t, _equal),
+    "F-EMA": ("source-weight EMA coefficients and GPVS factors in source_weights.update_source_weight "
+              "(AST)", _ema_claim, _ema, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that
