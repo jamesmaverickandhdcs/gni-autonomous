@@ -174,10 +174,10 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
         </div>
         <div className="mt-4 bg-gray-800 rounded-lg p-3 text-xs text-gray-400 leading-relaxed">
           <span className="text-white font-bold">How GPVS works: </span>
-          Every GNI report carries a sentiment such as Bearish or Bullish, which the report check reads as a market call. Its direction is judged at 3, 7, 30 and 180 days. The short windows use SPY, or USO or GLD when the report names them; the long ones use SPY. Correct predictions increase a source&apos;s trust weight (up to 2.0). Wrong predictions reduce it (down to 0.5). Over time this builds a self-improving intelligence system where accuracy drives credibility.
+          Every GNI report carries a sentiment such as Bearish or Bullish, which the report check reads as a market call. Its direction is judged at 3, 7, 30 and 180 days. All four windows use SPY, because the sentiment is a call on the market as a whole. Correct predictions increase a source&apos;s trust weight (up to 2.0). Wrong predictions reduce it (down to 0.5). Over time this builds a self-improving intelligence system where accuracy drives credibility.
         </div>
         <div className="mt-3 text-xs text-gray-600 text-center">
-          Powered by GPVS v1.1, the GNI Prediction Validation Standard: each report&apos;s direction against the market
+          Powered by GPVS v1.2, the GNI Prediction Validation Standard: each report&apos;s direction against the market
         </div>
         <div className="mt-2 text-xs text-yellow-600 text-center">
           ⚠️ Past accuracy does not guarantee future performance. Not financial advice.

@@ -290,7 +290,7 @@ function RunCard({ run, reports, reportsDone }: { run: PipelineRun, reports: Rep
                   <div className="text-xs text-gray-500">Human Security</div>
                 </div>
               </div>
-              <p className="text-xs text-gray-600 mt-2">The numbers are SPY moves; the colour is the direction judged on the report&apos;s own instrument (USO, GLD or SPY).</p>
+              <p className="text-xs text-gray-600 mt-2">The numbers are SPY moves, and the colour is the direction judged on those same moves.</p>
               {outcome.human_review_needed && (
                 <div className="mt-2 text-xs text-yellow-400">⚠️ Human review recommended</div>
               )}

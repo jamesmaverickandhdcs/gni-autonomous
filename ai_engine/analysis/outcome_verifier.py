@@ -16,7 +16,7 @@ from collectors.alpha_vantage import fetch_price_change_with_fallback
 # ============================================================
 # GNI Outcome Verifier
 # Compares GNI predictions against actual market movements
-# Implements GPVS — GNI Prediction Validation Standard v1.1
+# Implements GPVS — GNI Prediction Validation Standard v1.2 (S111: 3d/7d direction on SPY)
 # Day 1: Added 30-day window + black swan auto-detection
 # ============================================================
 
@@ -265,24 +265,6 @@ def check_escalation_accuracy(predicted_level: str, actual_spy_change: float | N
     elif predicted_level == 'LOW':
         return abs_move < 1.0
     return None
-def _get_primary_instrument(tickers_affected) -> tuple:
-    """
-    Select best verification instrument based on report tickers.
-    Returns (instrument_name, change_3d_key, change_7d_key)
-    Energy/oil stories: USO. Gold/safe haven: GLD. Default: SPY.
-    """
-    if isinstance(tickers_affected, str):
-        try:
-            import json as _json
-            tickers_affected = _json.loads(tickers_affected)
-        except Exception:
-            tickers_affected = []
-    tickers = [t.upper() for t in (tickers_affected or [])]
-    if 'USO' in tickers or 'XOM' in tickers:
-        return 'USO', 'uso_3d', 'uso_7d'
-    if 'GLD' in tickers:
-        return 'GLD', 'gld_3d', 'gld_7d'
-    return 'SPY', 'spy_3d', 'spy_7d'
 
 
 def verify_pending_outcomes():
@@ -296,7 +278,7 @@ def verify_pending_outcomes():
         print("❌ Cannot connect to Supabase")
         return
 
-    print("\n📊 GNI Outcome Verifier — GPVS v1.1")
+    print("\n📊 GNI Outcome Verifier — GPVS v1.2")
     print("=" * 50)
 
     # Auto-detect black swan before processing reports
@@ -386,14 +368,15 @@ def verify_pending_outcomes():
                 return change > 0
             return None
 
-        # item 6: use primary instrument for direction (not always SPY)
-        _primary_inst, _, _ = _get_primary_instrument(report.get('tickers_affected', []))
-        _p3d = {'SPY': spy_3d, 'GLD': gld_3d, 'USO': uso_3d}.get(_primary_inst, spy_3d)
-        _p7d = {'SPY': spy_7d, 'GLD': gld_7d, 'USO': uso_7d}.get(_primary_inst, spy_7d)
-        if _primary_inst != 'SPY':
-            print(f'  Primary instrument: {_primary_inst} (3d={_p3d}% / 7d={_p7d}%)')
-        direction_3d   = direction(_p3d, sentiment)
-        direction_7d   = direction(_p7d, sentiment)
+        # S111 (GPVS v1.2): direction is judged on SPY, the same instrument as accuracy_score.
+        # The report's sentiment is defined 'for markets' (nexus prompt), so the matching
+        # observation is the market (Murphy 1993: quality = forecasts vs MATCHING observations).
+        # S30 item 6 judged 3d/7d on USO/GLD when listed - 256 of 281 reports went to USO,
+        # and 204 of 260 directional outcomes disagreed with the SPY-based score.
+        # USO/GLD moves are still stored for analysis; a per-instrument forecast would need
+        # its own predicted direction before it can be verified on that instrument.
+        direction_3d   = direction(spy_3d, sentiment)
+        direction_7d   = direction(spy_7d, sentiment)
         direction_30d  = direction(spy_30d, sentiment)
         direction_180d = direction(spy_180d, sentiment)
 

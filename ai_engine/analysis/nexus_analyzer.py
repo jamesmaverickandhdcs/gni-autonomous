@@ -499,6 +499,11 @@ def _run_with_temperature(prompt: str, temperature: float) -> dict | None:
     return None
 
 
+# Student t, 0.975 quantile, by degrees of freedom (scipy.stats.t.ppf(0.975, df)).
+# Above df=4 the df=4 value is used: wider than the true value, never narrower.
+_T95_TWO_SIDED = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776}
+
+
 def _calculate_confidence_intervals(scores: list[float]) -> dict:
     """
     Calculate mean, std dev, and 95% CI from multiple runs.
@@ -516,8 +521,10 @@ def _calculate_confidence_intervals(scores: list[float]) -> dict:
     variance = sum((x - mean) ** 2 for x in scores) / (n - 1)
     std_dev = variance ** 0.5
 
-    # 95% CI using t-distribution approximation (t=4.303 for n=3, df=2)
-    t_value = 4.303 if n == 3 else 2.576
+    # 95% CI, two-sided, Student t with df = n-1 (t=4.303 for n=3, df=2).
+    # S111: was '4.303 if n == 3 else 2.576' - 2.576 is the 99% normal z, so a run where one
+    # CI call failed (n=2, 59 reports Jun 22-Sep 2) got an interval about 4.9x too narrow.
+    t_value = _T95_TWO_SIDED.get(n - 1, _T95_TWO_SIDED[4])
     margin = t_value * (std_dev / (n ** 0.5))
 
     lower = max(-1.0, mean - margin)

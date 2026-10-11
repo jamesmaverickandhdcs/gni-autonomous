@@ -42,7 +42,7 @@ export default function AboutFeedbackPage() {
       'GPVS verification requires real time to pass — accuracy record still accumulating',
       'Binary BULLISH/BEARISH prediction oversimplifies complex multi-directional market movements',
       'English-language only — misses non-English geopolitical signals from ASEAN and beyond',
-      'Report checks use SPY, GLD or USO as the market proxy — FX predictions are not verified directly',
+      'Report checks use SPY as the market proxy — gold and oil moves are stored but not judged, and FX is not verified',
       'Cold start problem — source weights need time to diverge from neutral baseline of 1.0',
     ],
     opportunities: [

@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `1c289f3599479c43f725957898b97f89` (EOL-normalised) -- **813 claims** (586 STATE, 206 PROMISE, 21 MIXED) at **870 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `f0271b6db2683309d70ed3d56655f2f4` (EOL-normalised) -- **814 claims** (587 STATE, 206 PROMISE, 21 MIXED) at **871 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `a421374a3f281b5c2ae31ddf542c109f` (EOL-normalised) -- **COVERAGE 115/813 = 14.1%** (115 SUPPORTED, 0 DEFEATED, 698 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 59** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `bcc7c78a547672be4aa7ec2967e8b342` (EOL-normalised) -- **COVERAGE 123/814 = 15.1%** (123 SUPPORTED, 0 DEFEATED, 691 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 56** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -696,16 +696,10 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `a421374a3f281b5c2ae31ddf
 | CLM-887 | STATE | UNMEASURED | HISTORICAL | `src/app/research/page.tsx:90` | A search in October 2026 found no earlier use of the Johari Window in AI geopolitical intelligence; known/unknown quadrants have been applied to LLM knowledge before (Amayuelas et al., 2023). |
 | CLM-888 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:95` | Automated resolution of geopolitical forecasts also exists elsewhere, for example ForecastBench (ICLR 2025), which resolves questions from ACLED conflict data. |
 | CLM-889 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:100` | Sampling several temperatures to measure LLM uncertainty is also studied elsewhere (Monte Carlo Temperature, TrustNLP 2025). |
-| CLM-890 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:53` | After the verify date passes, the direction is checked against the market move of SPY, or GLD or USO when the report names them. |
-| CLM-890 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:65` | After the verify date passes, the direction is checked against the market move of SPY, or GLD or USO when the report names them. |
-| CLM-891 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:45` | Report checks use SPY, GLD or USO as the market proxy — FX predictions are not verified directly |
 | CLM-892 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:169` | A self-assessment of GNI. |
 | CLM-893 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:169` | Strengths, weaknesses, opportunities, and threats, read beside live prediction verification data. |
 | CLM-894 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:134` | Report-level GPVS verification has been live since April 2026; prediction-level verification runs as a step of every main pipeline run. |
 | CLM-895 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:56` | The Transparency Engine documents every algorithmic decision from the raw articles of a run down to the ones selected for analysis. |
-| CLM-896 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:57` | GPVS checks every report direction against the market move of SPY, or GLD or USO when the report names them, after 3 and 7 days. |
-| CLM-897 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:113` | Every report carries a directional sentiment, and GPVS checks it at 3 and 7 days against SPY, or GLD or USO when the report names them, and at 30 and 180 days against SPY. |
-| CLM-898 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:114` | After 3 and 7 days, the move of SPY, or GLD or USO when the report names them is measured against the prediction. |
 | CLM-899 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:114` | Each check scores the direction as correct, partly correct or wrong, which allows statistical analysis. |
 | CLM-900 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:116` | The GPVS Prediction Scorecard is the measured record behind the accuracy figures GNI publishes. |
 | CLM-901 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | When both agree, the debate did not overturn the direction of the report. |
@@ -739,7 +733,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `a421374a3f281b5c2ae31ddf
 | CLM-927 | STATE | UNMEASURED | QUALITATIVE | `src/app/health/page.tsx:289` | Source Weights — moved by verified reports (EMA) |
 | CLM-928 | STATE | UNMEASURED | QUALITATIVE | `src/app/autonomy/page.tsx:95` | Fewer than two variants are active now, so no test is running. |
 | CLM-928 | STATE | UNMEASURED | QUALITATIVE | `src/app/health/page.tsx:107` | Fewer than two variants are active now, so no test is running. |
-| CLM-929 | STATE | UNMEASURED | QUALITATIVE | `src/app/history/page.tsx:293` | The numbers are SPY moves; the colour is the direction judged on the report&apos;s own instrument (USO, GLD or SPY). |
 | CLM-930 | STATE | SUPPORTED | F-RUNS-LIMIT claims 200, measured 200 | `src/app/history/page.tsx:482` | Intelligence History lists the newest main pipeline runs, up to two hundred, with each run&apos;s status and article counts. |
 | CLM-933 | STATE | UNMEASURED | QUALITATIVE | `src/app/history/page.tsx:250` | No report saved for this run |
 | CLM-934 | STATE | UNMEASURED | QUALITATIVE | `src/app/history/page.tsx:493` | 🔍 Showing runs with a report |
@@ -797,8 +790,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `a421374a3f281b5c2ae31ddf
 | CLM-981 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:470` | No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions. |
 | CLM-982 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:177` | Every GNI report carries a sentiment such as Bearish or Bullish, which the report check reads as a market call. |
 | CLM-983 | STATE | SUPPORTED | F-GPVS-DAYS claims 3d+7d+30d+180d, measured 3d+7d+30d+180d | `src/app/page.tsx:177` | Its direction is judged at 3, 7, 30 and 180 days. |
-| CLM-984 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:177` | The short windows use SPY, or USO or GLD when the report names them; the long ones use SPY. |
-| CLM-985 | STATE | SUPPORTED | F-GPVS-VERSION claims v1.1, measured v1.1 | `src/app/page.tsx:180` | Powered by GPVS v1.1, the GNI Prediction Validation Standard: each report&apos;s direction against the market |
 | CLM-986 | STATE | SUPPORTED | F-PILLAR-RUNS claims 3, measured 3 | `src/app/page.tsx:881` | Each pillar reads only the selected articles tagged to it, so the three reports look at different slices of the same run. |
 | CLM-986 | STATE | SUPPORTED | F-PILLAR-RUNS claims 3, measured 3 | `src/app/pillars/page.tsx:125` | Each pillar reads only the selected articles tagged to it, so the three reports look at different slices of the same run. |
 | CLM-987 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:1016` | Only the selected articles reach the main analysis; the MAD debate also hands the Black Swan the zero-scored ones. |
@@ -883,3 +874,13 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `a421374a3f281b5c2ae31ddf
 | CLM-1068 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:31` | id, report_id, agent, horizon, prediction, verify_by, verified_by, created_at (the verifier also fills outcome, market_change_pct, verified_at and verification_method where those columns exist) |
 | CLM-1069 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:33` | id, usage_date, pipeline, account, tokens_used, requests_used, run_id, reason, created_at |
 | CLM-1070 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:35` | id, run_at, source_name, pillar, article_count, raw_count, geo_count, geo_ratio, low_quality_flag, fetch_ok, served_by, status, alert_sent |
+| CLM-1071 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/about/devops/page.tsx:53` | After the verify date passes, the direction is checked against the market move of SPY, the same instrument the accuracy score uses. |
+| CLM-1071 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/methodology/page.tsx:65` | After the verify date passes, the direction is checked against the market move of SPY, the same instrument the accuracy score uses. |
+| CLM-1072 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/about/feedback/page.tsx:45` | Report checks use SPY as the market proxy — gold and oil moves are stored but not judged, and FX is not verified |
+| CLM-1073 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/about/patterns/page.tsx:57` | GPVS checks every report direction against the market move of SPY after 3 and 7 days. |
+| CLM-1074 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/about/patterns/page.tsx:113` | Every report carries a directional sentiment, and GPVS checks it against SPY at 3, 7, 30 and 180 days. |
+| CLM-1075 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/about/patterns/page.tsx:114` | After 3 and 7 days, the move of SPY is measured against the prediction. |
+| CLM-1076 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/history/page.tsx:293` | The numbers are SPY moves, and the colour is the direction judged on those same moves. |
+| CLM-1077 | STATE | SUPPORTED | F-GPVS-INSTR claims SPY, measured SPY | `src/app/page.tsx:177` | All four windows use SPY, because the sentiment is a call on the market as a whole. |
+| CLM-1078 | STATE | SUPPORTED | F-CI-T-TWO claims t=12.706, measured t=12.706 | `src/app/research/page.tsx:149` | When one of the two extra runs fails, the interval comes from two runs and uses t=12.706, the value for one degree of freedom. |
+| CLM-1079 | STATE | SUPPORTED | F-GPVS-VERSION claims v1.2, measured v1.2 | `src/app/page.tsx:180` | Powered by GPVS v1.2, the GNI Prediction Validation Standard: each report&apos;s direction against the market |

@@ -170,7 +170,9 @@ def run_health_checks() -> dict:
                 max_score = max(scores)
                 if max_score >= 9.0:
                     msg = f"CRITICAL escalation detected in last 24h: max score {max_score}/10"
-                    alerts.append({"type": "ESCALATION_SPIKE", "severity": "HIGH", "message": msg})
+                    # S111 (item 9.23): was severity HIGH, which turned the overall status CRITICAL
+                    # on every day - 262 of 263 reports sit at the 10.0 cap. Informational, as below.
+                    alerts.append({"type": "ESCALATION_SPIKE", "severity": "INFO", "message": msg})
                     # This is informational — not a failure
                 checks_passed += 1
             else:

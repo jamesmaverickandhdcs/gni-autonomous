@@ -54,7 +54,7 @@ export default function AboutPatternsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
               { title: 'Evidence Over Opinion', desc: 'Every GNI claim is traceable to a specific pipeline run, specific articles, and a specific AI analysis chain. The Transparency Engine documents every algorithmic decision from the raw articles of a run down to the ones selected for analysis.' },
-              { title: 'Self-Improving Accuracy', desc: 'GPVS checks every report direction against the market move of SPY, or GLD or USO when the report names them, after 3 and 7 days. Sources that led to correct predictions gain higher trust weights via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.' },
+              { title: 'Self-Improving Accuracy', desc: 'GPVS checks every report direction against the market move of SPY after 3 and 7 days. Sources that led to correct predictions gain higher trust weights via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.' },
               { title: 'Statistical Rigor', desc: 'Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for the sentiment score of the main report. This is contribution 3 in the academic paper.' },
             ].map(item => (
               <div key={item.title} className="bg-green-900 bg-opacity-30 rounded-lg p-4">
@@ -110,8 +110,8 @@ export default function AboutPatternsPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Research Methodology — The GPVS Standard</div>
           <div className="space-y-4">
             {[
-              { phase: 'Phase 1', title: 'Prediction Generation', desc: 'Every report carries a directional sentiment, and GPVS checks it at 3 and 7 days against SPY, or GLD or USO when the report names them, and at 30 and 180 days against SPY. The prediction is tied to exact articles and sources that drove the analysis.' },
-              { phase: 'Phase 2', title: 'Market Measurement', desc: 'After 3 and 7 days, the move of SPY, or GLD or USO when the report names them is measured against the prediction. Each check scores the direction as correct, partly correct or wrong, which allows statistical analysis.' },
+              { phase: 'Phase 1', title: 'Prediction Generation', desc: 'Every report carries a directional sentiment, and GPVS checks it against SPY at 3, 7, 30 and 180 days. The prediction is tied to exact articles and sources that drove the analysis.' },
+              { phase: 'Phase 2', title: 'Market Measurement', desc: 'After 3 and 7 days, the move of SPY is measured against the prediction. Each check scores the direction as correct, partly correct or wrong, which allows statistical analysis.' },
               { phase: 'Phase 3', title: 'Weight Adjustment', desc: 'Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones. Weights are bounded between 0.5 (penalised) and 2.0 (highly trusted).' },
               { phase: 'Phase 4', title: 'Evidence Accumulation', desc: 'As predictions accumulate, statistical confidence of accuracy claims increases. The GPVS Prediction Scorecard is the measured record behind the accuracy figures GNI publishes.' },
             ].map(item => (

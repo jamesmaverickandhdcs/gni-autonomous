@@ -257,15 +257,72 @@ def _t_claim(fragment):
 
 
 def _ci_t(root):
-    """The t value and the run count it is used for: `T if n == K else ...` in
-    nexus_analyzer._calculate_confidence_intervals (AST)."""
-    fn = _func(root, "ai_engine/analysis/nexus_analyzer.py", "_calculate_confidence_intervals")
-    hits = [["t=%g" % _num(n.body), "n=%d" % _num(n.test.comparators[0])] for n in ast.walk(fn)
-            if isinstance(n, ast.IfExp) and isinstance(n.test, ast.Compare)
-            and getattr(n.test.left, "id", "") == "n"]
-    if len(hits) != 1:
-        raise FitnessError("expected one `t if n == k` expression, got %d" % len(hits))
-    return hits[0]
+    """The run count the main pipeline aims for (the primary run plus the CI
+    loop's temperatures, as F-CI-TEMPS reads them) and the t value
+    _calculate_confidence_intervals uses for that count: the module-level
+    _T95_TWO_SIDED table at df = n-1, which the function must read (AST).
+    S111: was the `T if n == K else ...` expression, whose else branch gave
+    every other run count the 99% normal z."""
+    rel = "ai_engine/analysis/nexus_analyzer.py"
+    with open(os.path.join(root, rel), "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    table = [n.value for n in tree.body if isinstance(n, ast.Assign)
+             and any(getattr(t, "id", "") == "_T95_TWO_SIDED" for t in n.targets)]
+    if len(table) != 1 or not isinstance(table[0], ast.Dict):
+        raise FitnessError("expected one module-level _T95_TWO_SIDED dict in %s" % rel)
+    t95 = {_num(k): _num(v) for k, v in zip(table[0].keys, table[0].values)}
+    fn = _func(root, rel, "_calculate_confidence_intervals")
+    if not any(isinstance(n, ast.Name) and n.id == "_T95_TWO_SIDED" for n in ast.walk(fn)):
+        raise FitnessError("_calculate_confidence_intervals does not read _T95_TWO_SIDED")
+    n = len(_ci_temps(root))
+    if (n - 1) not in t95:
+        raise FitnessError("_T95_TWO_SIDED has no entry for df=%d" % (n - 1))
+    return ["t=%g" % float(t95[n - 1]), "n=%d" % n]
+
+
+def _ci_t_two(root):
+    """The t value _calculate_confidence_intervals uses when only two runs
+    came back (one CI call failed): _T95_TWO_SIDED at df=1 (AST)."""
+    rel = "ai_engine/analysis/nexus_analyzer.py"
+    with open(os.path.join(root, rel), "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    table = [n.value for n in tree.body if isinstance(n, ast.Assign)
+             and any(getattr(t, "id", "") == "_T95_TWO_SIDED" for t in n.targets)]
+    if len(table) != 1 or not isinstance(table[0], ast.Dict):
+        raise FitnessError("expected one module-level _T95_TWO_SIDED dict in %s" % rel)
+    t95 = {_num(k): _num(v) for k, v in zip(table[0].keys, table[0].values)}
+    if 1 not in t95:
+        raise FitnessError("_T95_TWO_SIDED has no entry for df=1")
+    return ["t=%g" % float(t95[1])]
+
+
+_INSTR_RE = r"\b(SPY|GLD|USO)\b"
+
+
+def _instr_claim(fragment):
+    """The instruments a GPVS sentence says the direction is judged on."""
+    out = sorted(set(re.findall(_INSTR_RE, fragment)))
+    if not out:
+        raise FitnessError("no SPY/GLD/USO in fragment %r" % fragment)
+    return out
+
+
+def _gpvs_dir_instr(root):
+    """The instruments whose moves verify_pending_outcomes passes to its
+    direction() helper - the prefix of each first argument, e.g. spy_3d -> SPY.
+    A name that is not <ticker>_<window> fails the measure (AST)."""
+    fn = _func(root, "ai_engine/analysis/outcome_verifier.py", "verify_pending_outcomes")
+    seen = set()
+    for n in ast.walk(fn):
+        if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "direction" and n.args:
+            name = getattr(n.args[0], "id", "")
+            m = re.match(r"([a-z]{3})_\d+d$", name)
+            if not m:
+                raise FitnessError("direction() is passed %r, not <ticker>_<n>d" % name)
+            seen.add(m.group(1).upper())
+    if not seen:
+        raise FitnessError("no direction() call in verify_pending_outcomes")
+    return sorted(seen)
 
 
 EMA_RE = (r"new = ([\d.]+) x old \+ ([\d.]+) x factor, where factor is ([\d.]+) for correct "
@@ -1122,7 +1179,11 @@ FITNESS = {
                      _hash_claim, _audit_hash, _equal),
     "F-CI-TEMPS": ("main-pipeline analysis temperatures: _call_groq's request plus analyze()'s CI loop "
                    "(AST)", _temps_claim, _ci_temps, _equal),
-    "F-CI-T": ("the t value and its run count in nexus_analyzer._calculate_confidence_intervals (AST)",
+    "F-CI-T-TWO": ("the t value nexus_analyzer._T95_TWO_SIDED gives a two-run interval, df=1 (AST)",
+                   _t_claim, _ci_t_two, _scheduled),
+    "F-GPVS-INSTR": ("instruments verify_pending_outcomes judges a report's direction on: the "
+                     "first argument of each direction() call (AST)", _instr_claim, _gpvs_dir_instr, _equal),
+    "F-CI-T": ("the planned run count and the t value nexus_analyzer._T95_TWO_SIDED gives it (AST)",
                _t_claim, _ci_t, _scheduled),
     "F-EMA": ("source-weight EMA coefficients and GPVS factors in source_weights.update_source_weight "
               "(AST)", _ema_claim, _ema, _equal),

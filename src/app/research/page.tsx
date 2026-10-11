@@ -146,7 +146,7 @@ export default function ResearchPage() {
               ))}
             </div>
             <div className="mt-2 text-xs text-gray-600 leading-relaxed">
-              The confidence interval needs three analysis runs inside one pipeline run (t-distribution, n=3). Single-run reports show N/A until re-analysed. CI Width 0.000 = full inter-run agreement (score saturation across the 3 temperature runs) - a real measurement, not missing data.
+              The confidence interval needs three analysis runs inside one pipeline run (t-distribution, n=3). When one of the two extra runs fails, the interval comes from two runs and uses t=12.706, the value for one degree of freedom. Single-run reports show N/A until re-analysed. CI Width 0.000 = full inter-run agreement (score saturation across the 3 temperature runs) - a real measurement, not missing data.
             </div>
           </section>
         )}

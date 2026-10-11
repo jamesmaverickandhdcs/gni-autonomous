@@ -1087,3 +1087,12 @@ CLM-1067	UNMEASURED	HISTORICAL
 CLM-1068	UNMEASURED	QUALITATIVE
 CLM-1069	UNMEASURED	QUALITATIVE
 CLM-1070	UNMEASURED	QUALITATIVE
+CLM-1071	F-GPVS-INSTR	the direction is checked against the market move of SPY
+CLM-1072	F-GPVS-INSTR	Report checks use SPY as the market proxy
+CLM-1073	F-GPVS-INSTR	GPVS checks every report direction against the market move of SPY
+CLM-1074	F-GPVS-INSTR	GPVS checks it against SPY
+CLM-1075	F-GPVS-INSTR	the move of SPY is measured against the prediction
+CLM-1076	F-GPVS-INSTR	The numbers are SPY moves, and the colour is the direction judged on those same moves
+CLM-1077	F-GPVS-INSTR	All four windows use SPY
+CLM-1078	F-CI-T-TWO	uses t=12.706
+CLM-1079	F-GPVS-VERSION	GPVS v1.2

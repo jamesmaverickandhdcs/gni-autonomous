@@ -179,7 +179,9 @@ INJECTION_PATTERNS = [
     r'DAN\s+(mode|protocol|is\s+now)',
     # S111: was 'jailbreak(ed| mode| prompt)?' - the bare word removed 16 real articles since
     # 2026-06-16 ('Dozens of Myanmar junta POWs escape detention'). 0 of 68,177 match this.
-    r'(jailbreak\s+(mode|prompt)|jailbroken\s+(ai|model|assistant|mode))',
+    # S111 R59: 'jailbreak the model / your AI' added back - the narrowing above had dropped it.
+    # 0 of the stored articles match (S111_EVIDENCE3.sql query 6, j1).
+    r'(jailbreak\s+(mode|prompt|(the|this|your)\s+(ai|model|assistant|system|llm|chatbot))|jailbroken\s+(ai|model|assistant|mode))',
     # S111: was '(bypass|circumvent|override) (safety|filter|...)' - 9 removed ('Georgia: New Laws
     # Devastate Independent Civic Groups'); an attack addresses the model ('your').
     r'(bypass|circumvent|override)\s+(your|its)\s+(safety|filter|restriction|guideline)',
@@ -205,7 +207,10 @@ INJECTION_PATTERNS = [
     #   wiped 100% of full-content feeds (WoR/Breaking Defense/Bellingcat/Amnesty/
     #   DFRLab) because "post"/"submit"/"forward"/"send" sit near a link in any HTML
     #   body. Genuine "send all data to X" is still caught by the precise patterns above.
-    r'(send|forward|upload|exfiltrate|leak)\b[^\n]{0,30}\b(data|information|results|credentials|content|article)s?\b[^\n]{0,30}https?://',
+    # S111 R59: was verb .{0,30} data .{0,30} URL - it removed one EFF article 10 times
+    # ('Developers: Beware of Ad Libraries that Betray Your Users' Location Privacy').
+    # Now an order: verb, (all) the/this/your/any, data word, 'to', URL. 0 stored articles match.
+    r'(send|forward|upload|exfiltrate|leak)\s+(all\s+)?(the|this|your|any|all)\s+(data|information|results|credentials|content|articles?)\s+to\s+https?://',
     # S111: was 'https?://... .{0,30}(api.key|password|token|secret)' - 223 removed since
     # 2026-06-16, all security reporting that cites a URL near the word 'password'. Exfiltration
     # needs a verb: send/post/paste... a secret ... to a URL. 0 of 68,177 stored articles match.
