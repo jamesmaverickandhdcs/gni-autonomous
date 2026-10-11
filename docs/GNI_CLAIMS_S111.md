@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `ffd7de244f3df05adcdbb26bdb773fc6` (EOL-normalised) -- **760 claims** (533 STATE, 205 PROMISE, 22 MIXED) at **814 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `ec1a62a7973fc1b84f98794c025983dc` (EOL-normalised) -- **759 claims** (533 STATE, 205 PROMISE, 21 MIXED) at **815 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1c6028448` (EOL-normalised) -- **COVERAGE 67/760 = 8.8%** (67 SUPPORTED, 0 DEFEATED, 693 UNMEASURED); **UNREVIEWED 197**, **NUMBERS UNDERIVED 93** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f825d8b3caa` (EOL-normalised) -- **COVERAGE 67/759 = 8.8%** (67 SUPPORTED, 0 DEFEATED, 692 UNMEASURED); **UNREVIEWED 150**, **NUMBERS UNDERIVED 92** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -268,7 +268,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-246 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/methodology/page.tsx:59` | Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
 | CLM-252 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:61` | Pillar routing: geo/tech/fin tags assigned. |
 | CLM-256 | STATE | SUPPORTED | F-AUDIT-HASH claims 256, measured 256 | `src/app/methodology/page.tsx:64` | Report saved to Supabase reports table with SHA-256 audit chain. |
-| CLM-258 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:65` | After verify_date passes, actual SPY market movement compared to prediction direction. |
 | CLM-259 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:65` | Accuracy logged. |
 | CLM-262 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:93` | Finds systemic failures and fragile systems. |
 | CLM-263 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:94` | Uncovers hidden dangers from low-scoring articles. |
@@ -296,7 +295,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-302 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:50` | 42 global news sources, up to 20 articles each, 400-500 raw articles per run. |
 | CLM-304 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | 81-Pattern Injection Detection |
 | CLM-305 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
-| CLM-307 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:53` | After verify_date passes, actual SPY movement measured against prediction direction. |
 | CLM-311 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. |
 | CLM-313 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Telegram CRITICAL/WARNING alerts with specific action recommendations. |
 | CLM-314 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:85` | $0.00/Month Forever |
@@ -367,7 +365,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-416 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:42` | GPVS verification requires real time to pass — accuracy record still accumulating |
 | CLM-417 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:43` | Binary BULLISH/BEARISH prediction oversimplifies complex multi-directional market movements |
 | CLM-418 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:44` | English-language only — misses non-English geopolitical signals from ASEAN and beyond |
-| CLM-419 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:45` | Prediction window limited to SPY as proxy — does not verify commodity or FX predictions directly |
 | CLM-420 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:46` | Cold start problem — source weights need time to diverge from neutral baseline of 1.0 |
 | CLM-421 | PROMISE | UNMEASURED | PROMISE | `src/app/about/feedback/page.tsx:49` | Myanmar language integration (GNI_Myanmar) opens ASEAN-language intelligence gap |
 | CLM-422 | PROMISE | UNMEASURED | PROMISE | `src/app/about/feedback/page.tsx:50` | GPVS verification compounding — accuracy advantage grows as predictions accumulate |
@@ -375,19 +372,16 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-424 | PROMISE | UNMEASURED | PROMISE | `src/app/about/feedback/page.tsx:52` | Model Learning (planned) will enable autonomous recalibration from surprise outcomes |
 | CLM-425 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:53` | API export layer enables third-party applications to build on GNI intelligence output |
 | CLM-426 | PROMISE | UNMEASURED | PROMISE | `src/app/about/feedback/page.tsx:54` | L8 autonomy roadmap includes Mission Control-triggered pipeline response to breaking news |
-| CLM-427 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:111` | When AI report and MAD debate disagree &mdash; that is the highest-value signal |
-| CLM-428 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:160` | Divergence during active geopolitical events is normal — MAD agents detecting risks the summary AI missed. |
-| CLM-429 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:160` | This is the system working as designed, not a data quality issue. |
-| CLM-430 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:217` | This divergence is the highest-value intelligence signal. |
-| CLM-431 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:233` | When both systems agree, it means the directional signal is robust — the same story is visible from both a news-analysis perspective and a future-threat-modelling perspective. |
-| CLM-432 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:233` | This is the highest-confidence signal GNI can produce. |
-| CLM-433 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:233` | A neutral debate verdict beside a directional report means the agents found no opposing case &mdash; the report&apos;s direction stands unchallenged rather than independently confirmed. |
-| CLM-434 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:429` | Highest-value intelligence signal. |
-| CLM-435 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:440` | The AI report analysis and the Quadratic MAD debate independently reached the same conclusion. |
-| CLM-436 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:440` | High confidence directional signal. |
-| CLM-437 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:444` | MAD agents identified risks the consolidated report missed. |
-| CLM-438 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:444` | Highest-value intelligence event &mdash; investigate further. |
-| CLM-439 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:448` | How strongly the 4 agents (Bull, Bear, Black Swan, Ostrich) agreed after 3 rounds. |
+| CLM-427 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:111` | When AI report and MAD debate disagree &mdash; that is the highest-value signal |
+| CLM-428 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:160` | Divergence during active geopolitical events is normal — MAD agents detecting risks the summary AI missed. |
+| CLM-429 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:160` | This is the system working as designed, not a data quality issue. |
+| CLM-430 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:217` | This divergence is the highest-value intelligence signal. |
+| CLM-432 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | This is the highest-confidence signal GNI can produce. |
+| CLM-433 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | A neutral debate verdict beside a directional report means the agents found no opposing case &mdash; the report&apos;s direction stands unchallenged rather than independently confirmed. |
+| CLM-434 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:429` | Highest-value intelligence signal. |
+| CLM-436 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:440` | High confidence directional signal. |
+| CLM-437 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | MAD agents identified risks the consolidated report missed. |
+| CLM-438 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | Highest-value intelligence event &mdash; investigate further. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/alerts/page.tsx:134` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:466` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:496` | GNI reports are for informational purposes only and do not constitute financial advice. |
@@ -401,47 +395,36 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:79` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/weekly-digest/page.tsx:174` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-442 | STATE | UNMEASURED | PROVENANCE | `src/app/comparison/page.tsx:472` | GNI Autonomous \| Report vs Debate Comparison \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-443 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:58` | Global Nexus Insights (Autonomous) — Freedom from Fear Intelligence. |
+| CLM-443 | STATE | UNMEASURED | PROVENANCE | `src/app/about/page.tsx:58` | Global Nexus Insights (Autonomous) — Freedom from Fear Intelligence. |
 | CLM-444 | PROMISE | UNMEASURED | PROMISE | `src/app/about/page.tsx:58` | Free forever. |
-| CLM-445 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:88` | Production-grade autonomous AI intelligence. |
+| CLM-445 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:88` | Production-grade autonomous AI intelligence. |
 | CLM-446 | PROMISE | UNMEASURED | PROMISE | `src/app/about/page.tsx:88` | Forever free. |
-| CLM-447 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:157` | MAD Protocol outcomes, live threat verdicts, market implications, action recommendations, and blind spot warnings — the full intelligence output explained. |
-| CLM-448 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:163` | GPVS prediction accuracy, source weight evolution, pipeline run history, and the statistical methodology behind every intelligence claim. |
-| CLM-449 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:169` | The most honest assessment of GNI. |
-| CLM-450 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:169` | Strengths, weaknesses, opportunities, and threats — analyzed rigorously with live prediction verification data showing exactly where GNI stands. |
-| CLM-452 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:188` | GNI_Autonomous was built to prove that industrial-grade AI intelligence can run for $0.00 per month, accessible to anyone in the world — including people in Myanmar where 61.1% of the population now has internet access (DataReportal 2025) but where even a $199/year subscription would represent 18% of average annual income. |
-| CLM-453 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:195` | The goal was never just to pass an exam. |
-| CLM-454 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:195` | The goal was to build something real, something that keeps running after the exam is over, something that serves people. |
+| CLM-447 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:157` | MAD Protocol outcomes, live threat verdicts, market implications, action recommendations, and blind spot warnings — the full intelligence output explained. |
+| CLM-448 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:163` | GPVS prediction accuracy, source weight evolution, pipeline run history, and the statistical methodology behind every intelligence claim. |
+| CLM-452 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:188` | GNI_Autonomous was built to prove that industrial-grade AI intelligence can run for $0.00 per month, accessible to anyone in the world — including people in Myanmar where 61.1% of the population now has internet access (DataReportal 2025) but where even a $199/year subscription would represent 18% of average annual income. |
+| CLM-453 | STATE | UNMEASURED | PROVENANCE | `src/app/about/page.tsx:195` | The goal was never just to pass an exam. |
+| CLM-454 | STATE | UNMEASURED | PROVENANCE | `src/app/about/page.tsx:195` | The goal was to build something real, something that keeps running after the exam is over, something that serves people. |
 | CLM-455 | PROMISE | UNMEASURED | PROMISE | `src/app/about/page.tsx:200` | Always Free |
 | CLM-456 | PROMISE | UNMEASURED | PROMISE | `src/app/about/page.tsx:201` | $0.00/month forever |
 | CLM-457 | STATE | UNMEASURED | PROVENANCE | `src/app/about/page.tsx:219` | Spring University Myanmar (SUM) · 2026 |
-| CLM-458 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:221` | Pipeline runs autonomously via GitHub Actions (public repo — unlimited free minutes) · gni-autonomous.vercel.app |
+| CLM-458 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:221` | Pipeline runs autonomously via GitHub Actions (public repo — unlimited free minutes) · gni-autonomous.vercel.app |
 | CLM-459 | STATE | UNMEASURED | PROVENANCE | `src/app/about/page.tsx:234` | GNI — Global Nexus Insights (Autonomous) \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) \| © 2026 |
-| CLM-461 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:28` | Cloud AI fallback — free tier (public repo) |
-| CLM-462 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:29` | Database — free tier (500MB) |
-| CLM-463 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:30` | Web hosting — free tier (100GB bandwidth) |
-| CLM-464 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:31` | CI/CD pipeline — unlimited free (public repo) |
-| CLM-465 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:32` | CRITICAL alerts — free |
-| CLM-466 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:49` | $0.00/yr |
-| CLM-467 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:47` | How GNI builds a self-improving evidence base over time. |
-| CLM-468 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:47` | Pattern Intelligence is the research backbone of GNI — tracking prediction accuracy across time horizons, validating source credibility through real market outcomes, and providing IEEE-citable statistical evidence for every intelligence claim made by the system. |
+| CLM-461 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:28` | Cloud AI fallback — free tier (public repo) |
+| CLM-462 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:29` | Database — free tier (500MB) |
+| CLM-463 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:30` | Web hosting — free tier (100GB bandwidth) |
+| CLM-464 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:31` | CI/CD pipeline — unlimited free (public repo) |
+| CLM-465 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:32` | CRITICAL alerts — free |
+| CLM-466 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:49` | $0.00/yr |
+| CLM-467 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:47` | How GNI builds a self-improving evidence base over time. |
+| CLM-468 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:47` | Pattern Intelligence is the research backbone of GNI — tracking prediction accuracy across time horizons, validating source credibility through real market outcomes, and providing IEEE-citable statistical evidence for every intelligence claim made by the system. |
 | CLM-469 | PROMISE | UNMEASURED | PROMISE | `src/app/about/patterns/page.tsx:133` | Pattern Intelligence becomes more valuable over time. |
 | CLM-470 | PROMISE | UNMEASURED | PROMISE | `src/app/about/patterns/page.tsx:133` | As GNI accumulates verified predictions, the statistical confidence of its source weights increases and the GPVS Scorecard becomes a genuine empirical accuracy record — not a theoretical claim. |
-| CLM-471 | MIXED | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:134` | Report-level GPVS verification has been live since April 2026; prediction-level verification is currently backlogged and will backfill once the verifier resumes. |
-| CLM-472 | MIXED | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:134` | Model Learning and the Pattern Library are in development — when live, they will recalibrate from surprise outcomes and identify historical escalation sequences that help anticipate future geopolitical events. |
+| CLM-472 | MIXED | UNMEASURED | PROMISE | `src/app/about/patterns/page.tsx:134` | Model Learning and the Pattern Library are in development — when live, they will recalibrate from surprise outcomes and identify historical escalation sequences that help anticipate future geopolitical events. |
 | CLM-473 | STATE | UNMEASURED | PROVENANCE | `src/app/about/patterns/page.tsx:145` | GNI Autonomous \| About — Pattern Intelligence \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-474 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:56` | Every GNI claim is traceable to a specific pipeline run, specific articles, and a specific AI analysis chain. |
-| CLM-475 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:56` | The Transparency Engine documents every algorithmic decision from 400 raw articles down to the final 3 selected for analysis. |
-| CLM-476 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:57` | Self-Improving Accuracy |
-| CLM-477 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:57` | GPVS scores every prediction against real SPY market movement after 3 and 7 days. |
-| CLM-480 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:113` | Every MAD debate produces a directional prediction (BULLISH or BEARISH) with a specific verify date at 3-day and 7-day horizons. |
-| CLM-481 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:113` | The prediction is tied to exact articles and sources that drove the analysis. |
-| CLM-482 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:114` | After 3 and 7 days, actual SPY market movement is measured against the prediction. |
-| CLM-483 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:114` | Binary outcome measurement — correct or wrong — eliminates ambiguity and enables statistical analysis. |
-| CLM-484 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:115` | Sources whose articles led to correct predictions have their trust weight multiplied by 1.1 via EMA. |
-| CLM-485 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:115` | Wrong predictions multiply by 0.9. |
+| CLM-474 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:56` | Every GNI claim is traceable to a specific pipeline run, specific articles, and a specific AI analysis chain. |
+| CLM-476 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:57` | Self-Improving Accuracy |
+| CLM-481 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:113` | The prediction is tied to exact articles and sources that drove the analysis. |
 | CLM-486 | PROMISE | UNMEASURED | PROMISE | `src/app/about/patterns/page.tsx:116` | As predictions accumulate, statistical confidence of accuracy claims increases. |
-| CLM-487 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/patterns/page.tsx:116` | The GPVS Prediction Scorecard provides the evidence for every accuracy claim in the IEEE paper — not theoretical, empirical. |
 | CLM-488 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:177` | Every GNI report makes a prediction — Bearish or Bullish on SPY market direction. |
 | CLM-489 | STATE | UNMEASURED | UNREVIEWED | `src/app/page.tsx:177` | After 3 and 7 days, actual market movement is measured and compared. |
 | CLM-490 | PROMISE | UNMEASURED | PROMISE | `src/app/page.tsx:177` | Over time this builds a self-improving intelligence system where accuracy drives credibility. |
@@ -690,11 +673,11 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-754 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/security/page.tsx:65` | Every article is scanned for 81 prompt injection patterns before entering the AI pipeline. |
 | CLM-755 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:55` | Health Agent alerts from the main pipeline — full web archive |
 | CLM-756 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:65` | adaptive runs are counted there |
-| CLM-757 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:200` | PENDING &mdash; No Debate Yet |
-| CLM-758 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:200` | NO RULING &mdash; Arbitrator Failed |
+| CLM-757 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:200` | PENDING &mdash; No Debate Yet |
+| CLM-758 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:200` | NO RULING &mdash; Arbitrator Failed |
 | CLM-759 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:86` | The Health Agent writes an alert here when one of its checks on the main pipeline fails. |
 | CLM-760 | STATE | UNMEASURED | UNREVIEWED | `src/app/alerts/page.tsx:87` | Telegram messages are not archived on this page. |
-| CLM-761 | STATE | UNMEASURED | UNREVIEWED | `src/app/comparison/page.tsx:230` | NO CONTRADICTION &mdash; One Side Neutral |
+| CLM-761 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:230` | NO CONTRADICTION &mdash; One Side Neutral |
 | CLM-762 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/research/page.tsx:105` | Groq 100K tokens/day per account (a planning limit set by GNI) + Supabase 500MB + Vercel + GitHub Actions. |
 | CLM-763 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/research/page.tsx:160` | 100K tokens/day per account (planning limit) |
 | CLM-764 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/methodology/page.tsx:114` | model set by GROQ_MODEL secret — free tier, planned at 100K tokens/day per account |
@@ -735,6 +718,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-796 | STATE | SUPPORTED | F-AUDIT-HASH claims 256, measured 256 | `src/app/methodology/page.tsx:59` | The debate validates every LLM response with a hardened-JSON guardian, and so does the primary report analysis; each saved report is recorded in a SHA-256 hash-chained audit trail. |
 | CLM-797 | STATE | SUPPORTED | F-CI-TEMPS claims 0.1+0.3+0.7, measured 0.1+0.3+0.7; F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/about/devops/page.tsx:52` | Geopolitical significance scoring of each article that passes deduplication, top-N selection with source diversity enforcement, and, on the main pipeline, AI runs at temperatures 0.1/0.3/0.7 whose spread gives a t-distribution confidence interval (t=4.303, n=3) for the sentiment score. |
 | CLM-798 | STATE | SUPPORTED | F-EMA claims 0.7+0.3+1.5+0.7+1, measured 0.7+0.3+1.5+0.7+1 | `src/app/about/devops/page.tsx:53` | Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones. |
+| CLM-798 | STATE | SUPPORTED | F-EMA claims 0.7+0.3+1.5+0.7+1, measured 0.7+0.3+1.5+0.7+1 | `src/app/about/patterns/page.tsx:115` | Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones. |
 | CLM-798 | STATE | SUPPORTED | F-EMA claims 0.7+0.3+1.5+0.7+1, measured 0.7+0.3+1.5+0.7+1 | `src/app/methodology/page.tsx:65` | Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones. |
 | CLM-799 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:108` | Bloomberg Terminal has grown 60% since 2010 ($20,000 → $31,980). |
 | CLM-800 | STATE | UNMEASURED | EXTERNAL | `src/app/about/page.tsx:131` | Myanmar internet penetration: 61.1% (DataReportal 2025). |
@@ -827,3 +811,20 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `f0b4fee239e80c9e417864c1
 | CLM-887 | STATE | UNMEASURED | HISTORICAL | `src/app/research/page.tsx:90` | A search in October 2026 found no earlier use of the Johari Window in AI geopolitical intelligence; known/unknown quadrants have been applied to LLM knowledge before (Amayuelas et al., 2023). |
 | CLM-888 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:95` | Automated resolution of geopolitical forecasts also exists elsewhere, for example ForecastBench (ICLR 2025), which resolves questions from ACLED conflict data. |
 | CLM-889 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:100` | Sampling several temperatures to measure LLM uncertainty is also studied elsewhere (Monte Carlo Temperature, TrustNLP 2025). |
+| CLM-890 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:53` | After the verify date passes, the direction is checked against the market move of SPY, or GLD or USO when the report names them. |
+| CLM-890 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:65` | After the verify date passes, the direction is checked against the market move of SPY, or GLD or USO when the report names them. |
+| CLM-891 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:45` | Report checks use SPY, GLD or USO as the market proxy — FX predictions are not verified directly |
+| CLM-892 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:169` | A self-assessment of GNI. |
+| CLM-893 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:169` | Strengths, weaknesses, opportunities, and threats, read beside live prediction verification data. |
+| CLM-894 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:134` | Report-level GPVS verification has been live since April 2026; prediction-level verification runs as a step of every main pipeline run. |
+| CLM-895 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:56` | The Transparency Engine documents every algorithmic decision from the raw articles of a run down to the ones selected for analysis. |
+| CLM-896 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:57` | GPVS checks every report direction against the market move of SPY, or GLD or USO when the report names them, after 3 and 7 days. |
+| CLM-897 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:113` | Every report carries a directional sentiment, and GPVS checks it at 3 and 7 days against SPY, or GLD or USO when the report names them, and at 30 and 180 days against SPY. |
+| CLM-898 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:114` | After 3 and 7 days, the move of SPY, or GLD or USO when the report names them is measured against the prediction. |
+| CLM-899 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:114` | Each check scores the direction as correct, partly correct or wrong, which allows statistical analysis. |
+| CLM-900 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:116` | The GPVS Prediction Scorecard is the measured record behind the accuracy figures GNI publishes. |
+| CLM-901 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | When both agree, the debate did not overturn the direction of the report. |
+| CLM-902 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:440` | The Quadratic MAD debate, which argues over the AI report, reached the same direction as the report. |
+| CLM-903 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | The Arbitrator&apos;s stated confidence in its verdict, 0-100%. |
+| CLM-904 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | Above 70% = strong. |
+| CLM-905 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | Below 50% = weak. |

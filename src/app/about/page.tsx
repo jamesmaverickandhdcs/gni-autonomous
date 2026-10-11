@@ -166,7 +166,7 @@ export default function AboutPage() {
             <a href="/about/feedback" className="bg-amber-950 border border-amber-800 hover:border-amber-600 rounded-xl p-5 transition-colors group">
               <div className="text-lg font-bold text-amber-400 mb-1 group-hover:text-amber-300">Feedback Loop</div>
               <div className="text-xs text-amber-600 uppercase tracking-wider mb-2">Active/Passive SWOT</div>
-              <p className="text-xs text-gray-400 leading-relaxed">The most honest assessment of GNI. Strengths, weaknesses, opportunities, and threats — analyzed rigorously with live prediction verification data showing exactly where GNI stands.</p>
+              <p className="text-xs text-gray-400 leading-relaxed">A self-assessment of GNI. Strengths, weaknesses, opportunities, and threats, read beside live prediction verification data.</p>
               <div className="mt-3 text-xs text-amber-500 font-bold">View SWOT --&gt;</div>
             </a>
             <a href="/about/devops" className="bg-purple-950 border border-purple-800 hover:border-purple-600 rounded-xl p-5 transition-colors group">

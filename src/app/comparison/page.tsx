@@ -217,7 +217,7 @@ export default function ComparisonPage() {
                       This divergence is the highest-value intelligence signal.
                     </div>
                     <div className="text-red-300 text-xs mt-2 leading-relaxed opacity-80">
-                      The AI report analysed today&apos;s headlines and reached a {latest.sentiment?.toLowerCase()} conclusion. The MAD debate agents — debating future threats across 3 rounds — independently reached {latest.mad_verdict?.toLowerCase()}. When these two systems disagree, it means hidden risks exist that the summary AI did not surface. Trust the divergence signal — it is the system doing its job.
+                      The AI report analysed today&apos;s headlines and reached a {latest.sentiment?.toLowerCase()} conclusion. The MAD debate agents — who read that report and debated its future threats across 3 rounds — reached {latest.mad_verdict?.toLowerCase()}. When these two systems disagree, it means hidden risks exist that the summary AI did not surface. Trust the divergence signal — it is the system doing its job.
                     </div>
                   </div>
                 </div>
@@ -230,7 +230,7 @@ export default function ComparisonPage() {
                     <div className="text-green-300 font-bold">{latestRel === 'agree' ? <>AGREE &mdash; Report and Debate Aligned</> : <>NO CONTRADICTION &mdash; One Side Neutral</>}</div>
                     <div className="text-green-500 text-sm">{latestRel === 'agree' ? <>Both signals point {latest.sentiment?.toUpperCase()}. High confidence.</> : <>Report {latest.sentiment?.toUpperCase()}, MAD {latest.mad_verdict?.toUpperCase()} &mdash; no contradiction.</>}</div>
                     <div className="text-green-300 text-xs mt-2 leading-relaxed opacity-80">
-                      {latestRel === 'agree' ? <>The AI report and the MAD debate agents independently reached the same {latest.sentiment?.toLowerCase()} conclusion.</> : <>The AI report reached {latest.sentiment?.toLowerCase()} while the MAD debate settled on {latest.mad_verdict?.toLowerCase()} &mdash; compatible, non-contradicting signals.</>}{latestRel === 'agree' ? <> When both systems agree, it means the directional signal is robust — the same story is visible from both a news-analysis perspective and a future-threat-modelling perspective. This is the highest-confidence signal GNI can produce.</> : <> A neutral debate verdict beside a directional report means the agents found no opposing case &mdash; the report&apos;s direction stands unchallenged rather than independently confirmed.</>}
+                      {latestRel === 'agree' ? <>The MAD debate agents, arguing over the AI report, reached the same {latest.sentiment?.toLowerCase()} conclusion as the report.</> : <>The AI report reached {latest.sentiment?.toLowerCase()} while the MAD debate settled on {latest.mad_verdict?.toLowerCase()} &mdash; compatible, non-contradicting signals.</>}{latestRel === 'agree' ? <> When both agree, the debate did not overturn the direction of the report. This is the highest-confidence signal GNI can produce.</> : <> A neutral debate verdict beside a directional report means the agents found no opposing case &mdash; the report&apos;s direction stands unchallenged rather than independently confirmed.</>}
                     </div>
                   </div>
                 </div>
@@ -437,7 +437,7 @@ export default function ComparisonPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-400">
                   <div>
                     <div className="text-green-400 font-bold mb-1">&#x2705; AGREE Signal</div>
-                    <p>The AI report analysis and the Quadratic MAD debate independently reached the same conclusion. High confidence directional signal.</p>
+                    <p>The Quadratic MAD debate, which argues over the AI report, reached the same direction as the report. High confidence directional signal.</p>
                   </div>
                   <div>
                     <div className="text-red-400 font-bold mb-1">&#x26A0;&#xFE0F; DISAGREE Signal</div>
@@ -445,7 +445,7 @@ export default function ComparisonPage() {
                   </div>
                   <div>
                     <div className="text-yellow-400 font-bold mb-1">MAD Confidence</div>
-                    <p>How strongly the 4 agents (Bull, Bear, Black Swan, Ostrich) agreed after 3 rounds. Above 70% = strong consensus. Below 50% = contested.</p>
+                    <p>The Arbitrator&apos;s stated confidence in its verdict, 0-100%. Above 70% = strong. Below 50% = weak.</p>
                   </div>
                   <div>
                     <div className="text-orange-400 font-bold mb-1">Escalation Score</div>

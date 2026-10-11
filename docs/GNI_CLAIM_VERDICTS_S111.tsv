@@ -1545,3 +1545,19 @@ bc2b2c268e	CLAIM	STATE	CLM-886	Four AI agents (Bull, Bear, Black Swan, Ostrich) 
 9f11f30842	CLAIM	STATE	CLM-887	A search in October 2026 found no earlier use of the Johari Window in AI geopolitical intelligence; known/unknown quadrants have been applied to LLM knowledge before (Amayuelas et al., 2023).
 7b9bc97a67	CLAIM	STATE	CLM-888	Automated resolution of geopolitical forecasts also exists elsewhere, for example ForecastBench (ICLR 2025), which resolves questions from ACLED conflict data.
 fe08029e02	CLAIM	STATE	CLM-889	Sampling several temperatures to measure LLM uncertainty is also studied elsewhere (Monte Carlo Temperature, TrustNLP 2025).
+1d0a6cd448	CLAIM	STATE	CLM-890	After the verify date passes, the direction is checked against the market move of SPY, or GLD or USO when the report names them.
+c03fdf56fe	CLAIM	STATE	CLM-891	Report checks use SPY, GLD or USO as the market proxy — FX predictions are not verified directly
+e30641d366	CLAIM	STATE	CLM-892	A self-assessment of GNI.
+39343998d1	CLAIM	STATE	CLM-893	Strengths, weaknesses, opportunities, and threats, read beside live prediction verification data.
+7b5d43c71e	CLAIM	STATE	CLM-894	Report-level GPVS verification has been live since April 2026; prediction-level verification runs as a step of every main pipeline run.
+9449216ee2	CLAIM	STATE	CLM-895	The Transparency Engine documents every algorithmic decision from the raw articles of a run down to the ones selected for analysis.
+95e2f5e9c6	CLAIM	STATE	CLM-896	GPVS checks every report direction against the market move of SPY, or GLD or USO when the report names them, after 3 and 7 days.
+ff31a8c9f1	CLAIM	STATE	CLM-897	Every report carries a directional sentiment, and GPVS checks it at 3 and 7 days against SPY, or GLD or USO when the report names them, and at 30 and 180 days against SPY.
+8095a72e8d	CLAIM	STATE	CLM-898	After 3 and 7 days, the move of SPY, or GLD or USO when the report names them is measured against the prediction.
+1c517a1098	CLAIM	STATE	CLM-899	Each check scores the direction as correct, partly correct or wrong, which allows statistical analysis.
+68d5684ba8	CLAIM	STATE	CLM-900	The GPVS Prediction Scorecard is the measured record behind the accuracy figures GNI publishes.
+1f4045825d	CLAIM	STATE	CLM-901	When both agree, the debate did not overturn the direction of the report.
+a20812c3c7	CLAIM	STATE	CLM-902	The Quadratic MAD debate, which argues over the AI report, reached the same direction as the report.
+7df147f961	CLAIM	STATE	CLM-903	The Arbitrator&apos;s stated confidence in its verdict, 0-100%.
+b0c8bfedd3	CLAIM	STATE	CLM-904	Above 70% = strong.
+274aa7a33d	CLAIM	STATE	CLM-905	Below 50% = weak.

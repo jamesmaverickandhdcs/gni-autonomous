@@ -53,8 +53,8 @@ export default function AboutPatternsPage() {
           <div className="text-xs text-green-400 uppercase tracking-wider mb-3">The Research Philosophy</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { title: 'Evidence Over Opinion', desc: 'Every GNI claim is traceable to a specific pipeline run, specific articles, and a specific AI analysis chain. The Transparency Engine documents every algorithmic decision from 400 raw articles down to the final 3 selected for analysis.' },
-              { title: 'Self-Improving Accuracy', desc: 'GPVS scores every prediction against real SPY market movement after 3 and 7 days. Sources that led to correct predictions gain higher trust weights via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.' },
+              { title: 'Evidence Over Opinion', desc: 'Every GNI claim is traceable to a specific pipeline run, specific articles, and a specific AI analysis chain. The Transparency Engine documents every algorithmic decision from the raw articles of a run down to the ones selected for analysis.' },
+              { title: 'Self-Improving Accuracy', desc: 'GPVS checks every report direction against the market move of SPY, or GLD or USO when the report names them, after 3 and 7 days. Sources that led to correct predictions gain higher trust weights via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.' },
               { title: 'Statistical Rigor', desc: 'Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for the sentiment score of the main report. This is contribution 3 in the academic paper.' },
             ].map(item => (
               <div key={item.title} className="bg-green-900 bg-opacity-30 rounded-lg p-4">
@@ -110,10 +110,10 @@ export default function AboutPatternsPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Research Methodology — The GPVS Standard</div>
           <div className="space-y-4">
             {[
-              { phase: 'Phase 1', title: 'Prediction Generation', desc: 'Every MAD debate produces a directional prediction (BULLISH or BEARISH) with a specific verify date at 3-day and 7-day horizons. The prediction is tied to exact articles and sources that drove the analysis.' },
-              { phase: 'Phase 2', title: 'Market Measurement', desc: 'After 3 and 7 days, actual SPY market movement is measured against the prediction. Binary outcome measurement — correct or wrong — eliminates ambiguity and enables statistical analysis.' },
-              { phase: 'Phase 3', title: 'Weight Adjustment', desc: 'Sources whose articles led to correct predictions have their trust weight multiplied by 1.1 via EMA. Wrong predictions multiply by 0.9. Weights are bounded between 0.5 (penalised) and 2.0 (highly trusted).' },
-              { phase: 'Phase 4', title: 'Evidence Accumulation', desc: 'As predictions accumulate, statistical confidence of accuracy claims increases. The GPVS Prediction Scorecard provides the evidence for every accuracy claim in the IEEE paper — not theoretical, empirical.' },
+              { phase: 'Phase 1', title: 'Prediction Generation', desc: 'Every report carries a directional sentiment, and GPVS checks it at 3 and 7 days against SPY, or GLD or USO when the report names them, and at 30 and 180 days against SPY. The prediction is tied to exact articles and sources that drove the analysis.' },
+              { phase: 'Phase 2', title: 'Market Measurement', desc: 'After 3 and 7 days, the move of SPY, or GLD or USO when the report names them is measured against the prediction. Each check scores the direction as correct, partly correct or wrong, which allows statistical analysis.' },
+              { phase: 'Phase 3', title: 'Weight Adjustment', desc: 'Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones. Weights are bounded between 0.5 (penalised) and 2.0 (highly trusted).' },
+              { phase: 'Phase 4', title: 'Evidence Accumulation', desc: 'As predictions accumulate, statistical confidence of accuracy claims increases. The GPVS Prediction Scorecard is the measured record behind the accuracy figures GNI publishes.' },
             ].map(item => (
               <div key={item.phase} className="flex gap-4 bg-gray-800 rounded-lg p-4">
                 <div className="bg-green-900 border border-green-700 rounded-lg px-3 py-2 shrink-0 text-center min-w-16">
@@ -131,7 +131,7 @@ export default function AboutPatternsPage() {
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
           <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Long-Term Research Value</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">Pattern Intelligence becomes more valuable over time. As GNI accumulates verified predictions, the statistical confidence of its source weights increases and the GPVS Scorecard becomes a genuine empirical accuracy record — not a theoretical claim.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">Report-level GPVS verification has been live since April 2026; prediction-level verification is currently backlogged and will backfill once the verifier resumes. Model Learning and the Pattern Library are in development — when live, they will recalibrate from surprise outcomes and identify historical escalation sequences that help anticipate future geopolitical events.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">Report-level GPVS verification has been live since April 2026; prediction-level verification runs as a step of every main pipeline run. Model Learning and the Pattern Library are in development — when live, they will recalibrate from surprise outcomes and identify historical escalation sequences that help anticipate future geopolitical events.</p>
         </div>
 
       </main>
