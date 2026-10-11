@@ -4,7 +4,9 @@ name: GNI Backup
 #   WHAT     the public schema of the Supabase database - every table, its rows, indexes, constraints,
 #            RLS policies and grants (pg_dump, custom format). Supabase-managed schemas (auth, storage,
 #            realtime, vault) are not GNI's: no GNI code reads them, and on 2026-10-11 vault held 0
-#            secrets and storage 0 objects.
+#            secrets and storage 0 objects. One foreign key leaves public: profiles.id -> auth.users
+#            (both 0 rows on 2026-10-11). The restore test stubs auth.users EMPTY and fails red if
+#            profiles.id ever holds a value - that would be user data outside this backup.
 #   HOW      read-only role gni_backup (SELECT + BYPASSRLS, no write) via the session pooler; the dump
 #            is encrypted with AES-256 (gpg) under BACKUP_PASSPHRASE, which is also kept OUTSIDE GitHub.
 #   PROOF    every run decrypts its own artifact and RESTORES it into an empty Postgres 17, then
@@ -102,7 +104,27 @@ jobs:
           done
           # The dump carries CREATE SCHEMA public; the scratch database is disposable, so its empty public goes first.
           $PG psql "$RESTORE" -q -v ON_ERROR_STOP=1 -c "drop schema if exists public cascade" || fail "reset scratch public"
-          $PG pg_restore --no-owner --exit-on-error --dbname="$RESTORE" "$OUT/check.dump" || fail "pg_restore"
+          # Two passes. Tables and rows first; then every foreign key that leaves public (S110: profiles.id ->
+          # auth.users, a Supabase-managed table this backup does not carry) gets an EMPTY stub of the right
+          # type, and the referencing column must hold no value - rows there would mean auth data GNI does not
+          # back up, and the test fails saying so. Then indexes, constraints, policies and grants.
+          $PG pg_restore --no-owner --exit-on-error --section=pre-data --section=data --dbname="$RESTORE" "$OUT/check.dump" || fail "pg_restore (tables and rows)"
+          EXT=$($PG pg_restore --section=post-data -f - "$OUT/check.dump" | tr '\n' ' ' \
+            | grep -oE 'ALTER TABLE ONLY public\.[A-Za-z_0-9]+ +ADD CONSTRAINT [A-Za-z_0-9]+ FOREIGN KEY \([A-Za-z_0-9]+\) REFERENCES [A-Za-z_0-9]+\.[A-Za-z_0-9]+\([A-Za-z_0-9]+\)' \
+            | grep -v 'REFERENCES public\.' || true)
+          EXTERNAL=""
+          while read -r line; do
+            [ -n "$line" ] || continue
+            set -- $(echo "$line" | sed -E 's/^ALTER TABLE ONLY public\.([A-Za-z_0-9]+) +ADD CONSTRAINT [A-Za-z_0-9]+ FOREIGN KEY \(([A-Za-z_0-9]+)\) REFERENCES ([A-Za-z_0-9]+)\.([A-Za-z_0-9]+)\(([A-Za-z_0-9]+)\)/\1 \2 \3 \4 \5/')
+            T=$1 C=$2 XS=$3 XT=$4 XC=$5
+            TY=$($PG psql "$RESTORE" -Atc "select format_type(atttypid, atttypmod) from pg_attribute where attrelid='public.$T'::regclass and attname='$C'") || fail "type of $T.$C"
+            N=$($PG psql "$RESTORE" -Atc "select count($C) from public.$T") || fail "count $T.$C"
+            echo "   external reference: public.$T.$C ($TY) -> $XS.$XT.$XC  rows referencing it: $N"
+            EXTERNAL="$EXTERNAL public.$T.$C->$XS.$XT.$XC:rows=$N"
+            [ "$N" -eq 0 ] || fail "public.$T.$C references $XS.$XT with $N rows - that data is outside this backup"
+            $PG psql "$RESTORE" -q -v ON_ERROR_STOP=1 -c "create schema if not exists $XS; create table if not exists $XS.$XT ($XC $TY primary key)" || fail "stub $XS.$XT"
+          done <<< "$EXT"
+          $PG pg_restore --no-owner --exit-on-error --section=post-data --dbname="$RESTORE" "$OUT/check.dump" || fail "pg_restore (constraints, indexes, policies, grants)"
           $PG psql "$RESTORE" -At -F'|' -c "$COUNT_SQL" > "$OUT/restored.txt" || fail "count restored"
           RST_POL=$($PG psql "$RESTORE" -Atc "$POLICY_SQL"); RST_RLS=$($PG psql "$RESTORE" -Atc "$RLS_SQL")
 
@@ -120,7 +142,7 @@ jobs:
           ROWS=$(awk -F'|' '{s+=$2} END {print s}' "$OUT/restored.txt")
           { echo "stamp=$STAMP"; echo "artifact=$F"; echo "sha256=$(cut -d' ' -f1 "$OUT/$F.sha256")"
             echo "tables=$(wc -l < "$OUT/restored.txt") rows=$ROWS policies=$RST_POL rls_tables=$(echo "$RST_RLS" | tr ',' '\n' | grep -c .)"
-            echo "server_version_num=$SV pg_dump_major=$CV"; echo "per-table rows (restored):"; cat "$OUT/restored.txt"; } > "$OUT/manifest.txt"
+            echo "server_version_num=$SV pg_dump_major=$CV"; echo "external_refs=${EXTERNAL:- none}"; echo "per-table rows (restored):"; cat "$OUT/restored.txt"; } > "$OUT/manifest.txt"
           rm -f "$OUT/gni.dump" "$OUT/check.dump" "$OUT/before.txt" "$OUT/after.txt" "$OUT/ba.txt" "$OUT/cmp.txt" "$OUT/restored.txt"
           [ "$bad" -eq 0 ] || fail "restore test did not match the source"
           echo "== RESTORE TEST PASS: $(wc -l < <(sed -n '/per-table/,$p' "$OUT/manifest.txt" | tail -n +2)) tables, $ROWS rows, $RST_POL policies"
