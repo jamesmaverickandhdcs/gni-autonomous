@@ -2,6 +2,10 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateApiKey } from '@/lib/auth'
 
+function isReportId(s: string): boolean {
+  return /^[A-Za-z0-9-]{1,64}$/.test(s)
+}
+
 export async function GET(request: NextRequest) {
   const authError = validateApiKey(request)
   if (authError) return authError
@@ -12,6 +16,22 @@ export async function GET(request: NextRequest) {
     apikey: supabaseKey,
     Authorization: 'Bearer ' + supabaseKey,
     Accept: 'application/json'
+  }
+
+  // S111: ?ids=a,b,c returns those reports (at most 100 per call). /history listed up to 200
+  // runs but only ever had the newest 10 reports, so older runs showed no report at all.
+  const ids = request.nextUrl.searchParams.get('ids')
+  if (ids !== null) {
+    const list = ids.split(',').filter(isReportId).slice(0, 100)
+    if (list.length === 0) return NextResponse.json({ reports: [] }, { headers: { 'Cache-Control': 'no-store' } })
+    try {
+      const res = await fetch(supabaseUrl + '/rest/v1/reports?select=*&id=in.(' + list.join(',') + ')',
+        { headers, cache: 'no-store' })
+      const data = await res.json()
+      return NextResponse.json({ reports: Array.isArray(data) ? data : [] }, { headers: { 'Cache-Control': 'no-store' } })
+    } catch {
+      return NextResponse.json({ error: 'Failed to fetch reports' }, { status: 500 })
+    }
   }
 
   try {

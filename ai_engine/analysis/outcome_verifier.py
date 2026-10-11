@@ -79,10 +79,18 @@ def detect_black_swan() -> dict:
             return {'detected': False, 'spy_48h_change': None}
 
         closes = result[0].get('indicators', {}).get('quote', [{}])[0].get('close', [])
-        closes = [c for c in closes if c is not None]
+        stamps = result[0].get('timestamp', []) or []
 
-        # Take last 48 hourly candles
-        last_48 = closes[-BLACK_SWAN_HOURS:] if len(closes) >= BLACK_SWAN_HOURS else closes
+        # S111: the window is BLACK_SWAN_HOURS of wall-clock time, read from the bars' own
+        # timestamps. It used to be "the last 48 hourly candles" of a 5-day range, but a
+        # trading day has about 7 hourly bars, so the range never held 48 and the slice
+        # kept all five trading days - the "48h" rule judged a week.
+        # Harness: ai_engine/tests/dryrun_black_swan_window.py.
+        bars = [(t, c) for t, c in zip(stamps, closes) if c is not None and t is not None]
+        if not bars:
+            return {'detected': False, 'spy_48h_change': None}
+        cutoff = bars[-1][0] - BLACK_SWAN_HOURS * 3600
+        last_48 = [c for t, c in bars if t >= cutoff]
 
         if len(last_48) < 2:
             return {'detected': False, 'spy_48h_change': None}

@@ -595,24 +595,21 @@ def _gpvs_window_claim(fragment):
     return ["%dd" % int(m.group(1))]
 
 
-_WORDNUM = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
-            "eight": 8, "nine": 9, "ten": 10}
-
 
 def _swan_claim(fragment):
-    m = re.search(r"(\d+(?:\.\d+)?)% or more over the (\w+) trading days", fragment)
+    m = re.search(r"(\d+(?:\.\d+)?)% or more over the (\d+) hours", fragment)
     n = re.search(r"a fixed (\d+(?:\.\d+)?)", fragment)
-    if not m or not n or m.group(2) not in _WORDNUM:
-        raise FitnessError("no '<x>% or more over the <n> trading days ... a fixed <s>' in %r" % fragment)
-    return ["%g%%" % float(m.group(1)), "%dd" % _WORDNUM[m.group(2)], "%g" % float(n.group(1))]
+    if not m or not n:
+        raise FitnessError("no '<x>% or more over the <n> hours ... a fixed <s>' in %r" % fragment)
+    return ["%g%%" % float(m.group(1)), "%gh" % float(m.group(2)), "%g" % float(n.group(1))]
 
 
 def _black_swan(root):
     """The report check's black-swan rule in outcome_verifier.py (AST): the
-    BLACK_SWAN_THRESHOLD constant, the range=<n>d of the SPY chart URL that
-    detect_black_swan reads (hourly bars; its 48-bar slice keeps the whole range
-    when the range holds fewer bars), and the score calculate_accuracy_score
-    returns under `if black_swan or context_credit`."""
+    BLACK_SWAN_THRESHOLD constant; the window, BLACK_SWAN_HOURS, counted only if
+    detect_black_swan uses it as wall-clock seconds (BLACK_SWAN_HOURS * 3600 - S111;
+    before, a slice of hourly bars kept the whole 5-day range); and the score
+    calculate_accuracy_score returns under `if black_swan or context_credit`."""
     rel = "ai_engine/analysis/outcome_verifier.py"
     path = os.path.join(root, rel)
     if not os.path.isfile(path):
@@ -623,18 +620,21 @@ def _black_swan(root):
            and any(getattr(t, "id", "") == "BLACK_SWAN_THRESHOLD" for t in n.targets)]
     if len(thr) != 1:
         raise FitnessError("expected one BLACK_SWAN_THRESHOLD in %s" % rel)
+    hours = [_num(n.value) for n in tree.body if isinstance(n, ast.Assign)
+             and any(getattr(t, "id", "") == "BLACK_SWAN_HOURS" for t in n.targets)]
+    if len(hours) != 1:
+        raise FitnessError("expected one BLACK_SWAN_HOURS in %s" % rel)
     det = _func(root, rel, "detect_black_swan")
-    rng = {m for n in ast.walk(det) if isinstance(n, ast.Constant) and isinstance(n.value, str)
-           for m in re.findall(r"range=(\d+)d", n.value)}
-    if len(rng) != 1:
-        raise FitnessError("expected one range=<n>d in detect_black_swan, got %r" % rng)
+    wall = any(isinstance(n, ast.BinOp) and isinstance(n.op, ast.Mult)
+               and {getattr(n.left, "id", None), getattr(n.right, "value", None)} == {"BLACK_SWAN_HOURS", 3600}
+               for n in ast.walk(det))
     acc = _func(root, rel, "calculate_accuracy_score")
     ret = [_num(s.value) for n in ast.walk(acc) if isinstance(n, ast.If) and isinstance(n.test, ast.BoolOp)
            and "black_swan" in {getattr(v, "id", "") for v in n.test.values}
            for s in n.body if isinstance(s, ast.Return)]
     if len(ret) != 1:
         raise FitnessError("expected one return under 'if black_swan or ...' in calculate_accuracy_score")
-    return ["%g%%" % thr[0], "%sd" % rng.pop(), "%g" % ret[0]]
+    return ["%g%%" % thr[0], ("%gh" % hours[0]) if wall else "bar-count window", "%g" % ret[0]]
 
 
 def _ab_claim(fragment):

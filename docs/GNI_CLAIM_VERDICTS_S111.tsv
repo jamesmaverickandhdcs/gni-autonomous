@@ -1734,3 +1734,8 @@ cb71e4f03e	CLAIM	STATE	CLM-1056	The GitHub Actions workflows, the heartbeat, the
 a84e22ad19	CLAIM	STATE	CLM-1060	GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 74 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced.
 3fe625f069	CLAIM	STATE	CLM-1061	Every article is scanned for 74 prompt injection patterns before entering the AI pipeline.
 15e824ed0d	CLAIM	STATE	CLM-1062	Run against today&apos;s injection patterns, 9 of the 9 attacks listed below match one; before S111, 2 did.
+213ff786ec	CLAIM	STATE	CLM-1063	For each run with a saved report it adds the report&apos;s title, risk, sentiment, MAD verdict and escalation score; expanding a run loads its top articles.
+71fd1d1e40	CLAIM	STATE	CLM-1064	Report saved, but its details could not be loaded
+859cac4d49	CLAIM	STATE	CLM-1065	Today the report check has one rule for surprises: when SPY has moved 5% or more over the 48 hours before the check runs, it marks a black swan and gives every report it verifies in that run a fixed 0.25 instead of judging its direction.
+92dbe70dca	CLAIM	STATE	CLM-1066	Red bar = a run in which the admin was alerted about this slot. ⚠ History badge = this slot was alerted in at least one of the runs shown.
+1ec5726230	CLAIM	STATE	CLM-1067	Recorded since S111; earlier runs carry no flag.

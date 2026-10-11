@@ -23,7 +23,7 @@ export default function ModelLearningPage() {
           <div className="text-5xl mb-4">🧠</div>
           <h2 className="text-xl font-bold text-amber-300 mb-2">Model Learning</h2>
           <p className="text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4">
-            Model Learning will track the events where reality surprised GNI&apos;s predictions, and how the system responded. Today the report check has one rule for surprises: when SPY has moved 5% or more over the five trading days before the check runs, it marks a black swan and gives every report it verifies in that run a fixed 0.25 instead of judging its direction. Prompt templates and escalation thresholds do not change in response. This page will document GNI&apos;s learning trajectory, showing measurable improvement in prediction accuracy over time.
+            Model Learning will track the events where reality surprised GNI&apos;s predictions, and how the system responded. Today the report check has one rule for surprises: when SPY has moved 5% or more over the 48 hours before the check runs, it marks a black swan and gives every report it verifies in that run a fixed 0.25 instead of judging its direction. Prompt templates and escalation thresholds do not change in response. This page will document GNI&apos;s learning trajectory, showing measurable improvement in prediction accuracy over time.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
             <span className="text-xs text-amber-300">⏰ Status: <span className="font-bold text-white">In development</span></span>

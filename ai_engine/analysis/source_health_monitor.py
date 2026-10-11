@@ -306,8 +306,10 @@ def save_source_counts(articles: list, sources: list, source_stats: dict = None)
             "status":        "ok" if count > 0 else "empty",
         })
 
+    global _LAST_SAVED_RUN_AT
     try:
         client.table("source_health").insert(records).execute()
+        _LAST_SAVED_RUN_AT = run_at
         return True
     except Exception as e:
         # Migration-safe: raw_count column may not exist yet. Retry without it
@@ -317,6 +319,7 @@ def save_source_counts(articles: list, sources: list, source_stats: dict = None)
                 r.pop("raw_count", None)
             try:
                 client.table("source_health").insert(records).execute()
+                _LAST_SAVED_RUN_AT = run_at
                 print("  Note: source_health.raw_count column missing -- saved "
                       "without it. Run: ALTER TABLE source_health ADD COLUMN raw_count int;")
                 return True
@@ -463,9 +466,12 @@ def detect_rss_failures(sources: list, source_stats: dict = None) -> list:
     return failed
 
 
-def alert_and_log_failures(failed_sources: list) -> None:
+def alert_and_log_failures(failed_sources: list) -> list:
+    """Alert the admin about DOWN sources. Returns the names whose reserve-choice
+    alert was actually sent (S111: the caller marks this run's source_health rows)."""
+    alerted = []
     if not failed_sources:
-        return
+        return alerted
 
     client = _get_client()
 
@@ -505,6 +511,7 @@ def alert_and_log_failures(failed_sources: list) -> None:
             msg  = _build_reserve_alert(name, pillar, avg, hours_down, reason)
             sent = _send_admin_message(msg)
             if sent:
+                alerted.append(name)
                 print("  Reserve choice alert sent to admin for: " + name)
                 if client:
                     _upsert_reserve_record(client, name, pillar)
@@ -533,6 +540,27 @@ def alert_and_log_failures(failed_sources: list) -> None:
                     }).execute()
             except Exception as e:
                 print("  Warning: Could not log fix suggestion: " + str(e)[:60])
+    return alerted
+
+
+# S111: source_health.alert_sent was read by /api/source-health (the page's red bar and
+# History badge) but written by nothing, so neither could ever show. save_source_counts
+# remembers the run_at it stamped; mark_alert_sent sets the flag on that run's rows for
+# the sources alert_and_log_failures actually alerted.
+# Harness: ai_engine/tests/dryrun_source_alert_sent.py.
+_LAST_SAVED_RUN_AT = None
+
+
+def mark_alert_sent(client, run_at: str, names: list) -> bool:
+    if not client or not run_at or not names:
+        return False
+    try:
+        client.table("source_health").update({"alert_sent": True}) \
+            .eq("run_at", run_at).in_("source_name", list(names)).execute()
+        return True
+    except Exception as e:
+        print("  Warning: Could not mark alert_sent: " + str(e)[:80])
+        return False
 
 
 def get_active_reserves(client=None) -> dict:
@@ -575,7 +603,9 @@ def run_source_health_check(articles: list, sources: list, source_stats: dict = 
         mode = " [DRY-RUN]" if HEALTH_ALERT_DRY_RUN else ""
         print("  " + str(len(failed)) + " RSS source(s) DOWN (fetch-based)" + mode
               + " -- checking reserve alerts")
-        alert_and_log_failures(failed)
+        alerted = alert_and_log_failures(failed)
+        if alerted and mark_alert_sent(_get_client(), _LAST_SAVED_RUN_AT, alerted):
+            print("  alert_sent marked for " + str(len(alerted)) + " source(s) in this run")
     else:
         print("  All " + str(len(sources)) + " sources healthy (fetch-based)")
 

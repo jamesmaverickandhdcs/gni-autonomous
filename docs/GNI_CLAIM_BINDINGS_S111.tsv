@@ -1079,3 +1079,8 @@ CLM-1060	F-RSS	42 RSS sources
 CLM-1060	F-INJ	74 prompt injection patterns
 CLM-1061	F-INJ	74 prompt injection patterns
 CLM-1062	F-PENTEST	9 of the 9
+CLM-1063	UNMEASURED	QUALITATIVE
+CLM-1064	UNMEASURED	QUALITATIVE
+CLM-1065	F-BLACK-SWAN	5% or more over the 48 hours before the check runs, it marks a black swan and gives every report it verifies in that run a fixed 0.25
+CLM-1066	UNMEASURED	QUALITATIVE
+CLM-1067	UNMEASURED	HISTORICAL

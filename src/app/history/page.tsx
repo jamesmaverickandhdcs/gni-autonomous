@@ -159,7 +159,15 @@ function GpvsTimelineChart({ entries }: { entries: GpvsTimelineEntry[] }) {
   )
 }
 
-function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
+function onlyId(r: Report): string {
+  return r.id
+}
+
+function onlyReportId(r: PipelineRun): string {
+  return r.report_id
+}
+
+function RunCard({ run, reports, reportsDone }: { run: PipelineRun, reports: Report[], reportsDone: boolean }) {
   const [expanded, setExpanded] = useState(false)
   const [articles, setArticles] = useState<Article[]>([])
   const [loadingArticles, setLoadingArticles] = useState(false)
@@ -239,7 +247,7 @@ function RunCard({ run, reports }: { run: PipelineRun, reports: Report[] }) {
                 )}
               </div>
             ) : (
-              <div className="text-xs text-gray-600">{run.report_id ? 'Report saved; this page loads details for the newest ten reports only' : 'No report saved for this run'}</div>
+              <div className="text-xs text-gray-600">{run.report_id ? (reportsDone ? 'Report saved, but its details could not be loaded' : 'Loading report details') : 'No report saved for this run'}</div>
             )}
           </div>
           <span className="text-gray-600 text-xs shrink-0">
@@ -423,6 +431,7 @@ export default function HistoryPage() {
   const [error, setError] = useState('')
   const [timeline, setTimeline] = useState<GpvsTimelineEntry[]>([])
   const [hideAdaptive, setHideAdaptive] = useState(true)
+  const [reportsDone, setReportsDone] = useState(false)
 
   useEffect(() => {
     Promise.all([
@@ -433,8 +442,23 @@ export default function HistoryPage() {
       setRuns(runsData.runs || [])
       setReports(reportsData.reports || [])
       setTimeline(outcomesData.timeline || [])
-    }).catch(() => setError('Failed to load history.')).finally(() => setLoading(false))
+      setLoading(false)
+      return loadMissingReports(runsData.runs || [], reportsData.reports || [])
+    }).catch(() => setError('Failed to load history.')).finally(() => { setLoading(false); setReportsDone(true) })
   }, [])
+
+  // S111: /api/reports lists the newest 10; the runs reach back 200. Fetch the rest by id,
+  // 100 per call, so every run with a saved report shows it.
+  async function loadMissingReports(allRuns: PipelineRun[], have: Report[]) {
+    const known = new Set(have.map(onlyId))
+    const missing = Array.from(new Set(allRuns.map(onlyReportId).filter(Boolean))).filter(id => !known.has(id))
+    for (let i = 0; i < missing.length; i += 100) {
+      const batch = missing.slice(i, i + 100)
+      const data = await fetch('/api/reports?ids=' + batch.join(','), { headers: { 'X-GNI-Key': GNI_KEY } }).then(r => r.json())
+      const more: Report[] = data.reports || []
+      if (more.length > 0) setReports(prev => prev.concat(more))
+    }
+  }
 
   const visibleRuns = hideAdaptive ? runs.filter(r => r.report_id) : runs
   const grouped: Record<string, PipelineRun[]> = {}
@@ -455,7 +479,7 @@ export default function HistoryPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">Intelligence History</h1>
-            <p className="text-sm text-gray-400">Intelligence History lists the newest main pipeline runs, up to two hundred, with each run&apos;s status and article counts. For runs whose report is among the newest ten, it adds the report&apos;s title, risk, sentiment, MAD verdict and escalation score; expanding a run loads its top articles. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
+            <p className="text-sm text-gray-400">Intelligence History lists the newest main pipeline runs, up to two hundred, with each run&apos;s status and article counts. For each run with a saved report it adds the report&apos;s title, risk, sentiment, MAD verdict and escalation score; expanding a run loads its top articles. Scroll back through history to identify escalation trends, structural shifts, and turning points in geopolitical risk. Each run is a timestamped snapshot of the world as GNI saw it at that moment.</p>
           </div>
           <div className="mt-3 flex items-center gap-3">
             <button
@@ -507,7 +531,7 @@ export default function HistoryPage() {
             </div>
             <div className="space-y-3">
               {dateRuns.map(run => (
-                <RunCard key={run.id} run={run} reports={reports} />
+                <RunCard key={run.id} run={run} reports={reports} reportsDone={reportsDone} />
               ))}
             </div>
           </div>

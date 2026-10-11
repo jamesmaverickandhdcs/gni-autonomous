@@ -241,7 +241,7 @@ export default function SourceHealthPage() {
           </div>
           <div className="mt-3 text-xs text-gray-600">
             Mini chart: up to the last 10 runs, plotting delivered articles only — it is a yield trend, not a transport signal.
-            The red-bar and ⚠ History signals read an alert_sent flag that no current code sets, so they stay dark; source alerts are kept in the source_reserves table.
+            Red bar = a run in which the admin was alerted about this slot. ⚠ History badge = this slot was alerted in at least one of the runs shown. Recorded since S111; earlier runs carry no flag.
           </div>
         </div>
 
