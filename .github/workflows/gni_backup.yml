@@ -95,8 +95,10 @@ jobs:
           # Grants and policies name roles that a real Supabase project has and a scratch Postgres does not
           # (anon, authenticated, service_role, this backup role...). Read them from the dump's own DDL - never
           # from a hand-typed list - and create each one, so the restore can replay every GRANT it carries.
+          # A role is named after TO/FROM (grants, policies), FOR ROLE (default privileges) and SESSION
+          # AUTHORIZATION (a grant made by a role other than the owner) - S110 run 38100830152: supabase_admin.
           ROLES=$($PG pg_restore --schema-only -f - "$OUT/check.dump" \
-            | grep -oE '\b(TO|FROM) "?[A-Za-z_][A-Za-z0-9_]*"?' | awk '{print $2}' | tr -d '"' \
+            | grep -oE '\b(TO|FROM|FOR ROLE|SESSION AUTHORIZATION) "?[A-Za-z_][A-Za-z0-9_]*"?' | awk '{print $NF}' | tr -d '"' \
             | grep -viE '^(public|postgres|current_user|session_user)$' | sort -u)
           echo "   roles named by the dump: $(echo $ROLES)"
           for r in $ROLES; do
