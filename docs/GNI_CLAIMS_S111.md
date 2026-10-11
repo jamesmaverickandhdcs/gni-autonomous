@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S110.tsv` md5 `28955e3eda8d5e6201dcb1568358ed5c` (EOL-normalised) -- **752 claims** (526 STATE, 204 PROMISE, 22 MIXED) at **805 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `bbd617a6277a6735bce34ed25adbd9e7` (EOL-normalised) -- **741 claims** (515 STATE, 204 PROMISE, 22 MIXED) at **794 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a9587192dd234e` (EOL-normalised) -- **COVERAGE 32/752 = 4.3%** (32 SUPPORTED, 0 DEFEATED, 720 UNMEASURED); **UNREVIEWED 415**, **NUMBERS UNDERIVED 139** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `3adfe1b428e00889acbbe072c1e4caaf` (EOL-normalised) -- **COVERAGE 34/741 = 4.6%** (34 SUPPORTED, 0 DEFEATED, 707 UNMEASURED); **UNREVIEWED 370**, **NUMBERS UNDERIVED 126** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -253,19 +253,18 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a95871
 | CLM-228 | STATE | UNMEASURED | UNREVIEWED | `src/app/source-health/page.tsx:253` | ⚠️ GNI data is for informational purposes only. |
 | CLM-228 | STATE | UNMEASURED | UNREVIEWED | `src/app/transparency/page.tsx:408` | ⚠️ GNI data is for informational purposes only. |
 | CLM-229 | STATE | UNMEASURED | PROVENANCE | `src/app/methodology/page.tsx:138` | GNI Autonomous \| Methodology \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-230 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/about/devops/page.tsx:42` | 02:13 + 10:13 UTC |
+| CLM-230 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/about/devops/page.tsx:43` | 02:13 + 10:13 UTC |
 | CLM-230 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/methodology/page.tsx:32` | 02:13 + 10:13 UTC |
-| CLM-231 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:42` | ~17,780/run (measured avg, 61 runs, Aug 2026) |
-| CLM-231 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:32` | ~17,780/run (measured avg, 61 runs, Aug 2026) |
+| CLM-231 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:43` | ~17,780/run (measured avg, 61 runs, Aug 2026) |
+| CLM-231 | STATE | UNMEASURED | RUNTIME | `src/app/methodology/page.tsx:32` | ~17,780/run (measured avg, 61 runs, Aug 2026) |
 | CLM-232 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:32` | RSS collection → intelligence funnel → AI analysis → CI → pillar reports → save → verify |
-| CLM-233 | STATE | SUPPORTED | F-CRON-MAD claims 02:43+10:43, measured 02:43+10:43+11:13 | `src/app/about/devops/page.tsx:43` | 02:43 + 10:43 UTC |
+| CLM-233 | STATE | SUPPORTED | F-CRON-MAD claims 02:43+10:43, measured 02:43+10:43+11:13 | `src/app/about/devops/page.tsx:44` | 02:43 + 10:43 UTC |
 | CLM-233 | STATE | SUPPORTED | F-CRON-MAD claims 02:43+10:43, measured 02:43+10:43+11:13 | `src/app/methodology/page.tsx:33` | 02:43 + 10:43 UTC |
 | CLM-234 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:33` | ~68,509/run (measured avg, 61 runs, Aug 2026; range 7.4K-97K) |
 | CLM-235 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:33` | 4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions |
 | CLM-236 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:34` | 0 (zero) |
 | CLM-237 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:34` | Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection |
 | CLM-238 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:35` | 0 (Cerebras path) |
-| CLM-239 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:35` | Fresh analysis when escalation spikes — CRITICAL=0 Groq, HIGH=4 calls, LOW=19 calls |
 | CLM-240 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:57` | Reads groq_daily_usage → sums today\\'s tokens → checks against 85K safe ceiling. |
 | CLM-241 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:57` | If insufficient headroom: EXIT with Telegram alert. |
 | CLM-242 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/methodology/page.tsx:57` | Sacred runs (02:13+10:13 UTC) always permitted. |
@@ -273,7 +272,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a95871
 | CLM-244 | PROMISE | UNMEASURED | PROMISE | `src/app/methodology/page.tsx:58` | Target: 400+ raw articles per run. |
 | CLM-245 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:58` | All saved to pipeline_articles table. |
 | CLM-246 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/methodology/page.tsx:59` | Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
-| CLM-247 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:50` | Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain. |
+| CLM-247 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:51` | Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain. |
 | CLM-247 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:59` | Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain. |
 | CLM-248 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:59` | Flagged articles written to audit_trail table. |
 | CLM-249 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:60` | MD5 hash of first 6 title words. |
@@ -300,55 +299,31 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a95871
 | CLM-271 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:115` | 33 tables — reports, predictions, audit_trail, groq_daily_usage... |
 | CLM-273 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:117` | Sacred completion, CRITICAL escalation, NYSE alerts, divergence |
 | CLM-274 | STATE | UNMEASURED | UNREVIEWED | `src/app/methodology/page.tsx:118` | Auto-deploy on git push to main |
-| CLM-275 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:75` | How GNI runs itself. |
-| CLM-275 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/page.tsx:175` | How GNI runs itself. |
-| CLM-277 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:75` | This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the $0.00/month evidence. |
-| CLM-278 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:101` | Live Token Quota — $0.00/Month Proof |
-| CLM-281 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:125` | The 4 Core Autonomous Pipelines |
-| CLM-282 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:158` | Academic Contribution — L7 Autonomy Proof |
-| CLM-283 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:159` | The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. |
-| CLM-284 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:159` | This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes. |
-| CLM-286 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:166` | Warning: GNI data is for informational purposes only. |
-| CLM-287 | STATE | UNMEASURED | PROVENANCE | `src/app/about/devops/page.tsx:171` | GNI Autonomous \| About — Dev Console \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-288 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:38` | ~${madRecent.toLocaleString()}/run (recent; varies with load) |
-| CLM-289 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:39` | ~80,000/run |
-| CLM-290 | STATE | SUPPORTED | F-INJ claims 81, measured 81; F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:42` | RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. |
-| CLM-291 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:42` | The sacred run that never fails. |
-| CLM-292 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:43` | Four AI agents (Bull, Bear, Black Swan, Ostrich) debate the latest report across 3 rounds with Arbitrator coaching after each round. |
-| CLM-293 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:43` | Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction. |
-| CLM-294 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:44` | 0 tokens |
-| CLM-295 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:44` | Escalation monitoring and NYSE alert system. |
-| CLM-296 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:44` | Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold. |
-| CLM-297 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:45` | 0 (Cerebras path -- logs 0 Groq) |
-| CLM-298 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:45` | Emergency fresh analysis when world escalation spikes. |
-| CLM-299 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:45` | HIGH = 4 calls. |
-| CLM-300 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:45` | LOW = 19 calls. |
-| CLM-301 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:45` | Frequency controller adjusts run interval autonomously: CRITICAL=30min, HIGH=2h, ELEVATED=4h, MODERATE=6h, LOW=12h. |
-| CLM-302 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:49` | 42 global news sources, up to 20 articles each, 400-500 raw articles per run. |
-| CLM-303 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:49` | MD5 deduplication prevents duplicate event reporting within 6-hour rolling windows. |
-| CLM-304 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:50` | 81-Pattern Injection Detection |
-| CLM-305 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:50` | Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
-| CLM-306 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:51` | Geopolitical significance scoring (0-20 points), top-N selection with source diversity enforcement, 3 independent AI runs at temperatures 0.1/0.3/0.7, t-distribution confidence interval (t=4.303, n=3, alpha=0.05) for every sentiment score. |
-| CLM-307 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:52` | After verify_date passes, actual SPY movement measured against prediction direction. |
-| CLM-308 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:52` | Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for inconclusive. |
-| CLM-309 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:52` | Creates compounding accuracy advantage. |
-| CLM-310 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:53` | Self-Healing + Mission Control |
-| CLM-311 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:53` | Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. |
-| CLM-312 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:53` | Mission Control checks Supabase connection, report freshness, quota ceiling, source health, pipeline recency. |
-| CLM-313 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:53` | Telegram CRITICAL/WARNING alerts with specific action recommendations. |
-| CLM-314 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:84` | $0.00/Month Forever |
-| CLM-315 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:84` | Zero vendor lock-in. |
-| CLM-316 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:84` | Zero credit card required. |
-| CLM-317 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:84` | Zero maintenance cost. |
-| CLM-318 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:85` | Zero Human Intervention |
-| CLM-319 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:85` | Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. |
-| CLM-320 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:85` | The frequency controller adjusts run intervals based on world escalation score. |
-| CLM-321 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:85` | The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis. |
-| CLM-322 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:86` | Self-Healing by Design |
-| CLM-323 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:86` | Mission Control monitors 6 health dimensions, ${SCHEDULE_REQUESTED_30}. |
-| CLM-324 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:86` | Telegram alerts fire before failures cascade. |
-| CLM-325 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:86` | The heartbeat detects anomalies and triggers corrective pipelines autonomously. |
-| CLM-326 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:86` | The system fixes itself. |
+| CLM-275 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:76` | How GNI runs itself. |
+| CLM-275 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:175` | How GNI runs itself. |
+| CLM-283 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:160` | The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. |
+| CLM-284 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:160` | This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes. |
+| CLM-286 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:167` | Warning: GNI data is for informational purposes only. |
+| CLM-287 | STATE | UNMEASURED | PROVENANCE | `src/app/about/devops/page.tsx:172` | GNI Autonomous \| About — Dev Console \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
+| CLM-288 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:39` | ~${madRecent.toLocaleString()}/run (recent; varies with load) |
+| CLM-290 | STATE | SUPPORTED | F-INJ claims 81, measured 81; F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:43` | RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. |
+| CLM-293 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:44` | Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction. |
+| CLM-294 | STATE | SUPPORTED | F-HB-GROQ claims 0, measured 0 | `src/app/about/devops/page.tsx:45` | 0 tokens |
+| CLM-295 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:45` | Escalation monitoring and NYSE alert system. |
+| CLM-296 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:45` | Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold. |
+| CLM-297 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:46` | 0 (Cerebras path -- logs 0 Groq) |
+| CLM-302 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:50` | 42 global news sources, up to 20 articles each, 400-500 raw articles per run. |
+| CLM-304 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | 81-Pattern Injection Detection |
+| CLM-305 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
+| CLM-306 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:52` | Geopolitical significance scoring (0-20 points), top-N selection with source diversity enforcement, 3 independent AI runs at temperatures 0.1/0.3/0.7, t-distribution confidence interval (t=4.303, n=3, alpha=0.05) for every sentiment score. |
+| CLM-307 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:53` | After verify_date passes, actual SPY movement measured against prediction direction. |
+| CLM-308 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:53` | Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for inconclusive. |
+| CLM-311 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. |
+| CLM-313 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Telegram CRITICAL/WARNING alerts with specific action recommendations. |
+| CLM-314 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:85` | $0.00/Month Forever |
+| CLM-316 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:85` | Zero credit card required. |
+| CLM-319 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. |
+| CLM-321 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:86` | The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis. |
 | CLM-327 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:63` | GNI_Autonomous API Reference \| Build on top of GNI \| Fork guide \| $0.00/month architecture |
 | CLM-328 | PROMISE | UNMEASURED | PROMISE | `src/app/developer/page.tsx:75` | Monthly Cost (forever) |
 | CLM-329 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:247` | — requirements.txt is DELETED — all pipelines use inline pip install |
@@ -722,7 +697,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a95871
 | CLM-672 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:98` | How Self-Healing Works |
 | CLM-673 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:106` | Detects escalation delta &gt;= 2.0 or CRITICAL level |
 | CLM-674 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:110` | Triggers gni_adaptive.yml via GitHub Actions API |
-| CLM-675 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:114` | Adaptive runs fresh analysis — 0 to 19 Groq calls based on level |
 | CLM-676 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:118` | Sends Telegram alert with trigger reason and result |
 | CLM-677 | STATE | UNMEASURED | PROVENANCE | `src/app/adaptive-log/page.tsx:191` | GNI Autonomous \| Adaptive Pipeline Log \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-678 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:155` | — written by the main pipeline; adaptive wrote none of them |
@@ -792,7 +766,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a95871
 | CLM-745 | STATE | UNMEASURED | UNREVIEWED | `src/components/ResetBanner.tsx:12` | Always on. |
 | CLM-746 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:26` | GNI_Autonomous runs on autonomous GitHub Actions workflows -- core intelligence pipelines plus support workflows -- started by cron schedules, except the adaptive run, which the heartbeat triggers. |
 | CLM-747 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:116` | core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; support: graph, market, self-bias, mission control; CI: test harnesses on push |
-| CLM-748 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:75` | The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the self-healing heartbeat to the multi-layer injection security stack. |
+| CLM-748 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:76` | The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the self-healing heartbeat to the multi-layer injection security stack. |
 | CLM-749 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/developer-hub/page.tsx:126` | 81 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. |
 | CLM-750 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/page.tsx:175` | The GitHub Actions workflows, the self-healing heartbeat, the 81-pattern security layer, and live token quota data proving $0.00/month L7 autonomous operation. |
 | CLM-751 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/page.tsx:519` | Pipeline is scheduled for 08:43 and 16:43 Myanmar time. |
@@ -813,8 +787,23 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a95871
 | CLM-766 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/quota/page.tsx:211` | GNI plans against 100K Groq tokens/day per account, at no cost. |
 | CLM-767 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/quota/page.tsx:218` | 100K tokens/day/account (planning limit) |
 | CLM-768 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/feedback/page.tsx:41` | Free-tier rate limits (Groq, planned at 100K tokens/day per account) constrain analysis depth in high-escalation periods |
-| CLM-769 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/devops/page.tsx:84` | Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). |
+| CLM-769 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/devops/page.tsx:85` | Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). |
 | CLM-770 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/page.tsx:27` | Cloud AI — free tier, planned at 100K tokens/day per account |
-| CLM-771 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000 | `src/app/about/devops/page.tsx:119` | safe ceiling 85K = 85% of the bar |
-| CLM-772 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/devops/page.tsx:119` | 100K planning limit |
-| CLM-773 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:160` | The 4-pipeline core, its supporting workflows, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment. |
+| CLM-771 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000 | `src/app/about/devops/page.tsx:120` | safe ceiling 85K = 85% of the bar |
+| CLM-772 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/devops/page.tsx:120` | 100K planning limit |
+| CLM-774 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:76` | This page shows the scheduled runs that start without a person, and the live token data behind GNI&apos;s free-tier operation. |
+| CLM-775 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:126` | The Core Autonomous Pipelines |
+| CLM-776 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:161` | The core pipelines, their supporting workflows, the heartbeat and Mission Control show a system whose scheduled work runs without a person starting it; changing it, and repairing it when it breaks, is still a person&apos;s job. |
+| CLM-777 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:44` | The Bull, Bear, Black Swan and Ostrich agents debate the latest report; a peer consultant develops the case of each agent after the first and second rounds, and the Arbitrator rules after the third. |
+| CLM-778 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:46` | Runs when the heartbeat triggers it. |
+| CLM-779 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:46` | At the CRITICAL level it sends an alert and runs no analysis; at every other level it runs one focused analysis on Cerebras, with no Groq call. |
+| CLM-780 | STATE | SUPPORTED | F-ADAPT-GAP claims CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h, measured CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h | `src/app/about/devops/page.tsx:46` | Between runs it waits at least the gap its own table sets per level: CRITICAL 30 min, HIGH 2 h, ELEVATED 4 h, MODERATE 6 h, LOW 12 h, and longer during NYSE hours. |
+| CLM-781 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:50` | MD5 title keys remove duplicate articles within a run, URLs a recent run already selected are excluded, and a report whose article basket is mostly recycled is skipped. |
+| CLM-782 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Mission Control checks the Supabase connection, the age of the newest report, Groq quota, recent pipeline and MAD runs, source health, and the freshness of what the web app serves. |
+| CLM-783 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | Runs Without a Human Trigger |
+| CLM-784 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | The frequency controller records, for each report, how often the current escalation level would warrant a run; it does not change the schedule. |
+| CLM-785 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:87` | Mission Control runs its checks ${SCHEDULE_REQUESTED_30}. |
+| CLM-786 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:87` | The heartbeat triggers the adaptive run when escalation moves past its threshold; at the CRITICAL level that run sends an alert instead of an analysis. |
+| CLM-787 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:87` | When something breaks, an alert reaches the operator, and the repair is done by a person. |
+| CLM-788 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:114` | Adaptive runs one Cerebras analysis, or only an alert at CRITICAL — no Groq call |
+| CLM-789 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:35` | Fresh analysis when escalation spikes — an alert only at CRITICAL, one Cerebras analysis at every other level |

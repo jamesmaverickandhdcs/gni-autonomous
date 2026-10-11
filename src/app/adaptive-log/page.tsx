@@ -111,7 +111,7 @@ export default function AdaptiveLogPage() {
                 </div>
                 <div className="flex gap-3">
                   <span className="text-blue-400 font-bold shrink-0">4.</span>
-                  <span>Adaptive runs fresh analysis — 0 to 19 Groq calls based on level</span>
+                  <span>Adaptive runs one Cerebras analysis, or only an alert at CRITICAL — no Groq call</span>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-blue-400 font-bold shrink-0">5.</span>

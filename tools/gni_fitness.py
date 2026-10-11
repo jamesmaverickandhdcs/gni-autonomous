@@ -120,6 +120,69 @@ def _ast_int_const(root, rel, name):
     raise FitnessError("no top-level integer %s in %s" % (name, rel))
 
 
+LEVELS = ("CRITICAL", "HIGH", "ELEVATED", "MODERATE", "LOW")
+GAP_RE = re.compile(r"\b(%s)\s+(\d+(?:\.\d+)?)\s*(min|h)\b" % "|".join(LEVELS))
+
+
+def _hours(value):
+    return ("%g" % value) + "h"
+
+
+def _gap_claim(fragment):
+    """'CRITICAL 30 min, HIGH 2 h' -> ['CRITICAL=0.5h', 'HIGH=2h']."""
+    out = [lv + "=" + _hours(float(n) / 60 if unit == "min" else float(n))
+           for lv, n, unit in GAP_RE.findall(fragment)]
+    if not out:
+        raise FitnessError("no LEVEL <n> min|h pair in fragment %r" % fragment)
+    return out
+
+
+def _adaptive_gaps(root):
+    """The minimum gap the adaptive run enforces per level: interval_h in
+    ESCALATION_MODES, adaptive_pipeline.py (AST). This table, not the frequency
+    controller's, is what run_adaptive_pipeline compares hours_since against."""
+    rel = "ai_engine/adaptive_pipeline.py"
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", "") == "ESCALATION_MODES"
+                                                for t in node.targets):
+            out = []
+            for k, v in zip(node.value.keys, node.value.values):
+                gap = [vv.value for kk, vv in zip(v.keys, v.values)
+                       if getattr(kk, "value", None) == "interval_h"]
+                if not gap:
+                    raise FitnessError("ESCALATION_MODES[%r] has no interval_h" % k.value)
+                out.append(k.value + "=" + _hours(float(gap[0])))
+            return out
+    raise FitnessError("no top-level ESCALATION_MODES in %s" % rel)
+
+
+def _groq_refs(root):
+    """Groq references in the heartbeat module (AST): imports of the groq
+    package and calls to a name Groq. LIMIT, written down: imports are not
+    followed - section 5 shows monitoring_pipeline imports no internal module,
+    so at S111 there is nothing to follow; a new internal import moves that."""
+    rel = "ai_engine/monitoring_pipeline.py"
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    n = 0
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            n += sum(a.name.split(".")[0] == "groq" for a in node.names)
+        elif isinstance(node, ast.ImportFrom) and (node.module or "").split(".")[0] == "groq":
+            n += 1
+        elif isinstance(node, ast.Call) and getattr(node.func, "id", "") == "Groq":
+            n += 1
+    return n
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -157,13 +220,38 @@ FITNESS = {
               _int_k, lambda r: _ast_int_const(r, "ai_engine/quota_guard.py", "TPD_HARD_LIMIT"), _equal),
     "F-TPD-SAFE": ("per-account daily safe ceiling GNI plans against: TPD_SAFE_CEILING in quota_guard.py (AST)",
                    _int_k, lambda r: _ast_int_const(r, "ai_engine/quota_guard.py", "TPD_SAFE_CEILING"), _equal),
+    # S111 (roadmap 4 row R4-2, /about/devops).
+    "F-ADAPT-GAP": ("minimum gap per escalation level the adaptive run enforces: interval_h in "
+                    "ESCALATION_MODES, adaptive_pipeline.py (AST)",
+                    _gap_claim, _adaptive_gaps, _scheduled),
+    "F-HB-GROQ": ("Groq imports and Groq() calls in the heartbeat module, monitoring_pipeline.py (AST)",
+                  _first_int, _groq_refs, _equal),
 }
 
-# Why a claim has no fitness function. HISTORICAL: the claim states a past
-# state of the system (the frozen March 2026 White Paper's "current" figures);
-# measuring today's tree against it would defeat a claim that was true when made.
+# Why a claim has no fitness function. Written down at S111 for the three that
+# were accepted and defined nowhere (roadmap 4's OWED list); a reason without a
+# definition is a status typed by hand.
 # UNREVIEWED: nobody has yet looked for a fitness function for the claim - it
 # says nothing about the claim, and it is the reason most claims carry at S107.
+# RUNTIME: see the module docstring - the claim is about what happens when GNI
+# runs, and waits for a fitness function that reads a committed snapshot.
+# PROMISE: the claim states an intention, not a state (its kind is PROMISE).
+# HISTORICAL: the claim states a past state of the system (the frozen March 2026
+# White Paper's "current" figures); measuring today's tree against it would
+# defeat a claim that was true when made.
+# PROVENANCE: the claim states who made GNI, where, or in which programme - an
+# authorship or credit line. It describes GNI's origin, not its behaviour.
+# EXTERNAL: the claim states a fact about a party GNI does not control - a
+# provider's free-tier terms, limits or billing, or an outside statistic. Only
+# that party's published terms can bear it out (ARCHITECTURE section 4, SLM).
+# QUALITATIVE: the claim describes GNI's design or behaviour with no count, rate,
+# time or date in it, so no fitness function can bear it out or defeat it. The
+# review that gives this reason has READ THE CODE the sentence describes and
+# judged it true; the reviewing commit names the files read. A sentence judged
+# false gets no reason: its copy is retired. WEAKNESS: this is a person's
+# judgement and leaves no trace beyond that commit message.
+# HISTORICAL and PROVENANCE excuse a number on the public pages (gni_claims
+# REVIEW_EXEMPT, roadmap 4 row R4-3); the other reasons do not.
 UNMEASURED_REASONS = ("UNREVIEWED", "RUNTIME", "PROMISE", "HISTORICAL", "QUALITATIVE",
                       "EXTERNAL", "PROVENANCE")
 

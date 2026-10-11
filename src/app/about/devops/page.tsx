@@ -30,27 +30,28 @@ export default function AboutDevopsPage() {
   const pct = quota && quota.daily_limit ? Math.round(worstTokens / quota.daily_limit * 100) : 0
 
   // Wire gni_mad live from the quota usage[] we already fetch: most recent gni_mad row's
-  // tokens_used (real metered, varies 75-94k). Static ~80,000/run fallback if absent.
+  // tokens_used (real metered). With no gni_mad row the page says so; S111 retired a static
+  // per-run figure that S90 had measured as stale.
   const madRecent = quota?.usage
     ?.filter(u => u.pipeline === 'gni_mad')
     .sort((a, b) => b.created_at.localeCompare(a.created_at))[0]?.tokens_used
   const madTokens = madRecent
     ? `~${madRecent.toLocaleString()}/run (recent; varies with load)`
-    : '~80,000/run'
+    : 'no recent run in the data'
 
   const pipelines = [
-    { name: 'gni_pipeline', schedule: '02:13 + 10:13 UTC', tokens: '~17,780/run (measured avg, 61 runs, Aug 2026)', color: 'blue', desc: 'Core intelligence pipeline. RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. The sacred run that never fails.' },
-    { name: 'gni_mad', schedule: '02:43 + 10:43 UTC', tokens: madTokens, color: 'purple', desc: 'Quadratic MAD Protocol. Four AI agents (Bull, Bear, Black Swan, Ostrich) debate the latest report across 3 rounds with Arbitrator coaching after each round. Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction.' },
+    { name: 'gni_pipeline', schedule: '02:13 + 10:13 UTC', tokens: '~17,780/run (measured avg, 61 runs, Aug 2026)', color: 'blue', desc: 'Core intelligence pipeline. RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification.' },
+    { name: 'gni_mad', schedule: '02:43 + 10:43 UTC', tokens: madTokens, color: 'purple', desc: 'Quadratic MAD Protocol. The Bull, Bear, Black Swan and Ostrich agents debate the latest report; a peer consultant develops the case of each agent after the first and second rounds, and the Arbitrator rules after the third. Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction.' },
     { name: 'gni_heartbeat', schedule: FRESHNESS_SHORT, tokens: '0 tokens', color: 'green', desc: 'Escalation monitoring and NYSE alert system. Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold.' },
-    { name: 'gni_adaptive', schedule: 'On trigger', tokens: '0 (Cerebras path -- logs 0 Groq)', color: 'amber', desc: 'Emergency fresh analysis when world escalation spikes. CRITICAL level = 0 Groq calls (cached data only). HIGH = 4 calls. LOW = 19 calls. Frequency controller adjusts run interval autonomously: CRITICAL=30min, HIGH=2h, ELEVATED=4h, MODERATE=6h, LOW=12h.' },
+    { name: 'gni_adaptive', schedule: 'On trigger', tokens: '0 (Cerebras path -- logs 0 Groq)', color: 'amber', desc: 'Runs when the heartbeat triggers it. At the CRITICAL level it sends an alert and runs no analysis; at every other level it runs one focused analysis on Cerebras, with no Groq call. Between runs it waits at least the gap its own table sets per level: CRITICAL 30 min, HIGH 2 h, ELEVATED 4 h, MODERATE 6 h, LOW 12 h, and longer during NYSE hours.' },
   ]
 
   const architecture = [
-    { layer: 'L1 Data', title: 'RSS Ingestion + Deduplication', desc: '42 global news sources, up to 20 articles each, 400-500 raw articles per run. MD5 deduplication prevents duplicate event reporting within 6-hour rolling windows.' },
+    { layer: 'L1 Data', title: 'RSS Ingestion + Deduplication', desc: '42 global news sources, up to 20 articles each, 400-500 raw articles per run. MD5 title keys remove duplicate articles within a run, URLs a recent run already selected are excluded, and a report whose article basket is mostly recycled is skipped.' },
     { layer: 'L2 Security', title: '81-Pattern Injection Detection', desc: 'Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. Every LLM response is validated by a hardened-JSON guardian, and every intelligence item is written to a SHA-256 audit chain.' },
     { layer: 'L3 Intelligence', title: 'Funnel Scoring + AI Analysis', desc: 'Geopolitical significance scoring (0-20 points), top-N selection with source diversity enforcement, 3 independent AI runs at temperatures 0.1/0.3/0.7, t-distribution confidence interval (t=4.303, n=3, alpha=0.05) for every sentiment score.' },
-    { layer: 'L4 Validation', title: 'GPVS Prediction Scoring', desc: 'After verify_date passes, actual SPY movement measured against prediction direction. Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for inconclusive. Creates compounding accuracy advantage.' },
-    { layer: 'L5 Autonomy', title: 'Self-Healing + Mission Control', desc: `Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. Mission Control checks Supabase connection, report freshness, quota ceiling, source health, pipeline recency. Telegram CRITICAL/WARNING alerts with specific action recommendations.` },
+    { layer: 'L4 Validation', title: 'GPVS Prediction Scoring', desc: 'After verify_date passes, actual SPY movement measured against prediction direction. Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for inconclusive.' },
+    { layer: 'L5 Autonomy', title: 'Heartbeat + Mission Control', desc: `Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. Mission Control checks the Supabase connection, the age of the newest report, Groq quota, recent pipeline and MAD runs, source health, and the freshness of what the web app serves. Telegram CRITICAL/WARNING alerts with specific action recommendations.` },
   ]
 
   const colorMap: Record<string, string> = {
@@ -72,7 +73,7 @@ export default function AboutDevopsPage() {
         <div className="max-w-6xl mx-auto px-6 py-4">
           <a href="/about" className="inline-flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors mb-3">Back to About</a>
           <h1 className="text-2xl font-bold text-purple-400">Dev Console — Autonomous Architecture</h1>
-          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the self-healing heartbeat to the multi-layer injection security stack. This page proves L7 autonomy: zero human intervention required for daily operation, with live token quota data as the $0.00/month evidence.</p>
+          <p className="text-sm text-gray-400">How GNI runs itself. The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the self-healing heartbeat to the multi-layer injection security stack. This page shows the scheduled runs that start without a person, and the live token data behind GNI&apos;s free-tier operation.</p>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
@@ -81,9 +82,9 @@ export default function AboutDevopsPage() {
           <div className="text-xs text-purple-400 uppercase tracking-wider mb-3">The Autonomy Philosophy</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero vendor lock-in. Zero credit card required. Zero maintenance cost.' },
-              { title: 'Zero Human Intervention', desc: `Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. The frequency controller adjusts run intervals based on world escalation score. The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis.` },
-              { title: 'Self-Healing by Design', desc: `Mission Control monitors 6 health dimensions, ${SCHEDULE_REQUESTED_30}. Telegram alerts fire before failures cascade. The heartbeat detects anomalies and triggers corrective pipelines autonomously. The system fixes itself.` },
+              { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero credit card required.' },
+              { title: 'Runs Without a Human Trigger', desc: `Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. The frequency controller records, for each report, how often the current escalation level would warrant a run; it does not change the schedule. The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis.` },
+              { title: 'Watched by Design', desc: `Mission Control runs its checks ${SCHEDULE_REQUESTED_30}. The heartbeat triggers the adaptive run when escalation moves past its threshold; at the CRITICAL level that run sends an alert instead of an analysis. When something breaks, an alert reaches the operator, and the repair is done by a person.` },
             ].map(item => (
               <div key={item.title} className="bg-purple-900 bg-opacity-30 rounded-lg p-4">
                 <div className="text-sm font-bold text-purple-300 mb-2">{item.title}</div>
@@ -98,7 +99,7 @@ export default function AboutDevopsPage() {
 
         {!loading && quota && (
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-            <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Live Token Quota — $0.00/Month Proof</div>
+            <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Live Token Quota</div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               {[
                 { label: 'Tokens Today (All Accounts)', value: quota.today_tokens?.toLocaleString() || '0', color: 'text-white' },
@@ -122,7 +123,7 @@ export default function AboutDevopsPage() {
         )}
 
         <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">The 4 Core Autonomous Pipelines</div>
+          <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">The Core Autonomous Pipelines</div>
           <div className="space-y-4">
             {pipelines.map(p => (
               <div key={p.name} className={"border rounded-xl p-5 " + colorMap[p.color]}>
@@ -155,9 +156,9 @@ export default function AboutDevopsPage() {
         </div>
 
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
-          <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — L7 Autonomy Proof</div>
+          <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — Autonomy Evidence</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">The 4-pipeline core, its supporting workflows, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">The core pipelines, their supporting workflows, the heartbeat and Mission Control show a system whose scheduled work runs without a person starting it; changing it, and repairing it when it breaks, is still a person&apos;s job.</p>
         </div>
 
       </main>
