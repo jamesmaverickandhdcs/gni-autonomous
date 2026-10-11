@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `ec1a62a7973fc1b84f98794c025983dc` (EOL-normalised) -- **759 claims** (533 STATE, 205 PROMISE, 21 MIXED) at **815 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `e3e32427e327a624df26ce75c9472725` (EOL-normalised) -- **759 claims** (533 STATE, 205 PROMISE, 21 MIXED) at **815 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f825d8b3caa` (EOL-normalised) -- **COVERAGE 67/759 = 8.8%** (67 SUPPORTED, 0 DEFEATED, 692 UNMEASURED); **UNREVIEWED 150**, **NUMBERS UNDERIVED 92** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `1723dc9c3b909dd2ea34e47454577021` (EOL-normalised) -- **COVERAGE 72/759 = 9.5%** (72 SUPPORTED, 0 DEFEATED, 687 UNMEASURED); **UNREVIEWED 114**, **NUMBERS UNDERIVED 86** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -474,21 +474,16 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f82
 | CLM-558 | STATE | UNMEASURED | UNREVIEWED | `src/app/history/page.tsx:521` | ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-558 | STATE | UNMEASURED | UNREVIEWED | `src/app/map/page.tsx:110` | ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-559 | STATE | UNMEASURED | PROVENANCE | `src/app/correlations/page.tsx:325` | GNI Autonomous \| Correlation Engine \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-560 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:69` | Pattern Intelligence is GNI&apos;s long-term research hub, designed for analysts and researchers who want to go beyond the latest report and understand how global intelligence evolves over time. |
-| CLM-561 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:70` | Every pipeline run produces structured data — escalation scores, sentiment scores, MAD verdicts, and confidence intervals — all of which are tracked, stored, and available for deep analysis here. |
-| CLM-562 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:72` | Confidence interval analysis using the t-distribution (t=4.303, n=3, alpha=0.05) provides statistical rigor to every sentiment score, making GNI&apos;s outputs IEEE paper-citable. |
-| CLM-563 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:73` | All datasets are available for download via the Export API, enabling full replication of GNI&apos;s methodology for academic research and external validation. |
-| CLM-564 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:141` | A full research workspace with escalation trend charts, confidence interval width over time, and per-agent MAD accuracy tracking. |
-| CLM-565 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:141` | Compare how Bull, Bear, Black Swan, and Ostrich agents perform across different geopolitical conditions. |
-| CLM-566 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:141` | Designed for deep statistical analysis and IEEE paper evidence gathering. |
-| CLM-567 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:155` | Cross-horizon Forecast Analysis (CFA) tracks GNI prediction accuracy across three time horizons: 7-day, 30-day, and 180-day. |
-| CLM-568 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:155` | Per-agent accuracy scores reveal which MAD agents perform best under different market conditions. |
-| CLM-569 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:155` | This is the statistical proof layer for GNI&apos;s GPVS standard — essential for IEEE paper validation. |
-| CLM-570 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:169` | Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. |
-| CLM-570 | STATE | UNMEASURED | UNREVIEWED | `src/app/weekly-digest/page.tsx:69` | Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. |
-| CLM-571 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:169` | Week-over-week escalation delta is one of GNI&apos;s most reliable structural trend signals — consistent increases indicate sustained threat buildup. |
-| CLM-572 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:183` | Documents the complete scientific methodology behind GNI: the confidence interval formula using t-distribution (t=4.303, n=3, alpha=0.05), the Quadratic MAD agent design based on the Johari Window framework, and the GPVS prediction validation standard. |
-| CLM-573 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:183` | All methodology is IEEE paper-citable and designed for academic peer review. |
+| CLM-560 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:69` | Pattern Intelligence is GNI&apos;s long-term research hub, designed for analysts and researchers who want to go beyond the latest report and understand how global intelligence evolves over time. |
+| CLM-564 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:141` | A full research workspace with escalation trend charts, confidence interval width over time, and per-agent MAD accuracy tracking. |
+| CLM-565 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:141` | Compare how Bull, Bear, Black Swan, and Ostrich agents perform across different geopolitical conditions. |
+| CLM-566 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:141` | Designed for deep statistical analysis and IEEE paper evidence gathering. |
+| CLM-568 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:155` | Per-agent accuracy scores reveal which MAD agents perform best under different market conditions. |
+| CLM-569 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:155` | This is the statistical proof layer for GNI&apos;s GPVS standard — essential for IEEE paper validation. |
+| CLM-570 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:169` | Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. |
+| CLM-570 | STATE | UNMEASURED | QUALITATIVE | `src/app/weekly-digest/page.tsx:69` | Weekly digests compiled every Sunday provide a macro-level view of geopolitical escalation trends. |
+| CLM-572 | STATE | SUPPORTED | F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/researcher/page.tsx:183` | Documents the complete scientific methodology behind GNI: the confidence interval formula using t-distribution (t=4.303, n=3, alpha=0.05), the Quadratic MAD agent design based on the Johari Window framework, and the GPVS prediction validation standard. |
+| CLM-573 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:183` | All methodology is IEEE paper-citable and designed for academic peer review. |
 | CLM-574 | STATE | UNMEASURED | PROVENANCE | `src/app/researcher/page.tsx:203` | GNI Autonomous \| Pattern Intelligence Hub \| Higher Diploma in Computer Science \| SUM |
 | CLM-575 | STATE | UNMEASURED | UNREVIEWED | `src/app/model-learning/page.tsx:12` | Model Learning documents every time GNI was surprised — when a prediction was confidently wrong and reality forced a recalibration. |
 | CLM-576 | STATE | UNMEASURED | UNREVIEWED | `src/app/model-learning/page.tsx:12` | Each surprise event triggers source weight adjustments via Exponential Moving Average, so future pipeline runs rely less on sources that misled the model. |
@@ -501,9 +496,9 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f82
 | CLM-583 | PROMISE | UNMEASURED | PROMISE | `src/app/model-learning/page.tsx:39` | A/B prompt template evolution history |
 | CLM-584 | PROMISE | UNMEASURED | PROMISE | `src/app/model-learning/page.tsx:40` | Escalation threshold recalibration log |
 | CLM-585 | PROMISE | UNMEASURED | PROMISE | `src/app/model-learning/page.tsx:41` | Accuracy improvement trend across pipeline generations |
-| CLM-586 | STATE | UNMEASURED | UNREVIEWED | `src/app/model-learning/page.tsx:49` | This page requires verified prediction data from the GPVS system. |
-| CLM-586 | STATE | UNMEASURED | UNREVIEWED | `src/app/pattern-library/page.tsx:49` | This page requires verified prediction data from the GPVS system. |
-| CLM-586 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:49` | This page requires verified prediction data from the GPVS system. |
+| CLM-586 | STATE | UNMEASURED | QUALITATIVE | `src/app/model-learning/page.tsx:49` | This page requires verified prediction data from the GPVS system. |
+| CLM-586 | STATE | UNMEASURED | QUALITATIVE | `src/app/pattern-library/page.tsx:49` | This page requires verified prediction data from the GPVS system. |
+| CLM-586 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:49` | This page requires verified prediction data from the GPVS system. |
 | CLM-587 | STATE | UNMEASURED | UNREVIEWED | `src/app/model-learning/page.tsx:49` | The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. |
 | CLM-587 | STATE | UNMEASURED | UNREVIEWED | `src/app/pattern-library/page.tsx:49` | The earliest MAD predictions were made in March 2026 with verify dates starting April 10, 2026. |
 | CLM-588 | PROMISE | UNMEASURED | PROMISE | `src/app/model-learning/page.tsx:49` | As predictions verify over time, this page will automatically populate with real accuracy data. |
@@ -520,22 +515,15 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f82
 | CLM-595 | STATE | UNMEASURED | UNREVIEWED | `src/app/source-health/page.tsx:243` | Mini chart: last 10 runs, plotting delivered articles only — it is a yield trend, not a transport signal. |
 | CLM-596 | STATE | UNMEASURED | UNREVIEWED | `src/app/source-health/page.tsx:244` | Red bar = a run that alerted the admin. ⚠ History badge = this slot has alerted at least once. |
 | CLM-597 | STATE | UNMEASURED | PROVENANCE | `src/app/source-health/page.tsx:257` | GNI Autonomous \| Source Health Dashboard \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-598 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:70` | Feedback Loop is GNI&apos;s reality validation hub — the place where predictions meet outcomes and where GNI learns from what actually happened in the world. |
-| CLM-599 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:71` | Every MAD debate produces directional predictions (BULLISH or BEARISH) with a specific verify date, allowing GNI to score its own accuracy objectively using the GPVS standard. |
-| CLM-600 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:72` | The GPVS (GNI Prediction Validation Standard) tracks each agent&apos;s directional accuracy across three time horizons: 7-day, 30-day, and 180-day predictions. |
-| CLM-601 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:73` | As predictions verify over time, source trust weights are automatically adjusted — sources whose articles led to accurate predictions gain higher weight in future pipeline runs. |
-| CLM-602 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:74` | This self-correcting feedback mechanism is what elevates GNI beyond a static intelligence system into a continuously learning autonomous platform. |
-| CLM-603 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:89` | Verified by GPVS |
-| CLM-604 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:120` | All MAD agent predictions with verify dates, confidence levels, and GPVS accuracy scores — the complete prediction ledger. |
-| CLM-605 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:120` | Each prediction is tagged with the agent that made it (Bull, Bear, Black Swan, or Ostrich) and the specific time horizon for verification. |
-| CLM-606 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:120` | Active insights are surfaced automatically when predictions reach their verify date and reality confirms or contradicts GNI&apos;s forecast. |
+| CLM-598 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:70` | Feedback Loop is GNI&apos;s reality validation hub — the place where predictions meet outcomes and where GNI learns from what actually happened in the world. |
+| CLM-603 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:89` | Verified by GPVS |
+| CLM-606 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:120` | Active insights are surfaced automatically when predictions reach their verify date and reality confirms or contradicts GNI&apos;s forecast. |
 | CLM-607 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:125` | Earliest: April 10, 2026 |
 | CLM-608 | PROMISE | UNMEASURED | PROMISE | `src/app/reports/page.tsx:132` | Passive Reports — Coming as GPVS Accumulates |
-| CLM-609 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:141` | Status: Verifier live &mdash; display in development |
+| CLM-609 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:141` | Status: Verifier live &mdash; display in development |
 | CLM-610 | PROMISE | UNMEASURED | PROMISE | `src/app/reports/page.tsx:142` | When predictions verify accurately — which agent was right, which was wrong, and what patterns emerge in their accuracy over time. |
 | CLM-611 | PROMISE | UNMEASURED | PROMISE | `src/app/reports/page.tsx:142` | The GPVS scorecard in full detail. |
 | CLM-612 | PROMISE | UNMEASURED | PROMISE | `src/app/reports/page.tsx:155` | Surprise outcomes, model recalibration events, and source bias corrections. |
-| CLM-613 | STATE | UNMEASURED | UNREVIEWED | `src/app/reports/page.tsx:155` | Tracks how GNI improves its prediction accuracy over time through autonomous self-correction. |
 | CLM-614 | PROMISE | UNMEASURED | PROMISE | `src/app/reports/page.tsx:168` | When current escalation matches historical validated sequences, GNI predicts what comes next. |
 | CLM-615 | PROMISE | UNMEASURED | PROMISE | `src/app/reports/page.tsx:168` | The most advanced predictive capability in the GNI roadmap. |
 | CLM-616 | STATE | UNMEASURED | PROVENANCE | `src/app/reports/page.tsx:184` | GNI Autonomous \| Feedback Loop Hub \| Higher Diploma in Computer Science \| SUM |
@@ -549,22 +537,19 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f82
 | CLM-625 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:222` | 500MB free tier |
 | CLM-626 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:226` | Free tier unlimited |
 | CLM-627 | STATE | UNMEASURED | PROVENANCE | `src/app/quota/page.tsx:242` | GNI Autonomous \| Token Quota Monitor \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-628 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:12` | Validation Log shows the accuracy record of every MAD agent prediction once the verify date passes and real market data is measured. |
-| CLM-629 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:12` | Each prediction is scored against actual SPY market movement — correct predictions increase source trust weights, wrong predictions reduce them. |
-| CLM-630 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:12` | This is the evidence layer that makes GNI a self-improving system rather than a static intelligence tool. |
-| CLM-631 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:14` | Status: Verifier live |
-| CLM-632 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:26` | When MAD predictions reach their verify date, GNI automatically scores each agent&apos;s directional accuracy against real-world outcomes. |
+| CLM-628 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:12` | Validation Log shows the accuracy record of every MAD agent prediction once the verify date passes and real market data is measured. |
+| CLM-631 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:14` | Status: Verifier live |
+| CLM-632 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:26` | When MAD predictions reach their verify date, GNI automatically scores each agent&apos;s directional accuracy against real-world outcomes. |
 | CLM-633 | PROMISE | UNMEASURED | PROMISE | `src/app/validation-log/page.tsx:26` | The Validation Log will surface which agents (Bull, Bear, Black Swan, Ostrich) were right, which were wrong, and what patterns emerge in their accuracy over time. |
-| CLM-634 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:26` | This is the foundation of the GPVS feedback loop — transforming past predictions into future intelligence improvements. |
-| CLM-635 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:29` | &mdash; page display in development |
+| CLM-635 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:29` | &mdash; page display in development |
 | CLM-636 | PROMISE | UNMEASURED | PROMISE | `src/app/validation-log/page.tsx:37` | Per-agent accuracy scores across all verified predictions |
 | CLM-637 | PROMISE | UNMEASURED | PROMISE | `src/app/validation-log/page.tsx:38` | Directional accuracy by time horizon (7d / 30d / 180d) |
 | CLM-638 | PROMISE | UNMEASURED | PROMISE | `src/app/validation-log/page.tsx:39` | Source weight adjustments triggered by prediction outcomes |
 | CLM-639 | PROMISE | UNMEASURED | PROMISE | `src/app/validation-log/page.tsx:40` | Surprise outcome detection — when reality defied all agents |
 | CLM-640 | PROMISE | UNMEASURED | PROMISE | `src/app/validation-log/page.tsx:41` | GPVS scorecard exportable for IEEE paper evidence |
 | CLM-641 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:49` | The earliest MAD predictions were made in March 2026 with verify dates starting April 14, 2026. |
-| CLM-642 | STATE | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:49` | The prediction verifier was restored in S57 and wired to scheduled runs in S60; it now verifies continuously and the historical backlog has been processed. |
-| CLM-643 | MIXED | UNMEASURED | UNREVIEWED | `src/app/validation-log/page.tsx:49` | Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature. |
+| CLM-642 | STATE | UNMEASURED | HISTORICAL | `src/app/validation-log/page.tsx:49` | The prediction verifier was restored in S57 and wired to scheduled runs in S60; it now verifies continuously and the historical backlog has been processed. |
+| CLM-643 | MIXED | UNMEASURED | PROMISE | `src/app/validation-log/page.tsx:49` | Because scoring uses historical market data, nothing is lost — verified results are backfilling and this page will populate as predictions mature. |
 | CLM-644 | STATE | UNMEASURED | PROVENANCE | `src/app/validation-log/page.tsx:85` | GNI Autonomous \| Validation Log \| Higher Diploma in Computer Science \| SUM |
 | CLM-647 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:195` | Final score is capped at 10 and has been at the cap on every measured run. |
 | CLM-648 | STATE | UNMEASURED | UNREVIEWED | `src/app/autonomy/page.tsx:195` | Raw magnitude is the uncapped signal. |
@@ -741,7 +726,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f82
 | CLM-817 | STATE | UNMEASURED | QUALITATIVE | `src/app/pillars/page.tsx:123` | Each pipeline run produces a separate AI analysis for every pillar that has selected articles — Geopolitical (conflict, diplomacy), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). |
 | CLM-818 | STATE | SUPPORTED | F-CI-T claims n=3, measured t=4.303+n=3 | `src/app/research/page.tsx:149` | The confidence interval needs three analysis runs inside one pipeline run (t-distribution, n=3). |
 | CLM-820 | STATE | SUPPORTED | F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/research/page.tsx:100` | Uses t-distribution (t=4.303 for n=3). |
-| CLM-821 | STATE | UNMEASURED | UNREVIEWED | `src/app/researcher/page.tsx:71` | The GPVS (GNI Prediction Validation Standard) system continuously scores each agent&apos;s directional predictions against reality, building an evidence-based accuracy record over multiple horizons (7d, 30d, 180d). |
 | CLM-822 | PROMISE | UNMEASURED | PROMISE | `src/app/scenarios/page.tsx:130` | — Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications). |
 | CLM-823 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:26` | No person starts a scheduled run. |
 | CLM-824 | STATE | SUPPORTED | F-CI-T claims n=3, measured t=4.303+n=3 | `src/app/methodology/page.tsx:27` | Every day it collects global news, analyzes it with AI, gives the main report a confidence interval from three runs (n=3), runs a four-agent debate, and publishes the results to this web app. |
@@ -828,3 +812,19 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `257441eb42e46c87e3384f82
 | CLM-903 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | The Arbitrator&apos;s stated confidence in its verdict, 0-100%. |
 | CLM-904 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | Above 70% = strong. |
 | CLM-905 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | Below 50% = weak. |
+| CLM-906 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:71` | Every MAD debate records each agent&apos;s final position as a short-horizon prediction and the Arbitrator&apos;s as a long-horizon one, each with a verify-by date, so GNI can score its own accuracy. |
+| CLM-907 | STATE | SUPPORTED | F-GPVS-DAYS claims 3d+7d+30d+180d, measured 3d+7d+30d+180d | `src/app/reports/page.tsx:72` | The GPVS (GNI Prediction Validation Standard): GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date. |
+| CLM-908 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:73` | As report checks verify over time, source trust weights are automatically adjusted — sources whose articles led to accurate predictions gain higher weight in future pipeline runs. |
+| CLM-909 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:74` | This feedback loop is how GNI&apos;s source weighting learns from outcomes. |
+| CLM-910 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:120` | The newest MAD predictions, a capped list, with their verify-by dates and outcomes. |
+| CLM-911 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:120` | Each is tagged with the agent that made it (Bull, Bear, Black Swan, Ostrich, or the Arbitrator) and its horizon, short or long. |
+| CLM-912 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:155` | Tracks GNI&apos;s prediction accuracy over time. |
+| CLM-913 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:70` | Every main run produces escalation scores, sentiment scores and a confidence interval, and every debate a MAD verdict — all stored and available for analysis here. |
+| CLM-914 | STATE | SUPPORTED | F-GPVS-DAYS claims 3d+7d+30d+180d, measured 3d+7d+30d+180d | `src/app/researcher/page.tsx:71` | The GPVS (GNI Prediction Validation Standard) builds an accuracy record from reality: GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date. |
+| CLM-915 | STATE | SUPPORTED | F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/researcher/page.tsx:72` | Confidence interval analysis using the t-distribution (t=4.303, n=3, alpha=0.05) gives the main report&apos;s sentiment score a stated uncertainty. |
+| CLM-916 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:73` | Reports, MAD predictions and pipeline articles can be downloaded via the Export API, with an API key, for replication and external validation. |
+| CLM-917 | STATE | SUPPORTED | F-GPVS-DAYS claims 3d+7d+30d+180d, measured 3d+7d+30d+180d | `src/app/researcher/page.tsx:155` | Cross-horizon Forecast Analysis (CFA) tracks GNI prediction accuracy over time: GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date. |
+| CLM-918 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:169` | Week-over-week escalation delta is tracked; while the capped score sits at its maximum, it is the uncapped magnitude that moves. |
+| CLM-919 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:12` | Each prediction is scored against the SPY move over its window. |
+| CLM-920 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:12` | These scores are the debate&apos;s accuracy record; source trust weights are fed by the report-level checks, not by them. |
+| CLM-921 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:26` | It shows how each agent has performed; it does not change how the next debate runs. |

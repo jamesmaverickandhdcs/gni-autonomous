@@ -9,7 +9,7 @@ export default function ValidationLogPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-amber-300">📋 Validation Log</h1>
-              <p className="text-xs text-gray-400">Validation Log shows the accuracy record of every MAD agent prediction once the verify date passes and real market data is measured. Each prediction is scored against actual SPY market movement — correct predictions increase source trust weights, wrong predictions reduce them. This is the evidence layer that makes GNI a self-improving system rather than a static intelligence tool.</p>
+              <p className="text-xs text-gray-400">Validation Log shows the accuracy record of every MAD agent prediction once the verify date passes and real market data is measured. Each prediction is scored against the SPY move over its window. These scores are the debate&apos;s accuracy record; source trust weights are fed by the report-level checks, not by them.</p>
             </div>
             <span className="text-xs bg-amber-900 text-amber-300 border border-amber-700 px-3 py-1.5 rounded-lg font-bold">Status: Verifier live</span>
           </div>
@@ -23,7 +23,7 @@ export default function ValidationLogPage() {
           <div className="text-5xl mb-4">📋</div>
           <h2 className="text-xl font-bold text-amber-300 mb-2">Validation Log</h2>
           <p className="text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed mb-4">
-            When MAD predictions reach their verify date, GNI automatically scores each agent&apos;s directional accuracy against real-world outcomes. The Validation Log will surface which agents (Bull, Bear, Black Swan, Ostrich) were right, which were wrong, and what patterns emerge in their accuracy over time. This is the foundation of the GPVS feedback loop — transforming past predictions into future intelligence improvements.
+            When MAD predictions reach their verify date, GNI automatically scores each agent&apos;s directional accuracy against real-world outcomes. The Validation Log will surface which agents (Bull, Bear, Black Swan, Ostrich) were right, which were wrong, and what patterns emerge in their accuracy over time. It shows how each agent has performed; it does not change how the next debate runs.
           </p>
           <div className="inline-flex items-center gap-2 bg-amber-900 border border-amber-700 rounded-lg px-4 py-2">
             <span className="text-xs text-amber-300">⏰ Verifier <span className="font-bold text-white">live</span> &mdash; page display in development</span>

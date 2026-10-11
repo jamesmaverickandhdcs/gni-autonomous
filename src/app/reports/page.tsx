@@ -68,10 +68,10 @@ export default function ReportsHub() {
         <div className="bg-amber-950 border border-amber-700 border-l-4 border-l-amber-400 rounded-xl p-5 mb-6">
           <p className="text-sm text-gray-100 leading-relaxed">
             Feedback Loop is GNI&apos;s reality validation hub — the place where predictions meet outcomes and where GNI learns from what actually happened in the world.
-            Every MAD debate produces directional predictions (BULLISH or BEARISH) with a specific verify date, allowing GNI to score its own accuracy objectively using the GPVS standard.
-            The GPVS (GNI Prediction Validation Standard) tracks each agent&apos;s directional accuracy across three time horizons: 7-day, 30-day, and 180-day predictions.
-            As predictions verify over time, source trust weights are automatically adjusted — sources whose articles led to accurate predictions gain higher weight in future pipeline runs.
-            This self-correcting feedback mechanism is what elevates GNI beyond a static intelligence system into a continuously learning autonomous platform.
+            Every MAD debate records each agent&apos;s final position as a short-horizon prediction and the Arbitrator&apos;s as a long-horizon one, each with a verify-by date, so GNI can score its own accuracy.
+            The GPVS (GNI Prediction Validation Standard): GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date.
+            As report checks verify over time, source trust weights are automatically adjusted — sources whose articles led to accurate predictions gain higher weight in future pipeline runs.
+            This feedback loop is how GNI&apos;s source weighting learns from outcomes.
           </p>
         </div>
         {/* GPVS Status */}
@@ -117,7 +117,7 @@ export default function ReportsHub() {
             <div className="text-sm font-bold text-white">Predictions</div>
             <span className="text-xs bg-amber-900 text-amber-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
           </div>
-          <p className="text-xs text-gray-300 leading-relaxed mb-3">All MAD agent predictions with verify dates, confidence levels, and GPVS accuracy scores — the complete prediction ledger. Each prediction is tagged with the agent that made it (Bull, Bear, Black Swan, or Ostrich) and the specific time horizon for verification. Active insights are surfaced automatically when predictions reach their verify date and reality confirms or contradicts GNI&apos;s forecast.</p>
+          <p className="text-xs text-gray-300 leading-relaxed mb-3">The newest MAD predictions, a capped list, with their verify-by dates and outcomes. Each is tagged with the agent that made it (Bull, Bear, Black Swan, Ostrich, or the Arbitrator) and its horizon, short or long. Active insights are surfaced automatically when predictions reach their verify date and reality confirms or contradicts GNI&apos;s forecast.</p>
           <div className="flex items-center justify-between">
             <div className="flex gap-4 text-xs">
               <span className="text-amber-400">{counts?.pending ?? pending.length} pending</span>
@@ -152,7 +152,7 @@ export default function ReportsHub() {
               <span className="text-xs bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full ml-auto">FUTURE</span>
             </div>
             <div className="text-xs text-amber-600 mb-2">In development</div>
-            <p className="text-xs text-gray-500 leading-relaxed">Surprise outcomes, model recalibration events, and source bias corrections. Tracks how GNI improves its prediction accuracy over time through autonomous self-correction.</p>
+            <p className="text-xs text-gray-500 leading-relaxed">Surprise outcomes, model recalibration events, and source bias corrections. Tracks GNI&apos;s prediction accuracy over time.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-amber-300 bg-amber-950 border border-amber-800 rounded-lg px-3 py-1.5">Preview →</span>
             </div>

@@ -565,6 +565,29 @@ def _verify_days(root):
     return ["short=%d" % found["short_verify_days"].pop(), "long=%d" % found["long_verify_days"].pop()]
 
 
+def _gpvs_days_claim(fragment):
+    m = re.search(r"at ((?:\d+, )*\d+ and \d+) days", fragment)
+    if not m:
+        raise FitnessError("no 'at a, b and c days' in fragment %r" % fragment)
+    return ["%dd" % x for x in sorted(int(x) for x in re.findall(r"\d+", m.group(1)))]
+
+
+def _gpvs_days(root):
+    """Windows the report-level GPVS check fetches SPY for: the literal day
+    argument of fetch_price_change_with_fallback('SPY', N) in outcome_verifier.py (AST)."""
+    path = os.path.join(root, "ai_engine", "analysis", "outcome_verifier.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/outcome_verifier.py not found")
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    out = sorted({_num(n.args[1]) for n in ast.walk(tree) if isinstance(n, ast.Call)
+                  and getattr(n.func, "id", "") == "fetch_price_change_with_fallback"
+                  and len(n.args) == 2 and getattr(n.args[0], "value", None) == "SPY"})
+    if not out:
+        raise FitnessError("no fetch_price_change_with_fallback('SPY', N) in outcome_verifier.py")
+    return ["%dd" % x for x in out]
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -641,6 +664,8 @@ FITNESS = {
     "F-VERIFY-DAYS": ("default verify-by horizons of debate predictions: the .get fallbacks for "
                       "short_verify_days and long_verify_days in mad_runner.py (AST)",
                       _days_claim, _verify_days, _equal),
+    "F-GPVS-DAYS": ("windows the report-level GPVS check fetches SPY for: fetch_price_change_with_fallback"
+                    "('SPY', N) in outcome_verifier.py (AST)", _gpvs_days_claim, _gpvs_days, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that

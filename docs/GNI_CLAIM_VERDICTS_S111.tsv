@@ -1561,3 +1561,19 @@ a20812c3c7	CLAIM	STATE	CLM-902	The Quadratic MAD debate, which argues over the A
 7df147f961	CLAIM	STATE	CLM-903	The Arbitrator&apos;s stated confidence in its verdict, 0-100%.
 b0c8bfedd3	CLAIM	STATE	CLM-904	Above 70% = strong.
 274aa7a33d	CLAIM	STATE	CLM-905	Below 50% = weak.
+38a4af17c7	CLAIM	STATE	CLM-906	Every MAD debate records each agent&apos;s final position as a short-horizon prediction and the Arbitrator&apos;s as a long-horizon one, each with a verify-by date, so GNI can score its own accuracy.
+8e8da71fbf	CLAIM	STATE	CLM-907	The GPVS (GNI Prediction Validation Standard): GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date.
+0077112025	CLAIM	STATE	CLM-908	As report checks verify over time, source trust weights are automatically adjusted — sources whose articles led to accurate predictions gain higher weight in future pipeline runs.
+627ab8d7c9	CLAIM	STATE	CLM-909	This feedback loop is how GNI&apos;s source weighting learns from outcomes.
+a2ebe0bd14	CLAIM	STATE	CLM-910	The newest MAD predictions, a capped list, with their verify-by dates and outcomes.
+25ef4a5296	CLAIM	STATE	CLM-911	Each is tagged with the agent that made it (Bull, Bear, Black Swan, Ostrich, or the Arbitrator) and its horizon, short or long.
+c0e531a8a1	CLAIM	STATE	CLM-912	Tracks GNI&apos;s prediction accuracy over time.
+8b7b53f5fc	CLAIM	STATE	CLM-913	Every main run produces escalation scores, sentiment scores and a confidence interval, and every debate a MAD verdict — all stored and available for analysis here.
+1fc3d81498	CLAIM	STATE	CLM-914	The GPVS (GNI Prediction Validation Standard) builds an accuracy record from reality: GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date.
+e457e34e59	CLAIM	STATE	CLM-915	Confidence interval analysis using the t-distribution (t=4.303, n=3, alpha=0.05) gives the main report&apos;s sentiment score a stated uncertainty.
+8becf46fc8	CLAIM	STATE	CLM-916	Reports, MAD predictions and pipeline articles can be downloaded via the Export API, with an API key, for replication and external validation.
+b6327e1be6	CLAIM	STATE	CLM-917	Cross-horizon Forecast Analysis (CFA) tracks GNI prediction accuracy over time: GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date.
+88193ef3ec	CLAIM	STATE	CLM-918	Week-over-week escalation delta is tracked; while the capped score sits at its maximum, it is the uncapped magnitude that moves.
+0cc250f4c1	CLAIM	STATE	CLM-919	Each prediction is scored against the SPY move over its window.
+ba4f3a338d	CLAIM	STATE	CLM-920	These scores are the debate&apos;s accuracy record; source trust weights are fed by the report-level checks, not by them.
+c433c3d376	CLAIM	STATE	CLM-921	It shows how each agent has performed; it does not change how the next debate runs.
