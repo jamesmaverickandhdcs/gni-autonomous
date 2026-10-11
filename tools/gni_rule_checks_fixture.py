@@ -625,6 +625,68 @@ CASES["66-order-id-cited-not-defined"] = lambda r: base(
 CASES["67-order-all-bound"] = lambda r: base(r, order=ORDER_BODY.replace(
     "{ORPHAN}", "{claims: CLM-002}").replace("ORPHAN RATE: 1/2", "ORPHAN RATE: 0/2"))
 
+# S111, roadmap 4 row R4-1, check `unreviewed ratchet`. The base tree carries
+# one claims generation, so it has no baseline and passes. A family that needs
+# a previous generation COPIES the base document to S93 before changing the
+# tree, so the baseline is what the tool rendered, never a hand-typed count.
+# RED both ways: 74 a count rises above S93, 75 a printed count the tree does
+# not derive; 79 no counts printed at all. 76 is the DISCRIMINATOR for 74
+# (R-S90-1): the same extra claim in S93 and gone from S94, so the count FALLS
+# and the check stays green. 77 raises NUMBERS UNDERIVED alone (a reviewed
+# RUNTIME claim with a number, UNREVIEWED unchanged); 78 is its DISCRIMINATOR:
+# the identical claim excused as HISTORICAL passes.
+CLAIM_REVIEW = "GNI reviews every alert within one hour."
+CLAIM_NUMBER = "GNI scans 5 feeds every hour."
+
+
+def _snapshot_prev(r):
+    shutil.copy(r + "/docs/GNI_CLAIMS_S94.md", r + "/docs/GNI_CLAIMS_S93.md")
+
+
+def _ratchet_claim(r, text, reason, cid="CLM-901"):
+    import gni_claims as gcl
+    w(r + "/src/app/claims4/page.tsx", "export default function S() { return <p>%s</p> }\n" % text)
+    ap(r + "/docs/GNI_CLAIM_VERDICTS_S94.tsv", _verdict_row(gcl, text, "CLAIM", "STATE", cid) + "\n")
+    ap(r + "/docs/GNI_CLAIM_BINDINGS_S94.tsv", "%s\tUNMEASURED\t%s\n" % (cid, reason))
+
+
+def _ratchet_rises(r, text, reason):
+    base(r)
+    _snapshot_prev(r)
+    _ratchet_claim(r, text, reason)
+    _claims_doc(r)
+    return r
+
+
+def _ratchet_falls(r):
+    base(r)
+    _ratchet_claim(r, CLAIM_REVIEW, "UNREVIEWED")
+    _claims_doc(r)
+    _snapshot_prev(r)
+    os.remove(r + "/src/app/claims4/page.tsx")
+    _claims_doc(r)
+    return r
+
+
+def _ratchet_doc_edit(r, old, new):
+    base(r)
+    doc = r + "/docs/GNI_CLAIMS_S94.md"
+    text = open(doc, encoding="utf-8").read()
+    if text.count(old) != 1:
+        raise SystemExit("INSTRUMENT ERROR: fixture anchor %r not found once" % old)
+    w(doc, text.replace(old, new))
+    return r
+
+
+CASES["74-ratchet-unreviewed-rises"] = lambda r: _ratchet_rises(r, CLAIM_REVIEW, "UNREVIEWED")
+CASES["75-ratchet-printed-not-derived"] = lambda r: _ratchet_doc_edit(
+    r, "**UNREVIEWED 2**", "**UNREVIEWED 1**")
+CASES["76-ratchet-falls-passes"] = _ratchet_falls
+CASES["77-ratchet-underived-rises-alone"] = lambda r: _ratchet_rises(r, CLAIM_NUMBER, "RUNTIME")
+CASES["78-ratchet-underived-excused-passes"] = lambda r: _ratchet_rises(r, CLAIM_NUMBER, "HISTORICAL")
+CASES["79-ratchet-counts-not-printed"] = lambda r: _ratchet_doc_edit(
+    r, "; **UNREVIEWED 2**, **NUMBERS UNDERIVED 0** ", " ")
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -667,6 +729,9 @@ EXPECT = {
     "68-escalation-chart-arithmetic": 1, "69-escalation-raw-arithmetic-passes": 0,
     "70-verdict-compared-on-page": 1, "71-verdict-lib-missing": 2,
     "72-verdict-styled-passes": 0, "73-verdict-compared-uppercase": 1,
+    "74-ratchet-unreviewed-rises": 1, "75-ratchet-printed-not-derived": 1,
+    "76-ratchet-falls-passes": 0, "77-ratchet-underived-rises-alone": 1,
+    "78-ratchet-underived-excused-passes": 0, "79-ratchet-counts-not-printed": 1,
 }
 
 if __name__ == "__main__":

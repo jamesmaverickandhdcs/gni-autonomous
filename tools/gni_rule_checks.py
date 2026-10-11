@@ -31,6 +31,10 @@ count it, because a count written here went stale twice (protocol v18).
                 no commit hash (S106)
   C11 D2        no page under src/app formats an escalation score itself;
                 src/lib/escalation.ts does, with its magnitude (S106)
+  C18 R4-1      UNREVIEWED and NUMBERS UNDERIVED, printed on the claims
+                document's STATUS line, are what the tree derives and do not
+                rise above the previous claims generation (S111). C12-C17
+                are named in the CHECKS tuple and the glossary, not here.
 
 CONSTRAINTS THIS SCRIPT HONOURS, ON PURPOSE:
   - stdlib only. No pip install step is needed or wanted (item 6.9).
@@ -1085,6 +1089,58 @@ def check_c13_claim_status_derived(ctx):
         len(derived), sup + dft, len(derived), sup, dft)
 
 
+def check_c18_unreviewed_ratchet(ctx):
+    """Roadmap 4 row R4-1 (S111). Two counts, UNREVIEWED and NUMBERS UNDERIVED
+    (gni_claims.ratchet_counts), printed on the live claims document's STATUS
+    line. Fails when (a) a printed count differs from what the tree derives now,
+    or (b) a count the tree derives exceeds what the PREVIOUS claims generation
+    derives. The previous count is re-derived from that document's ROWS, never
+    read from its printed line (R-S108-3): S110 printed no line and still binds,
+    and editing an old document's number cannot loosen the ratchet.
+    A tree with one claims generation has no baseline and passes saying so. In
+    a historical replay a document written before R4-1 has no line to compare,
+    and only (b) is judged - the replay is about the counts, not the printing."""
+    import gni_claims as gcl
+    root = ctx["root"]
+    try:
+        doc = gcl.live(root, gcl.CLAIMS_RE, "claims document")
+        printed = gcl.parse_ratchet(doc)
+        _, built, _ = gcl.build(root)
+        texts = {cid: t for cid, _, _, _, t in built}
+        _, derived = gcl.statuses(root, texts)
+        prev = gcl.previous(root, gcl.CLAIMS_RE, doc)
+        prev_rows = gcl.parse_doc(prev)[-1] if prev else None
+    except gcl.InstrumentError as exc:
+        raise InstrumentError(str(exc))
+    require_nonempty("claims the tree and verdicts imply", built)
+    name = os.path.basename(doc)
+    now = gcl.ratchet_counts((cid, kind, rel, t, derived[cid][0], derived[cid][1])
+                             for cid, kind, rel, _, t in built)
+    labels = ("UNREVIEWED", "NUMBERS UNDERIVED")
+    problems = []
+    if printed is None:
+        if not ctx.get("replay"):
+            problems.append("%s prints no UNREVIEWED / NUMBERS UNDERIVED counts" % name)
+    elif printed != now:
+        problems.append("%s prints %s, the tree derives %s" % (
+            name, ", ".join("%s %d" % p for p in zip(labels, printed)),
+            ", ".join("%s %d" % p for p in zip(labels, now))))
+    if prev_rows is None:
+        base = "no earlier claims generation; this one is the baseline"
+    else:
+        pname = os.path.basename(prev)
+        require_nonempty("claim rows in " + pname, prev_rows)
+        before = gcl.ratchet_counts((c, k, rel, t, st, ev)
+                                    for c, k, rel, _, t, st, ev in prev_rows)
+        rises = ["%s %d > %d" % (lb, a, b) for lb, a, b in zip(labels, now, before) if a > b]
+        if rises:
+            problems.append("rose above %s: %s" % (pname, "; ".join(rises)))
+        base = "%s derives %d, %d" % (pname, before[0], before[-1])
+    if problems:
+        return False, "; ".join(problems)
+    return True, "UNREVIEWED %d, NUMBERS UNDERIVED %d; %s" % (now[0], now[-1], base)
+
+
 BUCKETS_RE = re.compile(r"^GNI_MODULE_BUCKETS_S(\d+)\.tsv$")
 BUCKETS = ("WIRE", "DELETE", "DECLARE")
 
@@ -1393,6 +1449,7 @@ CHECKS = (
     ("C15 R3-3    declared layers wired", check_c15_declared_layers_wired),
     ("C16 R3-4    order bound to claims", check_c16_order_bound_to_claims),
     ("C17 R-S109-3 verdict in lib", check_c17_verdict_in_lib),
+    ("C18 R4-1    unreviewed ratchet", check_c18_unreviewed_ratchet),
 )
 
 

@@ -7,6 +7,9 @@ file:line, keyed by the hash of its whitespace-normalised text.
 STAGE 2 (S107): the verdict file docs/GNI_CLAIM_VERDICTS_S<N>.tsv and the
 generated docs/GNI_CLAIMS_S<N>.md; the detector check labelled
 `claims resolve` (C12) reads both.
+STAGE 3 (S111): roadmap 4 row R4-1. The STATUS line also prints UNREVIEWED
+and NUMBERS UNDERIVED (ratchet_counts); the check labelled
+`unreviewed ratchet` holds them below the previous generation.
 
 SURFACE: src/app/**/page.tsx, src/components/**/*.tsx, and the frozen White
 Paper docs/GNI_WHITE_PAPER_S<N>.md (DECISION S107-2). ABSENT FROM IT, named
@@ -345,6 +348,38 @@ def statuses(root, ids_text):
     return bpath, out
 
 
+# Roadmap 4 row R4-1 (S111). The two counts the ratchet holds. A reason in
+# REVIEW_EXEMPT excuses a number from being derived: the claim is about the
+# past (HISTORICAL) or about who made GNI (PROVENANCE), and neither is a fact
+# the tree can be asked about today. RUNTIME, EXTERNAL and QUALITATIVE do not
+# excuse a number - a runtime number still waits for a fitness function that
+# reads a committed snapshot (ARCHITECTURE, ROADMAP 4, row R4-3).
+REVIEW_EXEMPT = ("HISTORICAL", "PROVENANCE")
+DIGIT_RE = re.compile(r"\d")
+
+
+def ratchet_counts(locations):
+    """(UNREVIEWED, NUMBERS UNDERIVED), each a count of DISTINCT claim ids.
+    `locations`: (id, kind, rel, text, status, evidence), one per place a claim
+    appears - the claims document's rows, or the tree's rows with their derived
+    status. Ids, never rows: a claim on three pages is one claim to review, and
+    the binding file keeps rows for retired claims (S110 measured 427 rows for
+    415 claims). UNREVIEWED: UNMEASURED with reason UNREVIEWED. NUMBERS
+    UNDERIVED: a STATE or MIXED claim with a location under src/, a digit in
+    its text, not SUPPORTED, and not excused by a reason in REVIEW_EXEMPT. A
+    digit inside a name (SHA-256, L7, PHI-003) counts: the definition is the
+    one roadmap 4 published with 139 at S110, and it is not narrowed here."""
+    unrev, under = set(), set()
+    for cid, kind, rel, text, status, evidence in locations:
+        if status == "UNMEASURED" and evidence == "UNREVIEWED":
+            unrev.add(cid)
+        if (kind in ("STATE", "MIXED") and rel.startswith("src/") and DIGIT_RE.search(text)
+                and status != "SUPPORTED"
+                and not (status == "UNMEASURED" and evidence in REVIEW_EXEMPT)):
+            under.add(cid)
+    return len(unrev), len(under)
+
+
 def fmt(v):
     return "+".join(v) if isinstance(v, list) else str(v)
 
@@ -376,6 +411,8 @@ def render(root, session):
     sc = {k: sum(v[0] == k for v in st.values()) for k in STATUSES}
     measured = sc["SUPPORTED"] + sc["DEFEATED"]
     brel = os.path.relpath(bpath, root).replace(os.sep, "/")
+    unrev, under = ratchet_counts((cid, kind, rel, t, st[cid][0], st[cid][1])
+                                  for cid, kind, rel, _, t in rows)
     head = [
         "# GNI CLAIMS -- S%d" % session,
         "",
@@ -391,10 +428,12 @@ def render(root, session):
         % (vrel, norm_md5(vpath), len(ids), by["STATE"], by["PROMISE"], by["MIXED"], len(rows), files),
         "",
         "STATUS bindings `%s` md5 `%s` (EOL-normalised) -- **COVERAGE %d/%d = %.1f%%** "
-        "(%d SUPPORTED, %d DEFEATED, %d UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, "
+        "(%d SUPPORTED, %d DEFEATED, %d UNMEASURED); **UNREVIEWED %d**, **NUMBERS UNDERIVED %d** "
+        "- a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 "
+        "row R4-1). Status is DERIVED by `tools/gni_fitness.py`, "
         "never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated)."
         % (brel, norm_md5(bpath), measured, len(ids), 100.0 * measured / len(ids),
-           sc["SUPPORTED"], sc["DEFEATED"], sc["UNMEASURED"]),
+           sc["SUPPORTED"], sc["DEFEATED"], sc["UNMEASURED"], unrev, under),
         "",
         "| id | kind | status | evidence | where | claim |",
         "|---|---|---|---|---|---|",
@@ -437,6 +476,33 @@ def parse_status(path):
         raise InstrumentError("no STATUS line in " + path)
     g = m.groups()
     return g[0], g[1], tuple(int(x) for x in g[2:])
+
+
+RATCHET_RE = re.compile(r"^STATUS bindings .*?\*\*UNREVIEWED (\d+)\*\*, "
+                        r"\*\*NUMBERS UNDERIVED (\d+)\*\*", re.M)
+
+
+def parse_ratchet(path):
+    """(UNREVIEWED, NUMBERS UNDERIVED) as the document PRINTS them, or None for
+    a document written before R4-1 (S110 and earlier). None is not zero."""
+    with open(path, "rb") as fh:
+        text = fh.read().decode("utf-8").replace("\r\n", "\n")
+    m = RATCHET_RE.search(text)
+    return (int(m.group(1)), int(m.group(2))) if m else None
+
+
+def previous(root, regex, current):
+    """The highest-numbered generation BELOW `current` in the same family, or
+    None. Chosen by session number, never by position (R-S92-2). A session
+    that writes no claims document leaves the live one live, so its previous
+    generation does not move and the ratchet cannot be reset by skipping one."""
+    m = regex.match(os.path.basename(current))
+    if not m:
+        raise InstrumentError("%s is not in its family" % current)
+    docs = os.path.join(root, "docs")
+    gens = [(int(g.group(1)), n) for n in os.listdir(docs) for g in [regex.match(n)]
+            if g and int(g.group(1)) < int(m.group(1))]
+    return os.path.join(docs, max(gens)[1]) if gens else None
 
 
 def resolves(root, rel, line, text):
