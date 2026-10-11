@@ -1751,3 +1751,10 @@ e60ccb226a	CLAIM	STATE	CLM-1076	The numbers are SPY moves, and the colour is the
 a40a1d48b2	CLAIM	STATE	CLM-1077	All four windows use SPY, because the sentiment is a call on the market as a whole.
 1a1a10cd74	CLAIM	STATE	CLM-1078	When one of the two extra runs fails, the interval comes from two runs and uses t=12.706, the value for one degree of freedom.
 7396eb7a2e	CLAIM	STATE	CLM-1079	Powered by GPVS v1.2, the GNI Prediction Validation Standard: each report&apos;s direction against the market
+999ca32216	UI	-	-	Every verified outcome - see the skill check
+73f7b46c1c	CLAIM	STATE	CLM-1080	A direction call shows skill only if it beats calls made with no information about the market.
+483b31c6b9	CLAIM	STATE	CLM-1081	The Pesaran-Timmermann test compares the hit rate with the rate expected if the calls and the market moves were unrelated; a value above ${PT_CRITICAL} is evidence of skill at the ${PT_ALPHA * 100}% level, one-sided.
+e43edb7d10	CLAIM	STATE	CLM-1082	Neighbouring reports share the same market move because their windows overlap, so the test overstates the evidence.
+aaf5ec89bb	UI	-	-	7-day
+233f6b2e5c	UI	-	-	· always Bullish
+af68859e6e	UI	-	-	· always Bearish

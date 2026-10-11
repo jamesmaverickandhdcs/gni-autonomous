@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 ﻿import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateApiKey } from '@/lib/auth'
+import { directionalSkill } from '@/lib/skill'
 
 
 export async function GET(request: NextRequest) {
@@ -38,6 +39,10 @@ export async function GET(request: NextRequest) {
     const correct7d = has7d.filter(o => o.direction_correct_7d === true).length
     const accuracy7d = has7d.length > 0 ? Math.round(correct7d / has7d.length * 100) : 0
 
+    // S111 (R60): the reference rates and Pesaran-Timmermann statistic behind every accuracy figure
+    const skill3d = directionalSkill(allOutcomes.map(o => ({ predicted_sentiment: o.predicted_sentiment, change: o.spy_change_3d })))
+    const skill7d = directionalSkill(allOutcomes.map(o => ({ predicted_sentiment: o.predicted_sentiment, change: o.spy_change_7d })))
+
     // Build timeline — oldest first for chart
     const timeline = [...outcomes]
       .sort((a, b) => new Date(a.measured_at).getTime() - new Date(b.measured_at).getTime())
@@ -56,6 +61,8 @@ export async function GET(request: NextRequest) {
         avg_score: avgScore,
         accuracy_3d: accuracy3d,
         accuracy_7d: accuracy7d,
+        skill_3d: skill3d,
+        skill_7d: skill7d,
         pending_review: allOutcomes.filter(o => o.human_review_needed).length,
       }
     }, { headers: { 'Cache-Control': 'no-store' } })

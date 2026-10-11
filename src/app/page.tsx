@@ -1,6 +1,8 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
+import DirectionalSkillNote from '@/components/DirectionalSkillNote'
+import type { DirectionalSkill } from '@/lib/skill'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { verdictRelation, RELATION_LABEL } from '@/lib/verdict'
 import { formatEscalation, trendSeries } from '@/lib/escalation'
@@ -73,6 +75,8 @@ interface PredictionSummary {
   accuracy_3d: number
   accuracy_7d: number
   pending_review: number
+  skill_3d?: DirectionalSkill | null
+  skill_7d?: DirectionalSkill | null
 }
 
 
@@ -172,6 +176,7 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
             <div className="text-xs text-gray-500 mt-1">Pending Review</div>
           </div>
         </div>
+        <DirectionalSkillNote s3={summary.skill_3d ?? null} s7={summary.skill_7d ?? null} />
         <div className="mt-4 bg-gray-800 rounded-lg p-3 text-xs text-gray-400 leading-relaxed">
           <span className="text-white font-bold">How GPVS works: </span>
           Every GNI report carries a sentiment such as Bearish or Bullish, which the report check reads as a market call. Its direction is judged at 3, 7, 30 and 180 days. All four windows use SPY, because the sentiment is a call on the market as a whole. Correct predictions increase a source&apos;s trust weight (up to 2.0). Wrong predictions reduce it (down to 0.5). Over time this builds a self-improving intelligence system where accuracy drives credibility.

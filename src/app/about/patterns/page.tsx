@@ -2,20 +2,26 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { formatEscalation } from '@/lib/escalation'
+import DirectionalSkillNote from '@/components/DirectionalSkillNote'
+import type { DirectionalSkill } from '@/lib/skill'
 
 interface PipelineRun {
   id: string
   created_at: string
   reports: { escalation_score: number | null; escalation_score_raw?: number | null; quality_score: number | null; sentiment: string | null } | null
 }
-interface Outcome {
-  direction_correct_3d: boolean | null
-  direction_correct_7d: boolean | null
+// S111 (R60): the accuracy figures come from the API's summary over every verified outcome,
+// with the reference rates beside them; the page used to count only the newest 50 outcomes.
+interface OutcomeSummary {
+  accuracy_3d: number
+  accuracy_7d: number
+  skill_3d?: DirectionalSkill | null
+  skill_7d?: DirectionalSkill | null
 }
 
 export default function AboutPatternsPage() {
   const [runs, setRuns] = useState<PipelineRun[]>([])
-  const [outcomes, setOutcomes] = useState<Outcome[]>([])
+  const [outcomeSummary, setOutcomeSummary] = useState<OutcomeSummary | null>(null)
   const [totalRuns, setTotalRuns] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -27,14 +33,12 @@ export default function AboutPatternsPage() {
     ]).then(([runsData, outcomesData]) => {
       setRuns((runsData.runs || []).slice(0, 7))
       setTotalRuns(typeof runsData.total === 'number' ? runsData.total : null)
-      setOutcomes(outcomesData.outcomes || [])
+      setOutcomeSummary(outcomesData.summary && outcomesData.summary.total > 0 ? outcomesData.summary : null)
     }).catch(() => setError('Failed to load live data.')).finally(() => setLoading(false))
   }, [])
 
-  const valid3d = outcomes.filter(o => o.direction_correct_3d != null)
-  const acc3d = valid3d.length > 0 ? Math.round(valid3d.filter(o => o.direction_correct_3d).length / valid3d.length * 100) : null
-  const valid7d = outcomes.filter(o => o.direction_correct_7d != null)
-  const acc7d = valid7d.length > 0 ? Math.round(valid7d.filter(o => o.direction_correct_7d).length / valid7d.length * 100) : null
+  const acc3d = outcomeSummary ? outcomeSummary.accuracy_3d : null
+  const acc7d = outcomeSummary ? outcomeSummary.accuracy_7d : null
   const qScores = runs.map(r => r.reports?.quality_score).filter((q): q is number => typeof q === 'number')
   const avgQ = qScores.length > 0 ? (qScores.reduce((a, q) => a + q, 0) / qScores.length).toFixed(1) : null
 
@@ -73,8 +77,8 @@ export default function AboutPatternsPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { label: 'Pipeline Runs', value: totalRuns === null ? String(runs.length) + '+' : String(totalRuns), color: 'text-green-400', desc: 'Total runs archived' },
-                { label: '3-Day Accuracy', value: acc3d === null ? 'N/A' : String(acc3d) + '%', color: acc3d === null ? 'text-gray-400' : acc3d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc3d === null ? 'No verified outcomes yet' : 'GPVS verified' },
-                { label: '7-Day Accuracy', value: acc7d === null ? 'N/A' : String(acc7d) + '%', color: acc7d === null ? 'text-gray-400' : acc7d >= 80 ? 'text-green-400' : 'text-yellow-400', desc: acc7d === null ? 'No verified outcomes yet' : 'GPVS verified' },
+                { label: '3-Day Accuracy', value: acc3d === null ? 'N/A' : String(acc3d) + '%', color: acc3d === null ? 'text-gray-400' : acc3d >= 80 ? 'text-green-400' : acc3d >= 50 ? 'text-yellow-400' : 'text-red-400', desc: acc3d === null ? 'No verified outcomes yet' : 'Every verified outcome - see the skill check' },
+                { label: '7-Day Accuracy', value: acc7d === null ? 'N/A' : String(acc7d) + '%', color: acc7d === null ? 'text-gray-400' : acc7d >= 80 ? 'text-green-400' : acc7d >= 50 ? 'text-yellow-400' : 'text-red-400', desc: acc7d === null ? 'No verified outcomes yet' : 'Every verified outcome - see the skill check' },
                 { label: 'Avg Quality (Last 7 Runs)', value: avgQ === null ? 'N/A' : avgQ + '/10', color: avgQ === null ? 'text-gray-400' : 'text-blue-400', desc: avgQ === null ? 'No scored runs yet' : 'Quality score, last 7 runs' },
               ].map(item => (
                 <div key={item.label} className="bg-gray-900 border border-gray-700 rounded-xl p-5 text-center">
@@ -84,6 +88,8 @@ export default function AboutPatternsPage() {
                 </div>
               ))}
             </div>
+
+            {outcomeSummary && <DirectionalSkillNote s3={outcomeSummary.skill_3d ?? null} s7={outcomeSummary.skill_7d ?? null} />}
 
             {runs.length > 0 && (
               <div className="bg-gray-900 border border-gray-700 rounded-xl p-6">
