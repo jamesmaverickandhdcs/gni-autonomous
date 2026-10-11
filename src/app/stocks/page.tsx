@@ -221,7 +221,7 @@ export default function StocksPage() {
           <div className="flex items-center justify-between mb-3">
             <div>
               <h1 className="text-xl font-bold text-white">📈 Market Intelligence</h1>
-              <p className="text-xs text-gray-400">6-Category Market View — Trading Economics Style — Yahoo Finance Data</p>
+              <p className="text-xs text-gray-400">6-Category Market View — Yahoo Finance chart data</p>
             </div>
             
           </div>

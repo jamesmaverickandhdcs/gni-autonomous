@@ -92,7 +92,7 @@ export default function CorrelationsPage() {
                 Latest refresh{snapshotAt ? ` (${snapshotAt.slice(0, 10)})` : ''}: {totalSamples} GPVS report outcomes.
               </p>
               <p className="text-xs text-gray-500 mt-1">
-                3 horizons: Short (7d) · Medium (30d) · Long (180d) — CFA + Geopolitical standard
+                Computed: the 3-day and 7-day windows. Medium and Long cells stay empty, because nothing writes them yet.
               </p>
             </div>
           </div>
@@ -145,8 +145,8 @@ export default function CorrelationsPage() {
             <div className="text-4xl mb-4">📊</div>
             <p>No correlation data yet.</p>
             <p className="text-xs mt-2 max-w-md mx-auto">
-              Requires verified GPVS predictions. Short (7d) data accumulates first.
-              Medium (30d) and Long (180d) data builds over time.
+              Requires verified GPVS report outcomes. Only the 3-day and 7-day windows are computed.
+              Medium and Long cells stay empty, because nothing writes them yet.
             </p>
           </div>
         )}
@@ -202,7 +202,7 @@ export default function CorrelationsPage() {
         {activeTab === 'agents' && correlations.length > 0 && (
           <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
             <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">
-              Agent Prediction Accuracy — Short Horizon (7d)
+              Agent Accuracy — 3-Day Direction
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
@@ -233,9 +233,9 @@ export default function CorrelationsPage() {
               </table>
             </div>
             <div className="mt-4 text-xs text-gray-600">
-              Black Swan and Ostrich accuracy requires Quadratic MAD reports (from March 23, 2026).
-              Bull accuracy populates only from Bullish verdict runs — shows N/A when all recent verdicts are Bearish.
-              Medium and Long horizon agent accuracy will populate as predictions mature.
+              Bull and Bear score the MAD verdict: Bull fills only from bullish verdicts and Bear only from bearish ones, so a column shows N/A when no such verdict has been verified.
+              The Black Swan and Ostrich columns are not those agents&apos; own scores: each is the 3-day direction result of the reports that carry that agent&apos;s case.
+              Nothing computes agent accuracy over longer windows yet.
             </div>
           </div>
         )}
@@ -254,7 +254,7 @@ export default function CorrelationsPage() {
                       </div>
                       <div className="space-y-2 text-xs">
                         <div className="flex justify-between">
-                          <span className="text-blue-300">⚡ Short (7d)</span>
+                          <span className="text-blue-300">⚡ 3-day</span>
                           <SpyChange value={p.avg_spy_3d} />
                         </div>
                         <div className="flex justify-between">
@@ -288,7 +288,7 @@ export default function CorrelationsPage() {
                       </div>
                       <div className="space-y-1 text-xs">
                         <div className="flex justify-between">
-                          <span className="text-blue-300">Short</span><SpyChange value={p.avg_spy_3d} />
+                          <span className="text-blue-300">3-day</span><SpyChange value={p.avg_spy_3d} />
                         </div>
                         <div className="flex justify-between">
                           <span className="text-yellow-300">Medium</span><SpyChange value={p.avg_spy_30d} />
@@ -303,7 +303,7 @@ export default function CorrelationsPage() {
 
             {patterns.length === 0 && (
               <div className="text-center py-20 text-gray-400">
-                <p>No pattern data yet. Requires 3+ verified predictions per location/pillar.</p>
+                <p>No pattern data yet. Requires 3+ verified report outcomes per location or pillar.</p>
               </div>
             )}
           </div>

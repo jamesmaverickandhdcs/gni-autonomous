@@ -141,11 +141,11 @@ export default function DebatePage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">🐂🐻🦢🦦 Quadratic MAD Protocol</h1>
-              <p className="text-sm text-gray-400">Bull → Bear → Black Swan → Ostrich → Arbitrator — 3 Live Rounds on Future Threats</p>
+              <p className="text-sm text-gray-400">Bull → Bear → Black Swan → Ostrich over three rounds on future threats, then the Arbitrator</p>
               <p className="text-xs text-gray-500 mt-1 max-w-6xl">
-                Four agents debate future threats across two axes: Known/Unknown × Proactive/Ignored.
-                Personal consultants push each agent harder after Round 1 and Round 2. Real Arbitrator delivers final verdict after Round 3 only. Based on all relevant intelligence articles.
-                Short Focus (7-30 days) and Long Shoots (3-24 months) tracked for real-world validation.
+                Four agents each take one quadrant: Known Positives (Bull), Known Negatives (Bear), Unknown Negatives (Black Swan) and Ignored Realities (Ostrich).
+                Each agent has a consultant who coaches it after the first and second rounds; a reply with too many ungrounded claims is withheld. The Arbitrator gives the verdict once, after the third round. Agents read the run&apos;s scored articles, capped per pillar; the Black Swan also reads the zero-scored ones the others drop.
+                The Arbitrator names Short Focus (7-30 days) and Long Shoots (3-24 months) threats; the Long Shoots list and each agent&apos;s final position are saved as predictions and checked against SPY.
               </p>
             </div>
             
@@ -459,7 +459,7 @@ export default function DebatePage() {
                       {selected.short_focus_threats ? (
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.short_focus_threats}</p>
                       ) : (
-                        <p className="text-sm text-gray-600 italic">{selected.mad_arb_failed ? 'No predictions this run -- the Arbitrator was rate-limited; the next scheduled run brings a fresh verdict.' : 'Available for Quadratic MAD reports only.'}</p>
+                        <p className="text-sm text-gray-600 italic">{selected.mad_arb_failed ? 'No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions.' : 'Available for Quadratic MAD reports only.'}</p>
                       )}
                     </div>
                     <div className="bg-gray-900 border border-gray-700 rounded-xl p-5">
@@ -467,7 +467,7 @@ export default function DebatePage() {
                       {selected.long_shoot_threats ? (
                         <p className="text-sm text-gray-300 leading-relaxed">{selected.long_shoot_threats}</p>
                       ) : (
-                        <p className="text-sm text-gray-600 italic">{selected.mad_arb_failed ? 'No predictions this run -- the Arbitrator was rate-limited; the next scheduled run brings a fresh verdict.' : 'Available for Quadratic MAD reports only.'}</p>
+                        <p className="text-sm text-gray-600 italic">{selected.mad_arb_failed ? 'No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions.' : 'Available for Quadratic MAD reports only.'}</p>
                       )}
                     </div>
                     <div className="bg-blue-950 border border-blue-800 rounded-xl p-4">

@@ -43,7 +43,7 @@ export default function MapPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">🌍 Geopolitical Event Map</h1>
-            <p className="text-sm text-gray-400">The Geopolitical Event Map plots every news article GNI has collected onto a world map, with each pin colored by sentiment — red for bearish, yellow for neutral, green for bullish. Click any pin to read the article summary and source link directly. Use the time filter to see how geopolitical hotspots have shifted over the last 1, 3, 7, or 14 days.</p>
+            <p className="text-sm text-gray-400">The Geopolitical Event Map plots the articles each main run selected, where a place could be found in them, with one pin per place. Each pin is coloured by the highest significance score among its articles, from red for the highest through orange and yellow to green; sentiment plays no part. Click any pin to read the article summary and source link directly. Use the time filter to see how geopolitical hotspots have shifted over the last 1, 3, 7, or 14 days.</p>
           </div>
           <div className="flex items-center gap-4">
             {/* Days filter */}
@@ -72,15 +72,19 @@ export default function MapPage() {
       <div className="bg-gray-900 border-b border-gray-800 px-6 py-2 flex gap-6 text-xs text-gray-400">
         <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-full bg-red-600 inline-block"></span>
-          Bearish / High Risk
+          Highest significance
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-full bg-orange-600 inline-block"></span>
+          High significance
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
-          Neutral / Medium Risk
+          Moderate significance
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
-          Bullish / Low Risk
+          Low significance
         </span>
         <span className="text-gray-600">📰 = news article | Click pin for details + source link</span>
       </div>

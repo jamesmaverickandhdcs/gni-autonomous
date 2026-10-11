@@ -91,8 +91,8 @@ export default function AdaptiveLogPage() {
             <div className="text-4xl mb-4">&#x26A1;</div>
             <p className="text-lg font-bold mb-2">No adaptive runs logged yet</p>
             <p className="text-sm max-w-md mx-auto">
-              The adaptive pipeline fires when escalation delta &gt;= 2.0 or CRITICAL level detected.
-              Each run is logged to groq_daily_usage with tokens consumed.
+              The heartbeat starts an adaptive run when the escalation delta &gt;= 2.0 or the level is CRITICAL, outside its blackout windows.
+              A run that performs an analysis is logged to groq_daily_usage with zero Groq tokens, because the analysis runs on Cerebras; a CRITICAL run only sends an alert.
             </p>
             <div className="mt-6 bg-gray-900 border border-gray-700 rounded-xl p-5 text-left max-w-md mx-auto">
               <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">How the Adaptive Run Works</div>

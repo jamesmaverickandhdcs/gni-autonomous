@@ -54,7 +54,7 @@ export default function PredictionsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">MAD Debate Predictions</h1>
-              <p className="text-sm text-gray-400">MAD debate risk calls — each flagged threat verified against market movement (materialized = market fell 2% or more in its verify window)</p>
+              <p className="text-sm text-gray-400">MAD debate risk calls — each flagged threat checked against SPY over its verify window (materialized = SPY fell 2% or more)</p>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3 mt-4">

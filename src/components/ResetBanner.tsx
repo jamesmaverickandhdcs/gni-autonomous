@@ -9,7 +9,7 @@ export default function ResetBanner() {
           GNI Autonomous now runs under the PHI-003 Freedom from Fear standard.
           Every report answers three questions: what is happening, what honest analysis says, and what you can do.
           Intelligence for every human being — from teenagers to senior citizens — without manipulation and without fear amplification.{" "}
-          <span className="text-blue-300 font-medium">Free. Always on. No login needed.</span>
+          <span className="text-blue-300 font-medium">Free. No login needed.</span>
         </span>
       </div>
     </div>

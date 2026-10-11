@@ -106,11 +106,11 @@ export default function TransparencyPage() {
           <div className="flex items-center justify-between mt-2">
           <div>
             <h1 className="text-2xl font-bold text-white">🔍 GNI Transparency Engine</h1>
-            <p className="text-sm text-gray-400 mb-1">Explainable AI — Full Intelligence Funnel Trace</p>
+            <p className="text-sm text-gray-400 mb-1">Intelligence Funnel Trace — per-article stage results</p>
             <p className="text-xs text-gray-500 max-w-6xl mt-1">
-              This page shows exactly how GNI selects news articles and generates intelligence reports.
-              Every algorithmic decision is documented — from collected articles down to the final report.
-              Built for accountability: you can verify why any article was selected or rejected.
+              This page shows how the funnel treated each article of a main run: the stage that dropped it and why, or its score and selection rank.
+              It stops at selection: how the selected articles become the report is not traced here.
+              An article dropped at Stage 1, 1b or 2 carries its reason; one scored but not selected shows only its score.
             </p>
           </div>
 </div>

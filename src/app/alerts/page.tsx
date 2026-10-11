@@ -52,13 +52,13 @@ export default function AlertsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white">&#x1F6A8; Alert History</h1>
-              <p className="text-sm text-gray-400">Health Agent alerts from the main pipeline — full web archive</p>
+              <p className="text-sm text-gray-400">Health Agent alerts from the main pipeline — the newest 100 on record</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 mt-4">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-3 text-center">
               <div className="text-2xl font-bold text-white">{alerts.length}</div>
-              <div className="text-xs text-gray-500">Total Alerts</div>
+              <div className="text-xs text-gray-500">Alerts Shown</div>
             </div>
             <a href="/adaptive-log" className="bg-blue-950 border border-blue-800 hover:border-blue-600 rounded-lg p-3 text-center transition-colors">
               <div className="text-sm font-bold text-blue-400 mt-1">Adaptive Log &rarr;</div>

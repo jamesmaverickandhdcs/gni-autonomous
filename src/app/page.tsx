@@ -174,10 +174,10 @@ function PredictionScorecard({ summary }: { summary: PredictionSummary | null })
         </div>
         <div className="mt-4 bg-gray-800 rounded-lg p-3 text-xs text-gray-400 leading-relaxed">
           <span className="text-white font-bold">How GPVS works: </span>
-          Every GNI report makes a prediction — Bearish or Bullish on SPY market direction. After 3 and 7 days, actual market movement is measured and compared. Correct predictions increase a source&apos;s trust weight (up to 2.0). Wrong predictions reduce it (down to 0.5). Over time this builds a self-improving intelligence system where accuracy drives credibility.
+          Every GNI report carries a sentiment such as Bearish or Bullish, which the report check reads as a market call. Its direction is judged at 3, 7, 30 and 180 days. The short windows use SPY, or USO or GLD when the report names them; the long ones use SPY. Correct predictions increase a source&apos;s trust weight (up to 2.0). Wrong predictions reduce it (down to 0.5). Over time this builds a self-improving intelligence system where accuracy drives credibility.
         </div>
         <div className="mt-3 text-xs text-gray-600 text-center">
-          Powered by GPVS v1.1 — GNI Prediction Validation Standard | SPY directional accuracy vs actual market movements
+          Powered by GPVS v1.1, the GNI Prediction Validation Standard: each report&apos;s direction against the market
         </div>
         <div className="mt-2 text-xs text-yellow-600 text-center">
           ⚠️ Past accuracy does not guarantee future performance. Not financial advice.
@@ -752,7 +752,7 @@ export default function Home() {
                   <div className="bg-gray-800 rounded-lg p-3">
                     <div className="text-xs text-gray-500 mb-1">LLM Engine</div>
                     <div className="font-bold text-blue-400 text-sm">
-                      {latest.llm_source === 'ollama' ? '🧠 Llama 3 Local' : '☁️ Groq API'}
+                      {latest.llm_source === 'ollama' ? '🧠 Ollama (local run)' : latest.llm_source === 'cerebras' ? '☁️ Cerebras API' : '☁️ Groq API'}
                     </div>
                   </div>
                   <div className="bg-gray-800 rounded-lg p-3">
@@ -878,7 +878,7 @@ export default function Home() {
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Three Pillar Intelligence Reports</div>
                 <div className="text-xs text-gray-400 leading-relaxed mb-3 bg-gray-900 rounded-lg p-3">
                   <span className="text-white font-bold">How Three Pillar Reports work: </span>
-                  Each pipeline run produces a separate AI analysis for every intelligence pillar that has selected articles: Geopolitical (conflict, diplomacy, alliances), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). Each pillar uses the same top articles but focuses its analysis on its domain, giving a multi-dimensional view of the same global events.
+                  Each pipeline run produces a separate AI analysis for every intelligence pillar that has selected articles: Geopolitical (conflict, diplomacy, alliances), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). Each pillar reads only the selected articles tagged to it, so the three reports look at different slices of the same run.
                 </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {pillars.map(({ key, label, emoji, report, border, bg, accent }) => (
@@ -1013,7 +1013,7 @@ export default function Home() {
 
                   <div className="px-6 pt-2 pb-3 text-xs text-gray-400 leading-relaxed">
                     <span className="text-white font-bold">How AI Thinking works: </span>
-                    GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 81 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the best articles reach the AI for analysis.
+                    GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 81 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. Only the selected articles reach the main analysis; the MAD debate also hands the Black Swan the zero-scored ones.
                   </div>
 
                   {showAIThinking && (

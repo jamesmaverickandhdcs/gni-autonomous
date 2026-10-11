@@ -122,8 +122,7 @@ export default function PillarsPage() {
               <span className="text-white font-bold">How Three Pillar Reports work: </span>
               Each pipeline run produces a separate AI analysis for every pillar that has selected articles — Geopolitical (conflict, diplomacy),
               Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade).
-              Each pillar uses the same top articles but focuses on its domain.
-              This gives a multi-dimensional view of the same global events.
+              Each pillar reads only the selected articles tagged to it, so the three reports look at different slices of the same run.
             </div>
 
             {/* Tabs */}

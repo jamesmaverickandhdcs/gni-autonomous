@@ -69,7 +69,7 @@ export default function BriefPage() {
             </div>
             <div className="text-right text-xs text-gray-500">
               <div>Auto-generated</div>
-              <div>Mobile-first</div>
+              <div>Summary view</div>
             </div>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function BriefPage() {
               <a href="/debate" className="bg-gray-900 border border-gray-700 hover:border-blue-600 rounded-xl p-3 text-center transition-colors">
                 <div className="text-lg mb-1">🐻🐂</div>
                 <div className="text-xs font-bold text-white">Full Debate</div>
-                <div className="text-xs text-gray-500">4-agent MAD analysis</div>
+                <div className="text-xs text-gray-500">4-agent MAD debate</div>
               </a>
               <a href="/comparison" className="bg-gray-900 border border-gray-700 hover:border-blue-600 rounded-xl p-3 text-center transition-colors">
                 <div className="text-lg mb-1">⚖️</div>

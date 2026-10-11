@@ -714,6 +714,282 @@ def _mad_accounts(root):
     return names
 
 
+def _cap_claim(fragment):
+    m = re.search(r"capped at (\d+(?:\.\d+)?)", fragment)
+    if not m:
+        raise FitnessError("no 'capped at <n>' in fragment %r" % fragment)
+    return "%g" % float(m.group(1))
+
+
+def _esc_cap(root):
+    """The cap on the final escalation score: min(raw_score, N) in
+    escalation_scorer.score_escalation (AST)."""
+    fn = _func(root, "ai_engine/analysis/escalation_scorer.py", "score_escalation")
+    caps = {_num(n.args[1]) for n in ast.walk(fn) if isinstance(n, ast.Call)
+            and getattr(n.func, "id", "") == "min" and len(n.args) == 2
+            and getattr(n.args[0], "id", "") == "raw_score"}
+    if len(caps) != 1:
+        raise FitnessError("expected one min(raw_score, N) in score_escalation, got %r" % caps)
+    return "%g" % caps.pop()
+
+
+def _delta_claim(fragment):
+    m = re.search(r"delta (?:&gt;|>)= (\d+(?:\.\d+)?)", fragment)
+    if not m:
+        raise FitnessError("no 'delta >= <x>' in fragment %r" % fragment)
+    return "%g" % float(m.group(1))
+
+
+def _hb_delta(root):
+    """The escalation delta at which the heartbeat triggers an adaptive run:
+    DELTA_THRESHOLD in monitoring_pipeline.py (AST)."""
+    path = os.path.join(root, "ai_engine", "monitoring_pipeline.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/monitoring_pipeline.py not found")
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    got = [_num(n.value) for n in tree.body if isinstance(n, ast.Assign)
+           and any(getattr(t, "id", "") == "DELTA_THRESHOLD" for t in n.targets)]
+    if len(got) != 1:
+        raise FitnessError("expected one DELTA_THRESHOLD in monitoring_pipeline.py")
+    return "%g" % got[0]
+
+
+def _days_list_claim(fragment):
+    out = sorted({int(x) for x in re.findall(r"(\d+)-day", fragment)})
+    if not out:
+        raise FitnessError("no '<n>-day' in fragment %r" % fragment)
+    return ["%dd" % x for x in out]
+
+
+def _corr_windows(root):
+    """Windows the correlation engine writes: the spy_change_<n>d keys of the
+    upsert in historical_correlations.save_correlation_table (AST)."""
+    fn = _func(root, "ai_engine/analysis/historical_correlations.py", "save_correlation_table")
+    keys = {m for n in ast.walk(fn) if isinstance(n, ast.Dict) for k in n.keys
+            if isinstance(k, ast.Constant) and isinstance(k.value, str)
+            for m in re.findall(r"^spy_change_(\d+)d$", k.value)}
+    if not keys:
+        raise FitnessError("no spy_change_<n>d key in save_correlation_table")
+    return ["%dd" % x for x in sorted(int(k) for k in keys)]
+
+
+def _min_claim(fragment):
+    m = re.search(r"(\d+)\+", fragment)
+    if not m:
+        raise FitnessError("no '<n>+' in fragment %r" % fragment)
+    return "%d" % int(m.group(1))
+
+
+def _pattern_min(root):
+    """Fewest outcomes a location or pillar pattern needs: every `if n < N:
+    continue` in historical_correlations._save_patterns (AST); they must agree."""
+    fn = _func(root, "ai_engine/analysis/historical_correlations.py", "_save_patterns")
+    got = {_num(n.test.comparators[0]) for n in ast.walk(fn) if isinstance(n, ast.If)
+           and isinstance(n.test, ast.Compare) and getattr(n.test.left, "id", "") == "n"
+           and isinstance(n.test.ops[0], ast.Lt)}
+    if len(got) != 1:
+        raise FitnessError("expected one 'n < N' minimum in _save_patterns, got %r" % got)
+    return "%d" % got.pop()
+
+
+def _mat_claim(fragment):
+    out = []
+    m = re.search(r"f[ae]ll(?: of)? (\d+(?:\.\d+)?)% or more", fragment)
+    if m:
+        out.append("materialized<=-%g%%" % float(m.group(1)))
+    n = re.search(r"above -(\d+(?:\.\d+)?)%", fragment)
+    if n:
+        out.append("not>=-%g%%" % float(n.group(1)))
+    if not out:
+        raise FitnessError("no 'fell <x>% or more' or 'above -<y>%' in fragment %r" % fragment)
+    return out
+
+
+def _materialized(root):
+    """The debate check's verdict bands: MATERIALIZED_AT and NOT_MATERIALIZED_AT
+    in debate_prediction_verifier.py (AST)."""
+    path = os.path.join(root, "ai_engine", "analysis", "debate_prediction_verifier.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/debate_prediction_verifier.py not found")
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    val = {}
+    for n in tree.body:
+        if isinstance(n, ast.Assign):
+            for t in n.targets:
+                if getattr(t, "id", "") in ("MATERIALIZED_AT", "NOT_MATERIALIZED_AT"):
+                    v = n.value
+                    if isinstance(v, ast.UnaryOp) and isinstance(v.op, ast.USub):
+                        val[t.id] = -_num(v.operand)
+                    else:
+                        val[t.id] = _num(v)
+    if set(val) != {"MATERIALIZED_AT", "NOT_MATERIALIZED_AT"}:
+        raise FitnessError("MATERIALIZED_AT / NOT_MATERIALIZED_AT missing in debate_prediction_verifier.py")
+    return ["materialized<=%g%%" % val["MATERIALIZED_AT"], "not>=%g%%" % val["NOT_MATERIALIZED_AT"]]
+
+
+def _gpvs_version_claim(fragment):
+    m = re.search(r"GPVS v(\d+\.\d+)", fragment)
+    if not m:
+        raise FitnessError("no 'GPVS v<x.y>' in fragment %r" % fragment)
+    return "v" + m.group(1)
+
+
+def _gpvs_version(root):
+    """The GPVS version the report check announces: every 'GPVS v<x.y>' in
+    outcome_verifier.py; more than one version halts."""
+    path = os.path.join(root, "ai_engine", "analysis", "outcome_verifier.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/outcome_verifier.py not found")
+    with open(path, "rb") as fh:
+        got = set(re.findall(r"GPVS v(\d+\.\d+)", fh.read().decode("utf-8-sig")))
+    if len(got) != 1:
+        raise FitnessError("expected one GPVS version in outcome_verifier.py, got %r" % got)
+    return "v" + got.pop()
+
+
+def _of_claim(fragment):
+    m = re.search(r"(\d+) of the (\d+)", fragment)
+    if not m:
+        raise FitnessError("no '<a> of the <b>' in fragment %r" % fragment)
+    return "%d/%d" % (int(m.group(1)), int(m.group(2)))
+
+
+def _pentest(root):
+    """How many of the attack strings listed under the security page's Pentest
+    Results match one of the funnel's INJECTION_PATTERNS today: the patterns read
+    by AST, each string reduced as _normalize_text_funnel's last step does
+    (printable ASCII), lowercased, then re.search'ed. Returns 'matched/listed'."""
+    fpath = os.path.join(root, "ai_engine", "funnel", "intelligence_funnel.py")
+    ppath = os.path.join(root, "src", "app", "security", "page.tsx")
+    for p in (fpath, ppath):
+        if not os.path.isfile(p):
+            raise FitnessError("%s not found" % os.path.relpath(p, root))
+    with open(fpath, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    pats = [e.value for n in tree.body if isinstance(n, ast.Assign)
+            and any(getattr(t, "id", "") == "INJECTION_PATTERNS" for t in n.targets)
+            for e in n.value.elts if isinstance(e, ast.Constant)]
+    if not pats:
+        raise FitnessError("no INJECTION_PATTERNS list in intelligence_funnel.py")
+    with open(ppath, "rb") as fh:
+        page = fh.read().decode("utf-8")
+    at = page.find("Pentest Results")
+    blk = page[at:]
+    if at < 0 or "{[" not in blk or "].map" not in blk:
+        raise FitnessError("no Pentest Results attack list in security/page.tsx")
+    blk = blk[blk.index("{["):blk.index("].map")]
+    atk = re.findall(r"'((?:[^'\\]|\\.)*)'", blk)
+    if not atk:
+        raise FitnessError("empty attack list in security/page.tsx")
+    hit = 0
+    for a in atk:
+        t = "".join(ch for ch in a if ch.isascii() and (ch.isprintable() or ch == " ")).strip().lower()
+        hit += any(re.search(p, t, re.IGNORECASE) for p in pats)
+    return "%d/%d" % (hit, len(atk))
+
+
+def _last_runs_claim(fragment):
+    m = re.search(r"last (\d+) runs", fragment)
+    if not m:
+        raise FitnessError("no 'last <n> runs' in fragment %r" % fragment)
+    return m.group(1)
+
+
+def _sh_runs(root):
+    """Runs per source the source-health API keeps: runs.length < N in its route."""
+    return _route_int(root, "src/app/api/source-health/route.ts", r"runs\.length < (\d+)")
+
+
+def _route_int(root, rel, rx):
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        got = set(re.findall(rx, fh.read().decode("utf-8")))
+    if len(got) != 1:
+        raise FitnessError("expected one match of %s in %s, got %r" % (rx, rel, got))
+    return got.pop()
+
+
+def _newest_claim(fragment):
+    m = re.search(r"newest (\d+)", fragment)
+    if not m:
+        raise FitnessError("no 'newest <n>' in fragment %r" % fragment)
+    return m.group(1)
+
+
+def _alerts_limit(root):
+    """Health alerts the alerts API returns: the .limit(N) on its health_alerts query."""
+    return _route_int(root, "src/app/api/alerts/route.ts", r"from\('health_alerts'\)[^\n]*\.limit\((\d+)\)")
+
+
+def _agents_claim(fragment):
+    m = re.search(r"(\d+)-agent", fragment)
+    if not m:
+        raise FitnessError("no '<n>-agent' in fragment %r" % fragment)
+    return m.group(1)
+
+
+def _mad_agents(root):
+    """Debating agents: the quadrant prompts in mad_protocol.py, each opening
+    'YOUR <word> -- THE <NAME>:' (the word is built below, not written here)."""
+    path = os.path.join(root, "ai_engine", "analysis", "mad_protocol.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/mad_protocol.py not found")
+    with open(path, "rb") as fh:
+        names = set(re.findall(r"YOUR L[E]NS -- THE ([A-Z ]+?):", fh.read().decode("utf-8-sig")))
+    if not names:
+        raise FitnessError("no quadrant prompt ('YOUR <word> -- THE <NAME>:') in mad_protocol.py")
+    return "%d" % len(names)
+
+
+def _map_days_claim(fragment):
+    m = re.search(r"last ((?:\d+, )*\d+,? or \d+) days", fragment)
+    if not m:
+        raise FitnessError("no 'last a, b, or c days' in fragment %r" % fragment)
+    return ["%dd" % x for x in sorted(int(x) for x in re.findall(r"\d+", m.group(1)))]
+
+
+def _map_days(root):
+    """Day windows the map page offers: the literal list mapped into its filter buttons."""
+    got = _route_int(root, "src/app/map/page.tsx", r"\{\[([\d, ]+)\]\.map\(d =>")
+    return ["%dd" % x for x in sorted(int(x) for x in re.findall(r"\d+", got))]
+
+
+def _every_min_claim(fragment):
+    m = re.search(r"every (\d+) min", fragment)
+    if not m:
+        raise FitnessError("no 'every <n> min' in fragment %r" % fragment)
+    return m.group(1)
+
+
+def _mc_refresh(root):
+    """Mission Control's refresh period: setInterval(runCheck, N * 60 * 1000)."""
+    return _route_int(root, "src/app/mission-control/page.tsx", r"setInterval\(runCheck, (\d+) \* 60 \* 1000\)")
+
+
+def _cats_claim(fragment):
+    m = re.search(r"(\d+)-Category", fragment)
+    if not m:
+        raise FitnessError("no '<n>-Category' in fragment %r" % fragment)
+    return m.group(1)
+
+
+def _stock_cats(root):
+    """Categories the market page offers: entries of its CATEGORIES list."""
+    path = os.path.join(root, "src", "app", "stocks", "page.tsx")
+    if not os.path.isfile(path):
+        raise FitnessError("src/app/stocks/page.tsx not found")
+    with open(path, "rb") as fh:
+        text = fh.read().decode("utf-8")
+    m = re.search(r"const CATEGORIES = \[(.*?)\n\]", text, re.S)
+    if not m:
+        raise FitnessError("no CATEGORIES list in stocks/page.tsx")
+    return "%d" % len(re.findall(r"\{ key: '", m.group(1)))
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -806,6 +1082,32 @@ FITNESS = {
     "F-MAD-ACCOUNTS": ("accounts the MAD workflow runs under: GNI_MAD_ACCOUNT names in gni_mad.yml, "
                        "counted only when GROQ_API_KEY picks as many secrets", _accounts_claim,
                        _mad_accounts, _equal),
+    "F-ESC-CAP": ("the cap on the final escalation score: min(raw_score, N) in "
+                  "escalation_scorer.score_escalation (AST)", _cap_claim, _esc_cap, _equal),
+    "F-HB-DELTA": ("escalation delta at which the heartbeat triggers an adaptive run: DELTA_THRESHOLD in "
+                   "monitoring_pipeline.py (AST)", _delta_claim, _hb_delta, _equal),
+    "F-CORR-WINDOWS": ("windows the correlation engine writes: spy_change_<n>d keys in "
+                       "historical_correlations.save_correlation_table (AST)",
+                       _days_list_claim, _corr_windows, _equal),
+    "F-PATTERN-MIN": ("fewest outcomes a location or pillar pattern needs: n < N in "
+                      "historical_correlations._save_patterns (AST)", _min_claim, _pattern_min, _equal),
+    "F-MATERIALIZED": ("the debate check's bands: MATERIALIZED_AT and NOT_MATERIALIZED_AT in "
+                       "debate_prediction_verifier.py (AST); a claim names one or both",
+                       _mat_claim, _materialized, _scheduled),
+    "F-GPVS-VERSION": ("the GPVS version outcome_verifier.py announces ('GPVS v<x.y>')",
+                       _gpvs_version_claim, _gpvs_version, _equal),
+    "F-PENTEST": ("attack strings listed under the security page's Pentest Results that match one of "
+                  "the funnel's INJECTION_PATTERNS today", _of_claim, _pentest, _equal),
+    "F-SH-RUNS": ("runs per source the source-health API keeps (runs.length < N)",
+                  _last_runs_claim, _sh_runs, _equal),
+    "F-ALERTS-LIMIT": ("health alerts the alerts API returns (.limit on health_alerts)",
+                       _newest_claim, _alerts_limit, _equal),
+    "F-MAD-AGENTS": ("debating agents: the quadrant prompts in mad_protocol.py",
+                     _agents_claim, _mad_agents, _equal),
+    "F-MAP-DAYS": ("day windows the map page's filter offers", _map_days_claim, _map_days, _equal),
+    "F-MC-REFRESH": ("Mission Control's refresh period in minutes (setInterval in its page)",
+                     _every_min_claim, _mc_refresh, _equal),
+    "F-STOCK-CATS": ("categories the market page offers (its CATEGORIES list)", _cats_claim, _stock_cats, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that

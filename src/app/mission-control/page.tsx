@@ -99,7 +99,7 @@ export default function SelfCheckPage() {
           <div className="flex items-center justify-between mt-2">
             <div>
               <h1 className="text-xl font-bold text-purple-300">🛡️ Mission Control System</h1>
-              <p className="text-xs text-gray-400">GNI Operations Monitor | Aggregates all system health | Admin Telegram alerts</p>
+              <p className="text-xs text-gray-400">GNI Operations Monitor | Database, report age, quota, run recency and source checks | Admin Telegram alerts</p>
             </div>
             <div className="flex items-center gap-3 text-xs text-gray-500">
               {lastRun && <span>Last refreshed: {lastRun}</span>}
@@ -123,7 +123,7 @@ export default function SelfCheckPage() {
                   <div className="text-xl font-bold">{data.overall_status}</div>
                   <div className="text-xs opacity-80">
                     {data.overall_status === 'HEALTHY'
-                      ? 'All systems operational'
+                      ? 'All of its checks passed'
                       : data.issues_found == null
                         ? 'No check has run yet'
                         : `${data.issues_found} issue${data.issues_found > 1 ? 's' : ''} detected`}

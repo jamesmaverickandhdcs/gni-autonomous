@@ -1619,3 +1619,55 @@ cb25338c69	CLAIM	STATE	CLM-953	Free plan, storage capped
 1d42612355	CLAIM	STATE	CLM-958	Black Swan agent — reads the low-scoring articles the others dismissed, looking for a threat no one has modelled.
 262518b35c	CLAIM	STATE	CLM-959	Bear agent case — known risks playing out; no likelihood is computed
 4ea298748c	CLAIM	STATE	CLM-960	Black Swan agent case — the Ostrich case stands in only when it is empty
+72ec15142a	CLAIM	STATE	CLM-961	The heartbeat starts an adaptive run when the escalation delta &gt;= 2.0 or the level is CRITICAL, outside its blackout windows.
+89f2f8655d	CLAIM	STATE	CLM-962	A run that performs an analysis is logged to groq_daily_usage with zero Groq tokens, because the analysis runs on Cerebras; a CRITICAL run only sends an alert.
+1c1b8619d9	CLAIM	STATE	CLM-963	The final score is capped at 10.
+31e018bcfa	CLAIM	STATE	CLM-964	Computed: the 3-day and 7-day windows.
+0d00735279	CLAIM	STATE	CLM-965	Medium and Long cells stay empty, because nothing writes them yet.
+c0833429f3	CLAIM	STATE	CLM-966	Requires verified GPVS report outcomes.
+c21cc198a5	CLAIM	STATE	CLM-967	Only the 3-day and 7-day windows are computed.
+16057574e7	CLAIM	STATE	CLM-968	Agent Accuracy — 3-Day Direction
+1ba4aeb350	CLAIM	STATE	CLM-969	Bull and Bear score the MAD verdict: Bull fills only from bullish verdicts and Bear only from bearish ones, so a column shows N/A when no such verdict has been verified.
+e1db7558dc	CLAIM	STATE	CLM-970	The Black Swan and Ostrich columns are not those agents&apos; own scores: each is the 3-day direction result of the reports that carry that agent&apos;s case.
+4ae1d4a46a	CLAIM	STATE	CLM-971	Nothing computes agent accuracy over longer windows yet.
+eef6b6b80a	CLAIM	STATE	CLM-972	⚡ 3-day
+bc68924535	CLAIM	STATE	CLM-973	3-day
+290475b40a	CLAIM	STATE	CLM-974	Requires 3+ verified report outcomes per location or pillar.
+7fe7dc0a5c	CLAIM	STATE	CLM-975	Bull → Bear → Black Swan → Ostrich over three rounds on future threats, then the Arbitrator
+376c79c683	CLAIM	STATE	CLM-976	Four agents each take one quadrant: Known Positives (Bull), Known Negatives (Bear), Unknown Negatives (Black Swan) and Ignored Realities (Ostrich).
+560cfa2554	CLAIM	STATE	CLM-977	Each agent has a consultant who coaches it after the first and second rounds; a reply with too many ungrounded claims is withheld.
+9c013c365b	CLAIM	STATE	CLM-978	The Arbitrator gives the verdict once, after the third round.
+1a4887be97	CLAIM	STATE	CLM-979	Agents read the run&apos;s scored articles, capped per pillar; the Black Swan also reads the zero-scored ones the others drop.
+7fe48afff3	CLAIM	STATE	CLM-980	The Arbitrator names Short Focus (7-30 days) and Long Shoots (3-24 months) threats; the Long Shoots list and each agent&apos;s final position are saved as predictions and checked against SPY.
+53a715b5fc	CLAIM	STATE	CLM-981	No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions.
+f76802e31d	CLAIM	STATE	CLM-982	Every GNI report carries a sentiment such as Bearish or Bullish, which the report check reads as a market call.
+4b2db222a0	CLAIM	STATE	CLM-983	Its direction is judged at 3, 7, 30 and 180 days.
+cba36ac97c	CLAIM	STATE	CLM-984	The short windows use SPY, or USO or GLD when the report names them; the long ones use SPY.
+7530455a11	CLAIM	STATE	CLM-985	Powered by GPVS v1.1, the GNI Prediction Validation Standard: each report&apos;s direction against the market
+b40af9ca5c	CLAIM	STATE	CLM-986	Each pillar reads only the selected articles tagged to it, so the three reports look at different slices of the same run.
+f0dad286ad	CLAIM	STATE	CLM-987	Only the selected articles reach the main analysis; the MAD debate also hands the Black Swan the zero-scored ones.
+9fd4835204	CLAIM	STATE	CLM-988	MAD debate risk calls — each flagged threat checked against SPY over its verify window (materialized = SPY fell 2% or more)
+eae7692aad	CLAIM	STATE	CLM-989	Health Agent alerts from the main pipeline — the newest 100 on record
+6e596d8b93	CLAIM	STATE	CLM-990	4-agent MAD debate
+9718d3ef27	CLAIM	STATE	CLM-991	The Geopolitical Event Map plots the articles each main run selected, where a place could be found in them, with one pin per place.
+042103740e	CLAIM	STATE	CLM-992	Each pin is coloured by the highest significance score among its articles, from red for the highest through orange and yellow to green; sentiment plays no part.
+65b7b9a86c	CLAIM	STATE	CLM-993	GNI Operations Monitor | Database, report age, quota, run recency and source checks | Admin Telegram alerts
+cd23ff61f7	CLAIM	STATE	CLM-994	All of its checks passed
+9f8c155315	CLAIM	STATE	CLM-995	Selected pipeline events are logged to a SHA-256 hash chain: each entry hashes its event with the previous entry&apos;s hash, so an edit breaks the chain.
+a19c155f07	CLAIM	STATE	CLM-996	It is tamper-evident, not immutable.
+a44d0b9065	CLAIM	STATE	CLM-997	No graded audit on record
+c6d2232cc7	UI	-	-	Audit entries loaded (newest)
+82e26db41a	CLAIM	STATE	CLM-998	Run against today&apos;s injection patterns, 2 of the 9 attacks listed below match one; the rest would pass the pattern check.
+27c22250f0	CLAIM	STATE	CLM-999	Blocked on Day 17
+fee69db62c	CLAIM	STATE	CLM-1000	False positives on Day 17
+73ea0746f3	CLAIM	STATE	CLM-1001	Detection rate on Day 17
+247505ee13	CLAIM	STATE	CLM-1002	🔗 Audit Trail — SHA-256 Hash Chain, tamper-evident
+3edf2cee6e	CLAIM	STATE	CLM-1003	Links intact across the newest entries loaded, in time order; hashes are not recomputed here
+304cb6cafb	CLAIM	STATE	CLM-1004	Broken links found among the newest entries loaded, in time order:
+4d73a5426f	CLAIM	STATE	CLM-1005	Mini chart: up to the last 10 runs, plotting delivered articles only — it is a yield trend, not a transport signal.
+5722015e1d	CLAIM	STATE	CLM-1006	The red-bar and ⚠ History signals read an alert_sent flag that no current code sets, so they stay dark; source alerts are kept in the source_reserves table.
+a9f54c2526	CLAIM	STATE	CLM-1007	6-Category Market View — Yahoo Finance chart data
+e8f8c6f852	CLAIM	STATE	CLM-1008	Intelligence Funnel Trace — per-article stage results
+0c0b9ccbc3	CLAIM	STATE	CLM-1009	This page shows how the funnel treated each article of a main run: the stage that dropped it and why, or its score and selection rank.
+573741637c	CLAIM	STATE	CLM-1010	It stops at selection: how the selected articles become the report is not traced here.
+e1d1a36c3b	CLAIM	STATE	CLM-1011	An article dropped at Stage 1, 1b or 2 carries its reason; one scored but not selected shows only its score.

@@ -44,6 +44,10 @@ interface HealthData {
 // frontend copy of the 9/7/5/3 ladder. A blank level hides the card rather than
 // publishing a derived guess; that is deliberate.
 
+function isActiveVariant(v: { active: boolean }) {
+  return v.active
+}
+
 export default function AutonomyPage() {
   const [health, setHealth] = useState<HealthData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -58,15 +62,17 @@ export default function AutonomyPage() {
   }, [])
 
   // The MEASURED interval, as frequency_controller.py:104 stored it. Sub-hour
-  // values render as minutes so 0.5 reads '30 min'. intervalMap below is only a
+  // values render as minutes, so 0.5 reads as half an hour. intervalMap below is only a
   // fallback for a missing value - it is the SCHEDULER's band table, not a
-  // measurement, and at 9.0-9.4 it says '30 min' where the stored value is 1h.
+  // measurement, and at 9.0-9.4 it gives CRITICAL half an hour where the stored value is 1h.
   const formatInterval = (h: number): string =>
     h < 1 ? `${Math.round(h * 60)} min` : `${h}h`
 
-  const intervalMap: Record<string, string> = {
-    'CRITICAL': '30 min', 'HIGH': '2h', 'ELEVATED': '4h', 'MODERATE': '6h', 'LOW': '12h'
+  const intervalMap: Record<string, number> = {
+    'CRITICAL': 0.5, 'HIGH': 2, 'ELEVATED': 4, 'MODERATE': 6, 'LOW': 12
   }
+  const bandLabel = (lvl: string | null): string =>
+    lvl != null && intervalMap[lvl] != null ? formatInterval(intervalMap[lvl]) : ''
   const levelColor: Record<string, string> = {
     'CRITICAL': 'text-red-400 border-red-700',
     'HIGH': 'text-orange-400 border-orange-700',
@@ -76,15 +82,17 @@ export default function AutonomyPage() {
   }
 
   const levels = [
-    { level: 'CRITICAL', score: '9–10', interval: '30 min', color: 'text-red-400 border-red-700' },
-    { level: 'HIGH',     score: '7–9',  interval: '2h',     color: 'text-orange-400 border-orange-700' },
-    { level: 'ELEVATED', score: '5–7',  interval: '4h',     color: 'text-yellow-400 border-yellow-700' },
-    { level: 'MODERATE', score: '3–5',  interval: '6h',     color: 'text-blue-400 border-blue-700' },
-    { level: 'LOW',      score: '0–3',  interval: '12h',    color: 'text-green-400 border-green-700' },
+    { level: 'CRITICAL', score: '9–10', interval: 0.5,      color: 'text-red-400 border-red-700' },
+    { level: 'HIGH',     score: '7–9',  interval: 2,        color: 'text-orange-400 border-orange-700' },
+    { level: 'ELEVATED', score: '5–7',  interval: 4,        color: 'text-yellow-400 border-yellow-700' },
+    { level: 'MODERATE', score: '3–5',  interval: 6,        color: 'text-blue-400 border-blue-700' },
+    { level: 'LOW',      score: '0–3',  interval: 12,       color: 'text-green-400 border-green-700' },
   ]
 
   const latest = health?.frequency_log?.[0]
   const latestLevel = latest?.escalation_level || null
+  const activeVariants = (health?.prompt_variants || []).filter(isActiveVariant).length
+  const abNote = [0, 1].includes(activeVariants) ? ' Fewer than two variants are active now, so no test is running.' : ''
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -135,7 +143,7 @@ export default function AutonomyPage() {
                   </div>
                   <div className="bg-gray-800 border border-blue-800 rounded-xl p-4 text-center">
                     <div className="text-3xl font-bold text-blue-400">
-                      {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : intervalMap[latestLevel]}
+                      {latest.recommended_interval_hours != null ? formatInterval(latest.recommended_interval_hours) : bandLabel(latestLevel)}
                     </div>
                     <div className="text-xs text-gray-500 mt-1">Recommended Interval</div>
                   </div>
@@ -158,7 +166,7 @@ export default function AutonomyPage() {
                   <div key={item.level} className={`border rounded-lg p-2 text-center ${item.color} ${latestLevel === item.level ? 'ring-2 ring-white ring-opacity-50' : ''}`}>
                     <div className="text-sm font-bold">{item.level}</div>
                     <div className="text-xs text-gray-500">{item.score}</div>
-                    <div className="text-xs font-bold mt-1">{item.interval}</div>
+                    <div className="text-xs font-bold mt-1">{formatInterval(item.interval)}</div>
                   </div>
                 ))}
               </div>
@@ -192,7 +200,7 @@ export default function AutonomyPage() {
                   </div>
                 </div>
                 <div className="text-xs text-gray-600 text-center">
-                  Final score is capped at 10 and has been at the cap on every measured run. Raw magnitude is the uncapped signal.
+                  The final score is capped at 10. Raw magnitude is the uncapped signal.
                 </div>
               </div>
             )}
@@ -211,7 +219,7 @@ export default function AutonomyPage() {
                           {entryLevel}
                         </span>
                         <span className="text-white">{formatEscalation(entry.escalation_score, entry.escalation_score_raw, 'report')}</span>
-                        <span className="text-blue-400">{entry.recommended_interval_hours != null ? formatInterval(entry.recommended_interval_hours) : intervalMap[entryLevel]}</span>
+                        <span className="text-blue-400">{entry.recommended_interval_hours != null ? formatInterval(entry.recommended_interval_hours) : bandLabel(entryLevel)}</span>
                       </div>
                     )
                   })}
@@ -222,17 +230,17 @@ export default function AutonomyPage() {
             {/* Divergent intervals: measured value differs from the published band.
                 Selected by divergence, not position - an absolute window decays as the
                 table grows. Uses intervalMap, the existing published table; no new ladder. */}
-            {health.frequency_log.filter(e => e.recommended_interval_hours != null && formatInterval(e.recommended_interval_hours) !== intervalMap[e.escalation_level]).length > 0 && (
+            {health.frequency_log.filter(e => e.recommended_interval_hours != null && formatInterval(e.recommended_interval_hours) !== bandLabel(e.escalation_level)).length > 0 && (
               <div className="bg-gray-900 border border-yellow-800 rounded-xl p-5">
                 <div className="text-xs text-yellow-500 uppercase tracking-wider mb-4">Measured Interval Differs From Published Band</div>
                 <div className="space-y-2">
-                  {health.frequency_log.filter(e => e.recommended_interval_hours != null && formatInterval(e.recommended_interval_hours) !== intervalMap[e.escalation_level]).slice(0, 5).map(entry => (
+                  {health.frequency_log.filter(e => e.recommended_interval_hours != null && formatInterval(e.recommended_interval_hours) !== bandLabel(e.escalation_level)).slice(0, 5).map(entry => (
                     <div key={entry.id} className="flex items-center justify-between bg-gray-800 rounded-lg px-4 py-2">
                       <span className="text-xs text-gray-500">{new Date(entry.run_at).toLocaleString()}</span>
                       <span className={`font-bold ${levelColor[entry.escalation_level]?.split(' ')[0] || 'text-gray-400'}`}>{entry.escalation_level}</span>
                       <span className="text-white">{formatEscalation(entry.escalation_score, entry.escalation_score_raw, 'report')}</span>
                       <span className="text-blue-400">{formatInterval(entry.recommended_interval_hours)}</span>
-                      <span className="text-xs text-gray-600">band says {intervalMap[entry.escalation_level]}</span>
+                      <span className="text-xs text-gray-600">band says {bandLabel(entry.escalation_level)}</span>
                     </div>
                   ))}
                 </div>
@@ -242,7 +250,7 @@ export default function AutonomyPage() {
             {/* A/B Prompt Testing */}
             {health.prompt_variants.length > 0 && (
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Prompt A/B Test — L6 Self-Improvement</div>
+                <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">Prompt Variants — A/B Governor</div>
                 <div className="grid grid-cols-2 gap-4">
                   {health.prompt_variants.map(v => (
                     <div key={v.version} className={`rounded-xl p-4 border ${v.active ? 'border-blue-700 bg-gray-800' : 'border-gray-700 bg-gray-800'}`}>
@@ -264,7 +272,7 @@ export default function AutonomyPage() {
                   ))}
                 </div>
                 <div className="mt-3 text-xs text-gray-600 text-center">
-                  Auto-promotes winner after 10 runs per variant if difference ≥ 0.3
+                  The governor retires the lowest-scoring active variant once at least two have 10 runs each and the best and worst averages differ by 0.3 or more.<span>{abNote}</span>
                 </div>
               </div>
             )}
