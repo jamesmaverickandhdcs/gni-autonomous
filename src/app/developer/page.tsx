@@ -10,10 +10,10 @@ const ENDPOINTS = [
   { method: 'GET', path: '/api/quota', desc: 'Live token usage vs 85K safe ceiling vs 100K limit', group: 'System' },
   { method: 'GET', path: '/api/health', desc: 'Pipeline status + quality scores per run', group: 'System' },
   { method: 'GET', path: '/api/source-health', desc: '42 RSS sources: healthy / degraded / down', group: 'System' },
-  { method: 'GET', path: '/api/alerts', desc: 'Alert archive: CRITICAL / NYSE / ADAPTIVE / SOURCE_DOWN', group: 'System' },
-  { method: 'GET', path: '/api/adaptive-log', desc: 'Self-healing log: when triggered, why, tokens used', group: 'System' },
-  { method: 'GET', path: '/api/predictions-list', desc: 'All MAD predictions + verify dates + accuracy scores', group: 'Intelligence' },
-  { method: 'GET', path: '/api/correlations', desc: '3-horizon CFA (7d/30d/180d) + per-agent accuracy', group: 'Intelligence' },
+  { method: 'GET', path: '/api/alerts', desc: 'Health-agent alerts (run gap, quality, collection, MAD confidence) + recent token usage rows', group: 'System' },
+  { method: 'GET', path: '/api/adaptive-log', desc: 'Adaptive run log: when each run happened, why, and the tokens it logged', group: 'System' },
+  { method: 'GET', path: '/api/predictions-list', desc: 'Newest MAD predictions, a capped list, with verify-by dates and outcomes', group: 'Intelligence' },
+  { method: 'GET', path: '/api/correlations', desc: 'Market outcome per escalation level at 3 and 7 days + per-agent accuracy, latest refresh', group: 'Intelligence' },
   { method: 'GET', path: '/api/stocks', desc: 'Yahoo Finance data: price + day change + chart data', group: 'Intelligence' },
   { method: 'GET', path: '/api/article-events', desc: 'Geo-tagged articles for map view', group: 'Intelligence' },
   { method: 'GET', path: '/api/pipeline-runs', desc: 'Pipeline run history + funnel stats', group: 'Pipeline' },
@@ -21,9 +21,9 @@ const ENDPOINTS = [
   { method: 'GET', path: '/api/source-weights', desc: 'Dynamic source trust weights (GPVS-adjusted)', group: 'Pipeline' },
   { method: 'GET', path: '/api/prediction-outcomes', desc: 'GPVS scorecard: accuracy % per horizon', group: 'Pipeline' },
   { method: 'GET', path: '/api/export/reports?format=csv&days=30', desc: 'Download reports as CSV (IEEE paper replication)', group: 'Export' },
-  { method: 'GET', path: '/api/export/predictions?format=csv', desc: 'Download all MAD predictions as CSV', group: 'Export' },
+  { method: 'GET', path: '/api/export/predictions?format=csv', desc: 'Download MAD predictions as CSV, newest first', group: 'Export' },
   { method: 'GET', path: '/api/export/articles?format=csv', desc: 'Download pipeline articles as CSV', group: 'Export' },
-  { method: 'GET', path: '/api/audit-trail', desc: 'Security injection detection audit log', group: 'Security' },
+  { method: 'GET', path: '/api/audit-trail', desc: 'Hash-chained audit log of pipeline events: runs, saved reports, model fallbacks', group: 'Security' },
 ]
 
 const SCHEMA = [

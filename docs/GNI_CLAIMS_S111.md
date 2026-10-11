@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `4b40f995a01ba721f67e474cbe2e9f85` (EOL-normalised) -- **762 claims** (535 STATE, 205 PROMISE, 22 MIXED) at **816 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `404889940aca76004c00cae328cc0b11` (EOL-normalised) -- **762 claims** (535 STATE, 205 PROMISE, 22 MIXED) at **816 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `5b5519d1ee753acb5f20e85eb32b2c78` (EOL-normalised) -- **COVERAGE 58/762 = 7.6%** (58 SUPPORTED, 0 DEFEATED, 704 UNMEASURED); **UNREVIEWED 324**, **NUMBERS UNDERIVED 112** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `dc4b8706c0f21ad1ad613933ac36074e` (EOL-normalised) -- **COVERAGE 59/762 = 7.7%** (59 SUPPORTED, 0 DEFEATED, 703 UNMEASURED); **UNREVIEWED 291**, **NUMBERS UNDERIVED 111** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -304,41 +304,35 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `5b5519d1ee753acb5f20e85e
 | CLM-316 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:85` | Zero credit card required. |
 | CLM-319 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. |
 | CLM-321 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:86` | The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis. |
-| CLM-327 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:63` | GNI_Autonomous API Reference \| Build on top of GNI \| Fork guide \| $0.00/month architecture |
+| CLM-327 | STATE | UNMEASURED | EXTERNAL | `src/app/developer/page.tsx:63` | GNI_Autonomous API Reference \| Build on top of GNI \| Fork guide \| $0.00/month architecture |
 | CLM-328 | PROMISE | UNMEASURED | PROMISE | `src/app/developer/page.tsx:75` | Monthly Cost (forever) |
-| CLM-329 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:247` | — requirements.txt is DELETED — all pipelines use inline pip install |
-| CLM-330 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:248` | — Monthly cost is $0.00 using Groq free tier + Supabase free + Vercel free + GitHub free |
-| CLM-331 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:249` | — Author anonymous — Team Geeks only. |
+| CLM-329 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:247` | — requirements.txt is DELETED — all pipelines use inline pip install |
+| CLM-330 | STATE | UNMEASURED | EXTERNAL | `src/app/developer/page.tsx:248` | — Monthly cost is $0.00 using Groq free tier + Supabase free + Vercel free + GitHub free |
+| CLM-331 | STATE | UNMEASURED | PROVENANCE | `src/app/developer/page.tsx:249` | — Author anonymous — Team Geeks only. |
 | CLM-332 | STATE | UNMEASURED | PROVENANCE | `src/app/developer/page.tsx:264` | GNI Autonomous \| Developer Portal \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-333 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:6` | Latest intelligence reports + historical baseline |
-| CLM-334 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:7` | Single call = complete GNI state (report + MAD + pillars + quota) |
-| CLM-335 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:8` | Pipeline health check for external monitoring |
-| CLM-336 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:9` | GEO / TECH / FIN pillar intelligence reports |
-| CLM-337 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:10` | Live token usage vs 85K safe ceiling vs 100K limit |
-| CLM-338 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:11` | Pipeline status + quality scores per run |
+| CLM-333 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:6` | Latest intelligence reports + historical baseline |
+| CLM-334 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:7` | Single call = complete GNI state (report + MAD + pillars + quota) |
+| CLM-335 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:8` | Pipeline health check for external monitoring |
+| CLM-336 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:9` | GEO / TECH / FIN pillar intelligence reports |
+| CLM-337 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000; F-TPD claims 100000, measured 100000 | `src/app/developer/page.tsx:10` | Live token usage vs 85K safe ceiling vs 100K limit |
+| CLM-338 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:11` | Pipeline status + quality scores per run |
 | CLM-339 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/developer/page.tsx:12` | 42 RSS sources: healthy / degraded / down |
-| CLM-340 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:13` | Alert archive: CRITICAL / NYSE / ADAPTIVE / SOURCE_DOWN |
-| CLM-341 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:14` | Self-healing log: when triggered, why, tokens used |
-| CLM-342 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:15` | All MAD predictions + verify dates + accuracy scores |
-| CLM-343 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:16` | 3-horizon CFA (7d/30d/180d) + per-agent accuracy |
-| CLM-344 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:17` | Yahoo Finance data: price + day change + chart data |
-| CLM-345 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:18` | Geo-tagged articles for map view |
-| CLM-346 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:19` | Pipeline run history + funnel stats |
-| CLM-347 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:20` | Articles per run with stage scores |
-| CLM-348 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:21` | Dynamic source trust weights (GPVS-adjusted) |
-| CLM-349 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:22` | GPVS scorecard: accuracy % per horizon |
-| CLM-350 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:23` | Download reports as CSV (IEEE paper replication) |
-| CLM-351 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:24` | Download all MAD predictions as CSV |
-| CLM-352 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:25` | Download pipeline articles as CSV |
-| CLM-353 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:26` | Security injection detection audit log |
-| CLM-354 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:31` | MAD agent predictions + GPVS verification |
-| CLM-355 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:32` | GEO / TECH / FIN domain reports |
-| CLM-356 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:33` | Token usage per pipeline run |
-| CLM-357 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:34` | Articles processed per run with stage scores |
-| CLM-358 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:35` | RSS source reliability tracking |
-| CLM-359 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:36` | Dynamic trust weights (GPVS-adjusted) |
-| CLM-360 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:226` | Free tier. |
-| CLM-361 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer/page.tsx:229` | Done — $0.00/month. |
+| CLM-344 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:17` | Yahoo Finance data: price + day change + chart data |
+| CLM-345 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:18` | Geo-tagged articles for map view |
+| CLM-346 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:19` | Pipeline run history + funnel stats |
+| CLM-347 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:20` | Articles per run with stage scores |
+| CLM-348 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:21` | Dynamic source trust weights (GPVS-adjusted) |
+| CLM-349 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:22` | GPVS scorecard: accuracy % per horizon |
+| CLM-350 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:23` | Download reports as CSV (IEEE paper replication) |
+| CLM-352 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:25` | Download pipeline articles as CSV |
+| CLM-354 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:31` | MAD agent predictions + GPVS verification |
+| CLM-355 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:32` | GEO / TECH / FIN domain reports |
+| CLM-356 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:33` | Token usage per pipeline run |
+| CLM-357 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:34` | Articles processed per run with stage scores |
+| CLM-358 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:35` | RSS source reliability tracking |
+| CLM-359 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:36` | Dynamic trust weights (GPVS-adjusted) |
+| CLM-360 | STATE | UNMEASURED | EXTERNAL | `src/app/developer/page.tsx:226` | Free tier. |
+| CLM-361 | STATE | UNMEASURED | EXTERNAL | `src/app/developer/page.tsx:229` | Done — $0.00/month. |
 | CLM-362 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:85` | Dev Console is GNI&apos;s technical transparency hub, designed for developers, system architects, and anyone who wants to understand how GNI works under the hood. |
 | CLM-363 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/developer-hub/page.tsx:86` | Every component of the autonomous pipeline is observable here &mdash; from the 81-pattern injection security filter to the A/B prompt quality system and the self-healing adaptive engine. |
 | CLM-364 | STATE | SUPPORTED | F-ROUTES claims 28, measured 28 | `src/app/developer-hub/page.tsx:87` | The API reference documents all 28 endpoints with method, path, and description, making it straightforward to integrate GNI intelligence into external systems. |
@@ -376,7 +370,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `5b5519d1ee753acb5f20e85e
 | CLM-396 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:182` | Per-account token usage vs 85K ceiling |
 | CLM-397 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/developer-hub/page.tsx:183` | All 42 RSS source statuses |
 | CLM-398 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:184` | Alert archive with escalation deltas |
-| CLM-399 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:185` | All MAD predictions + verify dates |
 | CLM-400 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:186` | Pipeline health + quality scores |
 | CLM-401 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:72` | A rigorous self-assessment of GNI through the Feedback Loop lens. |
 | CLM-402 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:72` | Combined with live prediction verification data, this provides the most honest and complete picture of where GNI stands and where it is going. |
@@ -829,3 +822,10 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `5b5519d1ee753acb5f20e85e
 | CLM-835 | STATE | UNMEASURED | RUNTIME | `src/app/methodology/page.tsx:115` | 33 tables — reports, debate_predictions, audit_trail, groq_daily_usage... |
 | CLM-836 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:957` | Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. |
 | CLM-837 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:325` | Bull agent — known positives: what concretely stabilises, de-escalates or improves. |
+| CLM-838 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:185` | Newest MAD predictions, a capped list, with verify-by dates |
+| CLM-839 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:13` | Health-agent alerts (run gap, quality, collection, MAD confidence) + recent token usage rows |
+| CLM-840 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:14` | Adaptive run log: when each run happened, why, and the tokens it logged |
+| CLM-841 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:15` | Newest MAD predictions, a capped list, with verify-by dates and outcomes |
+| CLM-842 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:16` | Market outcome per escalation level at 3 and 7 days + per-agent accuracy, latest refresh |
+| CLM-843 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:24` | Download MAD predictions as CSV, newest first |
+| CLM-844 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:26` | Hash-chained audit log of pipeline events: runs, saved reports, model fallbacks |

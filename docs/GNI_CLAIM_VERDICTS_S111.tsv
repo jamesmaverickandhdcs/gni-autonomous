@@ -1493,3 +1493,10 @@ cfd435d6dd	CLAIM	STATE	CLM-834	Finds what concretely stabilises, de-escalates or
 eacc9451d9	CLAIM	STATE	CLM-835	33 tables — reports, debate_predictions, audit_trail, groq_daily_usage...
 4c56363fdb	CLAIM	STATE	CLM-836	Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored.
 c15760e3d8	CLAIM	STATE	CLM-837	Bull agent — known positives: what concretely stabilises, de-escalates or improves.
+db441db552	CLAIM	STATE	CLM-838	Newest MAD predictions, a capped list, with verify-by dates
+5f915dc4c1	CLAIM	STATE	CLM-839	Health-agent alerts (run gap, quality, collection, MAD confidence) + recent token usage rows
+107612a34a	CLAIM	STATE	CLM-840	Adaptive run log: when each run happened, why, and the tokens it logged
+2a9ef20b6f	CLAIM	STATE	CLM-841	Newest MAD predictions, a capped list, with verify-by dates and outcomes
+35f1c777df	CLAIM	STATE	CLM-842	Market outcome per escalation level at 3 and 7 days + per-agent accuracy, latest refresh
+febda1b0c1	CLAIM	STATE	CLM-843	Download MAD predictions as CSV, newest first
+fbfd5b6a11	CLAIM	STATE	CLM-844	Hash-chained audit log of pipeline events: runs, saved reports, model fallbacks

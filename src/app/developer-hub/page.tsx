@@ -182,7 +182,7 @@ export default function DeveloperHub() {
               { method: 'GET', path: '/api/quota', desc: 'Per-account token usage vs 85K ceiling' },
               { method: 'GET', path: '/api/source-health', desc: 'All 42 RSS source statuses' },
               { method: 'GET', path: '/api/alerts', desc: 'Alert archive with escalation deltas' },
-              { method: 'GET', path: '/api/predictions-list', desc: 'All MAD predictions + verify dates' },
+              { method: 'GET', path: '/api/predictions-list', desc: 'Newest MAD predictions, a capped list, with verify-by dates' },
               { method: 'GET', path: '/api/health', desc: 'Pipeline health + quality scores' },
             ].map(({ method, path, desc }) => (
               <div key={path} className="flex items-center gap-3">
