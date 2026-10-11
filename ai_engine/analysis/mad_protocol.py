@@ -472,6 +472,15 @@ GNI_WALL = ('GNI MISSION: "FUTURE THREATS" is GNI\'s VISION -- early warning of 
             'opportunities so people can prepare. Within that mission, argue ONLY your own '
             'character\'s genuine position. The vision never overrides the character. ')
 
+# S111: the run's own date. S35-10 (0e47783, 2026-05-23) anchored the four agents to the
+# present by writing that month and year into each prompt as a fixed string; frozen,
+# it told every debate after May that it was still May. Each workflow run is a fresh process, so the
+# date is read once here, at import, from the run's clock (UTC).
+# Harness: ai_engine/tests/dryrun_mad_date_anchor.py.
+_RUN_CLOCK = datetime.now(timezone.utc)
+CURRENT_DATE = _RUN_CLOCK.strftime('%B %Y')   # e.g. 'October 2026'
+CURRENT_YEAR = _RUN_CLOCK.strftime('%Y')
+
 # Shared senior foundation. G+T+F = the DOMAIN; hidden-pattern/invisible-linking = PRIMARY skill.
 SENIOR_FOUNDATION = (
     'You are a deeply experienced SENIOR strategist-analyst -- the caliber of person who '
@@ -502,8 +511,8 @@ GROUNDING_RULE = (
 # ---- Four agents: shared foundation + PURE lens + preserved mechanics ----
 BULL = (
     GNI_WALL + SENIOR_FOUNDATION +
-    'YOUR LENS -- THE BULL: Quadrant Upper-Right, Known Positives. Current date: May 2026; '
-    'all timelines relative to 2026. You are the senior optimist of this room -- not naive, '
+    'YOUR LENS -- THE BULL: Quadrant Upper-Right, Known Positives. Current date: ' + CURRENT_DATE + '; '
+    'all timelines relative to ' + CURRENT_YEAR + '. You are the senior optimist of this room -- not naive, '
     'but the one who steelmans the GENUINE positive read others are too cynical to see. Your '
     'edge is spotting the hidden upside: the de-escalation pathway nobody is pricing, the quiet '
     'cooperation forming off-stage, the actor whose incentives have just flipped toward '
@@ -519,8 +528,8 @@ BULL = (
 
 BEAR = (
     GNI_WALL + SENIOR_FOUNDATION +
-    'YOUR LENS -- THE BEAR: Quadrant Lower-Right, Known Negatives. Current date: May 2026; '
-    'all timelines relative to 2026. You are the senior risk mind of this room -- the one who '
+    'YOUR LENS -- THE BEAR: Quadrant Lower-Right, Known Negatives. Current date: ' + CURRENT_DATE + '; '
+    'all timelines relative to ' + CURRENT_YEAR + '. You are the senior risk mind of this room -- the one who '
     'has watched fragile systems break before and knows exactly where the cracks propagate. '
     'Focus on FUTURE THREATS from KNOWN risks and systemic vulnerabilities: name which systems '
     'are fragile, why, and the precise mechanism that drives the break. Your hidden-pattern edge '
@@ -536,7 +545,7 @@ BEAR = (
 
 SWAN = (
     GNI_WALL + SENIOR_FOUNDATION +
-    'YOUR LENS -- THE BLACK SWAN: Quadrant Upper-Left, Unknown Negatives. Current date: May 2026. '
+    'YOUR LENS -- THE BLACK SWAN: Quadrant Upper-Left, Unknown Negatives. Current date: ' + CURRENT_DATE + '. '
     'You are the senior tail-risk mind -- the one whose entire career is built on seeing the '
     'unmodelled threat forming in the data everyone else discarded. You are receiving the '
     'LOW-SCORING articles others dismissed; these are your hunting ground. Your hidden-pattern '
@@ -554,7 +563,7 @@ SWAN = (
 
 OSTRICH = (
     GNI_WALL + SENIOR_FOUNDATION +
-    'YOUR LENS -- THE OSTRICH: Quadrant Lower-Left, Ignored Realities. Current date: May 2026. '
+    'YOUR LENS -- THE OSTRICH: Quadrant Lower-Left, Ignored Realities. Current date: ' + CURRENT_DATE + '. '
     'You are the senior mind who names the threat everyone can already see but has collectively '
     'agreed not to look at -- the inertia, the institutional denial, the willful blind spot. Your '
     'hidden-pattern edge is the SILO-GAP: '
