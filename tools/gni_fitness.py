@@ -526,6 +526,18 @@ def _main_sleeps(root):
     return out
 
 
+def _quality_dims(root):
+    """Dimensions of the report quality score: the keys of the breakdown dict
+    quality_scorer.score_report builds (AST), counted."""
+    fn = _func(root, "ai_engine/analysis/quality_scorer.py", "score_report")
+    dicts = [n for n in ast.walk(fn) if isinstance(n, ast.Dict) and len(n.keys) > 1
+             and all(isinstance(k, ast.Constant) and isinstance(v, ast.Call)
+                     for k, v in zip(n.keys, n.values))]
+    if len(dicts) != 1:
+        raise FitnessError("expected one {name: score_fn(report)} dict in score_report, got %d" % len(dicts))
+    return len(dicts[0].keys)
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -597,6 +609,8 @@ FITNESS = {
                       _first_int, _dedup_words, _equal),
     "F-PILLAR-WAIT": ("literal time.sleep waits in main.py; a claimed wait must be one of them",
                       _sleeps_claim, _main_sleeps, _scheduled),
+    "F-QUALITY-DIMS": ("dimensions of the report quality score: the score_fn entries of the breakdown in "
+                       "quality_scorer.score_report (AST)", _count_word, _quality_dims, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that

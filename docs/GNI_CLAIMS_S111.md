@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `404889940aca76004c00cae328cc0b11` (EOL-normalised) -- **762 claims** (535 STATE, 205 PROMISE, 22 MIXED) at **816 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `805e343d9137dd81f0e5eb91b70dd434` (EOL-normalised) -- **760 claims** (533 STATE, 205 PROMISE, 22 MIXED) at **814 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `dc4b8706c0f21ad1ad613933ac36074e` (EOL-normalised) -- **COVERAGE 59/762 = 7.7%** (59 SUPPORTED, 0 DEFEATED, 703 UNMEASURED); **UNREVIEWED 291**, **NUMBERS UNDERIVED 111** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `a85a35cf3f30fb5bda72169a6090559e` (EOL-normalised) -- **COVERAGE 63/760 = 8.3%** (63 SUPPORTED, 0 DEFEATED, 697 UNMEASURED); **UNREVIEWED 259**, **NUMBERS UNDERIVED 103** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -333,44 +333,28 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `dc4b8706c0f21ad1ad613933
 | CLM-359 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:36` | Dynamic trust weights (GPVS-adjusted) |
 | CLM-360 | STATE | UNMEASURED | EXTERNAL | `src/app/developer/page.tsx:226` | Free tier. |
 | CLM-361 | STATE | UNMEASURED | EXTERNAL | `src/app/developer/page.tsx:229` | Done — $0.00/month. |
-| CLM-362 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:85` | Dev Console is GNI&apos;s technical transparency hub, designed for developers, system architects, and anyone who wants to understand how GNI works under the hood. |
-| CLM-363 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/developer-hub/page.tsx:86` | Every component of the autonomous pipeline is observable here &mdash; from the 81-pattern injection security filter to the A/B prompt quality system and the self-healing adaptive engine. |
+| CLM-362 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:85` | Dev Console is GNI&apos;s technical transparency hub, designed for developers, system architects, and anyone who wants to understand how GNI works under the hood. |
 | CLM-364 | STATE | SUPPORTED | F-ROUTES claims 28, measured 28 | `src/app/developer-hub/page.tsx:87` | The API reference documents all 28 endpoints with method, path, and description, making it straightforward to integrate GNI intelligence into external systems. |
-| CLM-365 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/developer-hub/page.tsx:88` | Source health monitoring tracks all 42 RSS slots in real time across seven states, separating transport truth (whether a feed is reachable at all, primary or reserve) from yield truth (how many of its entries survived the capture window), and showing how each source&apos;s trust weight is adjusted dynamically. |
-| CLM-366 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:89` | The quota monitor ensures GNI never exceeds its free-tier token budget, with a safe ceiling at 85K tokens and a hard limit at 100K per day per account &mdash; the foundation of the $0.00/month architecture. |
-| CLM-367 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:153` | Three REST endpoints allow programmatic access to GNI&apos;s complete dataset: reports, predictions, and pipeline articles &mdash; all exportable as CSV or JSON. |
-| CLM-368 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:153` | No authentication required &mdash; all data is publicly accessible. |
-| CLM-369 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:153` | Essential for IEEE paper replication, external analysis, and building applications on top of GNI intelligence. |
-| CLM-370 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:206` | Single call = complete GNI state |
-| CLM-371 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:213` | Pipeline health for external monitoring |
-| CLM-372 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:220` | Subscribe to NEW_REPORT / CRITICAL events |
-| CLM-373 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:230` | &#9888;&#65039; GNI data is for informational purposes only. |
-| CLM-373 | STATE | UNMEASURED | UNREVIEWED | `src/app/quota/page.tsx:238` | &#9888;&#65039; GNI data is for informational purposes only. |
+| CLM-369 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:153` | Essential for IEEE paper replication, external analysis, and building applications on top of GNI intelligence. |
+| CLM-370 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:206` | Single call = complete GNI state |
+| CLM-371 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:213` | Pipeline health for external monitoring |
+| CLM-372 | STATE | UNMEASURED | PROMISE | `src/app/developer-hub/page.tsx:220` | Subscribe to NEW_REPORT / CRITICAL events |
+| CLM-373 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:230` | &#9888;&#65039; GNI data is for informational purposes only. |
+| CLM-373 | STATE | UNMEASURED | QUALITATIVE | `src/app/quota/page.tsx:238` | &#9888;&#65039; GNI data is for informational purposes only. |
 | CLM-374 | STATE | UNMEASURED | PROVENANCE | `src/app/developer-hub/page.tsx:234` | GNI Autonomous \| Dev Console Hub \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-375 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:123` | Full AI funnel trace showing how each article was selected stage by stage. |
-| CLM-376 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:123` | View the complete pipeline from collected articles down to the final selection. |
-| CLM-377 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:123` | Essential for understanding GNI editorial decision-making process. |
-| CLM-378 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:124` | The frequency controller, A/B prompt quality system, and L3.5 self-healing design that give GNI its autonomous capabilities. |
-| CLM-379 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:124` | Shows how GNI adjusts its own behavior based on escalation levels and quota constraints. |
-| CLM-380 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:124` | This is the architecture behind GNI L7 autonomy rating. |
-| CLM-381 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:125` | Pipeline status as of the latest run, with quality scores per run across 5 dimensions: relevance, depth, actionability, source diversity, and novelty. |
-| CLM-382 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:125` | Includes A/B prompt test current state and historical quality trend. |
-| CLM-383 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:125` | Use this to verify GNI is operating within expected quality parameters. |
-| CLM-385 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:126` | Full pentest results and security audit trail available. |
+| CLM-375 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:123` | Full AI funnel trace showing how each article was selected stage by stage. |
+| CLM-376 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:123` | View the complete pipeline from collected articles down to the final selection. |
+| CLM-377 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:123` | Essential for understanding GNI editorial decision-making process. |
+| CLM-382 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:125` | Includes A/B prompt test current state and historical quality trend. |
+| CLM-383 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:125` | Use this to verify GNI is operating within expected quality parameters. |
 | CLM-386 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/developer-hub/page.tsx:126` | GNI security layer ensures all 42 RSS sources are validated before any content reaches the AI analysis stage. |
-| CLM-387 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:127` | Dynamic trust weights adjusted by GPVS prediction accuracy are shown per source. |
-| CLM-388 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:127` | Mini sparkline charts reveal each source reliability trend over the last 7 days. |
-| CLM-389 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:128` | The self-healing log showing every time GNI heartbeat triggered the adaptive pipeline -- including the reason (escalation delta), tokens consumed, and analysis result. |
-| CLM-390 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:128` | This is GNI L3.5 self-healing evidence, demonstrating autonomous response to geopolitical threat changes. |
-| CLM-391 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:129` | Live Groq token budget showing per-account usage vs the 85K safe ceiling vs the 100K hard limit. |
-| CLM-392 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:129` | Historical usage trends and per-account breakdown available. |
-| CLM-393 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:129` | This page is the proof behind GNI $0.00/month architecture claim for the IEEE paper. |
-| CLM-394 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:180` | Latest intelligence reports + baseline |
-| CLM-395 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:181` | GEO / TECH / FIN pillar reports |
-| CLM-396 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:182` | Per-account token usage vs 85K ceiling |
+| CLM-391 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000; F-TPD claims 100000, measured 100000 | `src/app/developer-hub/page.tsx:129` | Live Groq token budget showing per-account usage vs the 85K safe ceiling vs the 100K hard limit. |
+| CLM-392 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:129` | Historical usage trends and per-account breakdown available. |
+| CLM-394 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:180` | Latest intelligence reports + baseline |
+| CLM-395 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:181` | GEO / TECH / FIN pillar reports |
+| CLM-396 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000 | `src/app/developer-hub/page.tsx:182` | Per-account token usage vs 85K ceiling |
 | CLM-397 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/developer-hub/page.tsx:183` | All 42 RSS source statuses |
-| CLM-398 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:184` | Alert archive with escalation deltas |
-| CLM-400 | STATE | UNMEASURED | UNREVIEWED | `src/app/developer-hub/page.tsx:186` | Pipeline health + quality scores |
+| CLM-400 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:186` | Pipeline health + quality scores |
 | CLM-401 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:72` | A rigorous self-assessment of GNI through the Feedback Loop lens. |
 | CLM-402 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:72` | Combined with live prediction verification data, this provides the most honest and complete picture of where GNI stands and where it is going. |
 | CLM-403 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/feedback/page.tsx:149` | GNI&apos;s greatest strength is also its greatest research contribution: the feedback loop itself. |
@@ -657,7 +641,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `dc4b8706c0f21ad1ad613933
 | CLM-669 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:59` | Every adaptive run is counted from the run table; the activity log below lists only the runs that performed an analysis |
 | CLM-670 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:94` | The adaptive pipeline fires when escalation delta &gt;= 2.0 or CRITICAL level detected. |
 | CLM-671 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:95` | Each run is logged to groq_daily_usage with tokens consumed. |
-| CLM-672 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:98` | How Self-Healing Works |
 | CLM-673 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:106` | Detects escalation delta &gt;= 2.0 or CRITICAL level |
 | CLM-674 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:110` | Triggers gni_adaptive.yml via GitHub Actions API |
 | CLM-676 | STATE | UNMEASURED | UNREVIEWED | `src/app/adaptive-log/page.tsx:118` | Sends Telegram alert with trigger reason and result |
@@ -728,9 +711,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `dc4b8706c0f21ad1ad613933
 | CLM-745 | STATE | UNMEASURED | UNREVIEWED | `src/components/ResetBanner.tsx:12` | Always on. |
 | CLM-746 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:26` | GNI_Autonomous runs on autonomous GitHub Actions workflows -- core intelligence pipelines plus support workflows -- started by cron schedules, except the adaptive run, which the heartbeat triggers. |
 | CLM-747 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:116` | core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; support: graph, market, self-bias, mission control; CI: test harnesses on push |
-| CLM-748 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:76` | The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the self-healing heartbeat to the multi-layer injection security stack. |
 | CLM-749 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/developer-hub/page.tsx:126` | 81 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. |
-| CLM-750 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/page.tsx:175` | The GitHub Actions workflows, the self-healing heartbeat, the 81-pattern security layer, and live token quota data proving $0.00/month L7 autonomous operation. |
 | CLM-751 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/page.tsx:519` | Pipeline is scheduled for 08:43 and 16:43 Myanmar time. |
 | CLM-752 | STATE | SUPPORTED | F-RSS claims 42, measured 42; F-INJ claims 81, measured 81 | `src/app/page.tsx:1016` | GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 81 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. |
 | CLM-753 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:105` | Full geopolitical intelligence platform running autonomous GitHub Actions workflows -- core (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) plus support (entity graph, market, self-bias, mission control) -- entirely on free tiers. |
@@ -829,3 +810,20 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `dc4b8706c0f21ad1ad613933
 | CLM-842 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:16` | Market outcome per escalation level at 3 and 7 days + per-agent accuracy, latest refresh |
 | CLM-843 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:24` | Download MAD predictions as CSV, newest first |
 | CLM-844 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:26` | Hash-chained audit log of pipeline events: runs, saved reports, model fallbacks |
+| CLM-845 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:76` | The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the heartbeat to the multi-layer injection security stack. |
+| CLM-846 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/page.tsx:175` | The GitHub Actions workflows, the heartbeat, the 81-pattern security layer, and the live token data behind GNI&apos;s free-tier operation. |
+| CLM-847 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:98` | How the Adaptive Run Works |
+| CLM-848 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/developer-hub/page.tsx:86` | Every component of the autonomous pipeline is observable here &mdash; from the 81-pattern injection security filter to the A/B prompt quality system and the adaptive run. |
+| CLM-849 | STATE | SUPPORTED | F-RSS claims 42, measured 42; F-SH-STATES claims 7, measured 7 | `src/app/developer-hub/page.tsx:88` | Source health monitoring tracks all 42 RSS slots in real time across seven states, separating transport truth (whether a feed is reachable at all, primary or reserve) from yield truth (how many of its entries survived the capture window). |
+| CLM-850 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000; F-TPD claims 100000, measured 100000 | `src/app/developer-hub/page.tsx:89` | The quota guard plans against a safe ceiling of 85K tokens and a 100K limit per day per account; it can stop the adaptive run, while the main pipeline and the debate are always allowed to run. |
+| CLM-851 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:153` | Three REST endpoints export reports (a chosen window of recent days), MAD predictions and pipeline articles as CSV or JSON. |
+| CLM-852 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:153` | Callers outside this web app send an X-GNI-Key header; a request without one is refused. |
+| CLM-853 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:124` | The frequency controller, the A/B prompt quality system and the adaptive run. |
+| CLM-854 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:124` | Shows the interval the controller recommends for each escalation level, and how the adaptive run changes its mode with the level and the quota. |
+| CLM-855 | STATE | SUPPORTED | F-QUALITY-DIMS claims 5, measured 5 | `src/app/developer-hub/page.tsx:125` | Pipeline status as of the latest run, with quality scores per run across five dimensions: specificity, market linkage, source consensus, analytical novelty and prediction specificity. |
+| CLM-856 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:126` | The recorded pentest results are shown. |
+| CLM-857 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:127` | A mini chart plots the articles each source delivered over its most recent runs. |
+| CLM-858 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:128` | The adaptive run log: every time the heartbeat triggered the adaptive run, with the reason and the tokens it logged. |
+| CLM-859 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:128` | At the CRITICAL level the run sends an alert and writes no report. |
+| CLM-860 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:129` | The token figures here are the usage side of the $0.00/month claim; the cost side rests on the free tiers of the providers. |
+| CLM-861 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:184` | Health-agent alerts + recent token usage rows |

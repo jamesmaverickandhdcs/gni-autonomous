@@ -83,10 +83,10 @@ export default function DeveloperHub() {
           <div className="text-xs font-bold text-white uppercase tracking-wider mb-3">What is Dev Console?</div>
           <p className="text-sm text-gray-100 leading-relaxed">
             Dev Console is GNI&apos;s technical transparency hub, designed for developers, system architects, and anyone who wants to understand how GNI works under the hood.
-            Every component of the autonomous pipeline is observable here &mdash; from the 81-pattern injection security filter to the A/B prompt quality system and the self-healing adaptive engine.
+            Every component of the autonomous pipeline is observable here &mdash; from the 81-pattern injection security filter to the A/B prompt quality system and the adaptive run.
             The API reference documents all 28 endpoints with method, path, and description, making it straightforward to integrate GNI intelligence into external systems.
-            Source health monitoring tracks all 42 RSS slots in real time across seven states, separating transport truth (whether a feed is reachable at all, primary or reserve) from yield truth (how many of its entries survived the capture window), and showing how each source&apos;s trust weight is adjusted dynamically.
-            The quota monitor ensures GNI never exceeds its free-tier token budget, with a safe ceiling at 85K tokens and a hard limit at 100K per day per account &mdash; the foundation of the $0.00/month architecture.
+            Source health monitoring tracks all 42 RSS slots in real time across seven states, separating transport truth (whether a feed is reachable at all, primary or reserve) from yield truth (how many of its entries survived the capture window).
+            The quota guard plans against a safe ceiling of 85K tokens and a 100K limit per day per account; it can stop the adaptive run, while the main pipeline and the debate are always allowed to run.
           </p>
         </div>
         {/* System Status Row */}
@@ -121,12 +121,12 @@ export default function DeveloperHub() {
 
           {[
             { href: '/transparency', emoji: '\u{1F4DC}', num: '01', label: 'Transparency', desc: 'Full AI funnel trace showing how each article was selected stage by stage. View the complete pipeline from collected articles down to the final selection. Essential for understanding GNI editorial decision-making process.', status: 'LIVE' },
-            { href: '/autonomy',     emoji: '\u{1F9E0}', num: '02', label: 'Autonomy',     desc: 'The frequency controller, A/B prompt quality system, and L3.5 self-healing design that give GNI its autonomous capabilities. Shows how GNI adjusts its own behavior based on escalation levels and quota constraints. This is the architecture behind GNI L7 autonomy rating.', status: 'LIVE' },
-            { href: '/health',       emoji: '\u{1F3E5}', num: '03', label: 'Health',       desc: 'Pipeline status as of the latest run, with quality scores per run across 5 dimensions: relevance, depth, actionability, source diversity, and novelty. Includes A/B prompt test current state and historical quality trend. Use this to verify GNI is operating within expected quality parameters.', status: 'LIVE' },
-            { href: '/security',     emoji: '\u{1F6E1}\u{FE0F}', num: '04', label: 'Security', desc: '81 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. Full pentest results and security audit trail available. GNI security layer ensures all 42 RSS sources are validated before any content reaches the AI analysis stage.', status: 'LIVE' },
-            { href: '/source-health',emoji: '\u{1F4E1}', num: '05', label: 'Source Health',desc: 'Live status of all 42 RSS slots across seven states, separating transport truth (is a feed reachable, primary or reserve) from yield truth (how many entries survived the capture window). Dynamic trust weights adjusted by GPVS prediction accuracy are shown per source. Mini sparkline charts reveal each source reliability trend over the last 7 days.', status: 'LIVE' },
-            { href: '/adaptive-log', emoji: '\u26A1',     num: '06', label: 'Adaptive Log', desc: 'The self-healing log showing every time GNI heartbeat triggered the adaptive pipeline -- including the reason (escalation delta), tokens consumed, and analysis result. This is GNI L3.5 self-healing evidence, demonstrating autonomous response to geopolitical threat changes.', status: 'LIVE' },
-            { href: '/quota',        emoji: '\u{1F4B0}', num: '07', label: 'Quota',        desc: 'Live Groq token budget showing per-account usage vs the 85K safe ceiling vs the 100K hard limit. Historical usage trends and per-account breakdown available. This page is the proof behind GNI $0.00/month architecture claim for the IEEE paper.', status: 'LIVE' },
+            { href: '/autonomy',     emoji: '\u{1F9E0}', num: '02', label: 'Autonomy',     desc: 'The frequency controller, the A/B prompt quality system and the adaptive run. Shows the interval the controller recommends for each escalation level, and how the adaptive run changes its mode with the level and the quota.', status: 'LIVE' },
+            { href: '/health',       emoji: '\u{1F3E5}', num: '03', label: 'Health',       desc: 'Pipeline status as of the latest run, with quality scores per run across five dimensions: specificity, market linkage, source consensus, analytical novelty and prediction specificity. Includes A/B prompt test current state and historical quality trend. Use this to verify GNI is operating within expected quality parameters.', status: 'LIVE' },
+            { href: '/security',     emoji: '\u{1F6E1}\u{FE0F}', num: '04', label: 'Security', desc: '81 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. The recorded pentest results are shown. GNI security layer ensures all 42 RSS sources are validated before any content reaches the AI analysis stage.', status: 'LIVE' },
+            { href: '/source-health',emoji: '\u{1F4E1}', num: '05', label: 'Source Health',desc: 'Live status of all 42 RSS slots across seven states, separating transport truth (is a feed reachable, primary or reserve) from yield truth (how many entries survived the capture window). A mini chart plots the articles each source delivered over its most recent runs.', status: 'LIVE' },
+            { href: '/adaptive-log', emoji: '\u26A1',     num: '06', label: 'Adaptive Log', desc: 'The adaptive run log: every time the heartbeat triggered the adaptive run, with the reason and the tokens it logged. At the CRITICAL level the run sends an alert and writes no report.', status: 'LIVE' },
+            { href: '/quota',        emoji: '\u{1F4B0}', num: '07', label: 'Quota',        desc: 'Live Groq token budget showing per-account usage vs the 85K safe ceiling vs the 100K hard limit. Historical usage trends and per-account breakdown available. The token figures here are the usage side of the $0.00/month claim; the cost side rests on the free tiers of the providers.', status: 'LIVE' },
           ].map(({ href, emoji, num, label, desc, status }) => (
             <a key={href} href={href} className="bg-gray-900 border border-gray-700 hover:border-purple-500 hover:bg-purple-950 rounded-xl p-4 transition-colors group">
               <div className="flex items-center gap-3 mb-2">
@@ -150,7 +150,7 @@ export default function DeveloperHub() {
               <div className="text-sm font-bold text-white">Dataset Export API</div>
               <span className="text-xs bg-purple-900 text-purple-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400 leading-relaxed">Three REST endpoints allow programmatic access to GNI&apos;s complete dataset: reports, predictions, and pipeline articles &mdash; all exportable as CSV or JSON. No authentication required &mdash; all data is publicly accessible. Essential for IEEE paper replication, external analysis, and building applications on top of GNI intelligence.</p>
+            <p className="text-xs text-gray-400 leading-relaxed">Three REST endpoints export reports (a chosen window of recent days), MAD predictions and pipeline articles as CSV or JSON. Callers outside this web app send an X-GNI-Key header; a request without one is refused. Essential for IEEE paper replication, external analysis, and building applications on top of GNI intelligence.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-purple-200 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 transition-colors">View Export API &rarr;</span>
             </div>
@@ -181,7 +181,7 @@ export default function DeveloperHub() {
               { method: 'GET', path: '/api/pillar-reports', desc: 'GEO / TECH / FIN pillar reports' },
               { method: 'GET', path: '/api/quota', desc: 'Per-account token usage vs 85K ceiling' },
               { method: 'GET', path: '/api/source-health', desc: 'All 42 RSS source statuses' },
-              { method: 'GET', path: '/api/alerts', desc: 'Alert archive with escalation deltas' },
+              { method: 'GET', path: '/api/alerts', desc: 'Health-agent alerts + recent token usage rows' },
               { method: 'GET', path: '/api/predictions-list', desc: 'Newest MAD predictions, a capped list, with verify-by dates' },
               { method: 'GET', path: '/api/health', desc: 'Pipeline health + quality scores' },
             ].map(({ method, path, desc }) => (

@@ -1500,3 +1500,20 @@ db441db552	CLAIM	STATE	CLM-838	Newest MAD predictions, a capped list, with verif
 35f1c777df	CLAIM	STATE	CLM-842	Market outcome per escalation level at 3 and 7 days + per-agent accuracy, latest refresh
 febda1b0c1	CLAIM	STATE	CLM-843	Download MAD predictions as CSV, newest first
 fbfd5b6a11	CLAIM	STATE	CLM-844	Hash-chained audit log of pipeline events: runs, saved reports, model fallbacks
+9af5250e86	CLAIM	STATE	CLM-845	The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the heartbeat to the multi-layer injection security stack.
+f785625079	CLAIM	STATE	CLM-846	The GitHub Actions workflows, the heartbeat, the 81-pattern security layer, and the live token data behind GNI&apos;s free-tier operation.
+53cc61b470	CLAIM	STATE	CLM-847	How the Adaptive Run Works
+a9a5b13cf0	CLAIM	STATE	CLM-848	Every component of the autonomous pipeline is observable here &mdash; from the 81-pattern injection security filter to the A/B prompt quality system and the adaptive run.
+2fac41cee0	CLAIM	STATE	CLM-849	Source health monitoring tracks all 42 RSS slots in real time across seven states, separating transport truth (whether a feed is reachable at all, primary or reserve) from yield truth (how many of its entries survived the capture window).
+fe1bba839e	CLAIM	STATE	CLM-850	The quota guard plans against a safe ceiling of 85K tokens and a 100K limit per day per account; it can stop the adaptive run, while the main pipeline and the debate are always allowed to run.
+b24d418524	CLAIM	STATE	CLM-851	Three REST endpoints export reports (a chosen window of recent days), MAD predictions and pipeline articles as CSV or JSON.
+c486237eb9	CLAIM	STATE	CLM-852	Callers outside this web app send an X-GNI-Key header; a request without one is refused.
+0c84f8ec99	CLAIM	STATE	CLM-853	The frequency controller, the A/B prompt quality system and the adaptive run.
+aade20c63c	CLAIM	STATE	CLM-854	Shows the interval the controller recommends for each escalation level, and how the adaptive run changes its mode with the level and the quota.
+722e9dcf15	CLAIM	STATE	CLM-855	Pipeline status as of the latest run, with quality scores per run across five dimensions: specificity, market linkage, source consensus, analytical novelty and prediction specificity.
+1786bca400	CLAIM	STATE	CLM-856	The recorded pentest results are shown.
+b91c549530	CLAIM	STATE	CLM-857	A mini chart plots the articles each source delivered over its most recent runs.
+48f7f4f16e	CLAIM	STATE	CLM-858	The adaptive run log: every time the heartbeat triggered the adaptive run, with the reason and the tokens it logged.
+5f904ba23b	CLAIM	STATE	CLM-859	At the CRITICAL level the run sends an alert and writes no report.
+d7072d8fd6	CLAIM	STATE	CLM-860	The token figures here are the usage side of the $0.00/month claim; the cost side rests on the free tiers of the providers.
+af3ccda7cb	CLAIM	STATE	CLM-861	Health-agent alerts + recent token usage rows

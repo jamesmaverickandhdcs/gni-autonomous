@@ -95,7 +95,7 @@ export default function AdaptiveLogPage() {
               Each run is logged to groq_daily_usage with tokens consumed.
             </p>
             <div className="mt-6 bg-gray-900 border border-gray-700 rounded-xl p-5 text-left max-w-md mx-auto">
-              <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">How Self-Healing Works</div>
+              <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">How the Adaptive Run Works</div>
               <div className="space-y-3 text-xs text-gray-400">
                 <div className="flex gap-3">
                   <span className="text-blue-400 font-bold shrink-0">1.</span>
