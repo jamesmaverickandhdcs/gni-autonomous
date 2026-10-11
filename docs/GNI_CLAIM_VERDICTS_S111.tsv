@@ -1454,3 +1454,27 @@ f9570daa39	UI	-	-	Recommended Interval
 27879b2614	CLAIM	STATE	CLM-796	The debate validates every LLM response with a hardened-JSON guardian, and so does the primary report analysis; each saved report is recorded in a SHA-256 hash-chained audit trail.
 9dc5f3b7b7	CLAIM	STATE	CLM-797	Geopolitical significance scoring of each article that passes deduplication, top-N selection with source diversity enforcement, and, on the main pipeline, AI runs at temperatures 0.1/0.3/0.7 whose spread gives a t-distribution confidence interval (t=4.303, n=3) for the sentiment score.
 5b27cbd7a5	CLAIM	STATE	CLM-798	Source weights update via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.
+0701195c34	CLAIM	STATE	CLM-799	Bloomberg Terminal has grown 60% since 2010 ($20,000 → $31,980).
+784eaf3406	CLAIM	STATE	CLM-800	Myanmar internet penetration: 61.1% (DataReportal 2025).
+0dbd1aa462	CLAIM	STATE	CLM-801	Built as a Higher Diploma final project at Spring University Myanmar (SUM).
+4287fb21d3	CLAIM	STATE	CLM-802	Sources that led to correct predictions gain higher trust weights via blended EMA: new = 0.7 x old + 0.3 x factor, where factor is 1.5 for correct predictions, 0.7 for wrong, 1.0 for partly correct ones.
+c434ca5ec5	CLAIM	STATE	CLM-803	Weights are bounded between 0.5 (penalised) and 2.0 (highly trusted).
+1205d0ea74	CLAIM	STATE	CLM-804	Every report connects geopolitical events to specific market instruments (SPY, GLD, USO, DXY).
+66892b6c6e	CLAIM	STATE	CLM-805	Pipeline escalation 0-10, banded CRITICAL from 9, HIGH from 7, ELEVATED from 5, MODERATE from 3, and LOW below that.
+4921780d36	CLAIM	STATE	CLM-806	At CRITICAL the adaptive run sends an alert instead of an analysis.
+76f6a2e3dc	CLAIM	STATE	CLM-807	Black Swan and Ostrich accuracy requires Quadratic MAD reports (from March 23, 2026).
+45bf3d6a9f	CLAIM	STATE	CLM-808	Live status of all 42 RSS slots across seven states, separating transport truth (is a feed reachable, primary or reserve) from yield truth (how many entries survived the capture window).
+b8cd3de5d7	CLAIM	STATE	CLM-809	In GitHub repo Settings > Secrets, add the names the workflow files read, starting with GROQ_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY and, for alerts, TELEGRAM_BOT_TOKEN.
+ee9eca8599	CLAIM	STATE	CLM-810	Four agents represent four quadrants: Bull (Known Positives), Bear (Known Negatives), Black Swan (Unknown Negatives), Ostrich (Ignored Realities).
+712f80dc0c	CLAIM	STATE	CLM-811	Each article gets a geopolitical significance score.
+baac6d0241	CLAIM	STATE	CLM-812	The top articles are selected with source diversity enforced (max 2 per source).
+a6b72d5d50	CLAIM	STATE	CLM-813	Groq LLM (model set by the GROQ_MODEL secret) analyzes top articles. 3 independent runs at temperatures 0.1, 0.3, 0.7 generate 95% confidence intervals using t-distribution (t=4.303 for n=3).
+e24d6ffe47	CLAIM	STATE	CLM-814	Correct predictions increase a source&apos;s trust weight (up to 2.0).
+f8905e2e9b	CLAIM	STATE	CLM-815	Wrong predictions reduce it (down to 0.5).
+3e54f8bada	CLAIM	STATE	CLM-816	Each pipeline run produces a separate AI analysis for every intelligence pillar that has selected articles: Geopolitical (conflict, diplomacy, alliances), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade).
+20e1ba4e0b	CLAIM	STATE	CLM-817	Each pipeline run produces a separate AI analysis for every pillar that has selected articles — Geopolitical (conflict, diplomacy), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade).
+d9691023ab	CLAIM	STATE	CLM-818	The confidence interval needs three analysis runs inside one pipeline run (t-distribution, n=3).
+5406a09ab4	CLAIM	STATE	CLM-819	Four AI agents (Bull, Bear, Black Swan, Ostrich) debate across the Johari Window matrix (Known/Unknown × Proactive/Ignored).
+65a2cf7a1b	CLAIM	STATE	CLM-820	Uses t-distribution (t=4.303 for n=3).
+d5e1796be7	CLAIM	STATE	CLM-821	The GPVS (GNI Prediction Validation Standard) system continuously scores each agent&apos;s directional predictions against reality, building an evidence-based accuracy record over multiple horizons (7d, 30d, 180d).
+6daa6fce77	CLAIM	PROMISE	CLM-822	— Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications).

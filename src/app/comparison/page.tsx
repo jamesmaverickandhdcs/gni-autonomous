@@ -449,7 +449,7 @@ export default function ComparisonPage() {
                   </div>
                   <div>
                     <div className="text-orange-400 font-bold mb-1">Escalation Score</div>
-                    <p>Pipeline escalation 0-10. Score 8+ = CRITICAL (runs every 30 min). Below 4 = LOW (12-hour interval).</p>
+                    <p>Pipeline escalation 0-10, banded CRITICAL from 9, HIGH from 7, ELEVATED from 5, MODERATE from 3, and LOW below that. At CRITICAL the adaptive run sends an alert instead of an analysis.</p>
                   </div>
                 </div>
               </div>

@@ -878,7 +878,7 @@ export default function Home() {
                   <div className="text-xs text-gray-500 uppercase tracking-wider mb-2">Three Pillar Intelligence Reports</div>
                 <div className="text-xs text-gray-400 leading-relaxed mb-3 bg-gray-900 rounded-lg p-3">
                   <span className="text-white font-bold">How Three Pillar Reports work: </span>
-                  Every pipeline run produces three separate AI analyses across the three intelligence pillars: Geopolitical (conflict, diplomacy, alliances), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). Each pillar uses the same top articles but focuses its analysis on its domain, giving a multi-dimensional view of the same global events.
+                  Each pipeline run produces a separate AI analysis for every intelligence pillar that has selected articles: Geopolitical (conflict, diplomacy, alliances), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). Each pillar uses the same top articles but focuses its analysis on its domain, giving a multi-dimensional view of the same global events.
                 </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {pillars.map(({ key, label, emoji, report, border, bg, accent }) => (

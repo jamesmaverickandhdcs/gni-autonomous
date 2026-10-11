@@ -687,6 +687,19 @@ CASES["78-ratchet-underived-excused-passes"] = lambda r: _ratchet_rises(r, CLAIM
 CASES["79-ratchet-counts-not-printed"] = lambda r: _ratchet_doc_edit(
     r, "; **UNREVIEWED 2**, **NUMBERS UNDERIVED 0** ", " ")
 
+# S111, the extractor's method-chain rule. Until S111 `\)\.` filed every sentence
+# that closes a parenthesis and then ends as DATA, so it was never harvested (24
+# such sentences on the S111 pages). 80: a prose sentence ending ")." must reach
+# the claims machinery - with no verdict it is red on C12. 81 is its
+# DISCRIMINATOR (R-S90-1): a real method chain, ").then", is still DATA by rule
+# and the tree stays green.
+CASES["80-paren-sentence-harvested"] = lambda r: (
+    base(r), w(r + "/src/app/claims5/page.tsx",
+               "export default function T() { return <p>GNI rates every feed by its yield (per run).</p> }\n"), r)[-1]
+CASES["81-method-chain-still-data"] = lambda r: (
+    base(r), w(r + "/src/app/claims5/page.tsx",
+               "export default function T() { return <p>Call load(feed).then each morning for news</p> }\n"), r)[-1]
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -732,6 +745,7 @@ EXPECT = {
     "74-ratchet-unreviewed-rises": 1, "75-ratchet-printed-not-derived": 1,
     "76-ratchet-falls-passes": 0, "77-ratchet-underived-rises-alone": 1,
     "78-ratchet-underived-excused-passes": 0, "79-ratchet-counts-not-printed": 1,
+    "80-paren-sentence-harvested": 1, "81-method-chain-still-data": 0,
 }
 
 if __name__ == "__main__":

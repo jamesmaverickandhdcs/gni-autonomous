@@ -223,10 +223,10 @@ def _audit_hash(root):
 
 
 def _temps_claim(fragment):
-    m = re.search(r"temperatures ([\d.]+(?:/[\d.]+)+)", fragment)
+    m = re.search(r"temperatures ([\d.]+(?:(?:/|, )[\d.]+)+)", fragment)
     if not m:
-        raise FitnessError("no 'temperatures a/b/c' in fragment %r" % fragment)
-    return ["%g" % v for v in sorted(float(x) for x in m.group(1).split("/"))]
+        raise FitnessError("no 'temperatures a/b/c' or 'a, b, c' in fragment %r" % fragment)
+    return ["%g" % v for v in sorted(float(x) for x in re.split(r"/|, ", m.group(1)))]
 
 
 def _ci_temps(root):
@@ -246,10 +246,14 @@ def _ci_temps(root):
 
 
 def _t_claim(fragment):
-    m = re.search(r"t=([\d.]+), n=(\d+)", fragment)
-    if not m:
-        raise FitnessError("no 't=<x>, n=<k>' in fragment %r" % fragment)
-    return ["t=%g" % float(m.group(1)), "n=%d" % int(m.group(2))]
+    """'t=4.303, n=3', 't=4.303 for n=3' or 'n=3' alone: whichever of the two
+    the fragment states. The comparison is a subset, so a fragment naming only
+    the run count is held to the run count."""
+    out = ["t=%g" % float(x) for x in re.findall(r"\bt=([\d.]+)", fragment)]
+    out += ["n=%d" % int(x) for x in re.findall(r"\bn=(\d+)", fragment)]
+    if not out:
+        raise FitnessError("no t=<x> or n=<k> in fragment %r" % fragment)
+    return out
 
 
 def _ci_t(root):
@@ -308,6 +312,124 @@ def _ema(root):
     return ["%g" % v for v in (coef["current"], coef["gpvs_factor"], correct, wrong, partly)]
 
 
+def _bounds_claim(fragment):
+    """'between 0.5 (...) and 2.0' -> both; 'up to 2.0' -> max; 'down to 0.5' -> min."""
+    out = []
+    m = re.search(r"between ([\d.]+)\b.*?\band ([\d.]+)", fragment)
+    if m:
+        out += ["min=%g" % float(m.group(1)), "max=%g" % float(m.group(2))]
+    out += ["max=%g" % float(x) for x in re.findall(r"up to ([\d.]+)", fragment)]
+    out += ["min=%g" % float(x) for x in re.findall(r"down to ([\d.]+)", fragment)]
+    if not out:
+        raise FitnessError("no bound in fragment %r" % fragment)
+    return out
+
+
+def _weight_bounds(root):
+    """The clamp max(LO, min(x, HI)) in source_weights.update_source_weight (AST)."""
+    fn = _func(root, "ai_engine/analysis/source_weights.py", "update_source_weight")
+    hits = []
+    for n in ast.walk(fn):
+        if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "max" and len(n.args) == 2:
+            inner = n.args[1]
+            if isinstance(inner, ast.Call) and getattr(inner.func, "id", "") == "min":
+                hits.append(["min=%g" % _num(n.args[0]), "max=%g" % _num(inner.args[1])])
+    if len(hits) != 1:
+        raise FitnessError("expected one max(lo, min(x, hi)) clamp, got %d" % len(hits))
+    return hits[0]
+
+
+def _bands_claim(fragment):
+    out = ["%s>=%g" % (lv, float(n)) for lv, n in
+           re.findall(r"\b(CRITICAL|HIGH|ELEVATED|MODERATE) from ([\d.]+)", fragment)]
+    if not out:
+        raise FitnessError("no '<LEVEL> from <n>' in fragment %r" % fragment)
+    return out
+
+
+def _esc_bands(root):
+    """Lower bound of each escalation level: the `if final_score >= N: level =
+    'X'` chain in escalation_scorer.score_escalation (AST)."""
+    fn = _func(root, "ai_engine/analysis/escalation_scorer.py", "score_escalation")
+    out = []
+    for n in ast.walk(fn):
+        if isinstance(n, ast.If) and isinstance(n.test, ast.Compare) \
+                and getattr(n.test.left, "id", "") == "final_score" \
+                and isinstance(n.test.ops[0], ast.GtE):
+            lv = [s.value.value for s in n.body if isinstance(s, ast.Assign)
+                  and any(getattr(t, "id", "") == "level" for t in s.targets)
+                  and isinstance(s.value, ast.Constant)]
+            if lv:
+                out.append("%s>=%g" % (lv[0], _num(n.test.comparators[0])))
+    if not out:
+        raise FitnessError("no `if final_score >= n: level = ...` chain in score_escalation")
+    return out
+
+
+STATUS_CONFIG_RE = re.compile(r"const STATUS_CONFIG\b[^=]*=\s*\{(.*?)\n\}", re.S)
+
+
+def _sh_states(root):
+    """Keys of STATUS_CONFIG in the source-health page: the states it can show."""
+    rel = "src/app/source-health/page.tsx"
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        m = STATUS_CONFIG_RE.search(fh.read().decode("utf-8"))
+    if not m:
+        raise FitnessError("no STATUS_CONFIG object in %s" % rel)
+    keys = re.findall(r"^\s*'?([a-z][a-z-]*)'?\s*:\s*\{", m.group(1), re.M)
+    if not keys:
+        raise FitnessError("STATUS_CONFIG has no keys in %s" % rel)
+    return len(keys)
+
+
+WORD_NUM = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7,
+            "eight": 8, "nine": 9, "ten": 10}
+
+
+def _count_word(fragment):
+    """The first count in the fragment, written as digits or as a word to ten."""
+    m = re.search(r"\b(\d+|%s)\b" % "|".join(WORD_NUM), fragment)
+    if not m:
+        raise FitnessError("no count in fragment %r" % fragment)
+    return int(m.group(1)) if m.group(1).isdigit() else WORD_NUM[m.group(1)]
+
+
+def _secret_names(fragment):
+    names = re.findall(r"\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b", fragment)
+    if not names:
+        raise FitnessError("no SECRET_NAME in fragment %r" % fragment)
+    return sorted(set(names))
+
+
+def _workflow_secrets(root):
+    """Every `secrets.NAME` the workflow files read."""
+    out = set()
+    for path in glob.glob(os.path.join(root, ".github", "workflows", "*.yml")):
+        with open(path, "rb") as fh:
+            out |= set(re.findall(r"secrets\.([A-Z][A-Z0-9_]*)", fh.read().decode("utf-8")))
+    if not out:
+        raise FitnessError("no secrets.NAME in any workflow")
+    return sorted(out)
+
+
+def _src_cap(root):
+    """max_per_source passed to run_funnel by the main pipeline (main.py, AST)."""
+    path = os.path.join(root, "ai_engine", "main.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/main.py not found")
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    vals = [_num(k.value) for n in ast.walk(tree) if isinstance(n, ast.Call)
+            and getattr(n.func, "id", "") == "run_funnel"
+            for k in n.keywords if k.arg == "max_per_source"]
+    if len(vals) != 1:
+        raise FitnessError("expected one run_funnel(max_per_source=...) in main.py, got %d" % len(vals))
+    return vals[0]
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -356,9 +478,19 @@ FITNESS = {
     "F-CI-TEMPS": ("main-pipeline analysis temperatures: _call_groq's request plus analyze()'s CI loop "
                    "(AST)", _temps_claim, _ci_temps, _equal),
     "F-CI-T": ("the t value and its run count in nexus_analyzer._calculate_confidence_intervals (AST)",
-               _t_claim, _ci_t, _equal),
+               _t_claim, _ci_t, _scheduled),
     "F-EMA": ("source-weight EMA coefficients and GPVS factors in source_weights.update_source_weight "
               "(AST)", _ema_claim, _ema, _equal),
+    "F-WEIGHT-BOUNDS": ("source-weight clamp max(lo, min(x, hi)) in source_weights.update_source_weight (AST)",
+                        _bounds_claim, _weight_bounds, _scheduled),
+    "F-ESC-BANDS": ("lower bound of each escalation level in escalation_scorer.score_escalation (AST)",
+                    _bands_claim, _esc_bands, _scheduled),
+    "F-SH-STATES": ("states the source-health page can show: keys of its STATUS_CONFIG",
+                    _count_word, _sh_states, _equal),
+    "F-SECRETS": ("secret names the workflow files read (secrets.NAME); a claim's names must be among them",
+                  _secret_names, _workflow_secrets, _scheduled),
+    "F-SRC-CAP": ("per-source article cap the main pipeline passes to run_funnel (main.py, AST)",
+                  _first_int, _src_cap, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that

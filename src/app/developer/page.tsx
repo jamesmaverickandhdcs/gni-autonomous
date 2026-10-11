@@ -225,7 +225,7 @@ print(f"Mean escalation: {sum(scores)/len(scores):.2f}")`}</pre>
                   { step: '1', title: 'Fork the repo', desc: 'github.com/jamesmaverickandhdcs/gni-autonomous — click Fork. It is PUBLIC.' },
                   { step: '2', title: 'Create Supabase project', desc: 'Free tier. Create tables: reports, debate_predictions, pillar_reports, groq_daily_usage, pipeline_articles, source_health, source_weights. See /developer schema tab for columns.' },
                   { step: '3', title: 'Get a Groq API key', desc: 'console.groq.com — free tier; GNI plans against 100K tokens/day per account. Add as GROQ_API_KEY in GitHub repo secrets.' },
-                  { step: '4', title: 'Add environment variables', desc: 'In GitHub repo Settings > Secrets: GROQ_API_KEY, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, TELEGRAM_BOT_TOKEN (optional).' },
+                  { step: '4', title: 'Add environment variables', desc: 'In GitHub repo Settings > Secrets, add the names the workflow files read, starting with GROQ_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY and, for alerts, TELEGRAM_BOT_TOKEN.' },
                   { step: '5', title: 'Deploy to Vercel', desc: 'Connect your forked repo to Vercel. Add same env vars in Vercel dashboard. Deploy. Done — $0.00/month.' },
                 ].map(({ step, title, desc }) => (
                   <div key={step} className="flex gap-4 bg-gray-800 rounded-lg p-4">

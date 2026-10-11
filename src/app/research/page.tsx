@@ -146,7 +146,7 @@ export default function ResearchPage() {
               ))}
             </div>
             <div className="mt-2 text-xs text-gray-600 leading-relaxed">
-              Quality score requires 3 independent pipeline runs for CI analysis (t-distribution, n=3). Single-run reports show N/A until re-analysed. CI Width 0.000 = full inter-run agreement (score saturation across the 3 temperature runs) - a real measurement, not missing data.
+              The confidence interval needs three analysis runs inside one pipeline run (t-distribution, n=3). Single-run reports show N/A until re-analysed. CI Width 0.000 = full inter-run agreement (score saturation across the 3 temperature runs) - a real measurement, not missing data.
             </div>
           </section>
         )}

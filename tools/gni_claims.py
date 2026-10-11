@@ -137,8 +137,12 @@ def tsx_candidates(path, rel):
 # LIMIT, written down: the lexicon is hand-made. A claim of under 4 words with
 # no lexicon word in it is filed UI by rule - the short end of a keyword
 # filter's blind spot. The fixture carries that case as a known limit.
+# S111: `\)\.` matched every sentence that closes a parenthesis and then ends
+# ("... (SUM).") and filed it DATA by rule, so 24 prose sentences were never
+# harvested as claims. A method call after a paren is `).name`, so a letter,
+# `_` or `$` must follow the dot (fixture families 80 and 81).
 CODE_RE = re.compile(r"\b(?:const|let|return|useState|useEffect|await|async|function|null|undefined)\b"
-                     r"|=>|\)\.|\.length|&&|\|\||\?\s*['\"`]|===|!==|<div|</")
+                     r"|=>|\)\.(?=[A-Za-z_$])|\.length|&&|\|\||\?\s*['\"`]|===|!==|<div|</")
 CLAIM_LEXICON = re.compile(
     r"\b(?:daily|twice|hourly|weekly|real[- ]?time|24/7|always|never|every|autonomous\w*|"
     r"automatic\w*|self[- ]\w+|minutes?|min|hours?|interval|frequency|free|forever|live|"
