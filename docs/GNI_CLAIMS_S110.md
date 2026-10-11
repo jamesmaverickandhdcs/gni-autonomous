@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S110.tsv` md5 `88926410be829c314003147709b13b43` (EOL-normalised) -- **752 claims** (526 STATE, 204 PROMISE, 22 MIXED) at **805 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S110.tsv` md5 `28955e3eda8d5e6201dcb1568358ed5c` (EOL-normalised) -- **752 claims** (526 STATE, 204 PROMISE, 22 MIXED) at **805 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `f1a23ed9c6828c6db05fa4f18e0cb80e` (EOL-normalised) -- **COVERAGE 32/752 = 4.3%** (32 SUPPORTED, 0 DEFEATED, 720 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `1f093b98a95e8df875a9587192dd234e` (EOL-normalised) -- **COVERAGE 32/752 = 4.3%** (32 SUPPORTED, 0 DEFEATED, 720 UNMEASURED). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -308,7 +308,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `f1a23ed9c6828c6db05fa4f1
 | CLM-282 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:158` | Academic Contribution — L7 Autonomy Proof |
 | CLM-283 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:159` | The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. |
 | CLM-284 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:159` | This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes. |
-| CLM-285 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:160` | The 4-pipeline core, its 4 supporting workflows, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment. |
 | CLM-286 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:166` | Warning: GNI data is for informational purposes only. |
 | CLM-287 | STATE | UNMEASURED | PROVENANCE | `src/app/about/devops/page.tsx:171` | GNI Autonomous \| About — Dev Console \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-288 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:38` | ~${madRecent.toLocaleString()}/run (recent; varies with load) |
@@ -818,3 +817,4 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S110.tsv` md5 `f1a23ed9c6828c6db05fa4f1
 | CLM-770 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/page.tsx:27` | Cloud AI — free tier, planned at 100K tokens/day per account |
 | CLM-771 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000 | `src/app/about/devops/page.tsx:119` | safe ceiling 85K = 85% of the bar |
 | CLM-772 | STATE | SUPPORTED | F-TPD claims 100000, measured 100000 | `src/app/about/devops/page.tsx:119` | 100K planning limit |
+| CLM-773 | STATE | UNMEASURED | UNREVIEWED | `src/app/about/devops/page.tsx:160` | The 4-pipeline core, its supporting workflows, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment. |

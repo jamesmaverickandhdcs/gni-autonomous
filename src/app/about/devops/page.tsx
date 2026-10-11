@@ -157,7 +157,7 @@ export default function AboutDevopsPage() {
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
           <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — L7 Autonomy Proof</div>
           <p className="text-sm text-gray-300 leading-relaxed mb-3">The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes.</p>
-          <p className="text-sm text-gray-400 leading-relaxed">The 4-pipeline core, its 4 supporting workflows, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment.</p>
+          <p className="text-sm text-gray-400 leading-relaxed">The 4-pipeline core, its supporting workflows, the self-healing heartbeat, and the Mission Control monitoring layer collectively demonstrate L7 autonomy: the system manages itself, responds to world events, and maintains quality — all without human intervention after initial deployment.</p>
         </div>
 
       </main>

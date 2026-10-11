@@ -1,0 +1,163 @@
+name: GNI Backup
+# S110, order item 6.5 - "THERE IS NO BACKUP" (open since S84). BACKUP POLICY, written down (ISO/IEC 27001
+# A.8.13; NIST SP 800-53 CP-9):
+#   WHAT     the public schema of the Supabase database - every table, its rows, indexes, constraints,
+#            RLS policies and grants (pg_dump, custom format). Supabase-managed schemas (auth, storage,
+#            realtime, vault) are not GNI's: no GNI code reads them, and on 2026-10-11 vault held 0
+#            secrets and storage 0 objects.
+#   HOW      read-only role gni_backup (SELECT + BYPASSRLS, no write) via the session pooler; the dump
+#            is encrypted with AES-256 (gpg) under BACKUP_PASSPHRASE, which is also kept OUTSIDE GitHub.
+#   PROOF    every run decrypts its own artifact and RESTORES it into an empty Postgres 17, then
+#            requires the same tables, every row count between the counts taken before and after the
+#            dump, the same number of policies and the same RLS tables. A job that only reports
+#            success proves nothing (CP-9); this one fails red when the backup would not restore.
+#   WHEN     daily (RPO one day); artifacts kept 30 days; on the 1st-2nd of each month the operator is
+#            reminded on Telegram to download the newest artifact - the offsite copy (3-2-1).
+#   RECOVER  gpg --decrypt <file>.gpg > gni.dump ; pg_restore --no-owner -d <target> gni.dump
+#            (into a fresh project: drop its empty public schema first - the dump creates it).
+on:
+  schedule:
+    - cron: '7 20 * * *'   # 20:07 UTC daily, clear of the pipeline/MAD minutes; the free scheduler runs late
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      restore:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: restoretest
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - name: Dump, encrypt, decrypt, restore-test
+        env:
+          SRC: ${{ secrets.SUPABASE_BACKUP_DB_URL }}
+          PASS: ${{ secrets.BACKUP_PASSPHRASE }}
+          RESTORE: postgresql://postgres:restoretest@localhost:5432/postgres
+          # The server is Postgres 17 and the runner's own client is older; pg_dump refuses a newer
+          # server, so every Postgres tool runs from the official 17 image.
+          PG: docker run --rm --network host -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }} postgres:17
+        run: |
+          # Core of .github/workflows/gni_backup.yml (S110, order item 6.5). The workflow runs this exact text;
+          # it is kept as one file here so it can be dry-run against two local clusters before it ships.
+          # Inputs (env): SRC = source connection string (read-only role with BYPASSRLS)
+          #               RESTORE = an EMPTY scratch Postgres of the same major version (the restore test)
+          #               PASS = encryption passphrase      PG = command prefix that runs pg_dump/psql/pg_restore
+          # Output (./backup_out): gni_<stamp>.dump.gpg, its .sha256, and manifest.txt (counts only, no data).
+          # Plaintext never leaves the runner and is deleted before the step ends.
+          set -euo pipefail
+          export LC_ALL=C
+          : "${SRC:?}" "${RESTORE:?}" "${PASS:?}"
+          PG=${PG:-}
+          STAMP=$(date -u +%Y%m%dT%H%MZ)
+          OUT=backup_out; rm -rf "$OUT"; mkdir -p "$OUT"
+          fail(){ echo "BACKUP FAILED: $*"; rm -f "$OUT"/*.dump; exit 1; }
+
+          # Exact row count of every base table in public, one "table|rows" line each.
+          COUNT_SQL="select table_name, (xpath('/row/c/text()', query_to_xml(format('select count(*) as c from public.%I', table_name), false, true, '')))[1]::text
+          from information_schema.tables where table_schema='public' and table_type='BASE TABLE' order by 1"
+          POLICY_SQL="select count(*) from pg_policies where schemaname='public'"
+          RLS_SQL="select string_agg(c.relname, ',' order by c.relname) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and c.relrowsecurity"
+
+          echo "== 1. server and client versions (the client must not be older than the server)"
+          SV=$($PG psql "$SRC" -Atc "show server_version_num") || fail "cannot connect to the source"
+          CV=$($PG pg_dump --version | grep -oE '[0-9]+' | head -1)
+          echo "   server_version_num=$SV  pg_dump major=$CV"
+          [ "$CV" -ge "$((SV / 10000))" ] || fail "pg_dump $CV is older than server $((SV / 10000))"
+
+          echo "== 2. counts BEFORE, dump, counts AFTER (writes may land during the dump; the restore must sit between)"
+          $PG psql "$SRC" -At -F'|' -c "$COUNT_SQL" > "$OUT/before.txt" || fail "count before"
+          [ -s "$OUT/before.txt" ] || fail "source returned no tables"
+          $PG pg_dump "$SRC" --schema=public --format=custom --file="$OUT/gni.dump" || fail "pg_dump"
+          $PG psql "$SRC" -At -F'|' -c "$COUNT_SQL" > "$OUT/after.txt" || fail "count after"
+          SRC_POL=$($PG psql "$SRC" -Atc "$POLICY_SQL"); SRC_RLS=$($PG psql "$SRC" -Atc "$RLS_SQL")
+          echo "   tables=$(wc -l < "$OUT/before.txt")  policies=$SRC_POL  dump_bytes=$(wc -c < "$OUT/gni.dump")"
+
+          echo "== 3. encrypt (AES-256), hash, and DECRYPT AGAIN to prove the passphrase opens the artifact"
+          F="gni_${STAMP}.dump.gpg"
+          gpg --batch --yes --quiet --pinentry-mode loopback --passphrase-fd 3 --symmetric --cipher-algo AES256 \
+              --output "$OUT/$F" "$OUT/gni.dump" 3<<<"$PASS" || fail "encrypt"
+          (cd "$OUT" && sha256sum "$F" > "$F.sha256")
+          gpg --batch --yes --quiet --pinentry-mode loopback --passphrase-fd 3 --decrypt \
+              --output "$OUT/check.dump" "$OUT/$F" 3<<<"$PASS" || fail "decrypt"
+          cmp -s "$OUT/gni.dump" "$OUT/check.dump" || fail "decrypted bytes differ from the dump"
+          echo "   $F  $(cut -c1-16 "$OUT/$F.sha256")...  decrypt round-trip identical"
+
+          echo "== 4. RESTORE the decrypted file into the empty scratch database"
+          # Grants and policies name roles that a real Supabase project has and a scratch Postgres does not
+          # (anon, authenticated, service_role, this backup role...). Read them from the dump's own DDL - never
+          # from a hand-typed list - and create each one, so the restore can replay every GRANT it carries.
+          ROLES=$($PG pg_restore --schema-only -f - "$OUT/check.dump" \
+            | grep -oE '\b(TO|FROM) "?[A-Za-z_][A-Za-z0-9_]*"?' | awk '{print $2}' | tr -d '"' \
+            | grep -viE '^(public|postgres|current_user|session_user)$' | sort -u)
+          echo "   roles named by the dump: $(echo $ROLES)"
+          for r in $ROLES; do
+            $PG psql "$RESTORE" -q -v ON_ERROR_STOP=1 -c "do \$\$ begin if not exists (select 1 from pg_roles where rolname='$r') then create role \"$r\" nologin; end if; end \$\$" || fail "role $r"
+          done
+          # The dump carries CREATE SCHEMA public; the scratch database is disposable, so its empty public goes first.
+          $PG psql "$RESTORE" -q -v ON_ERROR_STOP=1 -c "drop schema if exists public cascade" || fail "reset scratch public"
+          $PG pg_restore --no-owner --exit-on-error --dbname="$RESTORE" "$OUT/check.dump" || fail "pg_restore"
+          $PG psql "$RESTORE" -At -F'|' -c "$COUNT_SQL" > "$OUT/restored.txt" || fail "count restored"
+          RST_POL=$($PG psql "$RESTORE" -Atc "$POLICY_SQL"); RST_RLS=$($PG psql "$RESTORE" -Atc "$RLS_SQL")
+
+          echo "== 5. VERIFY: same tables; every count between before and after; same policies; same RLS tables"
+          bad=0
+          for f in before after restored; do sort -t'|' -k1,1 -o "$OUT/$f.txt" "$OUT/$f.txt"; done
+          join -t'|' -a1 -a2 -e MISSING -o 0,1.2,2.2 "$OUT/before.txt" "$OUT/after.txt" > "$OUT/ba.txt"
+          join -t'|' -a1 -a2 -e MISSING -o 0,1.2,1.3,2.2 "$OUT/ba.txt" "$OUT/restored.txt" > "$OUT/cmp.txt"
+          while IFS='|' read -r t b a r; do
+            if [ "$r" = MISSING ] || [ "$b" = MISSING ] || [ "$a" = MISSING ]; then echo "   MISSING  $t (before=$b after=$a restored=$r)"; bad=1
+            elif [ "$r" -lt "$b" ] || [ "$r" -gt "$a" ]; then echo "   OUTSIDE  $t restored=$r not in [$b,$a]"; bad=1; fi
+          done < "$OUT/cmp.txt"
+          [ "$SRC_POL" = "$RST_POL" ] || { echo "   POLICIES source=$SRC_POL restored=$RST_POL"; bad=1; }
+          [ "$SRC_RLS" = "$RST_RLS" ] || { echo "   RLS-TABLES differ"; bad=1; }
+          ROWS=$(awk -F'|' '{s+=$2} END {print s}' "$OUT/restored.txt")
+          { echo "stamp=$STAMP"; echo "artifact=$F"; echo "sha256=$(cut -d' ' -f1 "$OUT/$F.sha256")"
+            echo "tables=$(wc -l < "$OUT/restored.txt") rows=$ROWS policies=$RST_POL rls_tables=$(echo "$RST_RLS" | tr ',' '\n' | grep -c .)"
+            echo "server_version_num=$SV pg_dump_major=$CV"; echo "per-table rows (restored):"; cat "$OUT/restored.txt"; } > "$OUT/manifest.txt"
+          rm -f "$OUT/gni.dump" "$OUT/check.dump" "$OUT/before.txt" "$OUT/after.txt" "$OUT/ba.txt" "$OUT/cmp.txt" "$OUT/restored.txt"
+          [ "$bad" -eq 0 ] || fail "restore test did not match the source"
+          echo "== RESTORE TEST PASS: $(wc -l < <(sed -n '/per-table/,$p' "$OUT/manifest.txt" | tail -n +2)) tables, $ROWS rows, $RST_POL policies"
+          ls -la "$OUT"
+
+      - name: Upload the encrypted artifact (ciphertext, hash, counts - never plaintext)
+        uses: actions/upload-artifact@v7
+        with:
+          name: gni-backup-${{ github.run_id }}
+          path: |
+            backup_out/*.gpg
+            backup_out/*.sha256
+            backup_out/manifest.txt
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Monthly offsite reminder (1st-2nd of the month)
+        if: success()
+        run: |
+          d=$(date -u +%d)
+          if [ "$d" = "01" ] || [ "$d" = "02" ]; then
+            curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" -d chat_id="${ADMIN}" \
+              --data-urlencode "text=GNI backup: monthly offsite copy due. Download the artifact of ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} and keep it with the passphrase stored apart from it." > /dev/null
+            echo "reminder sent"
+          else
+            echo "no reminder today (day $d)"
+          fi
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}
+
+      - name: Alert admin on failure
+        if: failure()
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TG}/sendMessage" \
+            -d chat_id="${ADMIN}" \
+            --data-urlencode "text=GNI BACKUP FAILED -- ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        env:
+          TG: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          ADMIN: ${{ secrets.TELEGRAM_ADMIN_ID }}
