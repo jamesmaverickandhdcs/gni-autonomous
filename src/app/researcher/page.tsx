@@ -124,7 +124,7 @@ export default function ResearcherHub() {
               <div className="text-sm font-bold text-white">History</div>
               <span className="text-xs bg-green-900 text-green-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400">Showing the last {reports.length} pipeline runs. Each run captures escalation score, sentiment score, MAD verdict, and confidence interval width. Scroll back through history to identify escalation patterns, trend reversals, and structural shifts over time.</p>
+            <p className="text-xs text-gray-400">Showing the newest {reports.length} reports. Each carries its escalation score, sentiment score, MAD verdict, and confidence interval width. Only the newest reports load here.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-green-200 bg-green-900 hover:bg-green-700 border border-green-700 rounded-lg px-3 py-1.5 transition-colors">View History →</span>
             </div>

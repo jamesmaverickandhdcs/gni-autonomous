@@ -1671,3 +1671,56 @@ e8f8c6f852	CLAIM	STATE	CLM-1008	Intelligence Funnel Trace — per-article stage 
 0c0b9ccbc3	CLAIM	STATE	CLM-1009	This page shows how the funnel treated each article of a main run: the stage that dropped it and why, or its score and selection rank.
 573741637c	CLAIM	STATE	CLM-1010	It stops at selection: how the selected articles become the report is not traced here.
 e1d1a36c3b	CLAIM	STATE	CLM-1011	An article dropped at Stage 1, 1b or 2 carries its reason; one scored but not selected shows only its score.
+dcccd570f9	CLAIM	STATE	CLM-1012	What GNI decides, why it decides it, and what it means for global markets.
+81cb4cb70a	CLAIM	STATE	CLM-1013	This page shows the Quantum Strategist perspective — actionable intelligence outcomes from the MAD Protocol, the latest threat verdicts, and market implications from 42 global news sources, in a pipeline that runs ${PIPELINE_CADENCE}.
+1a87a98c8f	CLAIM	STATE	CLM-1014	Tokens in the ${runs.length} entries shown
+10b88d1bad	CLAIM	STATE	CLM-1015	Heartbeat: ${FRESHNESS_LINE} — zero Groq calls (GNI-R-114)
+d84f7ebf92	CLAIM	STATE	CLM-1016	Activity log — runs that performed an analysis (${counts.activity ?? '—'} entries, latest ${runs.length} shown${lastEntry ? `, last ${fmtDay(lastEntry)}` : ''})
+159bb03866	CLAIM	STATE	CLM-1017	Latest reports, for context${counts.reports === 0 ? ' — written by the main pipeline; adaptive wrote none of them' : ''}
+15cb762edc	CLAIM	STATE	CLM-1018	The frequency controller logs a recommended interval from world escalation; the adaptive run keeps its own minimum gaps, and the cron schedule does not change.
+7275265ec7	CLAIM	STATE	CLM-1019	The A/B governor can retire the weaker of two active prompt variants; with one active, it tests nothing.
+bf106666b5	CLAIM	STATE	CLM-1020	The health agent&apos;s checks are ${MONITOR_DELIVERY}.
+6890cb3af2	CLAIM	STATE	CLM-1021	Brief generated from latest pipeline run —${' '} ${brief.created_at ? new Date(brief.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+91d4e5a74b	CLAIM	STATE	CLM-1022	Updates every pipeline run: ${PIPELINE_CADENCE}
+b6f64824d7	CLAIM	STATE	CLM-1023	When the AI report and the MAD debate disagree, this page flags it; whether disagreement predicts anything has not been measured
+1a9fdc5e8c	CLAIM	STATE	CLM-1024	Whether a divergence like this predicts anything has not been measured.
+93c7f99ff8	DATA	-	-	${disagree}/${total} runs (${rate}%)
+af05c2068e	CLAIM	STATE	CLM-1025	The AI report analysed the latest run&apos;s headlines and reached a ${latest.sentiment?.toLowerCase()} conclusion.
+d2e0347f6e	CLAIM	STATE	CLM-1026	The MAD debate — its agents over 3 rounds on that report, then the Arbitrator — reached ${latest.mad_verdict?.toLowerCase()}.
+33c054e84a	CLAIM	STATE	CLM-1027	A disagreement means the debate weighed something the summary did not; whether that was a hidden risk is a judgement this page cannot make.
+d405af50ef	DATA	-	-	&#x26A0;&#xFE0F; DISAGREE Only (${disagreeCount})
+1d405441ce	DATA	-	-	Latest refresh${snapshotAt ? ` (${snapshotAt.slice(0, 10)})` : ''}: ${totalSamples} GPVS report outcomes.
+e0ff31dca2	DATA	-	-	Confidence: ${Math.round((selected.mad_confidence || 0) * 100)}%
+e07984965d	CLAIM	STATE	CLM-1028	Each agent&apos;s final position is checked against SPY after ${selected.short_verify_days || 14} days; the Arbitrator&apos;s Long Shoots list after ${selected.long_verify_days || 180} days.
+90bd83dd41	CLAIM	STATE	CLM-1029	The Short Focus list itself is not checked.
+67e76b8b09	CLAIM	STATE	CLM-1030	At its verify-by date each prediction is judged by SPY&apos;s move: materialized, not materialized, or inconclusive.
+82e7d25395	CLAIM	STATE	CLM-1031	Over time this builds each agent&apos;s record against SPY; it feeds nothing back into the debate.
+0c44eb7aa0	CLAIM	STATE	CLM-1032	Autonomous web-layer health monitoring, ${SCHEDULE_REQUESTED_30}.
+4e4723a263	CLAIM	STATE	CLM-1033	Checks Supabase connection, report freshness, Groq quota, source health, pipeline recency, and MAD debate recency.
+26f3e68b32	CLAIM	STATE	CLM-1034	Sends Telegram alerts automatically when issues are detected and saves all results to Supabase for historical analysis.
+a5ae9a0fd7	CLAIM	STATE	CLM-1035	— Sacred crons (02:13+10:13 UTC) start ${PIPELINE_LATENESS}
+dd1ad7511b	DATA	-	-	📈 GPVS Accuracy Timeline — ${entries.length} verified report outcomes
+31033dd874	DATA	-	-	Top Articles Fed to AI (${articles.length})
+5b020bbe1f	CLAIM	STATE	CLM-1036	Checks: Supabase connection, latest report age, Groq quota, source health, pipeline recency, MAD debate recency.
+64b219c270	CLAIM	STATE	CLM-1037	CRITICAL or WARNING issues trigger automatic Telegram alert to admin.
+6c67b87b1c	CLAIM	STATE	CLM-1038	All results saved to mission_control_log table.
+e1fbc6a337	CLAIM	STATE	CLM-1039	This is GNI&apos;s web-layer self-monitoring — part of the L8 autonomy roadmap.
+c4beb3c7b1	DATA	-	-	GNI Prediction Validation Standard — ${summary.total} reports verified
+ddd68522ea	CLAIM	STATE	CLM-1040	7-run escalation trend${useRaw ? ' (raw magnitude)' : ' (capped score)'}
+5f3eade23e	CLAIM	STATE	CLM-1041	How ${latestArticles.length} articles were consolidated into 1 report
+f535c9c65a	DATA	-	-	Top ${latestArticles.length} Articles Fed to AI
+c770ced601	CLAIM	STATE	CLM-1042	Global Nexus Insights (Autonomous) | Higher Diploma in Computer Science | Spring University Myanmar (SUM) | Pipeline runs ${PIPELINE_CADENCE} via GitHub Actions
+97d3aad0a6	DATA	-	-	Verified (${materialized} materialized, ${inconclusive} inconclusive)
+a0e3d62cce	DATA	-	-	tokens used today &middot; across ${accountRows.length || 0} account${accountRows.length === 1 ? '' : 's'}
+e9328ad6db	CLAIM	STATE	CLM-1043	${safeP}% of 85K safe ceiling
+3635cbce1a	CLAIM	STATE	CLM-1044	Escalation Trend — Last 7 Runs${trend.useRaw ? ' (raw magnitude)' : ' (capped score)'}
+cde0a0f78f	CLAIM	STATE	CLM-1045	Showing the newest ${reports.length} reports.
+fb6e9b3e4e	CLAIM	STATE	CLM-1046	Each carries its escalation score, sentiment score, MAD verdict, and confidence interval width.
+6e3fa53a34	CLAIM	STATE	CLM-1047	Only the newest reports load here.
+36cca37f95	CLAIM	STATE	CLM-1048	No scenario data yet.
+1371992504	CLAIM	STATE	CLM-1049	RSS feed monitoring across ${totalSources} intelligence sources, as of the latest check.
+d93994f9f5	DATA	-	-	All (${articles.length})
+3cee77b91f	DATA	-	-	Stage 1 Rejected (${countStage1Rejected})
+7c9712b4c0	CLAIM	STATE	CLM-1050	GNI Autonomous now runs under the PHI-003 Freedom from Fear standard.
+c71111685b	CLAIM	STATE	CLM-1051	Every report answers three questions: what is happening, what honest analysis says, and what you can do.
+0055f3259c	CLAIM	PROMISE	CLM-1052	Intelligence for every human being — from teenagers to senior citizens — without manipulation and without fear amplification.${" "}

@@ -700,6 +700,33 @@ CASES["81-method-chain-still-data"] = lambda r: (
     base(r), w(r + "/src/app/claims5/page.tsx",
                "export default function T() { return <p>Call load(feed).then each morning for news</p> }\n"), r)[-1]
 
+# S111, JSX text that touches a {expression}. JSX_TEXT_RE refuses a run with a
+# brace, so 60 sentences on 20 pages were never claims. 82: such a sentence must
+# now reach the claims machinery - with no verdict, red on C12. 83 is its
+# DISCRIMINATOR: a run of expressions and tags with no literal prose stays out.
+# 84: code INSIDE an interpolation (`||`) must not file the sentence as DATA -
+# red on C12 as a manual unit with no verdict.
+def _brace_page(r, body):
+    base(r)
+    w(r + "/src/app/claims6/page.tsx", "export default function U() { return %s }\n" % body)
+    return r
+
+
+CASES["82-brace-run-harvested"] = lambda r: _brace_page(
+    r, "<p>GNI rereads every feed after {gap} hours of silence</p>")
+CASES["83-brace-run-without-prose-stays-out"] = lambda r: _brace_page(
+    r, "<div className=\"a\">{ok && <span>{n}</span>}</div>")
+CASES["84-interpolated-code-not-data"] = lambda r: _brace_page(
+    r, "<p>Verified after {days || 14} days, as stored by the checker</p>")
+
+# S111, numbers written as words. "four" is a number (85, red on C18 as a
+# RUNTIME claim with an underived number); "one" in "no one" is not (86, the
+# discriminator, green).
+CASES["85-ratchet-number-word-rises"] = lambda r: _ratchet_rises(
+    r, "GNI rereads four feeds on every page", "RUNTIME")
+CASES["86-ratchet-word-one-not-a-number"] = lambda r: _ratchet_rises(
+    r, "No one rereads each feed by hand", "RUNTIME")
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -746,6 +773,9 @@ EXPECT = {
     "76-ratchet-falls-passes": 0, "77-ratchet-underived-rises-alone": 1,
     "78-ratchet-underived-excused-passes": 0, "79-ratchet-counts-not-printed": 1,
     "80-paren-sentence-harvested": 1, "81-method-chain-still-data": 0,
+    "82-brace-run-harvested": 1, "83-brace-run-without-prose-stays-out": 0,
+    "84-interpolated-code-not-data": 1,
+    "85-ratchet-number-word-rises": 1, "86-ratchet-word-one-not-a-number": 0,
 }
 
 if __name__ == "__main__":

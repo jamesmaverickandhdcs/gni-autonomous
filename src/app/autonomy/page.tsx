@@ -104,8 +104,8 @@ export default function AutonomyPage() {
             <h1 className="text-2xl font-bold text-white">🧠 Autonomy Engine</h1>
             <p className="text-sm text-gray-400">Frequency Control · Self-Improvement · Health Monitoring</p>
             <p className="text-xs text-gray-500 mt-1 max-w-6xl">
-              GNI manages itself. The frequency controller decides how often to run based on world escalation.
-              The A/B system tests prompt variants and auto-promotes the winner.
+              The frequency controller logs a recommended interval from world escalation; the adaptive run keeps its own minimum gaps, and the cron schedule does not change.
+              The A/B governor can retire the weaker of two active prompt variants; with one active, it tests nothing.
               The health agent&apos;s checks are {MONITOR_DELIVERY}.
             </p>
           </div>

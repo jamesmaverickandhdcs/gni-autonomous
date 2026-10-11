@@ -37,6 +37,19 @@ MACHINE_ATTR_RE = re.compile(
     r"\b(?:className|href|src|key|id|type|style|rel|target|method|role|htmlFor|"
     r"viewBox|fill|stroke|d|xmlns|strokeWidth|strokeLinecap|strokeLinejoin)\s*=\s*\{?\s*$")
 JSX_TEXT_RE = re.compile(r">([^<>{}]*[A-Za-z][^<>{}]*)<")
+# S111 (roadmap 4, finding "JSX text that touches a {expression} escapes the harvest"):
+# JSX_TEXT_RE refuses any run holding a brace, so "Short Focus predictions are verified
+# after {n} days." was never a claim - 60 such sentences on 20 pages, measured S111.
+# A second pass takes runs WITH balanced {expressions} (two levels of nesting) and
+# rewrites each as a template interpolation ${...}, which is_machine, sentences and
+# tier already read as code around a literal. Runs that open with '=' or carry an
+# object-literal shape are TypeScript (a generic's '>' then '= {...}'), not JSX text.
+# Fixture families 82-84.
+_BR = r"\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}"
+JSX_BRACE_RUN_RE = re.compile(r">((?:[^<>{}]|" + _BR + r")*)<")
+JSX_EXPR_RE = re.compile(_BR)
+INTERP_RE = re.compile(r"\$" + _BR)
+OBJ_SHAPE_RE = re.compile(r"""['"`]\s*[,:}\])]|[,{]\s*\w+\s*:\s*['"`]""")
 STR_RE = re.compile(r"'((?:[^'\\\n]|\\.)*)'|\"((?:[^\"\\\n]|\\.)*)\"|`((?:[^`\\]|\\.)*)`")
 WORD_RE = re.compile(r"[A-Za-z]{2,}")
 # A literal with no space that looks like code, a path, a URL, a class list
@@ -89,13 +102,18 @@ SENT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z\"'(])")
 def sentences(raw):
     """[(offset_in_raw, sentence)] - offsets index the UNnormalised text, so a
     sentence on the third line of a JSX run is anchored on that line."""
-    out, pos = [], 0
-    for part in SENT_RE.split(raw):
-        at = raw.index(part, pos)
-        pos = at + len(part)
+    # S111: split on a copy whose ${...} interpolations are masked, so the '?' of
+    # `${a ? 'x' : 'y'}` does not end a sentence; cut the raw text at the same
+    # offsets. A raw without interpolations splits exactly as before.
+    masked = INTERP_RE.sub(lambda m: "_" * len(m.group(0)), raw)
+    out, start = [], 0
+    bounds = [(m.start(), m.end()) for m in SENT_RE.finditer(masked)] + [(len(raw), len(raw))]
+    for s, e in bounds:
+        part = raw[start:s]
         lead = len(part) - len(part.lstrip())
         if part.strip():
-            out.append((at + lead, norm(part)))
+            out.append((start + lead, norm(part)))
+        start = e
     return out
 
 
@@ -115,6 +133,22 @@ def tsx_candidates(path, rel):
                 if not is_machine(sent):
                     out.append((rel, line_of(text, m.start(1) + off), "jsx", sent))
         taken.append((m.start(1), m.end(1)))
+    for m in JSX_BRACE_RUN_RE.finditer(text):
+        t = m.group(1)
+        if "{" not in t:
+            continue  # the brace-free run JSX_TEXT_RE already took
+        lit = JSX_EXPR_RE.sub(" ", t)
+        if not re.search(r"[A-Za-z]", lit) or lit.lstrip().startswith("=") or OBJ_SHAPE_RE.search(lit):
+            continue
+        t = JSX_EXPR_RE.sub(lambda e: "$" + e.group(0), t)
+        if norm(t) and not is_machine(t):
+            for off, sent in sentences(t):
+                if not is_machine(sent):
+                    # offsets index the rewritten run; each '$' added before `off`
+                    # shifts it by one, so count them back out for the line number
+                    out.append((rel, line_of(text, m.start(1) + off - t[:off].count("${")
+                                         + m.group(1)[:off].count("${")), "jsx", sent))
+        # not added to `taken`: string literals inside the {expressions} stay claims
     for m in STR_RE.finditer(text):
         s, e = m.span()
         if any(a <= s < b for a, b in taken):
@@ -154,9 +188,12 @@ def tier(kind, text):
     """'manual', or the verdict a rule gives: 'DATA' / 'UI'."""
     if kind == "wp":
         return "manual"
-    if CODE_RE.search(text):
+    # S111: judge the literal around ${...} interpolations, as is_machine does - an
+    # `&&` inside `${a && b}` is the expression's code, not the sentence's.
+    lit = INTERP_RE.sub(" ", text)
+    if CODE_RE.search(lit):
         return "DATA"
-    if len(WORD_RE.findall(text)) < 4 and not CLAIM_LEXICON.search(text):
+    if len(WORD_RE.findall(lit)) < 4 and not CLAIM_LEXICON.search(lit):
         return "UI"
     return "manual"
 
@@ -359,7 +396,15 @@ def statuses(root, ids_text):
 # excuse a number - a runtime number still waits for a fitness function that
 # reads a committed snapshot (ARCHITECTURE, ROADMAP 4, row R4-3).
 REVIEW_EXEMPT = ("HISTORICAL", "PROVENANCE")
-DIGIT_RE = re.compile(r"\d")
+# S111: a number written as a word is still a number. S111's own rewrites showed
+# the hole - "up to two hundred", "the newest ten", "three rounds" passed the
+# digit test and so escaped NUMBERS UNDERIVED. Cardinals two..billion and
+# "dozen" count; "one" does not ("no one", "one of") and neither do ordinals
+# ("first"), which name a position, not a quantity. Fixture families 85-86.
+NUMBER_WORDS = ("two three four five six seven eight nine ten eleven twelve thirteen fourteen "
+                "fifteen sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty "
+                "seventy eighty ninety hundred thousand million billion dozen").split()
+NUMBER_RE = re.compile(r"\d|\b(?:%s)\b" % "|".join(NUMBER_WORDS), re.I)
 
 
 def ratchet_counts(locations):
@@ -372,12 +417,17 @@ def ratchet_counts(locations):
     UNDERIVED: a STATE or MIXED claim with a location under src/, a digit in
     its text, not SUPPORTED, and not excused by a reason in REVIEW_EXEMPT. A
     digit inside a name (SHA-256, L7, PHI-003) counts: the definition is the
-    one roadmap 4 published with 139 at S110, and it is not narrowed here."""
+    one roadmap 4 published with 139 at S110, and it is not narrowed here. S111
+    WIDENED it to cardinal number words (NUMBER_RE); C18 re-derives the previous
+    generation with the same function, so the comparison stays like for like.
+    A digit inside a ${...} interpolation is the code's (a fallback `|| 14`), not
+    the sentence's, and does not count."""
     unrev, under = set(), set()
     for cid, kind, rel, text, status, evidence in locations:
         if status == "UNMEASURED" and evidence == "UNREVIEWED":
             unrev.add(cid)
-        if (kind in ("STATE", "MIXED") and rel.startswith("src/") and DIGIT_RE.search(text)
+        if (kind in ("STATE", "MIXED") and rel.startswith("src/")
+                and NUMBER_RE.search(INTERP_RE.sub(" ", text))
                 and status != "SUPPORTED"
                 and not (status == "UNMEASURED" and evidence in REVIEW_EXEMPT)):
             under.add(cid)
@@ -509,6 +559,23 @@ def previous(root, regex, current):
     return os.path.join(docs, max(gens)[1]) if gens else None
 
 
+def _unjsx(text):
+    """The source spelling of a harvested JSX brace run: each `${` the harvester
+    wrote for a JSX {expression} back to `{`, keeping the `${` of a template
+    literal (inside backticks) as written."""
+    out, in_tick, i = [], False, 0
+    while i < len(text):
+        ch = text[i]
+        if ch == "`":
+            in_tick = not in_tick
+        if ch == "$" and text[i + 1:i + 2] == "{" and not in_tick:
+            i += 1
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
 def resolves(root, rel, line, text):
     """Independent of the extractor: the claim's first word is on the line,
     and the whole claim is found from that line on (a JSX run may wrap)."""
@@ -519,8 +586,13 @@ def resolves(root, rel, line, text):
         lines = fh.read().decode("utf-8-sig", "replace").replace("\r\n", "\n").split("\n")
     if not 1 <= line <= len(lines):
         return False
-    first = text.split(" ")[0]
-    return first in norm(lines[line - 1]) and text in norm(" ".join(lines[line - 1:line + 15]))
+    window = norm(" ".join(lines[line - 1:line + 15]))
+    # S111: a JSX run with {expressions} is harvested as `${...}` (JSX_BRACE_RUN_RE);
+    # the source holds `{...}`, so that spelling is tried too.
+    for cand in (text, _unjsx(text)):
+        if cand.split(" ")[0] in norm(lines[line - 1]) and cand in window:
+            return True
+    return False
 
 
 def main(argv):

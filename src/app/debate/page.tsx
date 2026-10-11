@@ -473,10 +473,9 @@ export default function DebatePage() {
                     <div className="bg-blue-950 border border-blue-800 rounded-xl p-4">
                       <div className="text-xs text-blue-400 font-bold mb-2">How Prediction Validation Works</div>
                       <p className="text-xs text-gray-400 leading-relaxed">
-                        Short Focus predictions are verified after {selected.short_verify_days || 14} days.
-                        Long Shoot predictions are verified after {selected.long_verify_days || 180} days.
-                        When real world events occur, each prediction is marked accurate or missed.
-                        Over time this builds a track record of which agent sees furthest ahead.
+                        Each agent&apos;s final position is checked against SPY after {selected.short_verify_days || 14} days; the Arbitrator&apos;s Long Shoots list after {selected.long_verify_days || 180} days. The Short Focus list itself is not checked.
+                        At its verify-by date each prediction is judged by SPY&apos;s move: materialized, not materialized, or inconclusive.
+                        Over time this builds each agent&apos;s record against SPY; it feeds nothing back into the debate.
                       </p>
                     </div>
                   </div>

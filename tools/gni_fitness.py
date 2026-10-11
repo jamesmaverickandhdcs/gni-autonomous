@@ -925,11 +925,32 @@ def _alerts_limit(root):
     return _route_int(root, "src/app/api/alerts/route.ts", r"from\('health_alerts'\)[^\n]*\.limit\((\d+)\)")
 
 
+_NUMWORD = {"two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8,
+            "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "twenty": 20, "hundred": 100}
+
+
+def _count_of(token):
+    """An integer from digits or from the number words S111 writes ('two hundred')."""
+    token = token.strip().lower()
+    if token.isdigit():
+        return int(token)
+    words = token.split()
+    if words and all(w in _NUMWORD for w in words):
+        n = _NUMWORD[words[0]]
+        for w in words[1:]:
+            n = n * _NUMWORD[w] if w == "hundred" else n + _NUMWORD[w]
+        return n
+    raise FitnessError("not a count: %r" % token)
+
+
+_COUNT_TOKEN = r"(\d+|(?:%s)(?: hundred)?)" % "|".join(sorted(_NUMWORD, key=len, reverse=True))
+
+
 def _agents_claim(fragment):
-    m = re.search(r"(\d+)-agent", fragment)
+    m = re.search(_COUNT_TOKEN + r"[- ](?:AI )?(?:agents?|quadrants?)\b", fragment, re.I)
     if not m:
-        raise FitnessError("no '<n>-agent' in fragment %r" % fragment)
-    return m.group(1)
+        raise FitnessError("no '<n>-agent' / '<n> agents' / '<n> quadrants' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
 
 
 def _mad_agents(root):
@@ -988,6 +1009,70 @@ def _stock_cats(root):
     if not m:
         raise FitnessError("no CATEGORIES list in stocks/page.tsx")
     return "%d" % len(re.findall(r"\{ key: '", m.group(1)))
+
+
+def _rounds_claim(fragment):
+    m = re.search(_COUNT_TOKEN + r" rounds?\b", fragment, re.I)
+    if not m:
+        raise FitnessError("no '<n> rounds' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
+
+
+def _mad_rounds(root):
+    """Debate rounds: the distinct 'ROUND <n>' markers the agents are sent in mad_protocol.py."""
+    path = os.path.join(root, "ai_engine", "analysis", "mad_protocol.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/mad_protocol.py not found")
+    with open(path, "rb") as fh:
+        got = {int(x) for x in re.findall(r"ROUND (\d+)(?: FINAL)?:", fh.read().decode("utf-8-sig"))}
+    if not got or got != set(range(1, max(got) + 1)):
+        raise FitnessError("ROUND markers missing or not 1..n in mad_protocol.py: %r" % sorted(got))
+    return "%d" % max(got)
+
+
+def _upto_claim(fragment):
+    m = re.search(r"(?:up to|newest) " + _COUNT_TOKEN + r"\b", fragment, re.I)
+    if not m:
+        raise FitnessError("no 'up to <n>' / 'newest <n>' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
+
+
+def _runs_limit(root):
+    """Main runs the pipeline-runs API returns: its .limit(N)."""
+    return _route_int(root, "src/app/api/pipeline-runs/route.ts", r"\.limit\((\d+)\)")
+
+
+def _reports_limit(root):
+    """Reports the reports API lists: limit=N in its select=* query."""
+    return _route_int(root, "src/app/api/reports/route.ts", r"select=\*&order=created_at\.desc&limit=(\d+)")
+
+
+def _endpoints_claim(fragment):
+    m = re.search(_COUNT_TOKEN + r" (?:REST )?endpoints?\b", fragment, re.I)
+    if not m:
+        raise FitnessError("no '<n> endpoints' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
+
+
+def _export_routes(root):
+    """Export endpoints: route.ts files under src/app/api/export."""
+    got = glob.glob(os.path.join(root, "src", "app", "api", "export", "**", "route.ts"), recursive=True)
+    if not got:
+        raise FitnessError("no route.ts under src/app/api/export")
+    return "%d" % len(got)
+
+
+def _pillar_reports_claim(fragment):
+    m = re.search(r"the " + _COUNT_TOKEN + r" (?:pillar )?reports\b", fragment, re.I)
+    if not m:
+        raise FitnessError("no 'the <n> reports' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
+
+
+def _pillar_runs(root):
+    """Pillar reports a main run attempts: the pillar list main.py enumerates for Step 4b."""
+    got = _route_int(root, "ai_engine/main.py", r"enumerate\(\[((?:\"\w+\",? ?)+)\]\)")
+    return "%d" % len(re.findall(r"\"\w+\"", got))
 
 
 def _equal(claimed, measured):
@@ -1108,6 +1193,15 @@ FITNESS = {
     "F-MC-REFRESH": ("Mission Control's refresh period in minutes (setInterval in its page)",
                      _every_min_claim, _mc_refresh, _equal),
     "F-STOCK-CATS": ("categories the market page offers (its CATEGORIES list)", _cats_claim, _stock_cats, _equal),
+    "F-MAD-ROUNDS": ("debate rounds: distinct 'ROUND <n>' markers in mad_protocol.py",
+                     _rounds_claim, _mad_rounds, _equal),
+    "F-RUNS-LIMIT": ("main runs the pipeline-runs API returns (.limit)", _upto_claim, _runs_limit, _equal),
+    "F-REPORTS-LIMIT": ("reports the reports API lists (limit= in its query)",
+                        _upto_claim, _reports_limit, _equal),
+    "F-EXPORTS": ("export endpoints: route.ts files under src/app/api/export",
+                  _endpoints_claim, _export_routes, _equal),
+    "F-PILLAR-RUNS": ("pillar reports a main run attempts: main.py's Step 4b pillar list",
+                      _pillar_reports_claim, _pillar_runs, _equal),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that
@@ -1138,8 +1232,30 @@ UNMEASURED_REASONS = ("UNREVIEWED", "RUNTIME", "PROMISE", "HISTORICAL", "QUALITA
                       "EXTERNAL", "PROVENANCE")
 
 
+def _duplicate_defs():
+    """Top-level function names this module defines more than once. Python keeps
+    the LAST definition silently: at S111 a second `_version_claim` replaced
+    F-PY-MIN's parser and only a halt elsewhere exposed it. A duplicate is an
+    instrument fault, so derive() refuses to run while one exists."""
+    with open(os.path.abspath(__file__), "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    seen, dup = set(), []
+    for n in tree.body:
+        if isinstance(n, ast.FunctionDef):
+            if n.name in seen:
+                dup.append(n.name)
+            seen.add(n.name)
+    return dup
+
+
+_DUPLICATE_DEFS = _duplicate_defs()
+
+
 def derive(root, fid, fragment, cache):
     """(status, claimed, measured). Raises FitnessError on an instrument fault."""
+    if _DUPLICATE_DEFS:
+        raise FitnessError("gni_fitness.py defines %s more than once; the later definition "
+                           "silently replaces the earlier" % ", ".join(sorted(set(_DUPLICATE_DEFS))))
     if fid not in FITNESS:
         raise FitnessError("unknown fitness function %s" % fid)
     _, parse, measure, holds = FITNESS[fid]

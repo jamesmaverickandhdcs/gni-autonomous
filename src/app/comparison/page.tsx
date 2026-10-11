@@ -108,7 +108,7 @@ export default function ComparisonPage() {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-white">&#x1F50D; Report vs Debate Comparison</h1>
-              <p className="text-sm text-gray-400">When AI report and MAD debate disagree &mdash; that is the highest-value signal</p>
+              <p className="text-sm text-gray-400">When the AI report and the MAD debate disagree, this page flags it; whether disagreement predicts anything has not been measured</p>
             </div>
           </div>
           {reports.length > 0 && (
@@ -214,10 +214,10 @@ export default function ComparisonPage() {
                     <div className="text-red-300 font-bold text-lg">DISAGREE SIGNAL DETECTED</div>
                     <div className="text-red-400 text-sm">
                       Report says <strong>{latest.sentiment?.toUpperCase()}</strong> but MAD debate says <strong>{latest.mad_verdict?.toUpperCase()}</strong>.
-                      This divergence is the highest-value intelligence signal.
+                      Whether a divergence like this predicts anything has not been measured.
                     </div>
                     <div className="text-red-300 text-xs mt-2 leading-relaxed opacity-80">
-                      The AI report analysed today&apos;s headlines and reached a {latest.sentiment?.toLowerCase()} conclusion. The MAD debate agents — who read that report and debated its future threats across 3 rounds — reached {latest.mad_verdict?.toLowerCase()}. When these two systems disagree, it means hidden risks exist that the summary AI did not surface. Trust the divergence signal — it is the system doing its job.
+                      The AI report analysed the latest run&apos;s headlines and reached a {latest.sentiment?.toLowerCase()} conclusion. The MAD debate — its agents over 3 rounds on that report, then the Arbitrator — reached {latest.mad_verdict?.toLowerCase()}. A disagreement means the debate weighed something the summary did not; whether that was a hidden risk is a judgement this page cannot make.
                     </div>
                   </div>
                 </div>
