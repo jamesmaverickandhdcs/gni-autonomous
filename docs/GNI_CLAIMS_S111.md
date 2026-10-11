@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `da617a01786c4253d0d13446be6094fd` (EOL-normalised) -- **809 claims** (582 STATE, 206 PROMISE, 21 MIXED) at **866 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `9847ec52802cf129ade5d175f880bbb4` (EOL-normalised) -- **809 claims** (582 STATE, 206 PROMISE, 21 MIXED) at **866 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `4e241c41ab4bc2446ca950ecf197f26b` (EOL-normalised) -- **COVERAGE 117/809 = 14.5%** (117 SUPPORTED, 0 DEFEATED, 692 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 59** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `5dbcdd5b7be8fc98d54df86d8957706c` (EOL-normalised) -- **COVERAGE 117/809 = 14.5%** (117 SUPPORTED, 0 DEFEATED, 692 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 59** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -264,7 +264,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `4e241c41ab4bc2446ca950ec
 | CLM-242 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/methodology/page.tsx:57` | Sacred runs (02:13+10:13 UTC) always permitted. |
 | CLM-243 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/methodology/page.tsx:58` | Fetches up to 20 articles per RSS source from 42+ global news feeds. |
 | CLM-244 | PROMISE | UNMEASURED | PROMISE | `src/app/methodology/page.tsx:58` | Target: 400+ raw articles per run. |
-| CLM-246 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/methodology/page.tsx:59` | Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
 | CLM-252 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:61` | Pillar routing: geo/tech/fin tags assigned. |
 | CLM-256 | STATE | SUPPORTED | F-AUDIT-HASH claims 256, measured 256 | `src/app/methodology/page.tsx:64` | Report saved to Supabase reports table with SHA-256 audit chain. |
 | CLM-259 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:65` | Accuracy logged. |
@@ -285,15 +284,12 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `4e241c41ab4bc2446ca950ec
 | CLM-286 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:167` | Warning: GNI data is for informational purposes only. |
 | CLM-287 | STATE | UNMEASURED | PROVENANCE | `src/app/about/devops/page.tsx:172` | GNI Autonomous \| About — Dev Console \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-288 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:39` | ~${madRecent.toLocaleString()}/run (recent; varies with load) |
-| CLM-290 | STATE | SUPPORTED | F-INJ claims 81, measured 81; F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:43` | RSS collection from 42 sources — injection detection across 81 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. |
 | CLM-293 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:44` | Produces BULLISH/BEARISH/NEUTRAL verdict with confidence score, action recommendation, blind spot warning, and GPVS prediction. |
 | CLM-294 | STATE | SUPPORTED | F-HB-GROQ claims 0, measured 0 | `src/app/about/devops/page.tsx:45` | 0 tokens |
 | CLM-295 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:45` | Escalation monitoring and NYSE alert system. |
 | CLM-296 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:45` | Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold. |
 | CLM-297 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:46` | 0 (Cerebras path -- logs 0 Groq) |
 | CLM-302 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:50` | 42 global news sources, up to 20 articles each, 400-500 raw articles per run. |
-| CLM-304 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | 81-Pattern Injection Detection |
-| CLM-305 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/devops/page.tsx:51` | Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, an 81-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
 | CLM-311 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. |
 | CLM-313 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Telegram CRITICAL/WARNING alerts with specific action recommendations. |
 | CLM-314 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:85` | $0.00/Month Forever |
@@ -563,11 +559,8 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `4e241c41ab4bc2446ca950ec
 | CLM-744 | STATE | UNMEASURED | QUALITATIVE | `src/components/ResetBanner.tsx:6` | 🕊️ PHI-003 Freedom from Fear — Now Live |
 | CLM-746 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:26` | GNI_Autonomous runs on autonomous GitHub Actions workflows -- core intelligence pipelines plus support workflows -- started by cron schedules, except the adaptive run, which the heartbeat triggers. |
 | CLM-747 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:116` | core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; support: graph, market, self-bias, mission control; CI: test harnesses on push |
-| CLM-749 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/developer-hub/page.tsx:126` | 81 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. |
 | CLM-751 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/page.tsx:519` | Pipeline is scheduled for 08:43 and 16:43 Myanmar time. |
-| CLM-752 | STATE | SUPPORTED | F-RSS claims 42, measured 42; F-INJ claims 81, measured 81 | `src/app/page.tsx:1016` | GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 81 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. |
 | CLM-753 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:105` | Full geopolitical intelligence platform running autonomous GitHub Actions workflows -- core (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) plus support (entity graph, market, self-bias, mission control) -- entirely on free tiers. |
-| CLM-754 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/security/page.tsx:73` | Every article is scanned for 81 prompt injection patterns before entering the AI pipeline. |
 | CLM-756 | STATE | UNMEASURED | QUALITATIVE | `src/app/alerts/page.tsx:65` | adaptive runs are counted there |
 | CLM-757 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:200` | PENDING &mdash; No Debate Yet |
 | CLM-758 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:200` | NO RULING &mdash; Arbitrator Failed |
@@ -660,9 +653,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `4e241c41ab4bc2446ca950ec
 | CLM-843 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:24` | Download MAD predictions as CSV, newest first |
 | CLM-844 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:26` | Hash-chained audit log of pipeline events: runs, saved reports, model fallbacks |
 | CLM-845 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:76` | The Dev Console perspective reveals every autonomous process — from the GitHub Actions workflows (core pipelines and support jobs) to the heartbeat to the multi-layer injection security stack. |
-| CLM-846 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/about/page.tsx:175` | The GitHub Actions workflows, the heartbeat, the 81-pattern security layer, and the live token data behind GNI&apos;s free-tier operation. |
 | CLM-847 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:98` | How the Adaptive Run Works |
-| CLM-848 | STATE | SUPPORTED | F-INJ claims 81, measured 81 | `src/app/developer-hub/page.tsx:86` | Every component of the autonomous pipeline is observable here &mdash; from the 81-pattern injection security filter to the A/B prompt quality system and the adaptive run. |
 | CLM-849 | STATE | SUPPORTED | F-RSS claims 42, measured 42; F-SH-STATES claims 7, measured 7 | `src/app/developer-hub/page.tsx:88` | Source health monitoring tracks all 42 RSS slots in real time across seven states, separating transport truth (whether a feed is reachable at all, primary or reserve) from yield truth (how many of its entries survived the capture window). |
 | CLM-850 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000; F-TPD claims 100000, measured 100000 | `src/app/developer-hub/page.tsx:89` | The quota guard plans against a safe ceiling of 85K tokens and a 100K limit per day per account; it can stop the adaptive run, while the main pipeline and the debate are always allowed to run. |
 | CLM-851 | STATE | SUPPORTED | F-EXPORTS claims 3, measured 3 | `src/app/developer-hub/page.tsx:153` | Three REST endpoints export reports (a chosen window of recent days), MAD predictions and pipeline articles as CSV or JSON. |
@@ -824,7 +815,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `4e241c41ab4bc2446ca950ec
 | CLM-995 | STATE | SUPPORTED | F-AUDIT-HASH claims 256, measured 256 | `src/app/security/page.tsx:74` | Selected pipeline events are logged to a SHA-256 hash chain: each entry hashes its event with the previous entry&apos;s hash, so an edit breaks the chain. |
 | CLM-996 | STATE | UNMEASURED | QUALITATIVE | `src/app/security/page.tsx:74` | It is tamper-evident, not immutable. |
 | CLM-997 | STATE | UNMEASURED | QUALITATIVE | `src/app/security/page.tsx:89` | No graded audit on record |
-| CLM-998 | STATE | SUPPORTED | F-PENTEST claims 2/9, measured 2/9 | `src/app/security/page.tsx:110` | Run against today&apos;s injection patterns, 2 of the 9 attacks listed below match one; the rest would pass the pattern check. |
 | CLM-999 | STATE | UNMEASURED | HISTORICAL | `src/app/security/page.tsx:114` | Blocked on Day 17 |
 | CLM-1000 | STATE | UNMEASURED | HISTORICAL | `src/app/security/page.tsx:118` | False positives on Day 17 |
 | CLM-1001 | STATE | UNMEASURED | HISTORICAL | `src/app/security/page.tsx:122` | Detection rate on Day 17 |
@@ -879,3 +869,13 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `4e241c41ab4bc2446ca950ec
 | CLM-1050 | STATE | UNMEASURED | QUALITATIVE | `src/components/ResetBanner.tsx:9` | GNI Autonomous now runs under the PHI-003 Freedom from Fear standard. |
 | CLM-1051 | STATE | UNMEASURED | QUALITATIVE | `src/components/ResetBanner.tsx:10` | Every report answers three questions: what is happening, what honest analysis says, and what you can do. |
 | CLM-1052 | PROMISE | UNMEASURED | PROMISE | `src/components/ResetBanner.tsx:11` | Intelligence for every human being — from teenagers to senior citizens — without manipulation and without fear amplification.${" "} |
+| CLM-1053 | STATE | SUPPORTED | F-INJ claims 74, measured 74; F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:43` | RSS collection from 42 sources — injection detection across 74 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. |
+| CLM-1054 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/about/devops/page.tsx:51` | 74-Pattern Injection Detection |
+| CLM-1055 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/about/devops/page.tsx:51` | Every article passes a layered security stack: Unicode/NFKC normalization of the scan text, a 74-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
+| CLM-1056 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/about/page.tsx:175` | The GitHub Actions workflows, the heartbeat, the 74-pattern security layer, and the live token data behind GNI&apos;s free-tier operation. |
+| CLM-1057 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/developer-hub/page.tsx:86` | Every component of the autonomous pipeline is observable here &mdash; from the 74-pattern injection security filter to the A/B prompt quality system and the adaptive run. |
+| CLM-1058 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/developer-hub/page.tsx:126` | 74 injection patterns actively blocked at Stage 1b of the pipeline with SHA-256 audit chain for tamper detection. |
+| CLM-1059 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/methodology/page.tsx:59` | Every article passes a layered adversarial-content defense: Unicode/NFKC normalization of the scan text, a 74-pattern injection scan (including prompt-boundary attack patterns), an emotional-language sanitizer that logs replaced terms as evidence, and a 4-layer content-type classifier. |
+| CLM-1060 | STATE | SUPPORTED | F-RSS claims 42, measured 42; F-INJ claims 74, measured 74 | `src/app/page.tsx:1016` | GNI collects articles from 42 RSS sources, then passes them through a multi-stage intelligence funnel: Stage 1 filters for geopolitical relevance, Stage 1b scans for 74 prompt injection patterns, Stage 2 removes duplicates, Stage 3 scores each article by significance, and Stage 4 selects the top articles with source diversity enforced. |
+| CLM-1061 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/security/page.tsx:73` | Every article is scanned for 74 prompt injection patterns before entering the AI pipeline. |
+| CLM-1062 | STATE | SUPPORTED | F-PENTEST claims 9/9, measured 9/9 | `src/app/security/page.tsx:110` | Run against today&apos;s injection patterns, 9 of the 9 attacks listed below match one; before S111, 2 did. |

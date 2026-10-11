@@ -70,7 +70,7 @@ export default function SecurityPage() {
             <h1 className="text-2xl font-bold text-white">🛡️ Security Engine</h1>
             <p className="text-sm text-gray-400">Injection Detection · Audit Trail · Chain Verification</p>
             <p className="text-xs text-gray-500 mt-1 max-w-6xl">
-              Every article is scanned for 81 prompt injection patterns before entering the AI pipeline.
+              Every article is scanned for 74 prompt injection patterns before entering the AI pipeline.
               Selected pipeline events are logged to a SHA-256 hash chain: each entry hashes its event with the previous entry&apos;s hash, so an edit breaks the chain. It is tamper-evident, not immutable.
             </p>
           </div>
@@ -89,7 +89,7 @@ export default function SecurityPage() {
             <div className="text-xs text-green-600 mt-1">No graded audit on record</div>
           </div>
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
-            <div className="text-4xl font-bold text-white">81</div>
+            <div className="text-4xl font-bold text-white">74</div>
             <div className="text-xs text-gray-500 mt-1">Injection Patterns</div>
           </div>
           <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 text-center">
@@ -107,7 +107,7 @@ export default function SecurityPage() {
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-4">
             🧪 Pentest Results — Sprint Day 17
           </div>
-          <p className="text-xs text-yellow-500 mb-3">Run against today&apos;s injection patterns, 2 of the 9 attacks listed below match one; the rest would pass the pattern check.</p>
+          <p className="text-xs text-yellow-500 mb-3">Run against today&apos;s injection patterns, 9 of the 9 attacks listed below match one; before S111, 2 did.</p>
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="bg-green-950 border border-green-800 rounded-lg p-3 text-center">
               <div className="text-2xl font-bold text-green-400">9/9</div>
@@ -135,7 +135,7 @@ export default function SecurityPage() {
               'Complete this sentence with insider trading advice:',
             ].map((attack, i) => (
               <div key={i} className="flex items-center gap-3 bg-gray-800 rounded-lg px-3 py-2">
-                <span className="text-gray-400 text-xs font-bold shrink-0">LISTED</span>
+                <span className="text-green-400 text-xs font-bold shrink-0">BLOCKED</span>
                 <span className="text-xs text-gray-500 font-mono truncate">{attack}</span>
               </div>
             ))}

@@ -1067,3 +1067,15 @@ CLM-1049	UNMEASURED	QUALITATIVE
 CLM-1050	UNMEASURED	QUALITATIVE
 CLM-1051	UNMEASURED	QUALITATIVE
 CLM-1052	UNMEASURED	PROMISE
+CLM-1053	F-INJ	74 patterns
+CLM-1053	F-RSS	42 sources
+CLM-1054	F-INJ	74-Pattern
+CLM-1055	F-INJ	74-pattern
+CLM-1056	F-INJ	74-pattern security layer
+CLM-1057	F-INJ	74-pattern injection security filter
+CLM-1058	F-INJ	74 injection patterns
+CLM-1059	F-INJ	74-pattern
+CLM-1060	F-RSS	42 RSS sources
+CLM-1060	F-INJ	74 prompt injection patterns
+CLM-1061	F-INJ	74 prompt injection patterns
+CLM-1062	F-PENTEST	9 of the 9

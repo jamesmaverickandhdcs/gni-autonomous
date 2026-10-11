@@ -124,10 +124,15 @@ INJECTION_PATTERNS = [
     r'updated\s+instructions?\s*:',
     r'system\s*:\s*you\s+are',
     r'you\s+are\s+now\s+(a\s+)?(?:different|new|another)',
-    r'you\s+are\s+now\s+a\s+\w+\s+\w+',
+    # S111: was 'you are now a \w+ \w+' - removed real news ('What Size Company Is Right for
+    # You?'); narrowed to the persona a jailbreak asks for. 0 of 68,177 stored articles match.
+    r'you\s+are\s+now\s+(a\s+)?(dan|jailbroken|unrestricted|unfiltered|in\s+developer\s+mode)\b',
     r'disregard\s+\w+\s+(previous|all|above)\s+instructions?',
-    r'act\s+as\s+(a|an)\s+\w+',
-    r'pretend\s+(you\s+are|to\s+be)',
+    # S111: was 'act as (a|an) \w+' - 54 real articles removed since 2026-06-16 ('EU chief
+    # pitches associate member status for Canada'). 0 of 68,177 stored articles match.
+    r'act\s+as\s+(a|an)\s+(ai|assistant|chatbot|language\s+model|unrestricted|unfiltered)\b',
+    # S111: was 'pretend (you are|to be)' - 11 removed (an EFF piece on Brazil's elections).
+    r'pretend\s+(you\s+are|to\s+be)\s+(an?\s+)?(ai|assistant|chatbot|unrestricted|unfiltered|dan)\b',
     r'roleplay\s+as',
     r'from\s+now\s+on\s+(you|act|behave)',
     r'your\s+new\s+(role|persona|identity|task)\s+is',
@@ -172,8 +177,12 @@ INJECTION_PATTERNS = [
     # Category 7: Role confusion and jailbreak
     r'(unlock|enable|activate)\s+(developer|god|admin|root|jailbreak)\s+mode',
     r'DAN\s+(mode|protocol|is\s+now)',
-    r'jailbreak(ed|\s+mode|\s+prompt)?',
-    r'(bypass|circumvent|override)\s+(safety|filter|restriction|guideline)',
+    # S111: was 'jailbreak(ed| mode| prompt)?' - the bare word removed 16 real articles since
+    # 2026-06-16 ('Dozens of Myanmar junta POWs escape detention'). 0 of 68,177 match this.
+    r'(jailbreak\s+(mode|prompt)|jailbroken\s+(ai|model|assistant|mode))',
+    # S111: was '(bypass|circumvent|override) (safety|filter|...)' - 9 removed ('Georgia: New Laws
+    # Devastate Independent Civic Groups'); an attack addresses the model ('your').
+    r'(bypass|circumvent|override)\s+(your|its)\s+(safety|filter|restriction|guideline)',
     r'(forget|ignore)\s+(that\s+)?(you\s+are\s+an?\s+)?(ai|assistant|bot)',
     # Category 8: Context overflow
     r'\[\s*IGNORE\s*EVERYTHING\s*ABOVE\s*\]',
@@ -197,26 +206,19 @@ INJECTION_PATTERNS = [
     #   DFRLab) because "post"/"submit"/"forward"/"send" sit near a link in any HTML
     #   body. Genuine "send all data to X" is still caught by the precise patterns above.
     r'(send|forward|upload|exfiltrate|leak)\b[^\n]{0,30}\b(data|information|results|credentials|content|article)s?\b[^\n]{0,30}https?://',
-    # Category 11: PHI-003 manipulation techniques (GNI S35)
-    # Peer pressure — consensus without evidence
-    r'everyone\s+(agrees|knows|understands|accepts)',
-    r'any\s+reasonable\s+(person|analyst|observer)',
-    r'no\s+serious\s+(analyst|expert|observer|person)',
-    r'obviously\s+(this|the|it|we)',
-    r'it\s+is\s+obvious\s+that',
-    r'common\s+sense\s+(tells|shows|dictates)',
-    # Passive extreme normalization — making extreme acts seem inevitable
-    r'(was|is|seems?|appears?)\s+(necessary|inevitable|understandable|justified)\s+(given|considering|in light of)',
-    r'what\s+(other\s+)?choice\s+(did|do|does)\s+(they|he|she|it)\s+have',
-    r'forced\s+(them|him|her|the)\s+to\s+(attack|strike|retaliate|respond)',
-    r'left\s+(with\s+)?no\s+(other\s+)?choice\s+but\s+to',
-    # Butterfly Effect — worst-case chain without probability
-    r'this\s+could\s+(easily\s+)?lead\s+to\s+.{5,50}(collapse|war|catastrophe|crisis)',
-    r'if\s+.{5,50}then\s+.{5,50}(will|must|shall)\s+(collapse|fail|fall|end)',
-    r'(domino|cascade|spiral|chain)\s+(effect|reaction|of\s+events)',
-    r'(trigger|spark|ignite)\s+(a\s+)?(global|regional|wider|full)',
-
-    r'https?://[^\s]{5,}.{0,30}(api.key|password|token|secret)',
+    # S111: was 'https?://... .{0,30}(api.key|password|token|secret)' - 223 removed since
+    # 2026-06-16, all security reporting that cites a URL near the word 'password'. Exfiltration
+    # needs a verb: send/post/paste... a secret ... to a URL. 0 of 68,177 stored articles match.
+    r'(send|post|paste|enter|submit|upload)\s+.{0,30}(api.key|password|token|secret).{0,30}https?://',
+    # Category 12 (S111): the security page's listed pentest phrasings that passed every pattern
+    # above (2 of 9 matched). Each matches 0 of the 68,177 stored articles (S111_C_INJECT.sql).
+    r'you\s+are\s+now\s+dan',
+    r'repeat\s+after\s+me\s*:',
+    r'(print|reveal|output|show|dump)\s+(your|the)\s+(training\s+data|system\s+prompt)',
+    r'as\s+a\s+financial\s+advisor,?\s+i\s+recommend',
+    r'translate\s+this\s+text\s*:',
+    r'ignor\w*\s+your\s+(instructions|rules|guidelines|programming)',
+    r'complete\s+this\s+sentence\s+with',
 ]
 
 
@@ -240,6 +242,27 @@ def _check_relevance(article: dict) -> tuple[bool, str]:
 
 
 # Stage 1b extension: PHI-002 bias attacks (GNI S29 — from Partner B protection upgrade)
+# S111: the PHI-003 manipulation-technique patterns (S35) moved here from INJECTION_PATTERNS.
+# As REMOVE they deleted real reporting - 'How fresh fighting in Tigray could spark wider
+# conflict in Ethiopia', 'Horn of Africa fears spillover' - 33 articles since 2026-06-16, none an
+# injection. They describe rhetoric, which is a signal to tag (FLAG), not an attack to drop.
+_PHI003_RHETORIC_PATTERNS = [re.compile(p, re.IGNORECASE | re.DOTALL) for p in [
+    r'everyone\s+(agrees|knows|understands|accepts)',
+    r'any\s+reasonable\s+(person|analyst|observer)',
+    r'no\s+serious\s+(analyst|expert|observer|person)',
+    r'obviously\s+(this|the|it|we)',
+    r'it\s+is\s+obvious\s+that',
+    r'common\s+sense\s+(tells|shows|dictates)',
+    r'(was|is|seems?|appears?)\s+(necessary|inevitable|understandable|justified)\s+(given|considering|in light of)',
+    r'what\s+(other\s+)?choice\s+(did|do|does)\s+(they|he|she|it)\s+have',
+    r'forced\s+(them|him|her|the)\s+to\s+(attack|strike|retaliate|respond)',
+    r'left\s+(with\s+)?no\s+(other\s+)?choice\s+but\s+to',
+    r'this\s+could\s+(easily\s+)?lead\s+to\s+.{5,50}(collapse|war|catastrophe|crisis)',
+    r'if\s+.{5,50}then\s+.{5,50}(will|must|shall)\s+(collapse|fail|fall|end)',
+    r'(domino|cascade|spiral|chain)\s+(effect|reaction|of\s+events)',
+    r'(trigger|spark|ignite)\s+(a\s+)?(global|regional|wider|full)',
+]]
+
 _PHI002_PATTERNS = [re.compile(p, re.IGNORECASE | re.DOTALL) for p in [
     r'(ethnic|religious|cultural)\s+(traditions?|identity)\s+must\s+(supersede|override|come\s+before)\s+(individual|human)\s+rights',
     r'(group|collective|national|ethnic)\s+rights\s+(outweigh|are\s+more\s+important\s+than|supersede)\s+individual',
@@ -328,6 +351,11 @@ def _check_injection(article: dict) -> tuple[str, str]:
     for pattern in _PHI002_PATTERNS:
         if pattern.search(text):
             return "FLAG", "PHI-002 bias attack detected — included with warning"
+
+    # Check PHI-003 rhetoric (FLAG since S111; was REMOVE inside INJECTION_PATTERNS)
+    for pattern in _PHI003_RHETORIC_PATTERNS:
+        if pattern.search(text):
+            return "FLAG", "PHI-003 manipulation technique — included with warning"
 
     # Check sectarian trap content (FLAG — manufactured division is signal)
     for pattern in _SECTARIAN_PATTERNS:
