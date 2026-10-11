@@ -1739,3 +1739,6 @@ a84e22ad19	CLAIM	STATE	CLM-1060	GNI collects articles from 42 RSS sources, then 
 859cac4d49	CLAIM	STATE	CLM-1065	Today the report check has one rule for surprises: when SPY has moved 5% or more over the 48 hours before the check runs, it marks a black swan and gives every report it verifies in that run a fixed 0.25 instead of judging its direction.
 92dbe70dca	CLAIM	STATE	CLM-1066	Red bar = a run in which the admin was alerted about this slot. ⚠ History badge = this slot was alerted in at least one of the runs shown.
 1ec5726230	CLAIM	STATE	CLM-1067	Recorded since S111; earlier runs carry no flag.
+0cd56ee91b	CLAIM	STATE	CLM-1068	id, report_id, agent, horizon, prediction, verify_by, verified_by, created_at (the verifier also fills outcome, market_change_pct, verified_at and verification_method where those columns exist)
+b3188c1ee5	CLAIM	STATE	CLM-1069	id, usage_date, pipeline, account, tokens_used, requests_used, run_id, reason, created_at
+c5a92db640	CLAIM	STATE	CLM-1070	id, run_at, source_name, pillar, article_count, raw_count, geo_count, geo_ratio, low_quality_flag, fetch_ok, served_by, status, alert_sent

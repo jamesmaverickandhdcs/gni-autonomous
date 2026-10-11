@@ -26,14 +26,22 @@ jobs:
             supabase \
             python-dotenv \
             groq \
-            requests
-      - name: Run dry-run harnesses
+            requests \
+            pytest==8.3.5
+      # S111: the test_*.py files under ai_engine/tests ran nowhere - three are pytest
+      # modules (def test_...), two are plain scripts that exit non-zero on failure.
+      # Each now runs here the way it is written to run.
+      - name: Run dry-run harnesses and tests
         run: |
           rm -f /tmp/harness_exits.txt
           fail=0
-          for f in ai_engine/tests/dryrun_*.py; do
+          for f in ai_engine/tests/dryrun_*.py ai_engine/tests/test_*.py; do
             echo "===== HARNESS $f ====="
-            timeout 120 python "$f" && rc=0 || rc=$?
+            if grep -q '^def test_' "$f"; then
+              timeout 120 python -m pytest -q -p no:cacheprovider "$f" && rc=0 || rc=$?
+            else
+              timeout 120 python "$f" && rc=0 || rc=$?
+            fi
             echo "----- EXIT $f = $rc -----"
             echo "$f = $rc" >> /tmp/harness_exits.txt
             if [ "$rc" -ne 0 ]; then fail=1; fi

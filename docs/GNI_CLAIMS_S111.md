@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `767d953fe0f7cf34429bf380ef89695f` (EOL-normalised) -- **810 claims** (583 STATE, 206 PROMISE, 21 MIXED) at **867 locations** in 37 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S111.tsv` md5 `1c289f3599479c43f725957898b97f89` (EOL-normalised) -- **813 claims** (586 STATE, 206 PROMISE, 21 MIXED) at **870 locations** in 37 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `30ece624fd56f6e5b85d71c9a82d0c8f` (EOL-normalised) -- **COVERAGE 115/810 = 14.2%** (115 SUPPORTED, 0 DEFEATED, 695 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 59** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `a421374a3f281b5c2ae31ddf542c109f` (EOL-normalised) -- **COVERAGE 115/813 = 14.1%** (115 SUPPORTED, 0 DEFEATED, 698 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 59** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -880,3 +880,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S111.tsv` md5 `30ece624fd56f6e5b85d71c9
 | CLM-1065 | STATE | SUPPORTED | F-BLACK-SWAN claims 5%+48h+0.25, measured 5%+48h+0.25 | `src/app/model-learning/page.tsx:26` | Today the report check has one rule for surprises: when SPY has moved 5% or more over the 48 hours before the check runs, it marks a black swan and gives every report it verifies in that run a fixed 0.25 instead of judging its direction. |
 | CLM-1066 | STATE | UNMEASURED | QUALITATIVE | `src/app/source-health/page.tsx:244` | Red bar = a run in which the admin was alerted about this slot. ⚠ History badge = this slot was alerted in at least one of the runs shown. |
 | CLM-1067 | STATE | UNMEASURED | HISTORICAL | `src/app/source-health/page.tsx:244` | Recorded since S111; earlier runs carry no flag. |
+| CLM-1068 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:31` | id, report_id, agent, horizon, prediction, verify_by, verified_by, created_at (the verifier also fills outcome, market_change_pct, verified_at and verification_method where those columns exist) |
+| CLM-1069 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:33` | id, usage_date, pipeline, account, tokens_used, requests_used, run_id, reason, created_at |
+| CLM-1070 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:35` | id, run_at, source_name, pillar, article_count, raw_count, geo_count, geo_ratio, low_quality_flag, fetch_ok, served_by, status, alert_sent |

@@ -28,11 +28,11 @@ const ENDPOINTS = [
 
 const SCHEMA = [
   { table: 'reports', desc: 'Core intelligence reports', cols: 'id, title, summary, sentiment, sentiment_score, sentiment_score_lower, sentiment_score_upper, confidence_interval_width, analysis_runs, risk_level, escalation_score, escalation_level, mad_verdict, mad_confidence, mad_action_recommendation, mad_bull_case, mad_bear_case, mad_blind_spot, tickers_affected, location_name, lat, lng, llm_source, plain_narrative, deception_level, created_at' },
-  { table: 'debate_predictions', desc: 'MAD agent predictions + GPVS verification', cols: 'id, report_id, agent_name, direction, confidence, verify_date, accuracy_score, created_at' },
+  { table: 'debate_predictions', desc: 'MAD agent predictions + GPVS verification', cols: 'id, report_id, agent, horizon, prediction, verify_by, verified_by, created_at (the verifier also fills outcome, market_change_pct, verified_at and verification_method where those columns exist)' },
   { table: 'pillar_reports', desc: 'GEO / TECH / FIN domain reports', cols: 'id, pillar, title, summary, sentiment, sentiment_score, risk_level, tickers_affected, market_impact, weakness_identified, quality_score, created_at' },
-  { table: 'groq_daily_usage', desc: 'Token usage per pipeline run', cols: 'id, pipeline_type, tokens_used, model_used, created_at' },
+  { table: 'groq_daily_usage', desc: 'Token usage per pipeline run', cols: 'id, usage_date, pipeline, account, tokens_used, requests_used, run_id, reason, created_at' },
   { table: 'pipeline_articles', desc: 'Articles processed per run with stage scores', cols: 'id, run_id, source, title, url, summary, stage3_score, stage4_rank, stage4_selected, created_at' },
-  { table: 'source_health', desc: 'RSS source reliability tracking', cols: 'id, source, status, last_checked, articles_fetched, created_at' },
+  { table: 'source_health', desc: 'RSS source reliability tracking', cols: 'id, run_at, source_name, pillar, article_count, raw_count, geo_count, geo_ratio, low_quality_flag, fetch_ok, served_by, status, alert_sent' },
   { table: 'source_weights', desc: 'Dynamic trust weights (GPVS-adjusted)', cols: 'id, source, weight, gpvs_contribution, last_updated' },
 ]
 
