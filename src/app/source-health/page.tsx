@@ -220,7 +220,7 @@ export default function SourceHealthPage() {
         <div className="mt-8 bg-gray-900 border border-gray-700 rounded-xl p-5">
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">How Source Health Works</div>
           <p className="text-xs text-gray-400 mb-4">
-            Two independent truths per slot. <span className="text-gray-200 font-bold">Transport</span> — could we reach a feed at all,
+            Each slot is judged on transport and on yield, separately. <span className="text-gray-200 font-bold">Transport</span> — could we reach a feed at all,
             counting the reserve that stands in for a dead primary. <span className="text-gray-200 font-bold">Yield</span> — how many
             of the entries it delivered survived dedup and the capture window. A slot with working transport can still yield nothing,
             so the article count alone never tells you whether a feed is up.

@@ -140,3 +140,16 @@ harvest to keep two sentences green.
   ended. The range is not reproducible from August at all - 7.4K and 97K lie far outside every
   August value - so the published range came from some other window, which the record does not
   name. The pages now carry the figures the snapshot derives.
+- **R9: two more DATED facts, and a "first row" is dated when its window is closed.** CLM-894 said
+  "Report-level GPVS verification has been live since April 2026". `gpvs-report-outcomes-first`
+  and `reports-first` take the first `created_at` of `prediction_outcomes` and of `reports` in a
+  window ending 2026-10-01: a closed past window, so its first row cannot change unless rows are
+  deleted, and no code deletes either table's rows. A `columns` entry reports whether
+  `prediction_outcomes.created_at` exists, because the fact is read through `to_jsonb` so the
+  query cannot fail; `run_at` (the report's own date) is never used in its place. The first R9
+  harvest (window ending 2026-05-01) read ZERO verification rows; the second read the first
+  verification on 2026-05-27 and the first report on 2026-05-24. The database is therefore no
+  older than late May, so it can neither confirm nor refute an April start in an earlier store;
+  the page now says what the record shows ("on record since May 2026, when the database's first
+  reports were stored"), and F-DB-GPVS-SINCE holds both months to that sentence. Both harvests
+  reproduced the two August facts byte for byte - the dated design's own check.

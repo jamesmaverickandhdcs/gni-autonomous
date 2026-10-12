@@ -1781,3 +1781,5 @@ b46408d896	CLAIM	STATE	CLM-1100	~68,525/run (mean of 62 logged runs, Aug 2026; r
 abcd31ffaa	CLAIM	STATE	CLM-1101	Tables include reports, debate_predictions, audit_trail, groq_daily_usage...
 12dcee69e9	CLAIM	STATE	CLM-1102	The Arbitrator&apos;s stated confidence in its verdict, 0-100%. 70% or more = strong.
 82c7fe419d	CLAIM	STATE	CLM-1103	This is GNI&apos;s web-layer self-monitoring.
+e811ebfa95	CLAIM	STATE	CLM-1104	Each slot is judged on transport and on yield, separately.
+e0734e1d7d	CLAIM	STATE	CLM-1105	Report-level GPVS verification is on record since May 2026, when the database&apos;s first reports were stored; report-level and prediction-level verification run together in one daily job.

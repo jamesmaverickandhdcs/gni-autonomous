@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S112.tsv` md5 `d5f3b9dc1046bf090dddee53967a75c1` (EOL-normalised) -- **816 claims** (589 STATE, 206 PROMISE, 21 MIXED) at **874 locations** in 38 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S112.tsv` md5 `98bdf10a7de50d44df7e1b238b883a22` (EOL-normalised) -- **815 claims** (588 STATE, 206 PROMISE, 21 MIXED) at **873 locations** in 38 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d8962af5f85` (EOL-normalised) -- **COVERAGE 159/816 = 19.5%** (159 SUPPORTED, 0 DEFEATED, 657 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 4** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `f86992fac2485ce5d6d72900ffc8cf49` (EOL-normalised) -- **COVERAGE 161/815 = 19.8%** (161 SUPPORTED, 0 DEFEATED, 654 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 0** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -341,7 +341,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-401 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:72` | A rigorous self-assessment of GNI through the Feedback Loop lens. |
 | CLM-403 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:149` | GNI&apos;s greatest strength is also its greatest research contribution: the feedback loop itself. |
 | CLM-404 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:149` | GNI produces outputs, measures them against reality, and uses that measurement to improve future outputs. |
-| CLM-406 | STATE | UNMEASURED | PROMISE | `src/app/about/feedback/page.tsx:150` | Each weakness maps directly to a Phase 2 improvement on the development roadmap. |
 | CLM-407 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:156` | Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-407 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:146` | Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-407 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:165` | Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
@@ -458,7 +457,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-591 | STATE | UNMEASURED | PROVENANCE | `src/app/model-learning/page.tsx:85` | GNI Autonomous \| Model Learning \| Higher Diploma in Computer Science \| SUM |
 | CLM-592 | STATE | UNMEASURED | QUALITATIVE | `src/app/source-health/page.tsx:114` | Updated after every pipeline run. |
 | CLM-593 | STATE | UNMEASURED | QUALITATIVE | `src/app/source-health/page.tsx:114` | Admin alerted via Telegram when sources go down. |
-| CLM-594 | STATE | UNMEASURED | QUALITATIVE | `src/app/source-health/page.tsx:223` | Two independent truths per slot. |
 | CLM-597 | STATE | UNMEASURED | PROVENANCE | `src/app/source-health/page.tsx:257` | GNI Autonomous \| Source Health Dashboard \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-598 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:70` | Feedback Loop is GNI&apos;s reality validation hub — the place where predictions meet outcomes and where GNI learns from what actually happened in the world. |
 | CLM-603 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:89` | Verified by GPVS |
@@ -678,7 +676,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-889 | STATE | SUPPORTED | F-EXT claims TrustNLP 2025, measured mc-temperature-venue read 2026-10-12 | `src/app/research/page.tsx:100` | Sampling several temperatures to measure LLM uncertainty is also studied elsewhere (Monte Carlo Temperature, TrustNLP 2025). |
 | CLM-892 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:169` | A self-assessment of GNI. |
 | CLM-893 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/page.tsx:169` | Strengths, weaknesses, opportunities, and threats, read beside live prediction verification data. |
-| CLM-894 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:140` | Report-level GPVS verification has been live since April 2026; prediction-level verification runs as a step of every main pipeline run. |
 | CLM-895 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:60` | The Transparency Engine documents every algorithmic decision from the raw articles of a run down to the ones selected for analysis. |
 | CLM-899 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:120` | Each check scores the direction as correct, partly correct or wrong, which allows statistical analysis. |
 | CLM-900 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:122` | The GPVS Prediction Scorecard is the measured record behind the accuracy figures GNI publishes. |
@@ -822,7 +819,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-1037 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:201` | CRITICAL or WARNING issues trigger automatic Telegram alert to admin. |
 | CLM-1038 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:201` | All results saved to mission_control_log table. |
 | CLM-1040 | STATE | SUPPORTED | F-TREND-RUNS claims 7, measured 7 | `src/app/page.tsx:221` | 7-run escalation trend${useRaw ? ' (raw magnitude)' : ' (capped score)'} |
-| CLM-1041 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:1012` | How ${latestArticles.length} articles were consolidated into 1 report |
+| CLM-1041 | STATE | SUPPORTED | F-REPORTS-PER-RUN claims 1, measured 1 | `src/app/page.tsx:1012` | How ${latestArticles.length} articles were consolidated into 1 report |
 | CLM-1042 | STATE | UNMEASURED | PROVENANCE | `src/app/page.tsx:1082` | Global Nexus Insights (Autonomous) \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) \| Pipeline runs ${PIPELINE_CADENCE} via GitHub Actions |
 | CLM-1043 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000 | `src/app/quota/page.tsx:150` | ${safeP}% of 85K safe ceiling |
 | CLM-1044 | STATE | SUPPORTED | F-TREND-RUNS claims 7, measured 7 | `src/app/researcher/page.tsx:99` | Escalation Trend — Last 7 Runs${trend.useRaw ? ' (raw magnitude)' : ' (capped score)'} |
@@ -887,3 +884,5 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-1101 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:115` | Tables include reports, debate_predictions, audit_trail, groq_daily_usage... |
 | CLM-1102 | STATE | SUPPORTED | F-CONF-RANGE claims 0-100%, measured 0-100%; F-CONF-BANDS claims strong>=70, measured strong>=70+weak<50 | `src/app/comparison/page.tsx:448` | The Arbitrator&apos;s stated confidence in its verdict, 0-100%. 70% or more = strong. |
 | CLM-1103 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:202` | This is GNI&apos;s web-layer self-monitoring. |
+| CLM-1104 | STATE | UNMEASURED | QUALITATIVE | `src/app/source-health/page.tsx:223` | Each slot is judged on transport and on yield, separately. |
+| CLM-1105 | STATE | SUPPORTED | F-DB-GPVS-SINCE claims 2026-05, measured 2026-05 | `src/app/about/patterns/page.tsx:140` | Report-level GPVS verification is on record since May 2026, when the database&apos;s first reports were stored; report-level and prediction-level verification run together in one daily job. |

@@ -1297,6 +1297,12 @@ _MONTHS = {m: i + 1 for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep O
 def _db_facts(root):
     """Facts of the highest-numbered DB snapshot, refused when the query that produced
     them is not the query in the tree (query_md5 against the EOL-normalised file)."""
+    return _db_harvest(root)["facts"]
+
+
+def _db_harvest(root):
+    """The operator's cell of the highest-numbered DB snapshot (its 'harvest'), checked as
+    _db_facts describes: the query's md5, and at least one fact, none null."""
     import hashlib
     import json
     docs = os.path.join(root, "docs")
@@ -1314,10 +1320,11 @@ def _db_facts(root):
     if qmd5 != snap.get("query_md5"):
         raise FitnessError("%s: query_md5 %s, but %s hashes to %s" % (
             gen[-1][1], snap.get("query_md5"), snap["query_file"], qmd5))
-    facts = (snap.get("harvest") or {}).get("facts") or []
+    harvest = snap.get("harvest") or {}
+    facts = harvest.get("facts") or []
     if not facts or any(f is None for f in facts):
         raise FitnessError("%s holds no facts, or a null one" % gen[-1][1])
-    return facts
+    return harvest
 
 
 def _tokens_claim(fragment):
@@ -1541,6 +1548,108 @@ def _phi003_live(root):
     return "PHI-003 in code"
 
 
+# S112 R4-3 round 9.
+def _reports_claim(fragment):
+    m = re.search(r"into (\d+) reports?\b", fragment)
+    if not m:
+        raise FitnessError("no 'into <n> report' in fragment %r" % fragment)
+    return m.group(1)
+
+
+def _reports_per_run(root):
+    """Reports one main run writes. The run (gni_pipeline.yml: `python ai_engine/main.py`) calls
+    run_pipeline() once from __main__; every save_report() call site under ai_engine (tests
+    excluded) and every `table("reports").insert(` are counted, and a call inside a loop counts
+    as 'many'. One call site, one insert, no loop -> "1". LIMIT, written down:
+    self_healing_runner.py retries run_pipeline() in a loop; no workflow runs it (C15 would see a
+    workflow that did), so it is not a run here."""
+    base = os.path.join(root, "ai_engine")
+    if not os.path.isdir(base):
+        raise FitnessError("ai_engine/ not found")
+    loops = (ast.For, ast.While, ast.AsyncFor, ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
+    saves, inserts, looped = [], [], []
+    for d, _, fs in os.walk(base):
+        if os.sep + "tests" in d[len(base):]:
+            continue
+        for n in fs:
+            if not n.endswith(".py"):
+                continue
+            path = os.path.join(d, n)
+            with open(path, "rb") as fh:
+                tree = ast.parse(fh.read().decode("utf-8-sig"))
+            parent = {}
+            for node in ast.walk(tree):
+                for ch in ast.iter_child_nodes(node):
+                    parent[ch] = node
+            def in_loop(node):
+                while node in parent:
+                    node = parent[node]
+                    if isinstance(node, loops):
+                        return True
+                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                        return False
+                return False
+            rel = os.path.relpath(path, root)
+            for node in ast.walk(tree):
+                if not isinstance(node, ast.Call):
+                    continue
+                f = node.func
+                name = getattr(f, "id", None) or getattr(f, "attr", None)
+                if name == "save_report":
+                    saves.append(rel); looped += [rel] if in_loop(node) else []
+                if (name == "insert" and isinstance(f, ast.Attribute) and isinstance(f.value, ast.Call)
+                        and getattr(f.value.func, "attr", "") == "table" and f.value.args
+                        and getattr(f.value.args[0], "value", None) == "reports"):
+                    inserts.append(rel); looped += [rel] if in_loop(node) else []
+    if not saves or not inserts:
+        raise FitnessError("found %d save_report() calls and %d reports inserts under ai_engine"
+                           % (len(saves), len(inserts)))
+    if looped or len(saves) != 1 or len(inserts) != 1:
+        return "many"
+    main = os.path.join(base, "main.py")
+    with open(main, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    entry = [n for n in tree.body if isinstance(n, ast.If) and "__main__" in ast.dump(n.test)]
+    calls = [c for e in entry for c in ast.walk(e) if isinstance(c, ast.Call)
+             and getattr(c.func, "id", "") == "run_pipeline"]
+    if len(calls) != 1 or any(isinstance(x, loops) for e in entry for x in ast.walk(e)):
+        return "many"
+    if saves[0] != os.path.join("ai_engine", "main.py"):
+        raise FitnessError("save_report() is called from %s, not from main.py's run" % saves[0])
+    return "1"
+
+
+def _since_claim(fragment):
+    m = re.search(r"\bsince (%s)[a-z]* (\d{4})\b" % "|".join(_MONTHS), fragment)
+    if not m:
+        raise FitnessError("no 'since <Month> <year>' in fragment %r" % fragment)
+    return "%s-%02d" % (m.group(2), _MONTHS[m.group(1)])
+
+
+def _gpvs_first_month(root):
+    """The month the database's record of report-level GPVS verification begins: the first
+    prediction_outcomes row's created_at (dated fact gpvs-report-outcomes-first, a window closed
+    in the past, so the first row does not change). The sentence that claims it also says this is
+    the month of the database's first stored report, so the month is returned only when the
+    reports-first fact falls in it; otherwise both months are returned, which no claim equals.
+    Refused when the harvest does not show a created_at column - run_at is the report's own date,
+    which precedes its verification, and is not a stand-in. The R9 harvests read no outcome row
+    before 2026-05-01 (the page said April 2026) and a first report on 2026-05-24."""
+    h = _db_harvest(root)
+    if (h.get("columns") or {}).get("prediction_outcomes.created_at") is not True:
+        raise FitnessError("the harvest does not show prediction_outcomes.created_at")
+    got = {}
+    for fid in ("gpvs-report-outcomes-first", "reports-first"):
+        f = [x for x in h["facts"] if x.get("id") == fid and x.get("kind") == "dated"]
+        if len(f) != 1:
+            raise FitnessError("expected one dated %s fact, got %d" % (fid, len(f)))
+        v = f[0]["value"]
+        got[fid] = v["first_created_at"][:7] if v.get("n") else "none before " + f[0]["window"].split("/")[1]
+    if got["gpvs-report-outcomes-first"] == got["reports-first"]:
+        return got["reports-first"]
+    return "verification %s, first report %s" % (got["gpvs-report-outcomes-first"], got["reports-first"])
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1715,6 +1824,14 @@ FITNESS = {
                                _stages_claim, _transparency_reasons, _equal),
     "F-PHI003-LIVE": ("PHI-003 in the running code: fff_ report sections and the PHI-003 rhetoric FLAG list "
                       "that _check_injection reads", _phi003_claim, _phi003_live, _equal),
+    # S112 R4-3 round 9.
+    "F-REPORTS-PER-RUN": ("reports one main run writes: save_report() call sites and reports inserts under "
+                          "ai_engine, none in a loop, run_pipeline() called once from main.py's __main__",
+                          _reports_claim, _reports_per_run, _equal),
+    "F-DB-GPVS-SINCE": ("the month the database's record of report-level GPVS verification begins, when it "
+                        "is also the month of its first stored report: the dated gpvs-report-outcomes-first "
+                        "and reports-first facts of the highest-numbered DB snapshot",
+                        _since_claim, _gpvs_first_month, _equal),
     "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
               "each with its party, source and read date",
               _ext_claim, _ext_phrases, _recorded),

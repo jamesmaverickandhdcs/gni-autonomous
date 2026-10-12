@@ -1,39 +1,62 @@
 {
-  "about": "GNI's own database figures, harvested by one read-only query (tools/gni_db_harvest.sql) whose result is ONE cell, copied here unaltered under 'harvest'. Design: docs/S112_RUNTIME_SNAPSHOT_DESIGN.md (DECISION S112-4: DATED facts only). The fitness functions F-DB-PIPE-TOKENS and F-DB-MAD-TOKENS read the highest-numbered snapshot and refuse it when query_md5 does not match the query file in the tree. A DATED fact covers a closed past window and does not go stale.",
-  "query_file": "tools/gni_db_harvest.sql",
-  "query_md5": "6c9b8ebb051fe0e4fe689cc6f28a3fa4",
-  "harvested_by": "the operator, S112 (Supabase SQL Editor)",
-  "harvest": {
-    "harvested_at": "2026-10-12T14:48:07.029893+00:00",
-    "facts": [
-      {
-        "id": "groq-tokens-gni_pipeline-2026-08",
-        "kind": "dated",
-        "window": "2026-08-01/2026-09-01",
-        "rows": 63,
-        "value": {
-          "mean": 17717,
-          "n": 63,
-          "min": 15006,
-          "max": 21824
-        }
-      },
-      {
-        "id": "groq-tokens-gni_mad-2026-08",
-        "kind": "dated",
-        "window": "2026-08-01/2026-09-01",
-        "rows": 62,
-        "value": {
-          "mean": 68525,
-          "n": 62,
-          "min": 61923,
-          "max": 74244
-        }
-      }
-    ],
-    "pipelines_in_window": {
-      "gni_pipeline": 63,
-      "gni_mad": 62
+ "about": "GNI's own database figures, harvested by one read-only query (tools/gni_db_harvest.sql) whose result is ONE cell, copied here unaltered under 'harvest'. Design: docs/S112_RUNTIME_SNAPSHOT_DESIGN.md (DECISION S112-4: DATED facts only). The fitness functions F-DB-PIPE-TOKENS, F-DB-MAD-TOKENS and F-DB-GPVS-SINCE read the highest-numbered snapshot and refuse it when query_md5 does not match the query file in the tree. A DATED fact covers a closed past window and does not go stale.",
+ "query_file": "tools/gni_db_harvest.sql",
+ "query_md5": "575f5e05245037c3a674b60e5b232808",
+ "harvested_by": "the operator, S112 (Supabase SQL Editor); harvested again at R9 after the query gained two facts",
+ "harvest": {
+  "harvested_at": "2026-10-12T21:15:05.350713+00:00",
+  "facts": [
+   {
+    "id": "groq-tokens-gni_pipeline-2026-08",
+    "kind": "dated",
+    "window": "2026-08-01/2026-09-01",
+    "rows": 63,
+    "value": {
+     "mean": 17717,
+     "n": 63,
+     "min": 15006,
+     "max": 21824
     }
+   },
+   {
+    "id": "groq-tokens-gni_mad-2026-08",
+    "kind": "dated",
+    "window": "2026-08-01/2026-09-01",
+    "rows": 62,
+    "value": {
+     "mean": 68525,
+     "n": 62,
+     "min": 61923,
+     "max": 74244
+    }
+   },
+   {
+    "id": "gpvs-report-outcomes-first",
+    "kind": "dated",
+    "window": "-/2026-10-01",
+    "rows": 253,
+    "value": {
+     "first_created_at": "2026-05-27T12:47:05.06043+00:00",
+     "n": 253
+    }
+   },
+   {
+    "id": "reports-first",
+    "kind": "dated",
+    "window": "-/2026-10-01",
+    "rows": 259,
+    "value": {
+     "first_created_at": "2026-05-24T05:55:21.609973+00:00",
+     "n": 259
+    }
+   }
+  ],
+  "pipelines_in_window": {
+   "gni_pipeline": 63,
+   "gni_mad": 62
+  },
+  "columns": {
+   "prediction_outcomes.created_at": true
   }
+ }
 }
