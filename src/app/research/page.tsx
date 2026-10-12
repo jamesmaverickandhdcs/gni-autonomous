@@ -101,7 +101,7 @@ export default function ResearchPage() {
                 color: 'border-green-800 bg-green-950', accent: 'text-green-400'
               },
               {
-                num: '4', title: '$0.00/month Autonomous Operation',
+                num: '4', title: 'Autonomous Operation on Free Plans',
                 desc: 'Full geopolitical intelligence platform running autonomous GitHub Actions workflows -- core (gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive) plus support (entity graph, market, self-bias, mission control) -- entirely on free tiers. Groq 100K tokens/day per account (a planning limit set by GNI) + Supabase 500MB + Vercel + GitHub Actions. Zero cost, within the free-tier limits. Challenges assumption that AI research requires paid infrastructure.',
                 color: 'border-yellow-800 bg-yellow-950', accent: 'text-yellow-400'
               },
@@ -154,7 +154,7 @@ export default function ResearchPage() {
         {/* Free tier proof */}
         <section>
           <div className="bg-green-950 border border-green-800 rounded-xl p-5">
-            <div className="text-sm font-bold text-green-300 mb-3">&#x1F4B0; $0.00/month — Free Tier Architecture</div>
+            <div className="text-sm font-bold text-green-300 mb-3">&#x1F4B0; Free Tier Architecture</div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-center">
               {[
                 { service: 'Groq', detail: '100K tokens/day per account (planning limit)', cost: '$0' },

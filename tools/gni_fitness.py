@@ -1132,6 +1132,53 @@ def _pillar_runs(root):
     return "%d" % len(re.findall(r"\"\w+\"", got))
 
 
+EXT_RE = re.compile(r"^gni_external_snapshot_S(\d+)\.json$")
+EXT_FIELDS = ("id", "party", "statement", "source", "url", "read", "read_by", "phrases")
+
+
+def _ext_claim(fragment):
+    """The phrase itself: an external figure is stated, not computed."""
+    if not fragment.strip():
+        raise FitnessError("empty fragment for F-EXT")
+    return fragment.strip()
+
+
+def _ext_phrases(root):
+    """Every phrase recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json
+    (S112, roadmap 4 row R4-3, DECISION S112-1). Each fact names its party, the
+    statement read, the source, the day it was read and who read it; a fact with
+    a field missing, a date not of the form YYYY-MM-DD, or a phrase claimed by two
+    facts is an instrument fault. Returns {phrase: "<fact id> read <date>"}. LIMIT, written down: the snapshot records what a
+    source said on the day it was read, so a figure that changes at its source
+    stays SUPPORTED here until the source is read again."""
+    import json
+    docs = os.path.join(root, "docs")
+    gen = sorted((int(m.group(1)), n) for n in (os.listdir(docs) if os.path.isdir(docs) else [])
+                 for m in [EXT_RE.match(n)] if m)
+    if not gen:
+        raise FitnessError("no docs/gni_external_snapshot_S<N>.json")
+    with open(os.path.join(docs, gen[-1][1]), "rb") as fh:
+        facts = json.loads(fh.read().decode("utf-8-sig")).get("facts") or []
+    if not facts:
+        raise FitnessError("%s holds no facts" % gen[-1][1])
+    owner = {}
+    for f in facts:
+        miss = [k for k in EXT_FIELDS if k not in f or (k != "url" and not f[k])]
+        if miss:
+            raise FitnessError("fact %r lacks %s" % (f.get("id"), ", ".join(miss)))
+        if not re.match(r"^\d{4}-\d{2}-\d{2}$", f["read"]):
+            raise FitnessError("fact %r: read %r is not YYYY-MM-DD" % (f["id"], f["read"]))
+        for ph in f["phrases"]:
+            if ph in owner:
+                raise FitnessError("phrase %r claimed by %s and %s" % (ph, owner[ph], f["id"]))
+            owner[ph] = "%s read %s" % (f["id"], f["read"])
+    return owner
+
+
+def _recorded(claimed, measured):
+    return claimed in measured
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1263,6 +1310,11 @@ FITNESS = {
                   _endpoints_claim, _export_routes, _equal),
     "F-PILLAR-RUNS": ("pillar reports a main run attempts: main.py's Step 4b pillar list",
                       _pillar_reports_claim, _pillar_runs, _equal),
+    # S112 (roadmap 4 row R4-3): a figure of a party GNI does not control, bound to the
+    # dated reading of its published source in docs/gni_external_snapshot_S<N>.json.
+    "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
+              "each with its party, source and read date",
+              _ext_claim, _ext_phrases, _recorded),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that
@@ -1324,4 +1376,9 @@ def derive(root, fid, fragment, cache):
     if fid not in cache:
         cache[fid] = measure(root)
     measured = cache[fid]
-    return ("SUPPORTED" if holds(claimed, measured) else "DEFEATED"), claimed, measured
+    status = "SUPPORTED" if holds(claimed, measured) else "DEFEATED"
+    if isinstance(measured, dict):
+        # A measurement keyed by what is claimed (F-EXT) reports the one record that
+        # bears the claim out, not every record it holds.
+        measured = measured.get(claimed, "not recorded")
+    return status, claimed, measured

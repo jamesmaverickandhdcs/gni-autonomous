@@ -42,11 +42,11 @@ export default function AboutPage() {
   ]
 
   const comparisons = [
-    { name: 'Bloomberg Terminal',    cost: '$31,980/yr', note: 'Single seat — 2026 verified price' },
+    { name: 'Bloomberg Terminal',    cost: '$31,980/yr', note: 'Single seat — 2025 list price (NeuGroup)' },
     { name: 'Stratfor Worldview',    cost: '$199/yr',    note: 'Individual subscription' },
     { name: 'Oxford Analytica',      cost: 'On Request', note: 'Enterprise custom quote — no public price' },
     { name: 'Human Analyst',         cost: '$82,429–$104,177/yr', note: 'Geopolitical intelligence analyst — US average 2026' },
-    { name: 'GNI_Autonomous',        cost: '$0.00/yr',  note: 'Open. Free. Always.' },
+    { name: 'GNI_Autonomous',        cost: 'Free',  note: 'Open. Free. Always.' },
   ]
 
   return (
@@ -105,7 +105,7 @@ export default function AboutPage() {
             ))}
           </div>
           <div className="mt-3 text-xs text-gray-600 text-center">
-            Bloomberg Terminal has grown 60% since 2010 ($20,000 → $31,980). The cost barrier widens every year.
+            A single Bloomberg Terminal seat cost $24,000 a year in 2013 (Quartz) and $31,980 in 2025 (NeuGroup). The cost barrier has widened.
           </div>
         </div>
 
@@ -185,10 +185,9 @@ export default function AboutPage() {
             Intelligence should not be a privilege. It should be a right.
           </p>
           <p className="text-gray-400 text-sm leading-relaxed mb-3">
-            GNI_Autonomous was built to prove that industrial-grade AI intelligence can run for $0.00 per month,
+            GNI_Autonomous was built to prove that industrial-grade AI intelligence can run on free plans,
             accessible to anyone in the world — including people in Myanmar
-            where 61.1% of the population now has internet access (DataReportal 2025) but where even a
-            $199/year subscription would represent 18% of average annual income.
+            where 61.1% of the population was online at the start of the year (DataReportal 2025).
           </p>
           <p className="text-gray-400 text-sm leading-relaxed mb-4">
             Built as a Higher Diploma final project at Spring University Myanmar (SUM).

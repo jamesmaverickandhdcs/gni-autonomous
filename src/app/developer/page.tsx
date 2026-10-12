@@ -60,7 +60,7 @@ export default function DeveloperPage() {
           <div className="flex items-center justify-between mb-3">
             <div>
               <h1 className="text-xl font-bold text-white">🧠 Developer Portal</h1>
-              <p className="text-xs text-gray-400">GNI_Autonomous API Reference | Build on top of GNI | Fork guide | $0.00/month architecture</p>
+              <p className="text-xs text-gray-400">GNI_Autonomous API Reference | Build on top of GNI | Fork guide | free-tier architecture</p>
             </div>
           </div>
         </div>
@@ -226,7 +226,7 @@ print(f"Mean escalation: {sum(scores)/len(scores):.2f}")`}</pre>
                   { step: '2', title: 'Create Supabase project', desc: 'Free tier. Create tables: reports, debate_predictions, pillar_reports, groq_daily_usage, pipeline_articles, source_health, source_weights. See /developer schema tab for columns.' },
                   { step: '3', title: 'Get a Groq API key', desc: 'console.groq.com — free tier; GNI plans against 100K tokens/day per account. Add as GROQ_API_KEY in GitHub repo secrets.' },
                   { step: '4', title: 'Add environment variables', desc: 'In GitHub repo Settings > Secrets, add the names the workflow files read, starting with GROQ_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_KEY and, for alerts, TELEGRAM_BOT_TOKEN.' },
-                  { step: '5', title: 'Deploy to Vercel', desc: 'Connect your forked repo to Vercel. Add same env vars in Vercel dashboard. Deploy. Done — $0.00/month.' },
+                  { step: '5', title: 'Deploy to Vercel', desc: 'Connect your forked repo to Vercel. Add same env vars in Vercel dashboard. Deploy. Done — on free plans.' },
                 ].map(({ step, title, desc }) => (
                   <div key={step} className="flex gap-4 bg-gray-800 rounded-lg p-4">
                     <div className="text-2xl font-bold text-blue-400 shrink-0 w-8">{step}</div>
@@ -245,7 +245,7 @@ print(f"Mean escalation: {sum(scores)/len(scores):.2f}")`}</pre>
                 <li>— Use a SEPARATE Groq account if running multiple projects (quota isolation)</li>
                 <li>— Sacred crons (02:13+10:13 UTC) start {PIPELINE_LATENESS}</li>
                 <li>— requirements.txt is DELETED — all pipelines use inline pip install</li>
-                <li>— Monthly cost is $0.00 using Groq free tier + Supabase free + Vercel free + GitHub free</li>
+                <li>— No monthly cost: Groq, Supabase, Vercel and GitHub, each on its free plan</li>
                 <li>— Author anonymous — Team Geeks only. Do not add individual names to commits or code.</li>
               </ul>
             </div>

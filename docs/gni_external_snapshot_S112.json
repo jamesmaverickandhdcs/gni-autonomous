@@ -1,0 +1,85 @@
+{
+  "about": "Published figures of parties GNI does not control, read at their source and dated (roadmap 4 row R4-3, DECISION S112-1). The fitness function F-EXT in tools/gni_fitness.py reads the highest-numbered snapshot: a public sentence bound to F-EXT is SUPPORTED only when its fragment is one of the phrases below. A snapshot is a record of what a source said on the day it was read; it does not follow the source. A figure that changes at its source stays green here until someone reads the source again - that is this file's known limit, written down rather than discovered later.",
+  "facts": [
+    {
+      "id": "supabase-free-db",
+      "party": "Supabase",
+      "statement": "Free plan: '500 MB database size'; 'Free - from $0/month'",
+      "source": "Supabase pricing page",
+      "url": "https://supabase.com/pricing",
+      "read": "2026-10-12",
+      "read_by": "Claude, S112",
+      "phrases": ["500MB"]
+    },
+    {
+      "id": "vercel-hobby-transfer",
+      "party": "Vercel",
+      "statement": "Typical monthly usage guidelines, Included (Hobby): Fast Data Transfer 'First 100 GB' (page last_updated 2026-09-14)",
+      "source": "Vercel docs, Fair Use Guidelines",
+      "url": "https://vercel.com/docs/limits/fair-use-guidelines",
+      "read": "2026-10-12",
+      "read_by": "Claude, S112",
+      "phrases": ["100GB"]
+    },
+    {
+      "id": "gni-monthly-bill",
+      "party": "GNI's providers (Groq, Cerebras, Supabase, Vercel, GitHub, Telegram)",
+      "statement": "GNI's monthly bill is $0.00: every account it runs on is on its provider's free plan, with no paid add-on",
+      "source": "operator attestation from each provider's billing page; no fitness function can read a bill",
+      "url": "",
+      "read": "2026-10-12",
+      "read_by": "the operator, S112",
+      "phrases": ["$0.00"]
+    },
+    {
+      "id": "bloomberg-2013",
+      "party": "Bloomberg",
+      "statement": "'Bloomberg is now charging $24,000 a year for a single terminal subscription' (published 2013-05-15)",
+      "source": "Quartz",
+      "url": "https://qz.com/84961/this-is-how-much-a-bloomberg-terminal-costs",
+      "read": "2026-10-12",
+      "read_by": "Claude, S112",
+      "phrases": ["$24,000 a year in 2013"]
+    },
+    {
+      "id": "bloomberg-2025",
+      "party": "Bloomberg",
+      "statement": "'The annual cost for users with one Terminal will rise to $31,980', the 2025 price (published 2024-10-09)",
+      "source": "NeuGroup",
+      "url": "https://connect.neugroup.com/public/blogs/bloomberg-terminals-how-much-more-youll-pay-next-year",
+      "read": "2026-10-12",
+      "read_by": "Claude, S112",
+      "phrases": ["$31,980 in 2025"]
+    },
+    {
+      "id": "myanmar-internet-2025",
+      "party": "DataReportal (Kepios)",
+      "statement": "'Myanmar's internet penetration rate stood at 61.1 percent of the total population at the start of the year' - Digital 2025: Myanmar",
+      "source": "DataReportal, Digital 2025: Myanmar",
+      "url": "https://datareportal.com/reports/digital-2025-myanmar",
+      "read": "2026-10-12",
+      "read_by": "Claude, S112",
+      "phrases": ["61.1%", "DataReportal 2025"]
+    },
+    {
+      "id": "forecastbench-venue",
+      "party": "ICLR",
+      "statement": "ForecastBench: A Dynamic Benchmark of AI Forecasting Capabilities, ICLR 2025 proceedings",
+      "source": "ICLR 2025 proceedings",
+      "url": "https://proceedings.iclr.cc/paper_files/paper/2025/hash/ea74e45a229dac70b5b63b28d8934db6-Abstract-Conference.html",
+      "read": "2026-10-12",
+      "read_by": "Claude, S112",
+      "phrases": ["ICLR 2025"]
+    },
+    {
+      "id": "mc-temperature-venue",
+      "party": "ACL Anthology",
+      "statement": "Monte Carlo Temperature: a robust sampling strategy for LLM's uncertainty quantification methods, TrustNLP 2025 (2025.trustnlp-main.21)",
+      "source": "ACL Anthology",
+      "url": "https://aclanthology.org/2025.trustnlp-main.21/",
+      "read": "2026-10-12",
+      "read_by": "Claude, S112",
+      "phrases": ["TrustNLP 2025"]
+    }
+  ]
+}

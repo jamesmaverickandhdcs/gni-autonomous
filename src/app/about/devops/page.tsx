@@ -82,7 +82,7 @@ export default function AboutDevopsPage() {
           <div className="text-xs text-purple-400 uppercase tracking-wider mb-3">The Autonomy Philosophy</div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { title: '$0.00/Month Forever', desc: 'Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero credit card required.' },
+              { title: 'Free Plans Only', desc: 'Every component uses free tiers: Groq (planned at 100K tokens/day per account), Supabase (500MB), Vercel (100GB bandwidth), GitHub Actions (unlimited public repo minutes). Zero credit card required.' },
               { title: 'Runs Without a Human Trigger', desc: `Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. The frequency controller records, for each report, how often the current escalation level would warrant a run; it does not change the schedule. The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis.` },
               { title: 'Watched by Design', desc: `Mission Control runs its checks ${SCHEDULE_REQUESTED_30}. The heartbeat triggers the adaptive run when escalation moves past its threshold; at the CRITICAL level that run sends an alert instead of an analysis. When something breaks, an alert reaches the operator, and the repair is done by a person.` },
             ].map(item => (
@@ -157,7 +157,7 @@ export default function AboutDevopsPage() {
 
         <div className="bg-gray-900 border border-yellow-800 rounded-xl p-6">
           <div className="text-xs text-yellow-600 uppercase tracking-wider mb-3">Academic Contribution — Autonomy Evidence</div>
-          <p className="text-sm text-gray-300 leading-relaxed mb-3">The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running at $0.00/month. This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes.</p>
+          <p className="text-sm text-gray-300 leading-relaxed mb-3">The Dev Console perspective provides the technical evidence for GNI&apos;s most significant engineering claim: a production-grade autonomous AI intelligence system running entirely on free plans. This is not a prototype or a demo — it is a live system processing real news, making real predictions, and verifying them against real market outcomes.</p>
           <p className="text-sm text-gray-400 leading-relaxed">The core pipelines, their supporting workflows, the heartbeat and Mission Control show a system whose scheduled work runs without a person starting it; changing it, and repairing it when it breaks, is still a person&apos;s job.</p>
         </div>
 
