@@ -1211,6 +1211,83 @@ def _weight_neutral(root):
     return _route_int(root, "ai_engine/analysis/source_weights.py", r"'weight': (\d+\.\d+),")
 
 
+# S112 (roadmap 4 row R4-3, round 3).
+def _agent_window_claim(fragment):
+    m = re.search(r"(\d+)-[Dd]ay", fragment)
+    if not m:
+        raise FitnessError("no '<n>-day' in fragment %r" % fragment)
+    return "%dd" % int(m.group(1))
+
+
+def _agent_window(root):
+    """The outcome window the correlation engine credits the Black Swan and Ostrich
+    columns with: correct_<n>d appended to swan_correct and ostrich_correct in
+    historical_correlations.py. The two must agree."""
+    got = set()
+    for col in ("swan_correct", "ostrich_correct"):
+        got.add(_route_int(root, "ai_engine/analysis/historical_correlations.py",
+                           r'\["%s"\]\.append\(correct_(\d+)d\)' % col))
+    if len(got) != 1:
+        raise FitnessError("swan and ostrich columns credit different windows: %r" % sorted(got))
+    return "%sd" % got.pop()
+
+
+def _active_claim(fragment):
+    m = re.search(_COUNT_TOKEN + r" (?:active )?(?:prompt )?variants", fragment, re.I)
+    if not m:
+        raise FitnessError("no '<n> (active) variants' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
+
+
+def _ab_min_active(root):
+    """Active prompt variants the A/B test needs: every `len(variants|eligible) < N`
+    in prompt_manager.py; more than one N halts."""
+    path = os.path.join(root, "ai_engine", "analysis", "prompt_manager.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/prompt_manager.py not found")
+    with open(path, "rb") as fh:
+        got = set(re.findall(r"len\((?:variants|eligible)\) < (\d+)", fh.read().decode("utf-8-sig")))
+    if len(got) != 1:
+        raise FitnessError("expected one minimum of active variants in prompt_manager.py, got %r" % got)
+    return got.pop()
+
+
+def _ci_runs_claim(fragment):
+    m = re.search(_COUNT_TOKEN + r" temperature runs", fragment, re.I)
+    if not m:
+        raise FitnessError("no '<n> temperature runs' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
+
+
+def _groq_calls_claim(fragment):
+    m = re.search(r"\b(zero|\d+) Groq calls\b", fragment, re.I)
+    if not m:
+        raise FitnessError("no '<n>|zero Groq calls' in fragment %r" % fragment)
+    return 0 if m.group(1).lower() == "zero" else int(m.group(1))
+
+
+def _conf_claim(fragment):
+    m = re.search(r"(\d+)-(\d+)%", fragment)
+    if not m:
+        raise FitnessError("no '<a>-<b>%' in fragment %r" % fragment)
+    return "%s-%s%%" % (m.group(1), m.group(2))
+
+
+def _conf_range(root):
+    """The range the Arbitrator's confidence is held to, shown as a percentage: every
+    `mad_confidence ... max(a, min(b, ...))` clamp in mad_protocol.py; two ranges halt."""
+    path = os.path.join(root, "ai_engine", "analysis", "mad_protocol.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/mad_protocol.py not found")
+    with open(path, "rb") as fh:
+        got = set(re.findall(r"mad_confidence[^\n]*?max\(([\d.]+), min\(([\d.]+),",
+                             fh.read().decode("utf-8-sig")))
+    if len(got) != 1:
+        raise FitnessError("expected one mad_confidence clamp in mad_protocol.py, got %r" % got)
+    lo, hi = got.pop()
+    return "%g-%g%%" % (float(lo) * 100, float(hi) * 100)
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1349,6 +1426,17 @@ FITNESS = {
                      "/researcher, which must agree", _trend_claim, _trend_runs, _equal),
     "F-WEIGHT-NEUTRAL": ("the weight a source is seeded with: 'weight' in source_weights.py's seed",
                          _neutral_claim, _weight_neutral, _equal),
+    # S112 (roadmap 4 row R4-3, round 3).
+    "F-AGENT-WINDOW": ("outcome window credited to the Black Swan and Ostrich columns: correct_<n>d "
+                       "in historical_correlations.py", _agent_window_claim, _agent_window, _equal),
+    "F-AB-MIN-ACTIVE": ("active prompt variants the A/B test needs: len(variants|eligible) < N in "
+                        "prompt_manager.py", _active_claim, _ab_min_active, _equal),
+    "F-CI-RUNS": ("analysis runs behind the sentiment interval: the number of F-CI-TEMPS temperatures",
+                  _ci_runs_claim, lambda r: "%d" % len(_ci_temps(r)), _equal),
+    "F-HB-GROQ-CALLS": ("Groq imports and Groq() calls in the heartbeat module (as F-HB-GROQ), "
+                        "claimed in words", _groq_calls_claim, _groq_refs, _equal),
+    "F-CONF-RANGE": ("the Arbitrator's confidence clamp in mad_protocol.py, as a percentage",
+                     _conf_claim, _conf_range, _equal),
     "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
               "each with its party, source and read date",
               _ext_claim, _ext_phrases, _recorded),
