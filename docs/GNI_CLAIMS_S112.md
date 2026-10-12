@@ -9,7 +9,7 @@ claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, n
 
 STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S112.tsv` md5 `fd2d85f8e5195ca9cfdfe99fed723b7b` (EOL-normalised) -- **817 claims** (590 STATE, 206 PROMISE, 21 MIXED) at **875 locations** in 38 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `cd10c0a511c217cecdb3588d94d46421` (EOL-normalised) -- **COVERAGE 149/817 = 18.2%** (149 SUPPORTED, 0 DEFEATED, 668 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 16** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f32095e8caca` (EOL-normalised) -- **COVERAGE 154/817 = 18.8%** (154 SUPPORTED, 0 DEFEATED, 663 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 11** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -255,7 +255,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `cd10c0a511c217cecdb3588d
 | CLM-235 | STATE | SUPPORTED | F-MAD-AGENTS claims 4, measured 4; F-MAD-ROUNDS claims 3, measured 3 | `src/app/methodology/page.tsx:33` | 4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions |
 | CLM-236 | STATE | SUPPORTED | F-HB-GROQ claims 0, measured 0 | `src/app/methodology/page.tsx:34` | 0 (zero) |
 | CLM-237 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:34` | Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection |
-| CLM-238 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:35` | 0 (Cerebras path) |
+| CLM-238 | STATE | SUPPORTED | F-ADAPT-GROQ-LOGGED claims 0, measured 0 | `src/app/methodology/page.tsx:35` | 0 (Cerebras path) |
 | CLM-240 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000 | `src/app/methodology/page.tsx:57` | Reads groq_daily_usage → sums today\\'s tokens → checks against 85K safe ceiling. |
 | CLM-241 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:57` | If insufficient headroom: EXIT with Telegram alert. |
 | CLM-242 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/methodology/page.tsx:57` | Sacred runs (02:13+10:13 UTC) always permitted. |
@@ -284,7 +284,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `cd10c0a511c217cecdb3588d
 | CLM-294 | STATE | SUPPORTED | F-HB-GROQ claims 0, measured 0 | `src/app/about/devops/page.tsx:45` | 0 tokens |
 | CLM-295 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:45` | Escalation monitoring and NYSE alert system. |
 | CLM-296 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:45` | Reads latest escalation score, compares to previous pipeline run, detects signal divergence between Pipeline and MAD, fires NYSE open/close alerts, triggers adaptive pipeline when escalation delta exceeds threshold. |
-| CLM-297 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:46` | 0 (Cerebras path -- logs 0 Groq) |
+| CLM-297 | STATE | SUPPORTED | F-ADAPT-GROQ-LOGGED claims 0, measured 0 | `src/app/about/devops/page.tsx:46` | 0 (Cerebras path -- logs 0 Groq) |
 | CLM-302 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:50` | 42 global news sources, up to 20 articles each, 400-500 raw articles per run. |
 | CLM-311 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Heartbeat monitors escalation delta; ${FRESHNESS_LINE}. |
 | CLM-313 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Telegram CRITICAL/WARNING alerts with specific action recommendations. |
@@ -570,7 +570,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `cd10c0a511c217cecdb3588d
 | CLM-778 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:46` | Runs when the heartbeat triggers it. |
 | CLM-779 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:46` | At the CRITICAL level it sends an alert and runs no analysis; at every other level it runs one focused analysis on Cerebras, with no Groq call. |
 | CLM-780 | STATE | SUPPORTED | F-ADAPT-GAP claims CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h, measured CRITICAL=0.5h+HIGH=2h+ELEVATED=4h+MODERATE=6h+LOW=12h | `src/app/about/devops/page.tsx:46` | Between runs it waits at least the gap its own table sets per level: CRITICAL 30 min, HIGH 2 h, ELEVATED 4 h, MODERATE 6 h, LOW 12 h, and longer during NYSE hours. |
-| CLM-781 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:50` | MD5 title keys remove duplicate articles within a run, URLs a recent run already selected are excluded, and a report whose article basket is mostly recycled is skipped. |
+| CLM-781 | STATE | SUPPORTED | F-DEDUP-HASH claims md5, measured md5 | `src/app/about/devops/page.tsx:50` | MD5 title keys remove duplicate articles within a run, URLs a recent run already selected are excluded, and a report whose article basket is mostly recycled is skipped. |
 | CLM-782 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Mission Control checks the Supabase connection, the age of the newest report, Groq quota, recent pipeline and MAD runs, source health, and the freshness of what the web app serves. |
 | CLM-783 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | Runs Without a Human Trigger |
 | CLM-784 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | The frequency controller records, for each report, how often the current escalation level would warrant a run; it does not change the schedule. |
@@ -757,9 +757,9 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `cd10c0a511c217cecdb3588d
 | CLM-969 | STATE | UNMEASURED | QUALITATIVE | `src/app/correlations/page.tsx:236` | Bull and Bear score the MAD verdict: Bull fills only from bullish verdicts and Bear only from bearish ones, so a column shows N/A when no such verdict has been verified. |
 | CLM-970 | STATE | SUPPORTED | F-AGENT-WINDOW claims 3d, measured 3d | `src/app/correlations/page.tsx:237` | The Black Swan and Ostrich columns are not those agents&apos; own scores: each is the 3-day direction result of the reports that carry that agent&apos;s case. |
 | CLM-971 | STATE | UNMEASURED | QUALITATIVE | `src/app/correlations/page.tsx:238` | Nothing computes agent accuracy over longer windows yet. |
-| CLM-972 | STATE | UNMEASURED | QUALITATIVE | `src/app/correlations/page.tsx:257` | ⚡ 3-day |
-| CLM-973 | STATE | UNMEASURED | QUALITATIVE | `src/app/correlations/page.tsx:291` | 3-day |
-| CLM-973 | STATE | UNMEASURED | QUALITATIVE | `src/components/DirectionalSkillNote.tsx:9` | 3-day |
+| CLM-972 | STATE | SUPPORTED | F-GPVS-WINDOW-WORD claims 3d, measured 3d+7d+30d+180d | `src/app/correlations/page.tsx:257` | ⚡ 3-day |
+| CLM-973 | STATE | SUPPORTED | F-GPVS-WINDOW-WORD claims 3d, measured 3d+7d+30d+180d | `src/app/correlations/page.tsx:291` | 3-day |
+| CLM-973 | STATE | SUPPORTED | F-GPVS-WINDOW-WORD claims 3d, measured 3d+7d+30d+180d | `src/components/DirectionalSkillNote.tsx:9` | 3-day |
 | CLM-974 | STATE | SUPPORTED | F-PATTERN-MIN claims 3, measured 3 | `src/app/correlations/page.tsx:306` | Requires 3+ verified report outcomes per location or pillar. |
 | CLM-975 | STATE | SUPPORTED | F-MAD-ROUNDS claims 3, measured 3 | `src/app/debate/page.tsx:144` | Bull → Bear → Black Swan → Ostrich over three rounds on future threats, then the Arbitrator |
 | CLM-976 | STATE | SUPPORTED | F-MAD-AGENTS claims 4, measured 4 | `src/app/debate/page.tsx:146` | Four agents each take one quadrant: Known Positives (Bull), Known Negatives (Bear), Unknown Negatives (Black Swan) and Ignored Realities (Ostrich). |

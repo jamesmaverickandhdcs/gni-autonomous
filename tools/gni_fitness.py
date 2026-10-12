@@ -1371,6 +1371,64 @@ def _tokens_hold(claimed, measured):
     return False
 
 
+# S112 (roadmap 4 row R4-3, round 5).
+def _day_word_claim(fragment):
+    m = re.search(r"\b(\d+)-day\b", fragment, re.I)
+    if not m:
+        raise FitnessError("no '<n>-day' in fragment %r" % fragment)
+    return ["%dd" % int(m.group(1))]
+
+
+def _md5_claim(fragment):
+    m = re.search(r"\b(MD5|SHA-?\d+)\b", fragment, re.I)
+    if not m:
+        raise FitnessError("no hash name in fragment %r" % fragment)
+    return m.group(1).lower().replace("-", "")
+
+
+def _dedup_hash(root):
+    """The hash intelligence_funnel._get_dedup_key keys a title with: hashlib.<name>(...)
+    inside that function (AST); more than one name halts."""
+    fn = _func(root, "ai_engine/funnel/intelligence_funnel.py", "_get_dedup_key")
+    got = {n.func.attr for n in ast.walk(fn) if isinstance(n, ast.Call)
+           and isinstance(n.func, ast.Attribute) and getattr(n.func.value, "id", "") == "hashlib"}
+    if len(got) != 1:
+        raise FitnessError("expected one hashlib call in _get_dedup_key, got %r" % got)
+    return got.pop()
+
+
+def _zero_tokens_claim(fragment):
+    m = re.match(r"\s*(\d+) \(Cerebras path", fragment)
+    if not m:
+        raise FitnessError("no '<n> (Cerebras path' in fragment %r" % fragment)
+    return int(m.group(1))
+
+
+def _adaptive_logged(root):
+    """Groq tokens the adaptive run logs: tokens_used= in every log_usage(...,
+    pipeline='gni_adaptive', ...) call in adaptive_pipeline.py (AST). Every value must
+    be one literal; a computed value halts, because then no literal is claimed."""
+    rel = "ai_engine/adaptive_pipeline.py"
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    got = set()
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Call) and getattr(n.func, "id", "") == "log_usage":
+            kw = {k.arg: k.value for k in n.keywords}
+            if getattr(kw.get("pipeline"), "value", None) != "gni_adaptive":
+                continue
+            v = kw.get("tokens_used")
+            if not isinstance(v, ast.Constant):
+                raise FitnessError("log_usage(pipeline='gni_adaptive') logs a computed tokens_used")
+            got.add(v.value)
+    if len(got) != 1:
+        raise FitnessError("expected one tokens_used literal for gni_adaptive, got %r" % got)
+    return got.pop()
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1527,6 +1585,15 @@ FITNESS = {
     "F-DB-MAD-TOKENS": ("Groq tokens per MAD run in a named month: the dated groq-tokens-gni_mad fact "
                         "of the highest-numbered DB snapshot", _tokens_claim,
                         _db_tokens("gni_mad"), _tokens_hold),
+    # S112 (roadmap 4 row R4-3, round 5).
+    "F-GPVS-WINDOW-WORD": ("one window of the report-level GPVS check, written '<n>-day' in any case: it must "
+                           "be one of fetch_price_change_with_fallback('SPY', N) (AST)",
+                           _day_word_claim, _gpvs_days, _scheduled),
+    "F-DEDUP-HASH": ("the hash _get_dedup_key keys a title with: hashlib.<name> in intelligence_funnel.py (AST)",
+                     _md5_claim, _dedup_hash, _equal),
+    "F-ADAPT-GROQ-LOGGED": ("Groq tokens the adaptive run logs: the tokens_used literal of log_usage("
+                            "pipeline='gni_adaptive') in adaptive_pipeline.py (AST)",
+                            _zero_tokens_claim, _adaptive_logged, _equal),
     "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
               "each with its party, source and read date",
               _ext_claim, _ext_phrases, _recorded),
