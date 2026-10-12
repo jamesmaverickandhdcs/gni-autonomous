@@ -38,6 +38,9 @@ count it, because a count written here went stale twice (protocol v18).
   C19 R-S109-3  no .tsx under src reads mad_confidence except as an argument of
                 src/lib/verdict.ts's functions, which name the 0.5 insert
                 placeholder and the failed-arbitrator default (S112)
+  C20 R4-4      every PROMISE claim has one row in the promise ledger with a
+                state and evidence that resolves; WITHDRAWN carries the
+                operator's DECISION from the live order; SUMMARY equals the rows
 
 CONSTRAINTS THIS SCRIPT HONOURS, ON PURPOSE:
   - stdlib only. No pip install step is needed or wanted (item 6.9).
@@ -1475,6 +1478,104 @@ def check_c19_confidence_in_lib(ctx):
         len(users), VERDICT_LIB)
 
 
+# ---- S112, roadmap 4 row R4-4 ------------------------------------------------
+# The promise ledger: one row per PROMISE claim of the live claims document (kind PROMISE, or a
+# STATE/MIXED claim whose UNMEASURED reason is PROMISE), each with a state and evidence a reader
+# can open. A session may grade a promise; it may not retire one - WITHDRAWN carries the
+# operator's DECISION, and the DECISION must be written in the live order.
+LEDGER_RE = re.compile(r"^GNI_PROMISE_LEDGER_S(\d+)\.tsv$")
+LEDGER_STATES = ("BUILT", "PARTIAL", "NOT BUILT", "WITHDRAWN")
+LEDGER_CLM_RE = re.compile(r"^CLM-\d+$")
+LEDGER_DECISION_RE = re.compile(r"^DECISION:(S\d+-\d+)$")
+LEDGER_SUMMARY_RE = re.compile(r"^SUMMARY\t" + "\t".join(
+    r"%s (\d+)" % st for st in LEDGER_STATES) + r"\tTOTAL (\d+)$")
+
+
+def parse_ledger(text):
+    """(summary counts or None, [(id, state, [evidence tokens], note)]). Comment lines start
+    with '#'; the column header line starts with 'id'."""
+    summary, rows = None, []
+    for ln in text.split("\n"):
+        ln = ln.rstrip("\r")
+        if not ln.strip() or ln.startswith("#") or ln.startswith("id\t"):
+            continue
+        m = LEDGER_SUMMARY_RE.match(ln)
+        if m:
+            summary = tuple(int(x) for x in m.groups())
+            continue
+        if ln.startswith("SUMMARY"):
+            raise InstrumentError("ledger SUMMARY line does not parse: %r" % ln[:80])
+        cells = ln.split("\t")
+        if len(cells) != 4:
+            raise InstrumentError("ledger row has %d cells, not 4: %r" % (len(cells), ln[:80]))
+        rows.append((cells[0], cells[1], cells[2].split(), cells[3]))
+    return summary, rows
+
+
+def _clm_key(cid):
+    return int(cid.split("-")[1])
+
+
+def check_c20_promise_ledger(ctx):
+    """R4-4. Every PROMISE claim has one ledger row; every row has a known state and evidence
+    that resolves (a path in the tree, a claim of the tree, or for WITHDRAWN the operator's
+    DECISION written in the live order); the SUMMARY line equals the rows counted by state."""
+    import gni_claims as gcl
+    root = ctx["root"]
+    try:
+        path = gcl.live(root, LEDGER_RE, "promise ledger")
+        _, built, _ = gcl.build(root)
+        texts = {cid: t for cid, _, _, _, t in built}
+        _, derived = gcl.statuses(root, texts)
+    except gcl.InstrumentError as exc:
+        raise InstrumentError(str(exc))
+    kinds = {cid: kind for cid, kind, _, _, _ in built}
+    promises = {c for c in texts if kinds[c] == "PROMISE"
+                or (derived[c][0] == "UNMEASURED" and derived[c][1] == "PROMISE")}
+    require_nonempty("PROMISE claims in the live claims document", promises)
+    summary, rows = parse_ledger(read(path))
+    require_nonempty("rows in " + os.path.basename(path), rows)
+    order = read(live_docs(root)["GNI_TARGET_AND_ORDER"]) if not ctx.get("replay") else ""
+    problems, seen = [], set()
+    for cid, state, evidence, _ in rows:
+        if cid in seen:
+            problems.append("%s has two rows" % cid)
+        seen.add(cid)
+        if cid not in promises:
+            problems.append("%s is not a PROMISE claim of the tree" % cid)
+        if state not in LEDGER_STATES:
+            problems.append("%s state %r unknown" % (cid, state))
+        if not evidence:
+            problems.append("%s has no evidence" % cid)
+        decisions = []
+        for tok in evidence:
+            m = LEDGER_DECISION_RE.match(tok)
+            if m:
+                decisions.append(m.group(1))
+                if not ctx.get("replay") and "DECISION " + m.group(1) not in order:
+                    problems.append("%s cites DECISION %s, which the live order does not record"
+                                    % (cid, m.group(1)))
+            elif LEDGER_CLM_RE.match(tok):
+                if tok not in texts:
+                    problems.append("%s cites %s, not a claim of the tree" % (cid, tok))
+            elif not os.path.exists(os.path.join(root, tok.split(":")[0])):
+                problems.append("%s cites %s, which is not in the tree" % (cid, tok))
+        if state == "WITHDRAWN" and not decisions:
+            problems.append("%s is WITHDRAWN with no DECISION of the operator's" % cid)
+    missing = sorted(promises - seen, key=_clm_key)
+    if missing:
+        problems.append("%d PROMISE claims have no row, first %s" % (len(missing), missing[0]))
+    counted = tuple(sum(1 for r in rows if r[1] == st) for st in LEDGER_STATES) + (len(rows),)
+    if summary is None:
+        problems.append("%s prints no SUMMARY line" % os.path.basename(path))
+    elif summary != counted:
+        problems.append("SUMMARY prints %s, the rows count %s" % (summary, counted))
+    if problems:
+        return False, "; ".join(problems)
+    return True, "%d PROMISE claims, %d rows: %s" % (len(promises), len(rows), ", ".join(
+        "%s %d" % (st, n) for st, n in zip(LEDGER_STATES, counted)))
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -1495,6 +1596,7 @@ CHECKS = (
     ("C17 R-S109-3 verdict in lib", check_c17_verdict_in_lib),
     ("C18 R4-1    unreviewed ratchet", check_c18_unreviewed_ratchet),
     ("C19 R-S109-3 confidence in lib", check_c19_confidence_in_lib),
+    ("C20 R4-4    promise ledger", check_c20_promise_ledger),
 )
 
 

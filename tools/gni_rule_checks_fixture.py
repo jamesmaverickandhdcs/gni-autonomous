@@ -252,7 +252,7 @@ def _claims_files(root, claim_texts=(CLAIM_TEXT, CLAIM_KEPT, CLAIM_PAGES)):
     """Every manual unit the tree yields gets a verdict: the named texts are
     CLAIMs, everything else UI. Then the claims document is rendered."""
     import gni_claims as gcl
-    rows, binds, seen, n = [], [], set(), 0
+    rows, binds, seen, n, promise_id = [], [], set(), 0, None
     for _, _, kind, t in gcl.candidates(root):
         k = gcl.key_of(t)
         if k in seen or gcl.tier(kind, t) != "manual":
@@ -261,7 +261,10 @@ def _claims_files(root, claim_texts=(CLAIM_TEXT, CLAIM_KEPT, CLAIM_PAGES)):
         if t in claim_texts:
             n += 1
             cid = "CLM-%03d" % n
-            rows.append(_verdict_row(gcl, t, "CLAIM", "STATE", cid))
+            # S112 R4-4: CLAIM_KEPT is the base tree's one PROMISE, so C20 has a ledger to read
+            rows.append(_verdict_row(gcl, t, "CLAIM", "PROMISE" if t == CLAIM_KEPT else "STATE", cid))
+            if t == CLAIM_KEPT:
+                promise_id = cid
             binds.append("%s\tF-ROUTES\t%s" % (cid, PAGES_FRAG) if t == CLAIM_PAGES
                          else "%s\tUNMEASURED\tUNREVIEWED" % cid)
         else:
@@ -269,6 +272,19 @@ def _claims_files(root, claim_texts=(CLAIM_TEXT, CLAIM_KEPT, CLAIM_PAGES)):
     w(root + "/docs/GNI_CLAIM_VERDICTS_S94.tsv", "# fixture verdicts\n" + "\n".join(rows) + "\n")
     w(root + "/docs/GNI_CLAIM_BINDINGS_S94.tsv", "# fixture bindings\n" + "\n".join(binds) + "\n")
     _claims_doc(root)
+    if promise_id:
+        _ledger(root, [(promise_id, "BUILT", "ai_engine/entry.py")])
+
+
+def _ledger(root, rows, summary=None):
+    """S112 R4-4. The promise ledger C20 reads: a SUMMARY line counted from the rows unless a
+    family hands one in, then one row per (id, state, evidence)."""
+    states = ("BUILT", "PARTIAL", "NOT BUILT", "WITHDRAWN")
+    if summary is None:
+        summary = "SUMMARY\t" + "\t".join("%s %d" % (st, sum(1 for r in rows if r[1] == st))
+                                           for st in states) + "\tTOTAL %d" % len(rows)
+    w(root + "/docs/GNI_PROMISE_LEDGER_S94.tsv", "# fixture ledger\n" + summary + "\nid\tstate\tevidence\tnote\n"
+      + "".join("%s\t%s\t%s\tfixture\n" % r for r in rows))
 
 
 def _claims_doc(root):
@@ -496,7 +512,7 @@ CASES["40-escalation-capped-average"] = lambda r: (
 # document is regenerated, so 41 fails on staleness, not on the claim. 45 is
 # the KNOWN LIMIT of DECISION S107-3 carried as a family: a claim of under four
 # words with no lexicon word is filed UI by rule and the check cannot see it.
-def _add_claim(r, regenerate):
+def _add_claim(r, regenerate, ledger_row=True):
     import gni_claims as gcl
     base(r)
     w(r + "/src/app/claims2/page.tsx", "export default function Q() { return <p>%s</p> }\n" % CLAIM_NEW)
@@ -505,6 +521,10 @@ def _add_claim(r, regenerate):
     ap(r + "/docs/GNI_CLAIM_BINDINGS_S94.tsv", "CLM-900\tUNMEASURED\tPROMISE\n")
     if regenerate:
         _claims_doc(r)
+    # S112 R4-4: a new PROMISE takes a ledger row, as every promise must (C20)
+    if ledger_row:
+        _ledger(r, [("CLM-002", "BUILT", "ai_engine/entry.py"),
+                    ("CLM-900", "NOT BUILT", "src/app/claims2/page.tsx")])
     return r
 
 
@@ -768,6 +788,38 @@ CASES["94-confidence-type-and-select-pass"] = lambda r: _conf_page(
 CASES["95-confidence-read-in-component"] = lambda r: _conf_page(
     r, "<b>{(r.mad_confidence || 0).toFixed(2)}</b>\n", rel="src/components/Badge.tsx")
 
+# S112 R4-4, C20. The base tree's one PROMISE (CLAIM_KEPT, CLM-002) has a BUILT row citing a file
+# that exists. 96: a second PROMISE with no row; 97: a BUILT row citing a file that is not there; 98: a row with no
+# evidence; 99: a SUMMARY that disagrees with the rows; 100: WITHDRAWN with no DECISION - a session
+# retiring a promise by itself; 101 is 100's DISCRIMINATOR: WITHDRAWN citing a DECISION the live
+# order records is green; 102: a row for a claim that is not a PROMISE; 103: no ledger at all is an
+# instrument error, not a pass. 96 is family 42's tree (a PROMISE added, claims regenerated) without
+# the ledger row 42 now writes. 104: WITHDRAWN citing a DECISION the live order does not record.
+def _promise_family(r, rows, summary=None, order=None):
+    base(r, order=order)
+    _ledger(r, rows, summary)
+    return r
+
+
+CASES["96-promise-row-missing"] = lambda r: _add_claim(r, True, ledger_row=False)
+CASES["97-promise-evidence-path-absent"] = lambda r: _promise_family(
+    r, [("CLM-002", "BUILT", "ai_engine/nowhere.py")])
+CASES["98-promise-no-evidence"] = lambda r: _promise_family(r, [("CLM-002", "BUILT", "")])
+CASES["99-promise-summary-wrong"] = lambda r: _promise_family(
+    r, [("CLM-002", "BUILT", "ai_engine/entry.py")],
+    "SUMMARY\tBUILT 0\tPARTIAL 1\tNOT BUILT 0\tWITHDRAWN 0\tTOTAL 1")
+CASES["100-promise-withdrawn-without-decision"] = lambda r: _promise_family(
+    r, [("CLM-002", "WITHDRAWN", "ai_engine/entry.py")])
+CASES["101-promise-withdrawn-with-decision-passes"] = lambda r: _promise_family(
+    r, [("CLM-002", "WITHDRAWN", "DECISION:S94-1")],
+    order=ORDER_BODY + "\nDECISION S94-1 - the operator withdrew the free-report promise.\n")
+CASES["104-promise-decision-not-in-order"] = lambda r: _promise_family(
+    r, [("CLM-002", "WITHDRAWN", "DECISION:S94-7")])
+CASES["102-promise-row-for-a-state-claim"] = lambda r: _promise_family(
+    r, [("CLM-002", "BUILT", "ai_engine/entry.py"), ("CLM-001", "BUILT", "ai_engine/entry.py")])
+CASES["103-promise-ledger-missing"] = lambda r: (
+    base(r), os.remove(r + "/docs/GNI_PROMISE_LEDGER_S94.tsv"), r)[-1]
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -822,6 +874,11 @@ EXPECT = {
     "91-confidence-lib-helper-missing": 2, "92-confidence-averaged-on-page": 1,
     "93-confidence-guarded-read-still-read": 1, "94-confidence-type-and-select-pass": 0,
     "95-confidence-read-in-component": 1,
+    "96-promise-row-missing": 1, "97-promise-evidence-path-absent": 1,
+    "98-promise-no-evidence": 1, "99-promise-summary-wrong": 1,
+    "100-promise-withdrawn-without-decision": 1, "101-promise-withdrawn-with-decision-passes": 0,
+    "102-promise-row-for-a-state-claim": 1, "103-promise-ledger-missing": 2,
+    "104-promise-decision-not-in-order": 1,
 }
 
 if __name__ == "__main__":

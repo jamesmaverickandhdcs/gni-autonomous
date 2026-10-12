@@ -1,0 +1,234 @@
+# GNI PROMISE LEDGER - generation S112. Roadmap 4 row R4-4 (declared at S110, DECISION S110-12, delegated).
+# One row per PROMISE claim of the live claims document: kind PROMISE, or a STATE or MIXED claim whose
+# UNMEASURED reason is PROMISE. Built from the code, the workflows and the pages at commit 778d653 and read
+# against the White Paper (docs/GNI_WHITE_PAPER_S107.md). Check C20 (`promise ledger`) holds it.
+#
+# STATES
+#   BUILT      what the sentence promises runs, or holds, in the tree today (a standing commitment - the
+#              disclaimer, free access - is BUILT while it holds). Where the build differs in a detail
+#              from the sentence (four agents, not three), the note says how.
+#   PARTIAL    part of it runs; the note names what does not.
+#   NOT BUILT  nothing in the tree does it. A promise dated in the future is NOT BUILT, with its due
+#              date in the note; a past due date is said in the note too.
+#   WITHDRAWN  only by a DECISION of the operator's, cited as DECISION:S<n>-<k> and recorded in the
+#              live order. A session grades a promise; it does not retire one GNI made.
+#
+# EVIDENCE   space-separated: a repo path (must exist), a claim id of the tree (CLM-###), or for
+#            WITHDRAWN a DECISION token. The note says what was read and what was found, so each
+#            grade can be checked against its evidence by a person.
+# GRADING IS A PERSON'S JUDGEMENT, made by Claude at S112 from the files named; roadmap 4's Test 2
+# is the operator's verdict on it. Guidelines: ISO/IEC/IEEE 15026-2:2022 (an assurance case: claims
+# with argument and evidence) and ISO/IEC/IEEE 29148:2018 (requirements processes and the information
+# items they produce) - only their published scope is relied on here, no clause is cited.
+#
+SUMMARY	BUILT 53	PARTIAL 92	NOT BUILT 64	WITHDRAWN 0	TOTAL 209
+id	state	evidence	note
+CLM-006	PARTIAL	docs/GNI_WHITE_PAPER_S107.md CLM-027	umbrella: the L4 -> L7 trajectory; L5 named parts built, L6 in part, L7 in part (MAD only) - the level rows carry the state
+CLM-007	PARTIAL	CLM-622 src/app/layout.tsx	access is free and public ($0.00 recorded, F-EXT); quality parity with institutional services is not measured anywhere
+CLM-008	PARTIAL	CLM-622	the gap is closed for access, not shown for quality - same reading as CLM-007
+CLM-025	BUILT	ai_engine/analysis/outcome_verifier.py ai_engine/analysis/quality_scorer.py ai_engine/analysis/source_weights.py	L5's three named parts - outcome tracking, quality scoring, source weighting - run; 'goal-based decisions' as a pipeline property is CLM-060 (NOT BUILT)
+CLM-026	PARTIAL	ai_engine/analysis/prompt_manager.py ai_engine/analysis/credibility_model.py	L6: prompt A/B with promotion and source reliability learning run; adaptive configuration is CLM-110 (PARTIAL)
+CLM-027	PARTIAL	ai_engine/analysis/mad_protocol.py	L7: multi-agent debate runs; autonomous experimentation and self-modification with audit trail do not (CLM-124, CLM-128)
+CLM-028	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	umbrella for the three principles CLM-029..CLM-047
+CLM-029	PARTIAL	ai_engine/monitoring_pipeline.py ai_engine/analysis/health_agent.py src/app/health/page.tsx	a heartbeat every 30 minutes and health checks exist; health checks run only when the pipeline_runs count is a multiple of ten (S112 finding), not in real time
+CLM-030	PARTIAL	ai_engine/analysis/health_agent.py	health_agent reads quality, source, run-gap, escalation and MAD-confidence signals; the collector, funnel and delivery emit no structured telemetry to it
+CLM-031	PARTIAL	ai_engine/analysis/health_agent.py	of five dimensions, analysis quality and parts of data quality are checked; delivery confirmation, API latency, DB response time, storage and injection-rate posture are not
+CLM-032	PARTIAL	ai_engine/analysis/health_agent.py ai_engine/notifications/telegram_notifier.py	alerts go to the operator by Telegram; S110-S112 found defects by reading pages, not by the system reporting them
+CLM-033	NOT BUILT	ai_engine/notifications/telegram_notifier.py	a failed send returns False and prints a warning; nothing detects it in the run or repairs it
+CLM-034	NOT BUILT	ai_engine/self_healing_runner.py docs/GNI_MODULE_BUCKETS_S107.tsv	the tiered retry wrapper exists but no workflow runs it (bucket DELETE); the Health Agent raises alerts and triggers no repair
+CLM-035	PARTIAL	ai_engine/collectors/alpha_vantage.py ai_engine/analysis/llm_health_probe.py ai_engine/collectors/rss_collector.py	backup paths run where the call fails (Twelve Data after Yahoo, LLM fallback probe, reserve feeds); not triggered by a health assessment
+CLM-036	PARTIAL	ai_engine/analysis/code_fix_suggester.py	fix suggestions are saved for the operator; the system does not execute an approved repair
+CLM-037	PARTIAL	src/app/mission-control/page.tsx	pages show run state; no protocol signals a degraded state to users or queues failed repairs (DEGRADE-SILENT stood open in the order)
+CLM-038	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	umbrella: the repair tiers CLM-034..CLM-037 carry the state
+CLM-039	PARTIAL	src/lib/verdict.ts	S112 found eight pages printing a placeholder as a stated confidence (fixed at dd91b41, held by C19); 'always tells users what it knows' was not true until then
+CLM-040	PARTIAL	ai_engine/analysis/prompt_manager.py ai_engine/analysis/source_weights.py	prompt promotion and source weights change from evidence; thresholds, patterns and geocoding do not (CLM-043..CLM-045)
+CLM-041	BUILT	ai_engine/analysis/prompt_manager.py	_check_promotion deactivates the lowest-scoring variant after 10 runs each
+CLM-042	BUILT	ai_engine/analysis/source_weights.py ai_engine/analysis/outcome_verifier.py	EMA source weights updated from verified outcomes and quality scores; the funnel reads them
+CLM-043	NOT BUILT	ai_engine/funnel/intelligence_funnel.py	injection patterns are literal lists edited by hand
+CLM-044	NOT BUILT	ai_engine/geo/geocoder.py	KNOWN_LOCATIONS is a hand-written dictionary; the runtime cache is in memory and lost each run
+CLM-045	NOT BUILT	ai_engine/funnel/intelligence_funnel.py	funnel thresholds are constants
+CLM-046	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	every capability since launch was written by a person in a session; nothing extends itself
+CLM-047	BUILT	ai_engine/analysis/outcome_verifier.py ai_engine/analysis/quality_scorer.py	the two named measurement frameworks exist and run
+CLM-058	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	Phase 1 heading, due June 2026: of its eight table rows (CLM-076..CLM-083) five built, two partial, one not
+CLM-059	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	TARGET L5: named components built, goal-based pipeline not (CLM-060)
+CLM-060	NOT BUILT	ai_engine/main.py	main.py is a fixed sequence of steps with gates; the adaptive run is triggered by a rule (escalation delta), not by goals
+CLM-061	NOT BUILT	ai_engine/main.py	as CLM-060
+CLM-063	PARTIAL	ai_engine/analysis/outcome_verifier.py	3/7/30/180-day verification and a black-swan flag run; no human review dashboard surfaces the flagged cases
+CLM-064	PARTIAL	ai_engine/analysis/prompt_manager.py ai_engine/analysis/source_weights.py	GPVS drives source weights; prompt promotion is decided by quality score, not GPVS
+CLM-065	BUILT	ai_engine/analysis/quality_scorer.py ai_engine/main.py	score_report runs after each report (main.py step 3b)
+CLM-066	BUILT	ai_engine/analysis/quality_scorer.py	the five dimensions are the scorer's own
+CLM-067	NOT BUILT	ai_engine/analysis/quality_scorer.py	no score threshold raises a prompt refinement flag; the score feeds prompt averages and source weights only
+CLM-069	BUILT	ai_engine/funnel/intelligence_funnel.py ai_engine/analysis/source_weights.py	the funnel adds a weight bonus from the GPVS-fed source weights
+CLM-070	NOT BUILT	ai_engine/analysis/source_weights.py	injection rejections do not change a source's weight
+CLM-071	PARTIAL	ai_engine/analysis/outcome_verifier.py ai_engine/analysis/credibility_model.py	weights move per verified outcome (EMA), not weekly from four weeks; the credibility recompute runs on a 1-in-10 run count, not weekly
+CLM-072	PARTIAL	ai_engine/collectors/alpha_vantage.py	automatic failover exists - Yahoo first, then Twelve Data; Alpha Vantage is not the alternative
+CLM-073	PARTIAL	ai_engine/geo/geocoder.py docs/GNI_ARCHITECTURE_S111.md	an OpenCage path is coded, but OPENCAGE_API_KEY is in no workflow (section 7.2), so Nominatim serves
+CLM-074	BUILT	ai_engine/collectors/rss_collector.py	SOURCES lists 42 feeds, Asian outlets among them (Radio Free Asia, The Irrawaddy, Daily NK, Hong Kong Free Press, NDTV, Dawn)
+CLM-075	BUILT	src/app/health/page.tsx	/health exists
+CLM-076	BUILT	ai_engine/analysis/outcome_verifier.py ai_engine/analysis/debate_prediction_verifier.py .github/workflows/gni_pipeline.yml	both verifiers run in the daily verify-outcomes job
+CLM-077	BUILT	ai_engine/analysis/quality_scorer.py	as CLM-065
+CLM-078	BUILT	ai_engine/analysis/source_weights.py	as CLM-069
+CLM-079	PARTIAL	ai_engine/collectors/alpha_vantage.py	as CLM-072
+CLM-080	PARTIAL	ai_engine/geo/geocoder.py	as CLM-073
+CLM-081	BUILT	ai_engine/collectors/rss_collector.py	as CLM-074
+CLM-082	BUILT	src/app/health/page.tsx	as CLM-075
+CLM-083	NOT BUILT	ai_engine/analysis/nexus_analyzer.py docs/DEBT_REGISTER_S69.md	myanmar_summary was removed; translation moved to the separate GNI_Myanmar app, frozen (debt J-8); no Thai output
+CLM-084	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	Phase 2 heading, due September 2026: prompt A/B, escalation engine and credibility model run; the historical layer is partial
+CLM-085	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	TARGET L6: as CLM-026
+CLM-086	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	as CLM-040
+CLM-087	PARTIAL	ai_engine/analysis/prompt_manager.py	two configuration decisions are evidence-driven (prompt variant, source weight); the rest is fixed
+CLM-089	PARTIAL	ai_engine/analysis/prompt_manager.py	variants alternate and the worst is retired after 10 runs each - on quality score; GPVS is not measured per variant
+CLM-090	PARTIAL	ai_engine/analysis/prompt_manager.py	the variant promotion does rewrite the active configuration; on quality score only (CLM-089)
+CLM-092	PARTIAL	ai_engine/analysis/historical_correlations.py ai_engine/main.py	a correlation table is built from GNI's own verified outcomes and fed to analysis as context; no database of past geopolitical events with confirmed market impacts exists
+CLM-093	PARTIAL	ai_engine/analysis/outcome_verifier.py	outcomes are stored per horizon, so a late-right call is visible; nothing classifies delayed versus wrong
+CLM-094	BUILT	ai_engine/analysis/escalation_scorer.py	concurrent events across pillars scored 1-10
+CLM-095	BUILT	ai_engine/analysis/escalation_scorer.py	three pillars' signals combined into one escalation score
+CLM-096	BUILT	ai_engine/analysis/credibility_model.py	per-source GPVS contribution
+CLM-097	BUILT	ai_engine/analysis/credibility_model.py	scored on appearances in accurate reports
+CLM-098	PARTIAL	ai_engine/analysis/credibility_model.py ai_engine/main.py	recompute runs when the run count is a multiple of ten (random cadence, S112 finding), not weekly; feeds funnel weights; does not lower report confidence
+CLM-099	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	Phase 3 heading, due March 2027: MAD runs; the configuration agent is partial; the agentic transition is not built
+CLM-100	PARTIAL	src/app/about/feedback/page.tsx	scheduled runs need no person; repairs are still made by one (the page's own strength line says so)
+CLM-101	NOT BUILT	ai_engine/main.py	as CLM-060
+CLM-102	NOT BUILT	ai_engine/main.py	as CLM-060
+CLM-103	NOT BUILT	ai_engine/main.py	as CLM-060
+CLM-104	BUILT	ai_engine/analysis/mad_protocol.py ai_engine/mad_runner.py	MAD runs twice daily (gni_mad.yml)
+CLM-105	BUILT	ai_engine/analysis/mad_protocol.py CLM-508	built as four agents (Bull, Bear, Black Swan, Ostrich) and an Arbitrator, not the three named here
+CLM-106	BUILT	ai_engine/analysis/mad_protocol.py	the debate runs before the verdict
+CLM-107	PARTIAL	src/app/comparison/page.tsx	the Arbitrator gives a verdict beside the report; the debate does not produce the report itself
+CLM-108	PARTIAL	ai_engine/analysis/mad_protocol.py	the Arbitrator can rule neutral; no high-uncertainty flag is set
+CLM-109	BUILT	src/app/debate/page.tsx	round positions are stored and shown on /debate
+CLM-110	PARTIAL	ai_engine/analysis/frequency_controller.py ai_engine/monitoring_pipeline.py	an interval is recommended and logged each run; the heartbeat starts the adaptive run on an escalation move; schedules themselves do not change
+CLM-111	PARTIAL	ai_engine/monitoring_pipeline.py ai_engine/adaptive_pipeline.py	extra runs happen on escalation; article selection does not widen (the adaptive run takes top 5)
+CLM-112	NOT BUILT	.github/workflows/gni_pipeline.yml	two fixed daily schedules; nothing reduces to one
+CLM-113	NOT BUILT	ai_engine/funnel/intelligence_funnel.py	no topic-cluster reweighting
+CLM-114	PARTIAL	ai_engine/analysis/frequency_controller.py ai_engine/analysis/audit_trail.py	frequency decisions are logged to their own table, not the audit trail; no configuration change exists to reverse
+CLM-115	PARTIAL	ai_engine/analysis/deception_detector.py ai_engine/funnel/intelligence_funnel.py	coordination detection and injection screening exist
+CLM-116	PARTIAL	ai_engine/analysis/deception_detector.py	one of three methods: coordinated narratives across sources; no single-source uncorroborated flag, no GPVS retroactive analysis
+CLM-117	BUILT	ai_engine/analysis/deception_detector.py src/app/page.tsx	deception level stored on the report and shown; coordination discounts the source consensus score by a quarter
+CLM-118	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	Phase 4 heading, due 2027-2028
+CLM-119	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	TARGET L7, due 2027-2028
+CLM-120	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	due 2027-2028
+CLM-121	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	due 2027-2028; today routine repairs need the operator (CLM-100)
+CLM-122	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	due 2027-2028
+CLM-123	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	due 2027-2028
+CLM-124	PARTIAL	ai_engine/analysis/code_fix_suggester.py	proposes fixes for human review; implements none
+CLM-125	NOT BUILT	ai_engine/analysis/code_fix_suggester.py	no agent modifies anything, so no boundary is enforced
+CLM-126	NOT BUILT	ai_engine/analysis/staging_checker.py	staging_checker is an HTTP regression check after deploy, not an evaluation of proposed changes
+CLM-127	NOT BUILT	ai_engine/analysis/audit_trail.py	no code change is recorded in the audit trail
+CLM-128	NOT BUILT	ai_engine/collectors/rss_collector.py	sources are added by hand; reserve feeds replace a dead primary but add no coverage
+CLM-129	NOT BUILT	ai_engine/collectors/rss_collector.py	as CLM-128
+CLM-130	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	as CLM-128
+CLM-131	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	one pipeline; no regional instance exists
+CLM-132	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	as CLM-131
+CLM-133	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	as CLM-131
+CLM-134	NOT BUILT	CLM-622	the single instance runs at $0.00; the network does not exist
+CLM-135	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	principle; the oversight tiers CLM-138..CLM-141 carry the state
+CLM-136	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	as CLM-135
+CLM-137	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	as CLM-135
+CLM-138	PARTIAL	.github/workflows/gni_pipeline.yml ai_engine/collectors/rss_collector.py	collection, analysis and delivery run without a person; self-repair is limited to fallbacks (CLM-035)
+CLM-139	PARTIAL	src/app/health/page.tsx src/app/autonomy/page.tsx	the dashboards exist; no record of a weekly operator review cycle exists
+CLM-140	PARTIAL	ai_engine/analysis/code_fix_suggester.py	suggestions wait for the operator; the Health Agent sends alerts, not repair proposals
+CLM-141	BUILT	docs/GNI_TARGET_AND_ORDER_S111.md	mission and values decisions are the operator's DECISIONS, recorded in the order
+CLM-142	PARTIAL	ai_engine/analysis/outcome_verifier.py	check_human_review_needed fires on a 3-day SPY move over 3% or a zero accuracy score; the other three criteria are not implemented
+CLM-143	NOT BUILT	ai_engine/analysis/outcome_verifier.py	a review flag is stored; no reviewer input is captured or fed back
+CLM-144	PARTIAL	ai_engine/analysis/audit_trail.py	a hash-chained trail records pipeline, report and failure events; prompt promotion, source-weight changes and frequency decisions are not written to it
+CLM-145	PARTIAL	ai_engine/analysis/audit_trail.py	as CLM-144
+CLM-146	BUILT	src/app/api/audit-trail/route.ts src/app/security/page.tsx	the chain is readable through the API and shown on /security
+CLM-147	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	of nine agents: three built, six partial - rows CLM-148..CLM-156
+CLM-148	PARTIAL	ai_engine/analysis/health_agent.py ai_engine/monitoring_pipeline.py	as CLM-029
+CLM-149	PARTIAL	ai_engine/analysis/source_health_monitor.py ai_engine/collectors/rss_collector.py	feed health and reserve feeds run; no source discovery
+CLM-150	PARTIAL	ai_engine/funnel/intelligence_funnel.py	source weighting runs; thresholds and injection patterns are fixed
+CLM-151	BUILT	ai_engine/analysis/mad_protocol.py	the Bear agent
+CLM-152	BUILT	ai_engine/analysis/mad_protocol.py	the Bull agent
+CLM-153	PARTIAL	ai_engine/analysis/mad_protocol.py	the Arbitrator rules on the debate; the report is written by the pipeline before the debate (CLM-107)
+CLM-154	BUILT	ai_engine/analysis/outcome_verifier.py ai_engine/analysis/quality_scorer.py ai_engine/analysis/prompt_manager.py	the three functions run as modules, not as one agent
+CLM-155	PARTIAL	ai_engine/analysis/prompt_manager.py ai_engine/analysis/source_weights.py	prompt and source-weight adjustment run; no parameter tuning
+CLM-156	PARTIAL	ai_engine/notifications/telegram_notifier.py src/app/api/latest/route.ts	Telegram and the API deliver; no web push or email
+CLM-165	PARTIAL	docs/GNI_ARCHITECTURE_S111.md src/app/api/prediction-outcomes/route.ts	quality score, GPVS accuracy and SLOs (section 10) are measured; no autonomy-progression KPI
+CLM-166	PARTIAL	ai_engine/analysis/prompt_manager.py	prompt promotion compares quality scores; no other adjustment is gated on a KPI
+CLM-180	PARTIAL	src/app/api/prediction-outcomes/route.ts	an expected accuracy, not a build: the scorecard that would show it is built; whether 65-75% holds is GPVS data this ledger does not read
+CLM-181	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	six commitments, rows CLM-182..CLM-207: the disclaimer, honest accuracy and free access hold; full audit logging does not (CLM-185)
+CLM-182	PARTIAL	ai_engine/analysis/audit_trail.py	as CLM-183
+CLM-183	PARTIAL	ai_engine/analysis/audit_trail.py	as CLM-144: selection, prompt and weight decisions are not in the public trail
+CLM-184	BUILT	ai_engine/analysis/audit_trail.py src/app/api/audit-trail/route.ts	the trail exists and is public
+CLM-185	NOT BUILT	ai_engine/analysis/prompt_manager.py ai_engine/analysis/source_weights.py	NOT HELD: prompt variants are retired and source weights changed without an audit entry - decisions are made that are not logged
+CLM-186	BUILT	src/app/api/prediction-outcomes/route.ts	as CLM-187
+CLM-187	BUILT	src/app/api/prediction-outcomes/route.ts src/app/predictions/page.tsx	accuracy is computed over all outcomes and published
+CLM-188	BUILT	src/app/api/prediction-outcomes/route.ts	the scorecard reads every outcome row; none is filtered by result
+CLM-189	PARTIAL	src/app/model-learning/page.tsx	wrong calls are shown in the scorecard; the surprise registry that would document them is in development (CLM-938)
+CLM-190	BUILT	src/app/layout.tsx ai_engine/notifications/telegram_notifier.py	the disclaimer is in the site layout and every Telegram report
+CLM-191	BUILT	src/app/layout.tsx	as CLM-190
+CLM-192	BUILT	src/app/layout.tsx ai_engine/notifications/telegram_notifier.py	every page through the layout banner; every Telegram report carries 'Not financial advice'
+CLM-193	BUILT	src/app/layout.tsx	as CLM-190
+CLM-194	BUILT	.github/workflows/gni_pipeline.yml	as CLM-195
+CLM-195	BUILT	.github/workflows/gni_pipeline.yml	by the operator's control of the repository, workflows and database; no in-app override exists
+CLM-196	BUILT	.github/workflows/gni_pipeline.yml	as CLM-195
+CLM-197	BUILT	ai_engine/notifications/telegram_notifier.py	admin alerts reach the operator by Telegram at any time
+CLM-198	BUILT	docs/GNI_WHITE_PAPER_S107.md	a rule; no decision the operator cannot override is known
+CLM-199	BUILT	CLM-622	$0.00 a month, recorded (F-EXT)
+CLM-200	BUILT	CLM-622 src/app/layout.tsx	the site is public and unpaywalled
+CLM-201	BUILT	CLM-622	no access restriction exists
+CLM-202	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	a permission, not a build: no revenue model exists - candidate to relabel as policy
+CLM-203	BUILT	src/app/layout.tsx	nothing is paywalled
+CLM-204	PARTIAL	ai_engine/analysis/deception_detector.py	as CLM-205
+CLM-205	PARTIAL	ai_engine/analysis/deception_detector.py ai_engine/funnel/intelligence_funnel.py	coordination and injection screening run on every run
+CLM-206	NOT BUILT	ai_engine/analysis/deception_detector.py	nothing measures the detector's growth against the analysis; it has changed little since Day 15 while MAD was added
+CLM-207	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	as CLM-205
+CLM-212	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	umbrella: self-aware PARTIAL, self-healing NOT BUILT, self-improving PARTIAL, free access BUILT
+CLM-213	BUILT	CLM-622 src/app/layout.tsx	access needs only a connection: no account, no fee
+CLM-215	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	Phase 1 milestone 'GPVS + Quality Scorer' built; L5 goal-based not (CLM-060)
+CLM-216	PARTIAL	ai_engine/analysis/prompt_manager.py	prompt optimisation live on quality score (CLM-089)
+CLM-217	BUILT	ai_engine/analysis/mad_protocol.py	MAD deployed ahead of the Q4 2026 milestone
+CLM-218	NOT BUILT	docs/GNI_WHITE_PAPER_S107.md	due 2027-2028
+CLM-244	PARTIAL	ai_engine/collectors/rss_collector.py	42 feeds; whether runs reach 400 raw articles is a runtime figure no snapshot holds
+CLM-328	BUILT	CLM-622	$0.00, recorded (F-EXT)
+CLM-372	NOT BUILT	src/app/developer-hub/page.tsx	/api/webhooks is labelled SOON; no such route exists under src/app/api
+CLM-421	NOT BUILT	docs/DEBT_REGISTER_S69.md	GNI_Myanmar is a separate project, frozen (debt J-8)
+CLM-422	PARTIAL	docs/gni_db_snapshot_S112.json	verified outcomes accumulate (253 rows by 2026-10-01); an accuracy advantage is not measured
+CLM-423	NOT BUILT	src/app/pattern-library/page.tsx	the page says In development
+CLM-424	NOT BUILT	src/app/model-learning/page.tsx	the page says In development
+CLM-426	PARTIAL	ai_engine/monitoring_pipeline.py	the heartbeat starts the adaptive run on an escalation move; no L8 roadmap document exists (R6 removed the other mention)
+CLM-444	BUILT	CLM-622	as CLM-328
+CLM-446	BUILT	CLM-622	as CLM-328
+CLM-455	BUILT	CLM-622	as CLM-328
+CLM-456	BUILT	CLM-622	as CLM-328
+CLM-469	PARTIAL	docs/gni_db_snapshot_S112.json	the archive grows; value over time is not measured
+CLM-470	PARTIAL	ai_engine/analysis/source_weights.py	weights update from verified outcomes; their statistical confidence is not computed
+CLM-472	NOT BUILT	src/app/model-learning/page.tsx src/app/pattern-library/page.tsx	both pages say In development
+CLM-486	PARTIAL	src/app/api/prediction-outcomes/route.ts	the sample grows; no confidence interval on accuracy is published
+CLM-490	BUILT	ai_engine/analysis/credibility_model.py	source credibility is computed from verified accuracy
+CLM-580	NOT BUILT	src/app/model-learning/page.tsx	static page, no data
+CLM-581	NOT BUILT	src/app/model-learning/page.tsx	no surprise registry
+CLM-582	NOT BUILT	src/app/model-learning/page.tsx	no bias-correction log
+CLM-583	PARTIAL	src/app/autonomy/page.tsx	prompt variants and their scores are shown on /autonomy; no evolution history
+CLM-584	NOT BUILT	src/app/model-learning/page.tsx	escalation thresholds are constants; nothing recalibrates them
+CLM-585	NOT BUILT	src/app/model-learning/page.tsx	no trend across generations
+CLM-588	NOT BUILT	src/app/model-learning/page.tsx src/app/pattern-library/page.tsx	neither page fetches data
+CLM-608	NOT BUILT	src/app/reports/page.tsx	the page says In development
+CLM-610	PARTIAL	src/app/correlations/page.tsx	per-agent accuracy is shown on /correlations; this report is not built
+CLM-611	PARTIAL	src/app/api/prediction-outcomes/route.ts	the scorecard is served; the full-detail report is not built
+CLM-612	NOT BUILT	src/app/reports/page.tsx	the page says In development
+CLM-614	NOT BUILT	src/app/reports/page.tsx	no sequence matching exists
+CLM-615	NOT BUILT	src/app/reports/page.tsx	as CLM-614
+CLM-633	PARTIAL	src/app/correlations/page.tsx src/app/validation-log/page.tsx	the verifier runs and /correlations shows per-agent accuracy; the Validation Log display is in development
+CLM-636	PARTIAL	src/app/correlations/page.tsx	as CLM-633
+CLM-637	PARTIAL	ai_engine/analysis/debate_prediction_verifier.py	predictions are verified per horizon; not displayed by horizon on this page
+CLM-638	PARTIAL	ai_engine/analysis/outcome_verifier.py	adjustments happen (W-14); not surfaced on a page
+CLM-639	NOT BUILT	src/app/validation-log/page.tsx	no surprise detection
+CLM-640	PARTIAL	src/app/api/export/predictions/route.ts	predictions and reports export as data; no scorecard export
+CLM-643	PARTIAL	ai_engine/analysis/debate_prediction_verifier.py src/app/validation-log/page.tsx	the verifier is live and results are stored; the page does not populate
+CLM-683	PARTIAL	docs/gni_db_snapshot_S112.json	correlation data accumulates; reliability is not measured
+CLM-704	NOT BUILT	src/app/pattern-library/page.tsx	In development
+CLM-705	NOT BUILT	src/app/pattern-library/page.tsx	as CLM-704
+CLM-706	NOT BUILT	src/app/pattern-library/page.tsx	as CLM-704
+CLM-707	NOT BUILT	src/app/pattern-library/page.tsx	as CLM-704
+CLM-708	NOT BUILT	src/app/pattern-library/page.tsx	as CLM-704
+CLM-709	NOT BUILT	src/app/pattern-library/page.tsx	as CLM-704
+CLM-710	NOT BUILT	src/app/pattern-library/page.tsx ai_engine/analysis/escalation_scorer.py	the escalation scorer counts cross-pillar concurrency; no pattern detection
+CLM-711	NOT BUILT	src/app/pattern-library/page.tsx	as CLM-704
+CLM-715	PARTIAL	CLM-622 CLM-744	free and public, with PHI-003 rhetoric screening in code; 'without manipulation' is not measured
+CLM-822	PARTIAL	docs/gni_db_snapshot_S112.json	253 verified outcomes by 2026-10-01 pass the 100 target; reliability improvement is not measured
+CLM-938	NOT BUILT	src/app/model-learning/page.tsx	In development
+CLM-941	NOT BUILT	src/app/model-learning/page.tsx	as CLM-938
+CLM-946	NOT BUILT	src/app/pattern-library/page.tsx	In development
+CLM-1052	PARTIAL	CLM-744 CLM-622	PHI-003 screening runs and access is free; reach across ages is not measured
