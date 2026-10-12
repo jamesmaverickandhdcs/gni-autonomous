@@ -1429,6 +1429,108 @@ def _adaptive_logged(root):
     return got.pop()
 
 
+# S112 (roadmap 4 row R4-3, round 6).
+def _band_claim(fragment):
+    out = []
+    m = re.search(r"(\d+)% or more = strong", fragment)
+    if m:
+        out.append("strong>=%s" % m.group(1))
+    m = re.search(r"Below (\d+)% = weak", fragment)
+    if m:
+        out.append("weak<%s" % m.group(1))
+    if not out:
+        raise FitnessError("no '<n>% or more = strong' / 'Below <n>% = weak' in fragment %r" % fragment)
+    return out
+
+
+def _conf_bands(root):
+    """The bands the pages colour the Arbitrator's confidence by: every
+    `mad_confidence >= 0.N` in src/app/**/page.tsx. The highest is 'strong', the lowest
+    bounds 'weak'; exactly two distinct thresholds are expected, so a third halts."""
+    got = set()
+    for path in glob.glob(os.path.join(root, "src", "app", "**", "page.tsx"), recursive=True):
+        with open(path, "rb") as fh:
+            got |= set(re.findall(r"mad_confidence >= (0\.\d+)", fh.read().decode("utf-8-sig")))
+    if len(got) != 2:
+        raise FitnessError("expected two mad_confidence thresholds across the pages, got %r" % sorted(got))
+    lo, hi = sorted(float(x) for x in got)
+    return ["strong>=%g" % (hi * 100), "weak<%g" % (lo * 100)]
+
+
+def _questions_claim(fragment):
+    m = re.search(_COUNT_TOKEN + r" questions", fragment, re.I)
+    if not m:
+        raise FitnessError("no '<n> questions' in fragment %r" % fragment)
+    return "%d" % _count_of(m.group(1))
+
+
+def _fff_fields(root):
+    """Freedom-from-Fear sections a report carries: the distinct "fff_<name>" keys of the
+    analysis JSON template in nexus_analyzer.py."""
+    path = os.path.join(root, "ai_engine", "analysis", "nexus_analyzer.py")
+    if not os.path.isfile(path):
+        raise FitnessError("ai_engine/analysis/nexus_analyzer.py not found")
+    with open(path, "rb") as fh:
+        # a template line gives its key a string description ("fff_x": "..."); the parser's
+        # dict below it ("fff_x": get_str(...)) must not be counted as a second source
+        got = set(re.findall(r'^\s*"(fff_[a-z_]+)": "', fh.read().decode("utf-8-sig"), re.M))
+    if not got:
+        raise FitnessError("no \"fff_<name>\" key in nexus_analyzer.py's template")
+    return "%d" % len(got)
+
+
+def _stages_claim(fragment):
+    m = re.search(r"Stage ((?:\w+, )*\w+) or (\w+)", fragment)
+    if not m:
+        raise FitnessError("no 'Stage a, b or c' in fragment %r" % fragment)
+    return sorted(m.group(1).split(", ") + [m.group(2)])
+
+
+def _transparency_reasons(root):
+    """Stages whose reason the transparency page shows: every article.stage<id>_reason
+    it renders."""
+    rel = "src/app/transparency/page.tsx"
+    path = os.path.join(root, rel)
+    if not os.path.isfile(path):
+        raise FitnessError("%s not found" % rel)
+    with open(path, "rb") as fh:
+        got = sorted(set(re.findall(r"article\.stage(\w+?)_reason", fh.read().decode("utf-8-sig"))))
+    if not got:
+        raise FitnessError("no article.stage<id>_reason in %s" % rel)
+    return got
+
+
+def _phi003_claim(fragment):
+    if "PHI-003" not in fragment:
+        raise FitnessError("no 'PHI-003' in fragment %r" % fragment)
+    return "PHI-003 in code"
+
+
+def _phi003_live(root):
+    """PHI-003 (Freedom from Fear) is in the running code when both of its two parts are:
+    the report template carries fff_ sections (F-FFF-FIELDS) and the funnel defines a
+    non-empty _PHI003_RHETORIC_PATTERNS list that _check_injection reads (AST)."""
+    _fff_fields(root)
+    rel = "ai_engine/funnel/intelligence_funnel.py"
+    with open(os.path.join(root, rel), "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    def _items(v):
+        # a literal list, or a comprehension compiling one ([re.compile(p) for p in [...]])
+        if isinstance(v, ast.List):
+            return v.elts
+        if isinstance(v, ast.ListComp) and isinstance(v.generators[0].iter, ast.List):
+            return v.generators[0].iter.elts
+        return []
+    defined = any(isinstance(n, ast.Assign) and any(getattr(t, "id", "") == "_PHI003_RHETORIC_PATTERNS"
+                                                     for t in n.targets) and _items(n.value)
+                  for n in tree.body)
+    fn = _func(root, rel, "_check_injection")
+    read = any(isinstance(n, ast.Name) and n.id == "_PHI003_RHETORIC_PATTERNS" for n in ast.walk(fn))
+    if not (defined and read):
+        return "PHI-003 not in code"
+    return "PHI-003 in code"
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1594,6 +1696,15 @@ FITNESS = {
     "F-ADAPT-GROQ-LOGGED": ("Groq tokens the adaptive run logs: the tokens_used literal of log_usage("
                             "pipeline='gni_adaptive') in adaptive_pipeline.py (AST)",
                             _zero_tokens_claim, _adaptive_logged, _equal),
+    # S112 (roadmap 4 row R4-3, round 6).
+    "F-CONF-BANDS": ("the bands the pages colour the Arbitrator's confidence by: mad_confidence >= 0.N "
+                     "across src/app/**/page.tsx", _band_claim, _conf_bands, _scheduled),
+    "F-FFF-FIELDS": ("Freedom-from-Fear sections a report carries: fff_ keys of nexus_analyzer.py's template",
+                     _questions_claim, _fff_fields, _equal),
+    "F-TRANSPARENCY-REASONS": ("stages whose reason /transparency renders: article.stage<id>_reason",
+                               _stages_claim, _transparency_reasons, _equal),
+    "F-PHI003-LIVE": ("PHI-003 in the running code: fff_ report sections and the PHI-003 rhetoric FLAG list "
+                      "that _check_injection reads", _phi003_claim, _phi003_live, _equal),
     "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
               "each with its party, source and read date",
               _ext_claim, _ext_phrases, _recorded),

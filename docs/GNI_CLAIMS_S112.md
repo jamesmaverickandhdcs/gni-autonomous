@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S112.tsv` md5 `fd2d85f8e5195ca9cfdfe99fed723b7b` (EOL-normalised) -- **817 claims** (590 STATE, 206 PROMISE, 21 MIXED) at **875 locations** in 38 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S112.tsv` md5 `d5f3b9dc1046bf090dddee53967a75c1` (EOL-normalised) -- **816 claims** (589 STATE, 206 PROMISE, 21 MIXED) at **874 locations** in 38 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f32095e8caca` (EOL-normalised) -- **COVERAGE 154/817 = 18.8%** (154 SUPPORTED, 0 DEFEATED, 663 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 11** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d8962af5f85` (EOL-normalised) -- **COVERAGE 159/816 = 19.5%** (159 SUPPORTED, 0 DEFEATED, 657 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 4** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -541,7 +541,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f320
 | CLM-739 | STATE | SUPPORTED | F-MATERIALIZED claims materialized<=-2%+not>=-1%, measured materialized<=-2%+not>=-1% | `src/app/predictions/page.tsx:139` | After the verify date passes, actual SPY movement decides the verdict: a fall of 2% or more means the flagged threat materialized (accurate); a move staying above -1% means it did not; between is inconclusive. |
 | CLM-741 | STATE | UNMEASURED | PROVENANCE | `src/app/predictions/page.tsx:158` | GNI Autonomous \| MAD Debate Predictions \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-743 | STATE | UNMEASURED | PROVENANCE | `src/app/weekly-digest/page.tsx:180` | GNI Autonomous \| Weekly Digest \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
-| CLM-744 | STATE | UNMEASURED | QUALITATIVE | `src/components/ResetBanner.tsx:6` | 🕊️ PHI-003 Freedom from Fear — Now Live |
+| CLM-744 | STATE | SUPPORTED | F-PHI003-LIVE claims PHI-003 in code, measured PHI-003 in code | `src/components/ResetBanner.tsx:6` | 🕊️ PHI-003 Freedom from Fear — Now Live |
 | CLM-746 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:26` | GNI_Autonomous runs on autonomous GitHub Actions workflows -- core intelligence pipelines plus support workflows -- started by cron schedules, except the adaptive run, which the heartbeat triggers. |
 | CLM-747 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:116` | core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; support: graph, market, self-bias, mission control; CI: test harnesses on push |
 | CLM-751 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/page.tsx:524` | Pipeline is scheduled for 08:43 and 16:43 Myanmar time. |
@@ -684,9 +684,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f320
 | CLM-900 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/patterns/page.tsx:122` | The GPVS Prediction Scorecard is the measured record behind the accuracy figures GNI publishes. |
 | CLM-901 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | When both agree, the debate did not overturn the direction of the report. |
 | CLM-902 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:440` | The Quadratic MAD debate, which argues over the AI report, reached the same direction as the report. |
-| CLM-903 | STATE | SUPPORTED | F-CONF-RANGE claims 0-100%, measured 0-100% | `src/app/comparison/page.tsx:448` | The Arbitrator&apos;s stated confidence in its verdict, 0-100%. |
-| CLM-904 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | Above 70% = strong. |
-| CLM-905 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:448` | Below 50% = weak. |
+| CLM-905 | STATE | SUPPORTED | F-CONF-BANDS claims weak<50, measured strong>=70+weak<50 | `src/app/comparison/page.tsx:448` | Below 50% = weak. |
 | CLM-906 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:71` | Every MAD debate records each agent&apos;s final position as a short-horizon prediction and the Arbitrator&apos;s as a long-horizon one, each with a verify-by date, so GNI can score its own accuracy. |
 | CLM-907 | STATE | SUPPORTED | F-GPVS-DAYS claims 3d+7d+30d+180d, measured 3d+7d+30d+180d | `src/app/reports/page.tsx:72` | The GPVS (GNI Prediction Validation Standard): GPVS checks each report direction at 3, 7, 30 and 180 days, and each debate prediction at its own verify-by date. |
 | CLM-908 | STATE | UNMEASURED | QUALITATIVE | `src/app/reports/page.tsx:73` | As report checks verify over time, source trust weights are automatically adjusted — sources whose articles led to accurate predictions gain higher weight in future pipeline runs. |
@@ -795,7 +793,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f320
 | CLM-1008 | STATE | UNMEASURED | QUALITATIVE | `src/app/transparency/page.tsx:109` | Intelligence Funnel Trace — per-article stage results |
 | CLM-1009 | STATE | UNMEASURED | QUALITATIVE | `src/app/transparency/page.tsx:111` | This page shows how the funnel treated each article of a main run: the stage that dropped it and why, or its score and selection rank. |
 | CLM-1010 | STATE | UNMEASURED | QUALITATIVE | `src/app/transparency/page.tsx:112` | It stops at selection: how the selected articles become the report is not traced here. |
-| CLM-1011 | STATE | UNMEASURED | QUALITATIVE | `src/app/transparency/page.tsx:113` | An article dropped at Stage 1, 1b or 2 carries its reason; one scored but not selected shows only its score. |
+| CLM-1011 | STATE | SUPPORTED | F-TRANSPARENCY-REASONS claims 1+1b+2, measured 1+1b+2 | `src/app/transparency/page.tsx:113` | An article dropped at Stage 1, 1b or 2 carries its reason; one scored but not selected shows only its score. |
 | CLM-1012 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/quantum/page.tsx:50` | What GNI decides, why it decides it, and what it means for global markets. |
 | CLM-1013 | STATE | SUPPORTED | F-RSS claims 42, measured 42 | `src/app/about/quantum/page.tsx:50` | This page shows the Quantum Strategist perspective — actionable intelligence outcomes from the MAD Protocol, the latest threat verdicts, and market implications from 42 global news sources, in a pipeline that runs ${PIPELINE_CADENCE}. |
 | CLM-1014 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:69` | Tokens in the ${runs.length} entries shown |
@@ -823,7 +821,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f320
 | CLM-1036 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:200` | Checks: Supabase connection, latest report age, Groq quota, source health, pipeline recency, MAD debate recency. |
 | CLM-1037 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:201` | CRITICAL or WARNING issues trigger automatic Telegram alert to admin. |
 | CLM-1038 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:201` | All results saved to mission_control_log table. |
-| CLM-1039 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:202` | This is GNI&apos;s web-layer self-monitoring — part of the L8 autonomy roadmap. |
 | CLM-1040 | STATE | SUPPORTED | F-TREND-RUNS claims 7, measured 7 | `src/app/page.tsx:221` | 7-run escalation trend${useRaw ? ' (raw magnitude)' : ' (capped score)'} |
 | CLM-1041 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:1012` | How ${latestArticles.length} articles were consolidated into 1 report |
 | CLM-1042 | STATE | UNMEASURED | PROVENANCE | `src/app/page.tsx:1082` | Global Nexus Insights (Autonomous) \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) \| Pipeline runs ${PIPELINE_CADENCE} via GitHub Actions |
@@ -834,8 +831,8 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f320
 | CLM-1047 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:127` | Only the newest reports load here. |
 | CLM-1048 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:285` | No scenario data yet. |
 | CLM-1049 | STATE | UNMEASURED | QUALITATIVE | `src/app/source-health/page.tsx:111` | RSS feed monitoring across ${totalSources} intelligence sources, as of the latest check. |
-| CLM-1050 | STATE | UNMEASURED | QUALITATIVE | `src/components/ResetBanner.tsx:9` | GNI Autonomous now runs under the PHI-003 Freedom from Fear standard. |
-| CLM-1051 | STATE | UNMEASURED | QUALITATIVE | `src/components/ResetBanner.tsx:10` | Every report answers three questions: what is happening, what honest analysis says, and what you can do. |
+| CLM-1050 | STATE | SUPPORTED | F-PHI003-LIVE claims PHI-003 in code, measured PHI-003 in code | `src/components/ResetBanner.tsx:9` | GNI Autonomous now runs under the PHI-003 Freedom from Fear standard. |
+| CLM-1051 | STATE | SUPPORTED | F-FFF-FIELDS claims 3, measured 3 | `src/components/ResetBanner.tsx:10` | Every report answers three questions: what is happening, what honest analysis says, and what you can do. |
 | CLM-1052 | PROMISE | UNMEASURED | PROMISE | `src/components/ResetBanner.tsx:11` | Intelligence for every human being — from teenagers to senior citizens — without manipulation and without fear amplification.${" "} |
 | CLM-1053 | STATE | SUPPORTED | F-INJ claims 74, measured 74; F-RSS claims 42, measured 42 | `src/app/about/devops/page.tsx:43` | RSS collection from 42 sources — injection detection across 74 patterns — MD5 deduplication — geopolitical funnel scoring — 3-temperature AI analysis with confidence intervals — Three Pillar domain reports — Supabase persistence — Telegram notification. |
 | CLM-1054 | STATE | SUPPORTED | F-INJ claims 74, measured 74 | `src/app/about/devops/page.tsx:51` | 74-Pattern Injection Detection |
@@ -888,3 +885,5 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `8f8d885380bb0a3cb656f320
 | CLM-1099 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | The heartbeat starts the adaptive pipeline when escalation moves, with no human trigger; at the CRITICAL level it sends an alert and runs no analysis. |
 | CLM-1100 | STATE | SUPPORTED | F-DB-MAD-TOKENS claims month=2026-08 mean=68525 n=62 range=61.9K-74.2K, measured month=2026-08 mean=68525 n=62 min=61923 max=74244 | `src/app/methodology/page.tsx:33` | ~68,525/run (mean of 62 logged runs, Aug 2026; range 61.9K-74.2K) |
 | CLM-1101 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:115` | Tables include reports, debate_predictions, audit_trail, groq_daily_usage... |
+| CLM-1102 | STATE | SUPPORTED | F-CONF-RANGE claims 0-100%, measured 0-100%; F-CONF-BANDS claims strong>=70, measured strong>=70+weak<50 | `src/app/comparison/page.tsx:448` | The Arbitrator&apos;s stated confidence in its verdict, 0-100%. 70% or more = strong. |
+| CLM-1103 | STATE | UNMEASURED | QUALITATIVE | `src/app/mission-control/page.tsx:202` | This is GNI&apos;s web-layer self-monitoring. |

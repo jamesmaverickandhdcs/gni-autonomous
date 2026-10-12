@@ -1779,3 +1779,5 @@ a51e51e89a	CLAIM	STATE	CLM-1091	GNI_Autonomous API Reference | Build on top of G
 8883c9223a	CLAIM	STATE	CLM-1099	The heartbeat starts the adaptive pipeline when escalation moves, with no human trigger; at the CRITICAL level it sends an alert and runs no analysis.
 b46408d896	CLAIM	STATE	CLM-1100	~68,525/run (mean of 62 logged runs, Aug 2026; range 61.9K-74.2K)
 abcd31ffaa	CLAIM	STATE	CLM-1101	Tables include reports, debate_predictions, audit_trail, groq_daily_usage...
+12dcee69e9	CLAIM	STATE	CLM-1102	The Arbitrator&apos;s stated confidence in its verdict, 0-100%. 70% or more = strong.
+82c7fe419d	CLAIM	STATE	CLM-1103	This is GNI&apos;s web-layer self-monitoring.

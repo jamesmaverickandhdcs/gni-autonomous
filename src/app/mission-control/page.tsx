@@ -199,7 +199,7 @@ export default function SelfCheckPage() {
           <p className="text-xs text-gray-400 leading-relaxed">
             Auto-runs: {SCHEDULE_REQUESTED_30}. Checks: Supabase connection, latest report age, Groq quota, source health, pipeline recency, MAD debate recency.
             CRITICAL or WARNING issues trigger automatic Telegram alert to admin. All results saved to mission_control_log table.
-            This is GNI&apos;s web-layer self-monitoring — part of the L8 autonomy roadmap.
+            This is GNI&apos;s web-layer self-monitoring.
           </p>
         </div>
 

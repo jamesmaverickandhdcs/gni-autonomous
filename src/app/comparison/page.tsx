@@ -445,7 +445,7 @@ export default function ComparisonPage() {
                   </div>
                   <div>
                     <div className="text-yellow-400 font-bold mb-1">MAD Confidence</div>
-                    <p>The Arbitrator&apos;s stated confidence in its verdict, 0-100%. Above 70% = strong. Below 50% = weak.</p>
+                    <p>The Arbitrator&apos;s stated confidence in its verdict, 0-100%. 70% or more = strong. Below 50% = weak.</p>
                   </div>
                   <div>
                     <div className="text-orange-400 font-bold mb-1">Escalation Score</div>
