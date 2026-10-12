@@ -29,8 +29,8 @@ export default function MethodologyPage() {
             </div>
             <div className="space-y-3">
               {[
-                { pipeline: 'gni_pipeline', cron: '02:13 + 10:13 UTC', tokens: '~17,780/run (measured avg, 61 runs, Aug 2026)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → save → pillar reports → verify' },
-                { pipeline: 'gni_mad', cron: '02:43 + 10:43 UTC', tokens: '~68,509/run (measured avg, 61 runs, Aug 2026; range 7.4K-97K)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
+                { pipeline: 'gni_pipeline', cron: '02:13 + 10:13 UTC', tokens: '~17,717/run (mean of 63 logged runs, Aug 2026)', desc: 'RSS collection → intelligence funnel → AI analysis → CI → save → pillar reports → verify' },
+                { pipeline: 'gni_mad', cron: '02:43 + 10:43 UTC', tokens: '~68,525/run (mean of 62 logged runs, Aug 2026; range 61.9K-74.2K)', desc: '4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions' },
                 { pipeline: 'gni_heartbeat', cron: FRESHNESS_SHORT, tokens: '0 (zero)', desc: 'Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection' },
                 { pipeline: 'gni_adaptive', cron: 'On trigger', tokens: '0 (Cerebras path)', desc: 'Fresh analysis when escalation spikes — an alert only at CRITICAL, one Cerebras analysis at every other level' },
               ].map(p => (
@@ -112,7 +112,7 @@ export default function MethodologyPage() {
               ['Python 3.10+', 'Pipeline scripts', 'main.py, mad_runner.py, monitoring_pipeline.py, adaptive_pipeline.py'],
               ['Next.js 14 + TypeScript', 'Web app + API routes', '35 pages live on Vercel'],
               ['Groq API', 'LLM inference', 'model set by GROQ_MODEL secret — free tier, planned at 100K tokens/day per account'],
-              ['Supabase', 'PostgreSQL database', '33 tables — reports, debate_predictions, audit_trail, groq_daily_usage...'],
+              ['Supabase', 'PostgreSQL database', 'Tables include reports, debate_predictions, audit_trail, groq_daily_usage...'],
               ['GitHub Actions', 'Cron + CI/CD', 'core — gni_pipeline, gni_mad, gni_heartbeat, gni_adaptive; support: graph, market, self-bias, mission control; CI: test harnesses on push'],
               ['Telegram Bot API', 'Alert notifications', 'Sacred completion, CRITICAL escalation, NYSE alerts, divergence'],
               ['Vercel', 'Deployment + CDN', 'Auto-deploy on git push to main'],

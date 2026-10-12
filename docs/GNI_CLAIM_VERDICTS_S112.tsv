@@ -1775,3 +1775,7 @@ a51e51e89a	CLAIM	STATE	CLM-1091	GNI_Autonomous API Reference | Build on top of G
 39c0f687e9	CLAIM	STATE	CLM-1095	Autonomous Operation on Free Plans
 542531975e	CLAIM	STATE	CLM-1096	Allows decision-makers to prepare for multiple futures simultaneously across horizons of 7-30 days and 3-24 months.
 3c8b15b22e	CLAIM	STATE	CLM-1097	Market outcome per escalation level at the 3-day and 7-day windows + per-agent accuracy, latest refresh
+681ca88c71	CLAIM	STATE	CLM-1098	~17,717/run (mean of 63 logged runs, Aug 2026)
+8883c9223a	CLAIM	STATE	CLM-1099	The heartbeat starts the adaptive pipeline when escalation moves, with no human trigger; at the CRITICAL level it sends an alert and runs no analysis.
+b46408d896	CLAIM	STATE	CLM-1100	~68,525/run (mean of 62 logged runs, Aug 2026; range 61.9K-74.2K)
+abcd31ffaa	CLAIM	STATE	CLM-1101	Tables include reports, debate_predictions, audit_trail, groq_daily_usage...

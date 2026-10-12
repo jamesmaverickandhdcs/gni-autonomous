@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S112.tsv` md5 `10203664955c62f3cf78d0ffe527726b` (EOL-normalised) -- **817 claims** (590 STATE, 206 PROMISE, 21 MIXED) at **875 locations** in 38 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S112.tsv` md5 `fd2d85f8e5195ca9cfdfe99fed723b7b` (EOL-normalised) -- **817 claims** (590 STATE, 206 PROMISE, 21 MIXED) at **875 locations** in 38 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `167f147f2354caf774567dabd9173920` (EOL-normalised) -- **COVERAGE 147/817 = 18.0%** (147 SUPPORTED, 0 DEFEATED, 670 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 20** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `cd10c0a511c217cecdb3588d94d46421` (EOL-normalised) -- **COVERAGE 149/817 = 18.2%** (149 SUPPORTED, 0 DEFEATED, 668 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 16** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -250,11 +250,8 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `167f147f2354caf774567dab
 | CLM-229 | STATE | UNMEASURED | PROVENANCE | `src/app/methodology/page.tsx:138` | GNI Autonomous \| Methodology \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-230 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/about/devops/page.tsx:43` | 02:13 + 10:13 UTC |
 | CLM-230 | STATE | SUPPORTED | F-CRON-PIPE claims 02:13+10:13, measured 02:13+10:13 | `src/app/methodology/page.tsx:32` | 02:13 + 10:13 UTC |
-| CLM-231 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:43` | ~17,780/run (measured avg, 61 runs, Aug 2026) |
-| CLM-231 | STATE | UNMEASURED | RUNTIME | `src/app/methodology/page.tsx:32` | ~17,780/run (measured avg, 61 runs, Aug 2026) |
 | CLM-233 | STATE | SUPPORTED | F-CRON-MAD claims 02:43+10:43, measured 02:43+10:43+11:13 | `src/app/about/devops/page.tsx:44` | 02:43 + 10:43 UTC |
 | CLM-233 | STATE | SUPPORTED | F-CRON-MAD claims 02:43+10:43, measured 02:43+10:43+11:13 | `src/app/methodology/page.tsx:33` | 02:43 + 10:43 UTC |
-| CLM-234 | STATE | UNMEASURED | RUNTIME | `src/app/methodology/page.tsx:33` | ~68,509/run (measured avg, 61 runs, Aug 2026; range 7.4K-97K) |
 | CLM-235 | STATE | SUPPORTED | F-MAD-AGENTS claims 4, measured 4; F-MAD-ROUNDS claims 3, measured 3 | `src/app/methodology/page.tsx:33` | 4-agent debate (Bull/Bear/Black Swan/Ostrich) → 3 rounds → Arbitrator → verdict → predictions |
 | CLM-236 | STATE | SUPPORTED | F-HB-GROQ claims 0, measured 0 | `src/app/methodology/page.tsx:34` | 0 (zero) |
 | CLM-237 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:34` | Monitor escalation delta → trigger adaptive → NYSE alerts → divergence detection |
@@ -293,7 +290,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `167f147f2354caf774567dab
 | CLM-313 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:54` | Telegram CRITICAL/WARNING alerts with specific action recommendations. |
 | CLM-316 | STATE | UNMEASURED | EXTERNAL | `src/app/about/devops/page.tsx:85` | Zero credit card required. |
 | CLM-319 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | Once deployed, GNI runs ${PIPELINE_CADENCE} without any human action. |
-| CLM-321 | STATE | UNMEASURED | RUNTIME | `src/app/about/devops/page.tsx:86` | The adaptive pipeline runs on its own schedule with no human trigger; at the CRITICAL level, where the capped score has held since 2026-06-23, it sends an alert and runs no analysis. |
 | CLM-328 | PROMISE | UNMEASURED | PROMISE | `src/app/developer/page.tsx:75` | Monthly Cost (forever) |
 | CLM-329 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:247` | — requirements.txt is DELETED — all pipelines use inline pip install |
 | CLM-331 | STATE | UNMEASURED | PROVENANCE | `src/app/developer/page.tsx:249` | — Author anonymous — Team Geeks only. |
@@ -630,7 +626,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `167f147f2354caf774567dab
 | CLM-832 | STATE | SUPPORTED | F-PILLAR-WAIT claims 120s, measured 120s+45s | `src/app/methodology/page.tsx:63` | Runs after a 120s wait for the rate limit. |
 | CLM-833 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:64` | A Telegram message lists the articles of the run, and at a high escalation score the admin also gets an alert with the level and the sentiment; the debate runs later, so its verdict is not in it. |
 | CLM-834 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:92` | Finds what concretely stabilises, de-escalates or improves. |
-| CLM-835 | STATE | UNMEASURED | RUNTIME | `src/app/methodology/page.tsx:115` | 33 tables — reports, debate_predictions, audit_trail, groq_daily_usage... |
 | CLM-836 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:962` | Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. |
 | CLM-837 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:325` | Bull agent — known positives: what concretely stabilises, de-escalates or improves. |
 | CLM-838 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:185` | Newest MAD predictions, a capped list, with verify-by dates |
@@ -888,3 +883,8 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `167f147f2354caf774567dab
 | CLM-1095 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:104` | Autonomous Operation on Free Plans |
 | CLM-1096 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 3-24 months+7-30 days, measured 3-24 months+7-30 days | `src/app/about/quantum/page.tsx:126` | Allows decision-makers to prepare for multiple futures simultaneously across horizons of 7-30 days and 3-24 months. |
 | CLM-1097 | STATE | SUPPORTED | F-CORR-WINDOWS claims 3d+7d, measured 3d+7d | `src/app/developer/page.tsx:16` | Market outcome per escalation level at the 3-day and 7-day windows + per-agent accuracy, latest refresh |
+| CLM-1098 | STATE | SUPPORTED | F-DB-PIPE-TOKENS claims month=2026-08 mean=17717 n=63, measured month=2026-08 mean=17717 n=63 min=15006 max=21824 | `src/app/about/devops/page.tsx:43` | ~17,717/run (mean of 63 logged runs, Aug 2026) |
+| CLM-1098 | STATE | SUPPORTED | F-DB-PIPE-TOKENS claims month=2026-08 mean=17717 n=63, measured month=2026-08 mean=17717 n=63 min=15006 max=21824 | `src/app/methodology/page.tsx:32` | ~17,717/run (mean of 63 logged runs, Aug 2026) |
+| CLM-1099 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/devops/page.tsx:86` | The heartbeat starts the adaptive pipeline when escalation moves, with no human trigger; at the CRITICAL level it sends an alert and runs no analysis. |
+| CLM-1100 | STATE | SUPPORTED | F-DB-MAD-TOKENS claims month=2026-08 mean=68525 n=62 range=61.9K-74.2K, measured month=2026-08 mean=68525 n=62 min=61923 max=74244 | `src/app/methodology/page.tsx:33` | ~68,525/run (mean of 62 logged runs, Aug 2026; range 61.9K-74.2K) |
+| CLM-1101 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:115` | Tables include reports, debate_predictions, audit_trail, groq_daily_usage... |

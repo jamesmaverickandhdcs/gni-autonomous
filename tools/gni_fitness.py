@@ -1288,6 +1288,89 @@ def _conf_range(root):
     return "%g-%g%%" % (float(lo) * 100, float(hi) * 100)
 
 
+# S112 (roadmap 4 row R4-3, DECISION S112-4): GNI's own database figures, read from a
+# committed one-cell harvest (docs/gni_db_snapshot_S<N>.json), never from the live database.
+DB_RE = re.compile(r"^gni_db_snapshot_S(\d+)\.json$")
+_MONTHS = {m: i + 1 for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split())}
+
+
+def _db_facts(root):
+    """Facts of the highest-numbered DB snapshot, refused when the query that produced
+    them is not the query in the tree (query_md5 against the EOL-normalised file)."""
+    import hashlib
+    import json
+    docs = os.path.join(root, "docs")
+    gen = sorted((int(m.group(1)), n) for n in (os.listdir(docs) if os.path.isdir(docs) else [])
+                 for m in [DB_RE.match(n)] if m)
+    if not gen:
+        raise FitnessError("no docs/gni_db_snapshot_S<N>.json")
+    with open(os.path.join(docs, gen[-1][1]), "rb") as fh:
+        snap = json.loads(fh.read().decode("utf-8-sig"))
+    qpath = os.path.join(root, snap.get("query_file") or "-")
+    if not os.path.isfile(qpath):
+        raise FitnessError("%s: query_file %r not in the tree" % (gen[-1][1], snap.get("query_file")))
+    with open(qpath, "rb") as fh:
+        qmd5 = hashlib.md5(fh.read().replace(b"\r\n", b"\n")).hexdigest()
+    if qmd5 != snap.get("query_md5"):
+        raise FitnessError("%s: query_md5 %s, but %s hashes to %s" % (
+            gen[-1][1], snap.get("query_md5"), snap["query_file"], qmd5))
+    facts = (snap.get("harvest") or {}).get("facts") or []
+    if not facts or any(f is None for f in facts):
+        raise FitnessError("%s holds no facts, or a null one" % gen[-1][1])
+    return facts
+
+
+def _tokens_claim(fragment):
+    """'~17,717/run (mean of 63 logged runs, Aug 2026; range 61.9K-74.2K)' ->
+    'month=2026-08 mean=17717 [n=63] [range=61.9K-74.2K]'. The range keeps the page's
+    own precision, so the comparison rounds as the page does."""
+    mm = re.search(r"\b(%s) (\d{4})\b" % "|".join(_MONTHS), fragment)
+    mean = re.search(r"~([\d,]+)/run", fragment)
+    if not mm or not mean:
+        raise FitnessError("no '~<n>/run' and '<Mon> <yyyy>' in fragment %r" % fragment)
+    out = ["month=%s-%02d" % (mm.group(2), _MONTHS[mm.group(1)]), "mean=%d" % int(mean.group(1).replace(",", ""))]
+    n = re.search(r"of (\d+) logged runs", fragment)
+    if n:
+        out.append("n=%d" % int(n.group(1)))
+    rg = re.search(r"range ([\d.]+)K-([\d.]+)K", fragment)
+    if rg:
+        out.append("range=%sK-%sK" % (rg.group(1), rg.group(2)))
+    return " ".join(out)
+
+
+def _db_tokens(pipeline):
+    def measure(root):
+        out = []
+        for f in _db_facts(root):
+            m = re.match(r"^groq-tokens-%s-(\d{4}-\d{2})$" % re.escape(pipeline), f.get("id", ""))
+            if m and f.get("kind") == "dated":
+                v = f["value"]
+                out.append("month=%s mean=%d n=%d min=%d max=%d" % (
+                    m.group(1), v["mean"], v["n"], v["min"], v["max"]))
+        if not out:
+            raise FitnessError("no dated groq-tokens-%s-<month> fact in the DB snapshot" % pipeline)
+        return out
+    return measure
+
+
+def _tokens_hold(claimed, measured):
+    want = dict(kv.split("=", 1) for kv in claimed.split())
+    for line in measured:
+        got = dict(kv.split("=", 1) for kv in line.split())
+        if got["month"] != want["month"] or got["mean"] != want["mean"]:
+            continue
+        if "n" in want and want["n"] != got["n"]:
+            return False
+        if "range" in want:
+            lo, hi = want["range"].rstrip("K").split("K-")
+            dec = len(lo.split(".")[1]) if "." in lo else 0
+            fmt = "%%.%df" % dec
+            if (fmt % (int(got["min"]) / 1000.0), fmt % (int(got["max"]) / 1000.0)) != (lo, hi):
+                return False
+        return True
+    return False
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1437,6 +1520,13 @@ FITNESS = {
                         "claimed in words", _groq_calls_claim, _groq_refs, _equal),
     "F-CONF-RANGE": ("the Arbitrator's confidence clamp in mad_protocol.py, as a percentage",
                      _conf_claim, _conf_range, _equal),
+    # S112 (roadmap 4 row R4-3, DECISION S112-4): dated figures from the DB snapshot.
+    "F-DB-PIPE-TOKENS": ("Groq tokens per main run in a named month: the dated groq-tokens-gni_pipeline "
+                         "fact of the highest-numbered DB snapshot", _tokens_claim,
+                         _db_tokens("gni_pipeline"), _tokens_hold),
+    "F-DB-MAD-TOKENS": ("Groq tokens per MAD run in a named month: the dated groq-tokens-gni_mad fact "
+                        "of the highest-numbered DB snapshot", _tokens_claim,
+                        _db_tokens("gni_mad"), _tokens_hold),
     "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
               "each with its party, source and read date",
               _ext_claim, _ext_phrases, _recorded),
