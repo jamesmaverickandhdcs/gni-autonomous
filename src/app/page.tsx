@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import DirectionalSkillNote from '@/components/DirectionalSkillNote'
 import type { DirectionalSkill } from '@/lib/skill'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
-import { verdictRelation, RELATION_LABEL } from '@/lib/verdict'
+import { verdictRelation, RELATION_LABEL, statedConfidence, confidenceText } from '@/lib/verdict'
 import { formatEscalation, trendSeries } from '@/lib/escalation'
 import dynamic from 'next/dynamic'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
@@ -575,7 +575,7 @@ export default function Home() {
                         (latest?.mad_verdict === 'bullish' ? '🐂' : latest?.mad_verdict === 'bearish' ? '🐻' : '◆') + ' ' + (latest?.mad_verdict?.toUpperCase() || 'PENDING')}
                     </span>
                     <span className="text-xs text-gray-400">
-                      Confidence: <span className="text-white font-bold">{latest?.mad_arb_failed ? 'N/A' : (latest?.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A')}</span>
+                      Confidence: <span className="text-white font-bold">{confidenceText(latest?.mad_verdict, latest?.mad_confidence, latest?.mad_arb_failed)}</span>
                     </span>
                     <span className="text-xs text-gray-500 hidden md:block truncate max-w-xs">
                       {latest?.mad_action_recommendation?.slice(0, 80) || 'Awaiting MAD verdict'}
@@ -668,7 +668,7 @@ export default function Home() {
                       Pipeline: <span className="text-white font-bold">{latest?.sentiment_score?.toFixed(2) || 'N/A'}</span>
                     </div>
                     <div className="text-xs text-gray-400">
-                      MAD: <span className="text-white font-bold">{latest?.mad_confidence ? (latest.mad_confidence * 2 - 1).toFixed(2) : 'N/A'}</span>
+                      MAD: <span className="text-white font-bold">{latest && statedConfidence(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed) !== null ? (latest.mad_confidence * 2 - 1).toFixed(2) : 'N/A'}</span>
                     </div>
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                       verdictRelation(latest?.sentiment, latest?.mad_verdict, latest?.mad_arb_failed) === 'disagree'
@@ -945,7 +945,7 @@ export default function Home() {
                         {latest.mad_verdict === 'bullish' ? '🐂' : latest.mad_verdict === 'bearish' ? '🐻' : '◆'} {latest.mad_verdict?.toUpperCase()}
                       </span>
                       <span className="text-sm text-gray-400">
-                        Confidence: {latest.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}
+                        Confidence: {confidenceText(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed)}
                       </span>
                       {latest.deception_level && latest.deception_level !== 'NONE' && (
                         <span className="text-xs bg-orange-900 text-orange-300 px-2 py-1 rounded-full">
@@ -961,7 +961,7 @@ export default function Home() {
                     <span className="text-white font-bold">How MAD works: </span>
                     Four AI agents debate future threats across four quadrants: Known Positives, Known Negatives, Unknown Negatives and Ignored Realities. Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. Peer consultants develop each case between rounds, and the Arbitrator gives the final verdict after the last one. This is contribution #1 of the GNI paper — the Johari Window applied to AI geopolitical intelligence.
                   </div>
-                  {latest.mad_confidence > 0 && (
+                  {statedConfidence(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed) !== null && (
                     <div className="w-full bg-gray-800 rounded-full h-2 mb-4">
                       <div
                         className={`h-2 rounded-full ${latest.mad_verdict === 'bullish' ? 'bg-green-500' : latest.mad_verdict === 'bearish' ? 'bg-red-500' : 'bg-gray-500'}`}

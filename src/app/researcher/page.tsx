@@ -2,12 +2,15 @@
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { formatCappedAverage, trendSeries } from '@/lib/escalation'
+import { statedConfidence } from '@/lib/verdict'
 
 interface ReportSummary {
   escalation_score: number; escalation_score_raw?: number | null
   sentiment_score: number
   created_at: string
   mad_confidence: number
+  mad_verdict?: string | null
+  mad_arb_failed?: boolean | null
 }
 
 export default function ResearcherHub() {
@@ -25,9 +28,10 @@ export default function ResearcherHub() {
   const avgEsc = reports.length > 0
     ? (reports.reduce((s, r) => s + (r.escalation_score || 0), 0) / reports.length).toFixed(2)
     : 'N/A'
-  const avgConf = reports.length > 0
-    ? Math.round(reports.reduce((s, r) => s + (r.mad_confidence || 0), 0) / reports.length * 100)
-    : 0
+  const statedConf = reports.map(r => statedConfidence(r.mad_verdict, r.mad_confidence, r.mad_arb_failed)).filter((c): c is number => c !== null)
+  const avgConf = statedConf.length > 0
+    ? Math.round(statedConf.reduce((s, c) => s + c, 0) / statedConf.length * 100)
+    : null
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -84,7 +88,7 @@ export default function ResearcherHub() {
             <div className="text-xs text-gray-500 mt-1">Avg Escalation Score</div>
           </div>
           <div className="bg-green-950 border border-green-700 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-green-300">{avgConf}%</div>
+            <div className="text-2xl font-bold text-green-300">{avgConf === null ? 'N/A' : avgConf + '%'}</div>
             <div className="text-xs text-gray-500 mt-1">Avg MAD Confidence</div>
           </div>
         </div>

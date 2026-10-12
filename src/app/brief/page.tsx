@@ -3,6 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
+import { statedConfidence, confidenceText } from '@/lib/verdict'
 
 interface BriefData {
   title: string
@@ -131,9 +132,9 @@ export default function BriefPage() {
                 </span>
                 <div className="flex-1 bg-gray-800 rounded-full h-2">
                   <div className={`h-2 rounded-full ${brief.mad_arb_failed ? 'bg-amber-500' : brief.mad_verdict === 'bullish' ? 'bg-green-500' : brief.mad_verdict === 'bearish' ? 'bg-red-500' : 'bg-gray-500'}`}
-                    style={{ width: brief.mad_arb_failed ? '100%' : Math.round((brief.mad_confidence || 0) * 100) + '%' }} />
+                    style={{ width: brief.mad_arb_failed ? '100%' : Math.round((statedConfidence(brief.mad_verdict, brief.mad_confidence, brief.mad_arb_failed) || 0) * 100) + '%' }} />
                 </div>
-                <span className="text-xs text-white font-bold shrink-0">{brief.mad_arb_failed ? 'N/A' : (brief.mad_confidence ? Math.round(brief.mad_confidence * 100) + '%' : 'N/A')}</span>
+                <span className="text-xs text-white font-bold shrink-0">{confidenceText(brief.mad_verdict, brief.mad_confidence, brief.mad_arb_failed)}</span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div className="bg-green-950 border border-green-900 rounded-lg p-3">

@@ -1,7 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
-import { verdictIcon } from '@/lib/verdict'
+import { verdictIcon, statedConfidence } from '@/lib/verdict'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 
 interface Report {
@@ -16,6 +16,7 @@ interface Report {
   quality_score: number
   mad_verdict: string
   mad_confidence: number
+  mad_arb_failed?: boolean | null
   mad_bull_case: string
   mad_bear_case: string
   mad_black_swan_case: string
@@ -104,7 +105,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
                   report.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' :
                   'bg-gray-700 text-gray-300'
                 }`}>
-                  {verdictIcon(report.mad_verdict)} {report.mad_verdict?.toUpperCase()} {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : ''}
+                  {verdictIcon(report.mad_verdict)} {report.mad_verdict?.toUpperCase()} {statedConfidence(report.mad_verdict, report.mad_confidence, report.mad_arb_failed) !== null ? Math.round(report.mad_confidence * 100) + '%' : ''}
                 </span>
               )}
               {report.quality_score > 0 && (
@@ -181,7 +182,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
             </div>
           )}
 
-          {report.mad_confidence > 0 && (
+          {statedConfidence(report.mad_verdict, report.mad_confidence, report.mad_arb_failed) !== null && (
             <div>
               <div className="flex justify-between text-xs text-gray-500 mb-1">
                 <span>MAD Confidence</span>

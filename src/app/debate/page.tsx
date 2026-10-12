@@ -3,6 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 import { formatEscalation } from '@/lib/escalation'
+import { statedConfidence, confidenceText } from '@/lib/verdict'
 
 interface RoundPositions {
   bull: string
@@ -115,7 +116,7 @@ export default function DebatePage() {
     fetch('/api/reports', { headers: { 'X-GNI-Key': GNI_KEY } })
       .then(r => r.json())
       .then(data => {
-        const rpts = (data.reports || []).filter((r: Report) => r.mad_verdict)
+        const rpts = (data.reports || []).filter((r: Report) => r.mad_verdict && r.mad_verdict.toLowerCase() !== 'pending')
         setReports(rpts)
         if (rpts.length > 0) setSelected(rpts[0])
       })
@@ -199,7 +200,7 @@ export default function DebatePage() {
                 <div className="text-xs text-gray-500 uppercase tracking-wider mb-3">Debates ({reports.length})</div>
                 <div className="space-y-2 max-h-[700px] overflow-y-auto">
                   {reports.map(r => {
-                    const { pct, color } = confidenceBar(r.mad_confidence)
+                    const { pct, color } = confidenceBar(statedConfidence(r.mad_verdict, r.mad_confidence, r.mad_arb_failed) || 0)
                     return (
                       <button key={r.id} onClick={() => { setSelected(r); setActiveTab('verdict') }}
                         className={`w-full text-left p-3 rounded-lg text-xs transition-colors ${
@@ -211,7 +212,7 @@ export default function DebatePage() {
                             r.mad_verdict === 'bullish' ? 'bg-green-900 text-green-300' :
                             r.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' : 'bg-gray-700 text-gray-300'
                           }`}>{r.mad_verdict?.toUpperCase()}</span>
-                          <span className="text-gray-500">{pct}%</span>
+                          <span className="text-gray-500">{confidenceText(r.mad_verdict, r.mad_confidence, r.mad_arb_failed)}</span>
                         </div>
                         <div className="mt-1.5 bg-gray-700 rounded-full h-1">
                           <div className={`${color} h-1 rounded-full`} style={{ width: pct + '%' }} />
@@ -403,12 +404,12 @@ export default function DebatePage() {
                         </span>
                         <div>
                           <div className="text-xl font-bold">ARBITRATOR VERDICT: {selected.mad_verdict?.toUpperCase()}</div>
-                          <div className="text-sm opacity-75">Confidence: {Math.round((selected.mad_confidence || 0) * 100)}%</div>
+                          <div className="text-sm opacity-75">Confidence: {confidenceText(selected.mad_verdict, selected.mad_confidence, selected.mad_arb_failed)}</div>
                         </div>
                       </div>
                       <div className="bg-black bg-opacity-30 rounded-full h-3 mb-4">
-                        <div className={`h-3 rounded-full ${confidenceBar(selected.mad_confidence).color}`}
-                          style={{ width: confidenceBar(selected.mad_confidence).pct + '%' }} />
+                        <div className={`h-3 rounded-full ${confidenceBar(statedConfidence(selected.mad_verdict, selected.mad_confidence, selected.mad_arb_failed) || 0).color}`}
+                          style={{ width: confidenceBar(statedConfidence(selected.mad_verdict, selected.mad_confidence, selected.mad_arb_failed) || 0).pct + '%' }} />
                       </div>
                       {selected.mad_reasoning && (
                         <div>

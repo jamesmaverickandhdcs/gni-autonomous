@@ -3,7 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
-import { verdictRelation, RELATION_LABEL, RELATION_NOTE, type VerdictRelation } from '@/lib/verdict'
+import { verdictRelation, RELATION_LABEL, RELATION_NOTE, type VerdictRelation, statedConfidence, confidenceText } from '@/lib/verdict'
 
 interface Report {
   id: string
@@ -278,18 +278,18 @@ export default function ComparisonPage() {
                         {sentimentIcon(latest.mad_verdict)} {latest.mad_verdict?.toUpperCase()}
                       </span>
                       <span className="text-gray-500 text-sm">
-                        confidence: {latest.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}
+                        confidence: {confidenceText(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed)}
                       </span>
                     </div>
                     <div className="mb-4">
                       <div className="flex justify-between text-xs text-gray-500 mb-1">
                         <span>MAD Confidence</span>
-                        <span>{latest.mad_confidence ? Math.round(latest.mad_confidence * 100) + '%' : 'N/A'}</span>
+                        <span>{confidenceText(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed)}</span>
                       </div>
                       <div className="h-2 bg-gray-800 rounded-full">
                         <div
                           className={`h-2 rounded-full ${latest.mad_confidence >= 0.7 ? 'bg-green-500' : latest.mad_confidence >= 0.5 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                          style={{ width: `${Math.round((latest.mad_confidence || 0) * 100)}%` }}
+                          style={{ width: `${Math.round((statedConfidence(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed) || 0) * 100)}%` }}
                         />
                       </div>
                     </div>
@@ -310,7 +310,7 @@ export default function ComparisonPage() {
                             ? 'bg-red-950 border-red-600 text-red-300'
                             : 'bg-green-950 border-green-600 text-green-300'
                         }`}>
-                          {latestDisagree ? '⚠️ DISAGREE' : '✓ AGREE'}
+                          {RELATION_LABEL[latestRel]}
                         </span>
                       </div>
                     </div>
@@ -390,7 +390,7 @@ export default function ComparisonPage() {
                             {sentimentIcon(report.mad_verdict)} {report.mad_verdict?.toUpperCase() || 'N/A'}
                           </span>
                           <div className="text-gray-600 mt-0.5">
-                            {report.mad_confidence ? Math.round(report.mad_confidence * 100) + '%' : 'N/A'}
+                            {confidenceText(report.mad_verdict, report.mad_confidence, report.mad_arb_failed)}
                           </div>
                         </div>
                         <div className="col-span-2 text-center">

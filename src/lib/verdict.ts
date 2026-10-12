@@ -52,3 +52,31 @@ export function verdictIcon(madVerdict?: string | null, arbFailed?: boolean | nu
   if (m === 'bearish') return '\u{1F43B}'
   return '\u25C6'
 }
+
+// S112: mad_confidence holds 0.5 from the moment a report is inserted (ai_engine/main.py), before
+// any debate runs, and a failed arbitrator leaves a default beside its default verdict. Neither is
+// a confidence the Arbitrator stated, yet eight pages printed both as one - /comparison showed
+// "PENDING ... confidence: 50%" beside "Signal AGREE", read live on 2026-10-12T19:58Z, /debate
+// listed the pending report as a debate, and /researcher averaged the placeholders into its
+// "Avg MAD Confidence". A page shows the Arbitrator's confidence only through these two functions.
+export function statedConfidence(
+  madVerdict?: string | null,
+  madConfidence?: number | null,
+  arbFailed?: boolean | null,
+): number | null {
+  const m = (madVerdict || '').toLowerCase()
+  if (!m || m === 'pending' || arbFailed) return null
+  return typeof madConfidence === 'number' && madConfidence > 0 ? madConfidence : null
+}
+
+export function confidenceText(
+  madVerdict?: string | null,
+  madConfidence?: number | null,
+  arbFailed?: boolean | null,
+): string {
+  const m = (madVerdict || '').toLowerCase()
+  if (!m || m === 'pending') return 'no debate yet'
+  if (arbFailed) return 'no ruling'
+  const c = statedConfidence(madVerdict, madConfidence, arbFailed)
+  return c === null ? 'N/A' : String(Math.round(c * 100)) + '%'
+}
