@@ -3,7 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
-import { verdictRelation, RELATION_LABEL, RELATION_NOTE, type VerdictRelation, statedConfidence, confidenceText } from '@/lib/verdict'
+import { verdictRelation, RELATION_LABEL, RELATION_NOTE, type VerdictRelation, statedConfidence, confidenceText, confidenceBand } from '@/lib/verdict'
 
 interface Report {
   id: string
@@ -288,7 +288,7 @@ export default function ComparisonPage() {
                       </div>
                       <div className="h-2 bg-gray-800 rounded-full">
                         <div
-                          className={`h-2 rounded-full ${latest.mad_confidence >= 0.7 ? 'bg-green-500' : latest.mad_confidence >= 0.5 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                          className={`h-2 rounded-full ${({ strong: 'bg-green-500', moderate: 'bg-yellow-500', weak: 'bg-red-500' } as const)[confidenceBand(statedConfidence(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed)) || 'weak']}`}
                           style={{ width: `${Math.round((statedConfidence(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed) || 0) * 100)}%` }}
                         />
                       </div>

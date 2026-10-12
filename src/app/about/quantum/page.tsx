@@ -3,7 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 import { formatEscalation } from '@/lib/escalation'
-import { statedConfidence } from '@/lib/verdict'
+import { statedPercent } from '@/lib/verdict'
 
 interface Report {
   title: string
@@ -81,7 +81,7 @@ export default function AboutQuantumPage() {
                   <p className="text-xs text-gray-500">{new Date(report.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 <div className={"px-4 py-2 rounded-lg border font-bold text-sm " + (report.mad_arb_failed ? "bg-amber-900 text-amber-300 border-amber-700" : vColor(report.mad_verdict))}>
-                  {report.mad_arb_failed ? '⚠ INCOMPLETE' : (report.mad_verdict?.toUpperCase() || 'PENDING') + ' ' + (statedConfidence(report.mad_verdict, report.mad_confidence, report.mad_arb_failed) !== null ? Math.round(report.mad_confidence * 100) + '%' : '')}
+                  {report.mad_arb_failed ? '⚠ INCOMPLETE' : (report.mad_verdict?.toUpperCase() || 'PENDING') + ' ' + statedPercent(report.mad_verdict, report.mad_confidence, report.mad_arb_failed)}
                 </div>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

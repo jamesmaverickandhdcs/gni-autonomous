@@ -668,7 +668,7 @@ export default function Home() {
                       Pipeline: <span className="text-white font-bold">{latest?.sentiment_score?.toFixed(2) || 'N/A'}</span>
                     </div>
                     <div className="text-xs text-gray-400">
-                      MAD: <span className="text-white font-bold">{latest && statedConfidence(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed) !== null ? (latest.mad_confidence * 2 - 1).toFixed(2) : 'N/A'}</span>
+                      MAD confidence: <span className="text-white font-bold">{latest ? confidenceText(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed) : 'N/A'}</span>
                     </div>
                     <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                       verdictRelation(latest?.sentiment, latest?.mad_verdict, latest?.mad_arb_failed) === 'disagree'
@@ -965,7 +965,7 @@ export default function Home() {
                     <div className="w-full bg-gray-800 rounded-full h-2 mb-4">
                       <div
                         className={`h-2 rounded-full ${latest.mad_verdict === 'bullish' ? 'bg-green-500' : latest.mad_verdict === 'bearish' ? 'bg-red-500' : 'bg-gray-500'}`}
-                        style={{ width: Math.round(latest.mad_confidence * 100) + '%' }}
+                        style={{ width: Math.round((statedConfidence(latest.mad_verdict, latest.mad_confidence, latest.mad_arb_failed) || 0) * 100) + '%' }}
                       />
                     </div>
                   )}

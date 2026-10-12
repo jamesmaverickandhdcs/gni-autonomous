@@ -1444,16 +1444,26 @@ def _band_claim(fragment):
 
 
 def _conf_bands(root):
-    """The bands the pages colour the Arbitrator's confidence by: every
-    `mad_confidence >= 0.N` in src/app/**/page.tsx. The highest is 'strong', the lowest
-    bounds 'weak'; exactly two distinct thresholds are expected, so a third halts."""
-    got = set()
-    for path in glob.glob(os.path.join(root, "src", "app", "**", "page.tsx"), recursive=True):
-        with open(path, "rb") as fh:
-            got |= set(re.findall(r"mad_confidence >= (0\.\d+)", fh.read().decode("utf-8-sig")))
-    if len(got) != 2:
-        raise FitnessError("expected two mad_confidence thresholds across the pages, got %r" % sorted(got))
-    lo, hi = sorted(float(x) for x in got)
+    """The bands the pages colour and word the Arbitrator's confidence by. Until S112 R8 the
+    pages held them (`mad_confidence >= 0.N` on /comparison and /scenarios, and /debate a third
+    scale, 80/60, that no regex here saw); R8 moved them into src/lib/verdict.ts as
+    CONFIDENCE_STRONG and CONFIDENCE_MODERATE, and detector check C19 refuses a page that reads
+    the column outside the lib. Both constants are required and STRONG must exceed MODERATE.
+    LIMIT, written down: a page that bands a number it computed itself is not seen here."""
+    path = os.path.join(root, "src", "lib", "verdict.ts")
+    if not os.path.isfile(path):
+        raise FitnessError("src/lib/verdict.ts not found")
+    with open(path, "rb") as fh:
+        text = fh.read().decode("utf-8-sig")
+    got = {}
+    for name in ("CONFIDENCE_STRONG", "CONFIDENCE_MODERATE"):
+        m = re.findall(r"export const %s = (0\.\d+)\b" % name, text)
+        if len(m) != 1:
+            raise FitnessError("expected one `export const %s = 0.N` in verdict.ts, got %r" % (name, m))
+        got[name] = float(m[0])
+    hi, lo = got["CONFIDENCE_STRONG"], got["CONFIDENCE_MODERATE"]
+    if not hi > lo:
+        raise FitnessError("CONFIDENCE_STRONG %g does not exceed CONFIDENCE_MODERATE %g" % (hi, lo))
     return ["strong>=%g" % (hi * 100), "weak<%g" % (lo * 100)]
 
 
@@ -1697,8 +1707,8 @@ FITNESS = {
                             "pipeline='gni_adaptive') in adaptive_pipeline.py (AST)",
                             _zero_tokens_claim, _adaptive_logged, _equal),
     # S112 (roadmap 4 row R4-3, round 6).
-    "F-CONF-BANDS": ("the bands the pages colour the Arbitrator's confidence by: mad_confidence >= 0.N "
-                     "across src/app/**/page.tsx", _band_claim, _conf_bands, _scheduled),
+    "F-CONF-BANDS": ("the bands the pages colour the Arbitrator's confidence by: CONFIDENCE_STRONG and "
+                     "CONFIDENCE_MODERATE in src/lib/verdict.ts", _band_claim, _conf_bands, _scheduled),
     "F-FFF-FIELDS": ("Freedom-from-Fear sections a report carries: fff_ keys of nexus_analyzer.py's template",
                      _questions_claim, _fff_fields, _equal),
     "F-TRANSPARENCY-REASONS": ("stages whose reason /transparency renders: article.stage<id>_reason",

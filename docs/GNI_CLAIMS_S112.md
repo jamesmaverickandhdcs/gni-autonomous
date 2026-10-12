@@ -367,14 +367,14 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-438 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | Highest-value intelligence event &mdash; investigate further. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/alerts/page.tsx:134` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:466` | GNI reports are for informational purposes only and do not constitute financial advice. |
-| CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:496` | GNI reports are for informational purposes only and do not constitute financial advice. |
+| CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:497` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/model-learning/page.tsx:79` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:865` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/pattern-library/page.tsx:79` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/pillars/page.tsx:271` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/predictions/page.tsx:152` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:181` | GNI reports are for informational purposes only and do not constitute financial advice. |
-| CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:347` | GNI reports are for informational purposes only and do not constitute financial advice. |
+| CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:349` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/validation-log/page.tsx:79` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/weekly-digest/page.tsx:174` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-442 | STATE | UNMEASURED | PROVENANCE | `src/app/comparison/page.tsx:472` | GNI Autonomous \| Report vs Debate Comparison \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
@@ -426,7 +426,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-534 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:100` | Adds statistical rigor to qualitative AI analysis. |
 | CLM-540 | STATE | UNMEASURED | QUALITATIVE | `src/app/research/page.tsx:105` | Challenges assumption that AI research requires paid infrastructure. |
 | CLM-542 | STATE | SUPPORTED | F-EXT claims 500MB, measured supabase-free-db read 2026-10-12 | `src/app/research/page.tsx:161` | 500MB PostgreSQL |
-| CLM-549 | STATE | UNMEASURED | PROVENANCE | `src/app/debate/page.tsx:502` | GNI — Global Nexus Insights (Autonomous) \| Quadratic MAD Protocol — Future Threat Intelligence \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
+| CLM-549 | STATE | UNMEASURED | PROVENANCE | `src/app/debate/page.tsx:503` | GNI — Global Nexus Insights (Autonomous) \| Quadratic MAD Protocol — Future Threat Intelligence \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-558 | STATE | UNMEASURED | QUALITATIVE | `src/app/correlations/page.tsx:319` | ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-558 | STATE | UNMEASURED | QUALITATIVE | `src/app/history/page.tsx:547` | ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-558 | STATE | UNMEASURED | QUALITATIVE | `src/app/map/page.tsx:114` | ⚠️ Warning: GNI reports are for informational purposes only and do not constitute financial advice. |
@@ -505,14 +505,14 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-676 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:118` | Sends Telegram alert with trigger reason and result |
 | CLM-677 | STATE | UNMEASURED | PROVENANCE | `src/app/adaptive-log/page.tsx:191` | GNI Autonomous \| Adaptive Pipeline Log \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-678 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:155` | — written by the main pipeline; adaptive wrote none of them |
-| CLM-679 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:131` | Indicative only |
+| CLM-679 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:133` | Indicative only |
 | CLM-680 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 7-30 days, measured 3-24 months+7-30 days | `src/app/history/page.tsx:371` | 🔮 Short Focus (7-30 days) |
-| CLM-680 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 7-30 days, measured 3-24 months+7-30 days | `src/app/scenarios/page.tsx:155` | 🔮 Short Focus (7-30 days) |
+| CLM-680 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 7-30 days, measured 3-24 months+7-30 days | `src/app/scenarios/page.tsx:157` | 🔮 Short Focus (7-30 days) |
 | CLM-681 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 3-24 months, measured 3-24 months+7-30 days | `src/app/history/page.tsx:377` | 🎯 Long Shoots (3-24 months) |
-| CLM-681 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 3-24 months, measured 3-24 months+7-30 days | `src/app/scenarios/page.tsx:161` | 🎯 Long Shoots (3-24 months) |
-| CLM-683 | PROMISE | UNMEASURED | PROMISE | `src/app/scenarios/page.tsx:244` | Reliability improves as GPVS correlation data accumulates. |
-| CLM-684 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:322` | Bear agent — known risks playing out. |
-| CLM-687 | STATE | UNMEASURED | PROVENANCE | `src/app/scenarios/page.tsx:353` | GNI Autonomous \| Scenario Planning \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
+| CLM-681 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 3-24 months, measured 3-24 months+7-30 days | `src/app/scenarios/page.tsx:163` | 🎯 Long Shoots (3-24 months) |
+| CLM-683 | PROMISE | UNMEASURED | PROMISE | `src/app/scenarios/page.tsx:246` | Reliability improves as GPVS correlation data accumulates. |
+| CLM-684 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:324` | Bear agent — known risks playing out. |
+| CLM-687 | STATE | UNMEASURED | PROVENANCE | `src/app/scenarios/page.tsx:355` | GNI Autonomous \| Scenario Planning \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-694 | STATE | UNMEASURED | QUALITATIVE | `src/app/alerts/page.tsx:87` | Data populates automatically. |
 | CLM-695 | STATE | UNMEASURED | PROVENANCE | `src/app/alerts/page.tsx:140` | GNI Autonomous \| Alert History \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
 | CLM-700 | STATE | UNMEASURED | PROVENANCE | `src/app/transparency/page.tsx:412` | GNI Autonomous \| Transparency Engine \| Higher Diploma in Computer Science \| Spring University Myanmar (SUM) |
@@ -613,7 +613,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-817 | STATE | UNMEASURED | QUALITATIVE | `src/app/pillars/page.tsx:123` | Each pipeline run produces a separate AI analysis for every pillar that has selected articles — Geopolitical (conflict, diplomacy), Technology (cyber, AI, surveillance), and Financial (markets, sanctions, trade). |
 | CLM-818 | STATE | SUPPORTED | F-CI-T claims n=3, measured t=4.303+n=3 | `src/app/research/page.tsx:149` | The confidence interval needs three analysis runs inside one pipeline run (t-distribution, n=3). |
 | CLM-820 | STATE | SUPPORTED | F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/research/page.tsx:100` | Uses t-distribution (t=4.303 for n=3). |
-| CLM-822 | PROMISE | UNMEASURED | PROMISE | `src/app/scenarios/page.tsx:131` | — Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications). |
+| CLM-822 | PROMISE | UNMEASURED | PROMISE | `src/app/scenarios/page.tsx:133` | — Scenario reliability improves as correlation data accumulates (target: 100+ GPVS verifications). |
 | CLM-823 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:26` | No person starts a scheduled run. |
 | CLM-824 | STATE | SUPPORTED | F-CI-T claims n=3, measured t=4.303+n=3 | `src/app/methodology/page.tsx:27` | Every day it collects global news, analyzes it with AI, gives the main report a confidence interval from three runs (n=3), runs a four-agent debate, and publishes the results to this web app. |
 | CLM-825 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:32` | RSS collection → intelligence funnel → AI analysis → CI → save → pillar reports → verify |
@@ -627,7 +627,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-833 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:64` | A Telegram message lists the articles of the run, and at a high escalation score the admin also gets an alert with the level and the sentiment; the debate runs later, so its verdict is not in it. |
 | CLM-834 | STATE | UNMEASURED | QUALITATIVE | `src/app/methodology/page.tsx:92` | Finds what concretely stabilises, de-escalates or improves. |
 | CLM-836 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:962` | Bull finds what stabilises or improves, Bear finds systemic failures, Black Swan uncovers unknown dangers, and Ostrich exposes what is being ignored. |
-| CLM-837 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:326` | Bull agent — known positives: what concretely stabilises, de-escalates or improves. |
+| CLM-837 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:328` | Bull agent — known positives: what concretely stabilises, de-escalates or improves. |
 | CLM-838 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:185` | Newest MAD predictions, a capped list, with verify-by dates |
 | CLM-839 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:13` | Health-agent alerts (run gap, quality, collection, MAD confidence) + recent token usage rows |
 | CLM-840 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer/page.tsx:14` | Adaptive run log: when each run happened, why, and the tokens it logged |
@@ -661,7 +661,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-872 | STATE | SUPPORTED | F-VERIFY-DAYS claims short=14+long=180, measured short=14+long=180 | `src/app/research/page.tsx:95` | Every MAD debate records a short-horizon prediction from each agent and a long-horizon one from the Arbitrator, each with a verify-by date, 14 and 180 days by default. |
 | CLM-873 | STATE | SUPPORTED | F-CI-TEMPS claims 0.1+0.3+0.7, measured 0.1+0.3+0.7 | `src/app/research/page.tsx:100` | Three LLM runs at temperatures 0.1, 0.3, 0.7 give the main report a 95% confidence interval for its sentiment score. |
 | CLM-874 | STATE | UNMEASURED | EXTERNAL | `src/app/research/page.tsx:105` | Zero cost, within the free-tier limits. |
-| CLM-875 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:70` | Known positives — what concretely stabilises or improves |
+| CLM-875 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:72` | Known positives — what concretely stabilises or improves |
 | CLM-876 | STATE | SUPPORTED | F-CI-T claims t=4.303+n=3, measured t=4.303+n=3 | `src/app/about/patterns/page.tsx:62` | Confidence intervals using t-distribution (t=4.303, n=3, alpha=0.05) provide IEEE-citable uncertainty quantification for the sentiment score of the main report. |
 | CLM-877 | STATE | UNMEASURED | PROVENANCE | `src/app/about/patterns/page.tsx:62` | This is contribution 3 in the academic paper. |
 | CLM-878 | STATE | UNMEASURED | PROVENANCE | `src/app/about/quantum/page.tsx:157` | Academic Contribution — Contribution 1 |
@@ -738,11 +738,11 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-953 | STATE | UNMEASURED | EXTERNAL | `src/app/quota/page.tsx:222` | Free plan, storage capped |
 | CLM-954 | STATE | UNMEASURED | EXTERNAL | `src/app/quota/page.tsx:226` | Free plans, within their usage limits |
 | CLM-955 | STATE | UNMEASURED | HISTORICAL | `src/app/reports/page.tsx:125` | Earliest stored verify-by: 7 June 2026 |
-| CLM-956 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:243` | Bear / Bull / Black Swan cases from the Quadratic MAD debate |
-| CLM-957 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:322` | No case is ranked as most likely. |
-| CLM-958 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:330` | Black Swan agent — reads the low-scoring articles the others dismissed, looking for a threat no one has modelled. |
-| CLM-959 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:60` | Bear agent case — known risks playing out; no likelihood is computed |
-| CLM-960 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:80` | Black Swan agent case — the Ostrich case stands in only when it is empty |
+| CLM-956 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:245` | Bear / Bull / Black Swan cases from the Quadratic MAD debate |
+| CLM-957 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:324` | No case is ranked as most likely. |
+| CLM-958 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:332` | Black Swan agent — reads the low-scoring articles the others dismissed, looking for a threat no one has modelled. |
+| CLM-959 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:62` | Bear agent case — known risks playing out; no likelihood is computed |
+| CLM-960 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:82` | Black Swan agent case — the Ostrich case stands in only when it is empty |
 | CLM-961 | STATE | SUPPORTED | F-HB-DELTA claims 2, measured 2 | `src/app/adaptive-log/page.tsx:94` | The heartbeat starts an adaptive run when the escalation delta &gt;= 2.0 or the level is CRITICAL, outside its blackout windows. |
 | CLM-962 | STATE | UNMEASURED | QUALITATIVE | `src/app/adaptive-log/page.tsx:95` | A run that performs an analysis is logged to groq_daily_usage with zero Groq tokens, because the analysis runs on Cerebras; a CRITICAL run only sends an alert. |
 | CLM-963 | STATE | SUPPORTED | F-ESC-CAP claims 10, measured 10 | `src/app/autonomy/page.tsx:203` | The final score is capped at 10. |
@@ -759,14 +759,14 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-973 | STATE | SUPPORTED | F-GPVS-WINDOW-WORD claims 3d, measured 3d+7d+30d+180d | `src/app/correlations/page.tsx:291` | 3-day |
 | CLM-973 | STATE | SUPPORTED | F-GPVS-WINDOW-WORD claims 3d, measured 3d+7d+30d+180d | `src/components/DirectionalSkillNote.tsx:9` | 3-day |
 | CLM-974 | STATE | SUPPORTED | F-PATTERN-MIN claims 3, measured 3 | `src/app/correlations/page.tsx:306` | Requires 3+ verified report outcomes per location or pillar. |
-| CLM-975 | STATE | SUPPORTED | F-MAD-ROUNDS claims 3, measured 3 | `src/app/debate/page.tsx:145` | Bull → Bear → Black Swan → Ostrich over three rounds on future threats, then the Arbitrator |
-| CLM-976 | STATE | SUPPORTED | F-MAD-AGENTS claims 4, measured 4 | `src/app/debate/page.tsx:147` | Four agents each take one quadrant: Known Positives (Bull), Known Negatives (Bear), Unknown Negatives (Black Swan) and Ignored Realities (Ostrich). |
-| CLM-977 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:148` | Each agent has a consultant who coaches it after the first and second rounds; a reply with too many ungrounded claims is withheld. |
-| CLM-978 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:148` | The Arbitrator gives the verdict once, after the third round. |
-| CLM-979 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:148` | Agents read the run&apos;s scored articles, capped per pillar; the Black Swan also reads the zero-scored ones the others drop. |
-| CLM-980 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 3-24 months+7-30 days, measured 3-24 months+7-30 days | `src/app/debate/page.tsx:149` | The Arbitrator names Short Focus (7-30 days) and Long Shoots (3-24 months) threats; the Long Shoots list and each agent&apos;s final position are saved as predictions and checked against SPY. |
-| CLM-981 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:463` | No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions. |
-| CLM-981 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:471` | No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions. |
+| CLM-975 | STATE | SUPPORTED | F-MAD-ROUNDS claims 3, measured 3 | `src/app/debate/page.tsx:146` | Bull → Bear → Black Swan → Ostrich over three rounds on future threats, then the Arbitrator |
+| CLM-976 | STATE | SUPPORTED | F-MAD-AGENTS claims 4, measured 4 | `src/app/debate/page.tsx:148` | Four agents each take one quadrant: Known Positives (Bull), Known Negatives (Bear), Unknown Negatives (Black Swan) and Ignored Realities (Ostrich). |
+| CLM-977 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:149` | Each agent has a consultant who coaches it after the first and second rounds; a reply with too many ungrounded claims is withheld. |
+| CLM-978 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:149` | The Arbitrator gives the verdict once, after the third round. |
+| CLM-979 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:149` | Agents read the run&apos;s scored articles, capped per pillar; the Black Swan also reads the zero-scored ones the others drop. |
+| CLM-980 | STATE | SUPPORTED | F-THREAT-WINDOWS claims 3-24 months+7-30 days, measured 3-24 months+7-30 days | `src/app/debate/page.tsx:150` | The Arbitrator names Short Focus (7-30 days) and Long Shoots (3-24 months) threats; the Long Shoots list and each agent&apos;s final position are saved as predictions and checked against SPY. |
+| CLM-981 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:464` | No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions. |
+| CLM-981 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:472` | No Arbitrator threat list this run -- its call failed or its answer could not be read; the final positions of the agents were still saved as predictions. |
 | CLM-982 | STATE | UNMEASURED | QUALITATIVE | `src/app/page.tsx:182` | Every GNI report carries a sentiment such as Bearish or Bullish, which the report check reads as a market call. |
 | CLM-983 | STATE | SUPPORTED | F-GPVS-DAYS claims 3d+7d+30d+180d, measured 3d+7d+30d+180d | `src/app/page.tsx:182` | Its direction is judged at 3, 7, 30 and 180 days. |
 | CLM-986 | STATE | SUPPORTED | F-PILLAR-RUNS claims 3, measured 3 | `src/app/page.tsx:886` | Each pillar reads only the selected articles tagged to it, so the three reports look at different slices of the same run. |
@@ -810,10 +810,10 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-1025 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:220` | The AI report analysed the latest run&apos;s headlines and reached a ${latest.sentiment?.toLowerCase()} conclusion. |
 | CLM-1026 | STATE | SUPPORTED | F-MAD-ROUNDS claims 3, measured 3 | `src/app/comparison/page.tsx:220` | The MAD debate — its agents over 3 rounds on that report, then the Arbitrator — reached ${latest.mad_verdict?.toLowerCase()}. |
 | CLM-1027 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:220` | A disagreement means the debate weighed something the summary did not; whether that was a hidden risk is a judgement this page cannot make. |
-| CLM-1028 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:477` | Each agent&apos;s final position is checked against SPY after ${selected.short_verify_days \|\| 14} days; the Arbitrator&apos;s Long Shoots list after ${selected.long_verify_days \|\| 180} days. |
-| CLM-1029 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:477` | The Short Focus list itself is not checked. |
-| CLM-1030 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:478` | At its verify-by date each prediction is judged by SPY&apos;s move: materialized, not materialized, or inconclusive. |
-| CLM-1031 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:479` | Over time this builds each agent&apos;s record against SPY; it feeds nothing back into the debate. |
+| CLM-1028 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:478` | Each agent&apos;s final position is checked against SPY after ${selected.short_verify_days \|\| 14} days; the Arbitrator&apos;s Long Shoots list after ${selected.long_verify_days \|\| 180} days. |
+| CLM-1029 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:478` | The Short Focus list itself is not checked. |
+| CLM-1030 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:479` | At its verify-by date each prediction is judged by SPY&apos;s move: materialized, not materialized, or inconclusive. |
+| CLM-1031 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:480` | Over time this builds each agent&apos;s record against SPY; it feeds nothing back into the debate. |
 | CLM-1032 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:167` | Autonomous web-layer health monitoring, ${SCHEDULE_REQUESTED_30}. |
 | CLM-1033 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:167` | Checks Supabase connection, report freshness, Groq quota, source health, pipeline recency, and MAD debate recency. |
 | CLM-1034 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:167` | Sends Telegram alerts automatically when issues are detected and saves all results to Supabase for historical analysis. |
@@ -829,7 +829,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S112.tsv` md5 `91039b337efea735db898d89
 | CLM-1045 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:131` | Showing the newest ${reports.length} reports. |
 | CLM-1046 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:131` | Each carries its escalation score, sentiment score, MAD verdict, and confidence interval width. |
 | CLM-1047 | STATE | UNMEASURED | QUALITATIVE | `src/app/researcher/page.tsx:131` | Only the newest reports load here. |
-| CLM-1048 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:286` | No scenario data yet. |
+| CLM-1048 | STATE | UNMEASURED | QUALITATIVE | `src/app/scenarios/page.tsx:288` | No scenario data yet. |
 | CLM-1049 | STATE | UNMEASURED | QUALITATIVE | `src/app/source-health/page.tsx:111` | RSS feed monitoring across ${totalSources} intelligence sources, as of the latest check. |
 | CLM-1050 | STATE | SUPPORTED | F-PHI003-LIVE claims PHI-003 in code, measured PHI-003 in code | `src/components/ResetBanner.tsx:9` | GNI Autonomous now runs under the PHI-003 Freedom from Fear standard. |
 | CLM-1051 | STATE | SUPPORTED | F-FFF-FIELDS claims 3, measured 3 | `src/components/ResetBanner.tsx:10` | Every report answers three questions: what is happening, what honest analysis says, and what you can do. |

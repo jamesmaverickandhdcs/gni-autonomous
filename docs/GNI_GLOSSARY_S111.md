@@ -253,6 +253,7 @@ CHECKS tuple entry without a row here, so this list cannot fall behind the code.
 | C16 | every item of the live order is bound to minted claims or marked ORPHAN on its defining line, and the ORPHAN RATE the order prints is the one the bindings give (R3-4) |
 | C17 | no page compares report sentiment with the debate verdict itself; `src/lib/verdict.ts` is the one rule (R-S109-3) |
 | C18 | UNREVIEWED and NUMBERS UNDERIVED, printed on the claims document's STATUS line, are the counts the tree derives, and neither exceeds what the previous claims generation's rows derive (R4-1) |
+| C19 | no `.tsx` under `src/` reads `mad_confidence` except as an argument of `src/lib/verdict.ts`'s functions, which name the 0.5 insert placeholder and the failed-arbitrator default (R-S109-3, S112) |
 
 ## OWED - named as metrics by the roadmap 3 specification, defined nowhere in the record
 

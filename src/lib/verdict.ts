@@ -58,7 +58,7 @@ export function verdictIcon(madVerdict?: string | null, arbFailed?: boolean | nu
 // a confidence the Arbitrator stated, yet eight pages printed both as one - /comparison showed
 // "PENDING ... confidence: 50%" beside "Signal AGREE", read live on 2026-10-12T19:58Z, /debate
 // listed the pending report as a debate, and /researcher averaged the placeholders into its
-// "Avg MAD Confidence". A page shows the Arbitrator's confidence only through these two functions.
+// "Avg MAD Confidence". A page shows the Arbitrator's confidence only through the functions below.
 export function statedConfidence(
   madVerdict?: string | null,
   madConfidence?: number | null,
@@ -77,6 +77,28 @@ export function confidenceText(
   const m = (madVerdict || '').toLowerCase()
   if (!m || m === 'pending') return 'no debate yet'
   if (arbFailed) return 'no ruling'
+  return statedPercent(madVerdict, madConfidence, arbFailed) || 'N/A'
+}
+
+export function statedPercent(
+  madVerdict?: string | null,
+  madConfidence?: number | null,
+  arbFailed?: boolean | null,
+): string {
   const c = statedConfidence(madVerdict, madConfidence, arbFailed)
-  return c === null ? 'N/A' : String(Math.round(c * 100)) + '%'
+  return c === null ? '' : String(Math.round(c * 100)) + '%'
+}
+
+// S112 R8: the bands a page colours and words the Arbitrator's confidence by, in one place.
+// /comparison states them ("70% or more = strong. Below 50% = weak."); /comparison and
+// /scenarios held 0.7 and 0.5 on the page, and /debate coloured its bars by 80 and 60 - a third
+// scale no sentence states. A band is given only for a stated confidence (null otherwise), and
+// detector check C19 holds every page to these functions.
+export const CONFIDENCE_STRONG = 0.7
+export const CONFIDENCE_MODERATE = 0.5
+export type ConfidenceBand = 'strong' | 'moderate' | 'weak'
+
+export function confidenceBand(c: number | null): ConfidenceBand | null {
+  if (c === null) return null
+  return c >= CONFIDENCE_STRONG ? 'strong' : c >= CONFIDENCE_MODERATE ? 'moderate' : 'weak'
 }

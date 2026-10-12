@@ -1,7 +1,7 @@
 'use client'
 const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 import { useEffect, useState } from 'react'
-import { verdictIcon, statedConfidence } from '@/lib/verdict'
+import { verdictIcon, statedConfidence, statedPercent, confidenceBand, type ConfidenceBand } from '@/lib/verdict'
 import { PIPELINE_CADENCE } from '@/lib/freshness'
 
 interface Report {
@@ -39,13 +39,15 @@ const riskColor = (risk: string) => {
   }
 }
 
-const confidenceColor = (c: number) => {
-  if (c >= 0.7) return 'text-green-400'
-  if (c >= 0.5) return 'text-yellow-400'
+const confidenceColor = (b: ConfidenceBand | null) => {
+  if (b === 'strong') return 'text-green-400'
+  if (b === 'moderate') return 'text-yellow-400'
   return 'text-red-400'
 }
 
 function ScenarioCard({ report, defaultExpanded = false }: { report: Report, defaultExpanded?: boolean }) {
+  const sConf = statedConfidence(report.mad_verdict, report.mad_confidence, report.mad_arb_failed)
+  const sBand = confidenceBand(sConf)
   const [expanded, setExpanded] = useState(defaultExpanded)
 
   const scenarios = [
@@ -105,7 +107,7 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
                   report.mad_verdict === 'bearish' ? 'bg-red-900 text-red-300' :
                   'bg-gray-700 text-gray-300'
                 }`}>
-                  {verdictIcon(report.mad_verdict)} {report.mad_verdict?.toUpperCase()} {statedConfidence(report.mad_verdict, report.mad_confidence, report.mad_arb_failed) !== null ? Math.round(report.mad_confidence * 100) + '%' : ''}
+                  {verdictIcon(report.mad_verdict)} {report.mad_verdict?.toUpperCase()} {statedPercent(report.mad_verdict, report.mad_confidence, report.mad_arb_failed)}
                 </span>
               )}
               {report.quality_score > 0 && (
@@ -186,17 +188,17 @@ function ScenarioCard({ report, defaultExpanded = false }: { report: Report, def
             <div>
               <div className="flex justify-between text-xs text-gray-500 mb-1">
                 <span>MAD Confidence</span>
-                <span className={confidenceColor(report.mad_confidence)}>
-                  {Math.round(report.mad_confidence * 100)}%
-                  {report.mad_confidence >= 0.7 ? ' — Strong consensus' :
-                   report.mad_confidence >= 0.5 ? ' — Moderate consensus' :
+                <span className={confidenceColor(sBand)}>
+                  {Math.round((sConf || 0) * 100)}%
+                  {sBand === 'strong' ? ' — Strong consensus' :
+                   sBand === 'moderate' ? ' — Moderate consensus' :
                    ' — Contested'}
                 </span>
               </div>
               <div className="h-1.5 bg-gray-800 rounded-full">
                 <div
-                  className={`h-1.5 rounded-full ${report.mad_confidence >= 0.7 ? 'bg-green-500' : report.mad_confidence >= 0.5 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                  style={{ width: Math.round(report.mad_confidence * 100) + '%' }}
+                  className={`h-1.5 rounded-full ${sBand === 'strong' ? 'bg-green-500' : sBand === 'moderate' ? 'bg-yellow-500' : 'bg-red-500'}`}
+                  style={{ width: Math.round((sConf || 0) * 100) + '%' }}
                 />
               </div>
             </div>

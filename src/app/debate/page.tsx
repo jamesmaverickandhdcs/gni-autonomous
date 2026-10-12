@@ -3,7 +3,7 @@ const GNI_KEY = process.env.NEXT_PUBLIC_GNI_API_KEY || ''
 
 import { useEffect, useState } from 'react'
 import { formatEscalation } from '@/lib/escalation'
-import { statedConfidence, confidenceText } from '@/lib/verdict'
+import { statedConfidence, confidenceText, confidenceBand } from '@/lib/verdict'
 
 interface RoundPositions {
   bull: string
@@ -58,9 +58,10 @@ function verdictColor(verdict: string) {
   }
 }
 
-function confidenceBar(confidence: number) {
+function confidenceBar(confidence: number | null) {
   const pct = Math.round((confidence || 0) * 100)
-  const color = pct >= 80 ? 'bg-green-500' : pct >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+  const band = confidenceBand(confidence)
+  const color = band === 'strong' ? 'bg-green-500' : band === 'moderate' ? 'bg-yellow-500' : 'bg-red-500'
   return { pct, color }
 }
 

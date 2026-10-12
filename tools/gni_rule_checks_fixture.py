@@ -182,9 +182,14 @@ ESC_LIB_OK = ("export function formatEscalation(s, raw) {\n"
               "  return raw != null ? s + '/10 raw ' + raw : s + '/10'\n}\n")
 ESC_PAGE_OK = ("import { formatEscalation } from '@/lib/escalation'\n"
                "const t = formatEscalation(r.escalation_score, r.escalation_score_raw)\n")
-VERDICT_LIB_OK = "export function verdictRelation(s, m) {\n  return s === m ? 'agree' : 'other'\n}\n"
-VERDICT_PAGE_OK = ("import { verdictRelation } from '@/lib/verdict'\n"
-                   "const rel = verdictRelation(r.sentiment, r.mad_verdict)\n")
+VERDICT_LIB_OK = ("export function verdictRelation(s, m) {\n  return s === m ? 'agree' : 'other'\n}\n"
+                  # S112: C19 needs the three confidence functions exported
+                  "export function statedConfidence(v, c, a) {\n  return v === 'pending' || a ? null : c\n}\n"
+                  "export function confidenceText(v, c, a) {\n  return v === 'pending' ? 'no debate yet' : c\n}\n"
+                  "export function statedPercent(v, c, a) {\n  return v === 'pending' ? '' : c\n}\n")
+VERDICT_PAGE_OK = ("import { verdictRelation, confidenceText } from '@/lib/verdict'\n"
+                   "const rel = verdictRelation(r.sentiment, r.mad_verdict)\n"
+                   "const conf = confidenceText(r.mad_verdict, r.mad_confidence, r.mad_arb_failed)\n")
 ORIGIN_OK = "# origin\nS94 recorded the fixture tree.\n"
 
 
@@ -735,6 +740,34 @@ CASES["87-ratchet-charref-not-a-number"] = lambda r: _ratchet_rises(
 CASES["88-ratchet-charref-beside-digit-rises"] = lambda r: _ratchet_rises(
     r, "&#9888;&#65039; GNI rereads 5 feeds by hand", "RUNTIME")
 
+# S112 R8, C19. The Arbitrator's confidence is read only through src/lib/verdict.ts. 89 is the
+# pre-R7 shape of six pages (the raw column printed), 92 /researcher's pre-R7 average, 93 the
+# dd91b41 shape (a read inside a guard on the same line - still a read), 95 the same read in a
+# component outside src/app. 90 and 94 are the DISCRIMINATORS: a read through the lib, and the
+# column named in a type and a select string, stay green. 91: a lib without one of the functions
+# is an instrument error, not a pass.
+def _conf_page(r, body, rel="src/app/x/page.tsx"):
+    base(r)
+    w(r + "/" + rel, body)
+    return r
+
+
+CASES["89-confidence-read-on-page"] = lambda r: _conf_page(
+    r, "<b>{Math.round(r.mad_confidence * 100)}%</b>\n")
+CASES["90-confidence-through-lib-passes"] = lambda r: _conf_page(
+    r, "<b>{confidenceText(r.mad_verdict, r.mad_confidence, r.mad_arb_failed)}</b>\n")
+CASES["91-confidence-lib-helper-missing"] = lambda r: (
+    base(r), w(r + "/src/lib/verdict.ts", VERDICT_LIB_OK.replace("statedPercent", "otherPercent")), r)[-1]
+CASES["92-confidence-averaged-on-page"] = lambda r: _conf_page(
+    r, "const avg = reports.reduce((s, r) => s + (r.mad_confidence || 0), 0) / reports.length\n")
+CASES["93-confidence-guarded-read-still-read"] = lambda r: _conf_page(
+    r, "<b>{statedConfidence(r.mad_verdict, r.mad_confidence, r.mad_arb_failed) !== null ? "
+       "Math.round(r.mad_confidence * 100) + '%' : ''}</b>\n")
+CASES["94-confidence-type-and-select-pass"] = lambda r: _conf_page(
+    r, "interface R {\n  mad_confidence: number\n}\nconst q = db.select('id,mad_confidence')\n")
+CASES["95-confidence-read-in-component"] = lambda r: _conf_page(
+    r, "<b>{(r.mad_confidence || 0).toFixed(2)}</b>\n", rel="src/components/Badge.tsx")
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -785,6 +818,10 @@ EXPECT = {
     "84-interpolated-code-not-data": 1,
     "85-ratchet-number-word-rises": 1, "86-ratchet-word-one-not-a-number": 0,
     "87-ratchet-charref-not-a-number": 0, "88-ratchet-charref-beside-digit-rises": 1,
+    "89-confidence-read-on-page": 1, "90-confidence-through-lib-passes": 0,
+    "91-confidence-lib-helper-missing": 2, "92-confidence-averaged-on-page": 1,
+    "93-confidence-guarded-read-still-read": 1, "94-confidence-type-and-select-pass": 0,
+    "95-confidence-read-in-component": 1,
 }
 
 if __name__ == "__main__":

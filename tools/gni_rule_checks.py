@@ -35,6 +35,9 @@ count it, because a count written here went stale twice (protocol v18).
                 document's STATUS line, are what the tree derives and do not
                 rise above the previous claims generation (S111). C12-C17
                 are named in the CHECKS tuple and the glossary, not here.
+  C19 R-S109-3  no .tsx under src reads mad_confidence except as an argument of
+                src/lib/verdict.ts's functions, which name the 0.5 insert
+                placeholder and the failed-arbitrator default (S112)
 
 CONSTRAINTS THIS SCRIPT HONOURS, ON PURPOSE:
   - stdlib only. No pip install step is needed or wanted (item 6.9).
@@ -1431,6 +1434,47 @@ def check_c16_order_bound_to_claims(ctx):
     return True, "%d items bound: ORPHAN RATE %d/%d" % (len(defs), orphans, len(defs))
 
 
+# ---- S112, the 9.5(e) finding / R-S109-3 ------------------------------------
+# mad_confidence is a placeholder column too: main.py writes 0.5 at insert, before any debate,
+# and a failed arbitrator leaves a default. C17 read only the sentiment/verdict comparison, so
+# eight pages printed the 0.5 as "confidence: 50%" (live 2026-10-12T19:58Z) with C17 green. C19
+# refuses any `.mad_confidence` read under src/**/*.tsx that is not an argument of one of the
+# lib's functions, which name the placeholder. Read by grammar on one line, like C11 and C17:
+# the lib calls are removed from the line first, and what is left may not read the column.
+# A read inside a guard is still a read - the guard can be moved away from it. LIMIT, written
+# down: destructuring (`const { mad_confidence } = r`) and bracket access are not seen; the
+# /developer page prints `report['mad_confidence']` in a Python sample, which is text, not a read.
+CONF_HELPERS = ("statedConfidence", "confidenceText", "statedPercent")
+CONF_HELPER_CALL_RE = re.compile(r"(?<![\w])(?:%s)\([^()]*\)" % "|".join(CONF_HELPERS))
+CONF_READ_RE = re.compile(r"\.mad_confidence(?![\w])")
+
+
+def check_c19_confidence_in_lib(ctx):
+    """R-S109-3. No page reads the Arbitrator's confidence except through the lib functions
+    that name the insert placeholder and the failed-arbitrator default."""
+    root = ctx["root"]
+    lib = read(os.path.join(root, VERDICT_LIB))
+    for fn in CONF_HELPERS:
+        require_nonempty(fn + " exported by " + VERDICT_LIB, "export function %s(" % fn in lib)
+    src = os.path.join(root, "src")
+    files = sorted(os.path.join(d, n) for d, _, fs in os.walk(src)
+                   for n in fs if n.endswith(".tsx"))
+    require_nonempty(".tsx files under src", files)
+    bad, users = [], []
+    for p in files:
+        text = read(p)
+        if CONF_HELPER_CALL_RE.search(text):
+            users.append(p)
+        for i, ln in enumerate(text.split("\n"), 1):
+            if CONF_READ_RE.search(CONF_HELPER_CALL_RE.sub("", ln)):
+                bad.append("%s:%d" % (os.path.relpath(p, root), i))
+    require_nonempty("files reading mad_confidence through " + VERDICT_LIB, users)
+    if bad:
+        return False, "mad_confidence read outside the lib at " + ", ".join(bad)
+    return True, "%d files read the Arbitrator's confidence through %s; none read it directly" % (
+        len(users), VERDICT_LIB)
+
+
 CHECKS = (
     ("C1 R-S90-2  rule citations", check_c1_citations),
     ("C2 R-S91-5  workflow counts", check_c2_workflow_counts),
@@ -1450,6 +1494,7 @@ CHECKS = (
     ("C16 R3-4    order bound to claims", check_c16_order_bound_to_claims),
     ("C17 R-S109-3 verdict in lib", check_c17_verdict_in_lib),
     ("C18 R4-1    unreviewed ratchet", check_c18_unreviewed_ratchet),
+    ("C19 R-S109-3 confidence in lib", check_c19_confidence_in_lib),
 )
 
 
