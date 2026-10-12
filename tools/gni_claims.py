@@ -11,9 +11,11 @@ STAGE 3 (S111): roadmap 4 row R4-1. The STATUS line also prints UNREVIEWED
 and NUMBERS UNDERIVED (ratchet_counts); the check labelled
 `unreviewed ratchet` holds them below the previous generation.
 
-SURFACE: src/app/**/page.tsx, src/components/**/*.tsx, and the frozen White
-Paper docs/GNI_WHITE_PAPER_S<N>.md (DECISION S107-2). ABSENT FROM IT, named
-(R-S106-4): layout.tsx, API routes, and runtime strings that come from the DB.
+SURFACE: src/app/**/page.tsx, src/components/**/*.tsx, the frozen White
+Paper docs/GNI_WHITE_PAPER_S<N>.md (DECISION S107-2), and, from S112, the frozen
+founding-philosophy extract docs/GNI_PHILOSOPHY_S<N>.md (the S32 and PHI-003
+rules, read like the White Paper). ABSENT FROM IT, named (R-S106-4): layout.tsx,
+API routes, and runtime strings that come from the DB.
 
   python tools/gni_claims.py --candidates [root]   one TSV row per candidate
   python tools/gni_claims.py --summary [root]      counts and tiers
@@ -30,6 +32,7 @@ import sys
 
 PAGE_GLOBS = ("src/app/**/page.tsx", "src/components/**/*.tsx")
 WP_RE = re.compile(r"^GNI_WHITE_PAPER_S(\d+)\.md$")
+PHIL_RE = re.compile(r"^GNI_PHILOSOPHY_S(\d+)\.md$")
 WP_BODY_MARK = "---"
 
 # Attribute values that are machinery, never prose a reader sees.
@@ -198,16 +201,18 @@ def tier(kind, text):
     return "manual"
 
 
-def wp_path(root):
+def wp_path(root, regex=WP_RE, what="frozen White Paper"):
     docs = os.path.join(root, "docs")
-    gens = [(int(m.group(1)), n) for n in os.listdir(docs) for m in [WP_RE.match(n)] if m]
+    gens = [(int(m.group(1)), n) for n in os.listdir(docs) for m in [regex.match(n)] if m]
     if not gens:
-        raise InstrumentError("no frozen White Paper under docs/")
+        raise InstrumentError("no %s under docs/" % what)
     return os.path.join(docs, max(gens)[1])
 
 
-def wp_candidates(root):
-    path = wp_path(root)
+def wp_candidates(root, regex=WP_RE, what="frozen White Paper"):
+    """Units of a frozen document read after its `---` body marker: the White Paper, and (S112)
+    the founding-philosophy extract, whose table rows are one rule each."""
+    path = wp_path(root, regex, what)
     rel = os.path.relpath(path, root).replace(os.sep, "/")
     with open(path, "rb") as fh:
         # EOL-normalised: a Windows checkout (and the fixture, which writes in
@@ -247,6 +252,7 @@ def candidates(root):
     for p in files:
         out += tsx_candidates(p, os.path.relpath(p, root).replace(os.sep, "/"))
     out += wp_candidates(root)
+    out += wp_candidates(root, PHIL_RE, "founding-philosophy extract")
     if not out:
         raise InstrumentError("empty harvest")
     return out

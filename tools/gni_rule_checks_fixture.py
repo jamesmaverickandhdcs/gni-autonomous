@@ -226,6 +226,8 @@ def _glossary_text(root, drop_check=None, session_rows=""):
 # claim; the verdicts and the claims document are built from the tree AS
 # WRITTEN by the tool's own extractor and renderer (the _map_text discipline).
 WP_OK = "# white paper\n\n---\n\nThe fixture system answers every query in plain words.\n"
+# S112 R11: the founding-philosophy extract is harvested like the White Paper; one rule row.
+PHIL_OK = "# philosophy\n\n---\n\n| rule | text |\n|---|---|\n| R1 | The fixture system serves its reader first. |\n"
 CLAIM_TEXT = "GNI checks every source twice daily."
 CLAIM_KEPT = "GNI publishes every report for free."
 # S107 R3-3: one claim a fitness function can measure. F-ROUTES counts route.ts
@@ -390,6 +392,7 @@ def base(root, arch=ARCH_OK, rules=RULES, contract=None,
     # S107: the claims files before the glossary, because the glossary's
     # English corpus is every .md under docs/ and these are two of them.
     w(root + "/docs/GNI_WHITE_PAPER_S94.md", WP_OK)
+    w(root + "/docs/GNI_PHILOSOPHY_S94.md", PHIL_OK)
     import gni_claims as _gcl
     w(root + "/docs/GNI_LAYER_MAP_S94.tsv", "# fixture layer map\n" + "".join(
         "\t".join(r) + "\n" for r in (layer_rows if layer_rows is not None else _layer_rows(_gcl))))
@@ -820,6 +823,14 @@ CASES["102-promise-row-for-a-state-claim"] = lambda r: _promise_family(
 CASES["103-promise-ledger-missing"] = lambda r: (
     base(r), os.remove(r + "/docs/GNI_PROMISE_LEDGER_S94.tsv"), r)[-1]
 
+# S112 R11. The philosophy extract is part of the harvest: 105, a rule added to it with no verdict, is red
+# on C12 as a unit nobody has looked at; 106, no extract at all, is an instrument error - a missing
+# input never reads as an empty one (R-S81-1).
+CASES["105-philosophy-rule-unreviewed"] = lambda r: (
+    base(r), ap(r + "/docs/GNI_PHILOSOPHY_S94.md", "| R2 | The fixture system never hides an absent source. |\n"), r)[-1]
+CASES["106-philosophy-missing"] = lambda r: (
+    base(r), os.remove(r + "/docs/GNI_PHILOSOPHY_S94.md"), r)[-1]
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -879,6 +890,7 @@ EXPECT = {
     "100-promise-withdrawn-without-decision": 1, "101-promise-withdrawn-with-decision-passes": 0,
     "102-promise-row-for-a-state-claim": 1, "103-promise-ledger-missing": 2,
     "104-promise-decision-not-in-order": 1,
+    "105-philosophy-rule-unreviewed": 1, "106-philosophy-missing": 2,
 }
 
 if __name__ == "__main__":

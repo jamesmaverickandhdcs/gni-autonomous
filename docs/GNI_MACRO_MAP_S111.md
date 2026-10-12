@@ -10,7 +10,7 @@ No clock is written into this file, so an unchanged input reproduces it byte-ide
 | Z | vision -> executable | `**CHECKABLE:**` markers in `docs/GNI_RULES_S111.md` |
 
 INPUT `docs/GNI_RULES_S111.md` md5 `1c824d832db47458932e9bcad38576d2` (EOL-normalised)
-INPUT `docs/GNI_ARCHITECTURE_S111.md` md5 `69e40ee9b96dbb0ba2e438ca8148dd1e` (EOL-normalised)
+INPUT `docs/GNI_ARCHITECTURE_S111.md` md5 `5b6387cf53347e5adc2c8151cdb42986` (EOL-normalised)
 GENERATED from `docs/GNI_RULES_S111.md` -- 226 CHECKABLE markers, register generation 111.
 
 ## TOTALS
