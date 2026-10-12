@@ -123,6 +123,17 @@ detected.
 | GRAPH-S2 | the false alarm raised before a full call site was read | GNI_RULES |
 | TRANS-COUNT | the miscount in which one flag alone reported the default instead of the funnel | GNI_RULES |
 | PHISH-HW | the account-security review item (OAuth, GitHub Apps, security log) | GNI_RULES |
+| SPY | the exchange-traded fund that tracks the S&P 500 index; GPVS judges a report's market call on its move | `outcome_verifier.py`; ORDER, WAIT-1 |
+| GLD | the exchange-traded fund that tracks the price of gold; its moves are stored beside each outcome | `outcome_verifier.py` |
+| AUC | area under the ROC curve: the probability that a randomly chosen window where the event happened scores higher than one where it did not; 0.5 is no signal | `docs/S111_B_RESULTS.md` |
+| BSS | Brier skill score: one minus a forecast's Brier score divided by a reference forecast's; above zero beats the reference | `docs/S111_B_PREREG.md` |
+| DM | Diebold-Mariano: the test of whether two forecasts' losses differ, with the Harvey-Leybourne-Newbold small-sample correction (DM/HLN) | `docs/S111_B_PREREG.md` |
+| HLN | Harvey, Leybourne and Newbold (1997): the small-sample correction to the DM test | `docs/S111_B_PREREG.md` |
+| GPR | the Geopolitical Risk index of Caldara and Iacoviello (Federal Reserve), counted from newspaper articles, with Threats and Acts sub-indexes | ORDER, WAIT-1; `docs/S111_B_RESULTS.md` |
+| WMO | World Meteorological Organization, whose verification working group publishes the forecast-verification guidance GPVS now follows | ORDER; GNI_RULES R-S111-1 |
+| JWGFVR | the Joint Working Group on Forecast Verification Research of the WMO | ORDER; GNI_RULES R-S111-1 |
+| CSV | comma-separated values: the text file a Supabase result downloads as | GNI_RULES R-S111-3 |
+| JSX | the HTML-like syntax inside the site's React pages, read by `tools/gni_claims.py` | HANDOFF S111 |
 
 ## NOT ABBREVIATIONS
 
