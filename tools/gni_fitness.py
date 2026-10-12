@@ -1179,6 +1179,38 @@ def _recorded(claimed, measured):
     return claimed in measured
 
 
+def _trend_claim(fragment):
+    m = re.search(r"(\d+)-run\b|Last (\d+) Runs\b", fragment)
+    if not m:
+        raise FitnessError("no '<n>-run' / 'Last <n> Runs' in fragment %r" % fragment)
+    return m.group(1) or m.group(2)
+
+
+def _trend_runs(root):
+    """Reports the escalation trend draws (S112): `reports.slice(0, N)` behind the
+    trend on the home page and on /researcher. The two must agree; a page with no
+    such slice, or two lengths, is an instrument fault."""
+    got = set()
+    for rel in ("src/app/page.tsx", "src/app/researcher/page.tsx"):
+        got.add(_route_int(root, rel, r"const last7 = reports\.slice\(0, (\d+)\)"))
+    if len(got) != 1:
+        raise FitnessError("the two escalation trends draw different lengths: %r" % sorted(got))
+    return got.pop()
+
+
+def _neutral_claim(fragment):
+    m = re.search(r"baseline of (\d+\.\d+)", fragment)
+    if not m:
+        raise FitnessError("no 'baseline of <x.y>' in fragment %r" % fragment)
+    return m.group(1)
+
+
+def _weight_neutral(root):
+    """The weight a source starts at (S112): the 'weight' every roster source is
+    seeded with in source_weights.py; more than one seeded value halts."""
+    return _route_int(root, "ai_engine/analysis/source_weights.py", r"'weight': (\d+\.\d+),")
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1312,6 +1344,11 @@ FITNESS = {
                       _pillar_reports_claim, _pillar_runs, _equal),
     # S112 (roadmap 4 row R4-3): a figure of a party GNI does not control, bound to the
     # dated reading of its published source in docs/gni_external_snapshot_S<N>.json.
+    # S112 (roadmap 4 row R4-3, round 2).
+    "F-TREND-RUNS": ("reports the escalation trend draws: reports.slice(0, N) on the home page and "
+                     "/researcher, which must agree", _trend_claim, _trend_runs, _equal),
+    "F-WEIGHT-NEUTRAL": ("the weight a source is seeded with: 'weight' in source_weights.py's seed",
+                         _neutral_claim, _weight_neutral, _equal),
     "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
               "each with its party, source and read date",
               _ext_claim, _ext_phrases, _recorded),

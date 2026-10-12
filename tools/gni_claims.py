@@ -405,6 +405,12 @@ NUMBER_WORDS = ("two three four five six seven eight nine ten eleven twelve thir
                 "fifteen sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty "
                 "seventy eighty ninety hundred thousand million billion dozen").split()
 NUMBER_RE = re.compile(r"\d|\b(?:%s)\b" % "|".join(NUMBER_WORDS), re.I)
+# S112 (DECISION S112-2): an HTML character reference (&#9888; &#x1F4B0;) is how a page
+# writes a symbol, and the reader sees the symbol, never its digits. Until S112 the
+# warning sign of CLM-373 and the money bag of CLM-1094 each sat in NUMBERS UNDERIVED
+# on their markup alone. Removed before the test, as an interpolation is; a digit the
+# reader sees - in a name, a version, a date - still counts. Fixture families 87-88.
+CHARREF_RE = re.compile(r"&#(?:\d+|[xX][0-9A-Fa-f]+);")
 
 
 def ratchet_counts(locations):
@@ -421,13 +427,14 @@ def ratchet_counts(locations):
     WIDENED it to cardinal number words (NUMBER_RE); C18 re-derives the previous
     generation with the same function, so the comparison stays like for like.
     A digit inside a ${...} interpolation is the code's (a fallback `|| 14`), not
-    the sentence's, and does not count."""
+    the sentence's, and does not count; nor does one inside an HTML character
+    reference (S112), which the reader sees as a symbol."""
     unrev, under = set(), set()
     for cid, kind, rel, text, status, evidence in locations:
         if status == "UNMEASURED" and evidence == "UNREVIEWED":
             unrev.add(cid)
         if (kind in ("STATE", "MIXED") and rel.startswith("src/")
-                and NUMBER_RE.search(INTERP_RE.sub(" ", text))
+                and NUMBER_RE.search(CHARREF_RE.sub(" ", INTERP_RE.sub(" ", text)))
                 and status != "SUPPORTED"
                 and not (status == "UNMEASURED" and evidence in REVIEW_EXEMPT)):
             under.add(cid)

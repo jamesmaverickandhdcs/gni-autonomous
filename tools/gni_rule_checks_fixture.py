@@ -727,6 +727,14 @@ CASES["85-ratchet-number-word-rises"] = lambda r: _ratchet_rises(
 CASES["86-ratchet-word-one-not-a-number"] = lambda r: _ratchet_rises(
     r, "No one rereads each feed by hand", "RUNTIME")
 
+# S112, HTML character references. A symbol written as &#9888; carries no number the
+# reader sees: 87 is green (the claim stays out of NUMBERS UNDERIVED). 88 is its
+# DISCRIMINATOR: the same sentence with a digit the reader sees is red on C18.
+CASES["87-ratchet-charref-not-a-number"] = lambda r: _ratchet_rises(
+    r, "&#9888;&#65039; GNI rereads each feed by hand", "RUNTIME")
+CASES["88-ratchet-charref-beside-digit-rises"] = lambda r: _ratchet_rises(
+    r, "&#9888;&#65039; GNI rereads 5 feeds by hand", "RUNTIME")
+
 # Expected verdict per family. The fixture is not scaffolding: it is the
 # discriminating evidence for tools/gni_rule_checks.py, and it asserts its own
 # expectations (R-S93-1). A fixture nobody runs is a dead harness (item 5.14).
@@ -776,6 +784,7 @@ EXPECT = {
     "82-brace-run-harvested": 1, "83-brace-run-without-prose-stays-out": 0,
     "84-interpolated-code-not-data": 1,
     "85-ratchet-number-word-rises": 1, "86-ratchet-word-one-not-a-number": 0,
+    "87-ratchet-charref-not-a-number": 0, "88-ratchet-charref-beside-digit-rises": 1,
 }
 
 if __name__ == "__main__":

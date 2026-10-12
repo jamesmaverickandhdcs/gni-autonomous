@@ -13,7 +13,7 @@ const ENDPOINTS = [
   { method: 'GET', path: '/api/alerts', desc: 'Health-agent alerts (run gap, quality, collection, MAD confidence) + recent token usage rows', group: 'System' },
   { method: 'GET', path: '/api/adaptive-log', desc: 'Adaptive run log: when each run happened, why, and the tokens it logged', group: 'System' },
   { method: 'GET', path: '/api/predictions-list', desc: 'Newest MAD predictions, a capped list, with verify-by dates and outcomes', group: 'Intelligence' },
-  { method: 'GET', path: '/api/correlations', desc: 'Market outcome per escalation level at 3 and 7 days + per-agent accuracy, latest refresh', group: 'Intelligence' },
+  { method: 'GET', path: '/api/correlations', desc: 'Market outcome per escalation level at the 3-day and 7-day windows + per-agent accuracy, latest refresh', group: 'Intelligence' },
   { method: 'GET', path: '/api/stocks', desc: 'Yahoo Finance data: price + day change + chart data', group: 'Intelligence' },
   { method: 'GET', path: '/api/article-events', desc: 'Geo-tagged articles for map view', group: 'Intelligence' },
   { method: 'GET', path: '/api/pipeline-runs', desc: 'Pipeline run history + funnel stats', group: 'Pipeline' },
