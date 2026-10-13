@@ -150,7 +150,7 @@ export default function DeveloperHub() {
               <div className="text-sm font-bold text-white">Dataset Export API</div>
               <span className="text-xs bg-purple-900 text-purple-300 px-2 py-0.5 rounded-full ml-auto">LIVE</span>
             </div>
-            <p className="text-xs text-gray-400 leading-relaxed">Three REST endpoints export reports (a chosen window of recent days), MAD predictions and pipeline articles as CSV or JSON. Callers outside this web app send an X-GNI-Key header; a request without one is refused. Essential for IEEE paper replication, external analysis, and building applications on top of GNI intelligence.</p>
+            <p className="text-xs text-gray-400 leading-relaxed">Three REST endpoints export reports (a chosen window of recent days), MAD predictions and pipeline articles as CSV or JSON. A request from the pages of this site is admitted by its Origin or Referer header; any other caller sends an X-GNI-Key header and is refused without one. Neither check is a lock: a caller outside a browser can set either header, and the key this site uses is sent to every browser, so the check limits casual use while the data it serves stays public. Essential for IEEE paper replication, external analysis, and building applications on top of GNI intelligence.</p>
             <div className="flex justify-end mt-3">
               <span className="text-xs font-bold text-purple-200 bg-purple-900 hover:bg-purple-700 border border-purple-700 rounded-lg px-3 py-1.5 transition-colors">View Export API &rarr;</span>
             </div>

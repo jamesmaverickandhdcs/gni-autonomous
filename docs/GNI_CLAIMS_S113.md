@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S113.tsv` md5 `106ff377cd68f0b9683e8f2963038957` (EOL-normalised) -- **840 claims** (584 STATE, 235 PROMISE, 21 MIXED) at **901 locations** in 39 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S113.tsv` md5 `c01c9e510495b07550e2b0f48acd98c6` (EOL-normalised) -- **841 claims** (585 STATE, 235 PROMISE, 21 MIXED) at **902 locations** in 39 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `4cb13e93657cf8088591c759c0b0b7ac` (EOL-normalised) -- **COVERAGE 162/840 = 19.3%** (162 SUPPORTED, 0 DEFEATED, 678 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 0** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `69438c765f920d67b3951005873136fd` (EOL-normalised) -- **COVERAGE 162/841 = 19.3%** (162 SUPPORTED, 0 DEFEATED, 679 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 0** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -630,7 +630,6 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `4cb13e93657cf8088591c759
 | CLM-849 | STATE | SUPPORTED | F-RSS claims 42, measured 42; F-SH-STATES claims 7, measured 7 | `src/app/developer-hub/page.tsx:88` | Source health monitoring tracks all 42 RSS slots in real time across seven states, separating transport truth (whether a feed is reachable at all, primary or reserve) from yield truth (how many of its entries survived the capture window). |
 | CLM-850 | STATE | SUPPORTED | F-TPD-SAFE claims 85000, measured 85000; F-TPD claims 100000, measured 100000 | `src/app/developer-hub/page.tsx:89` | The quota guard plans against a safe ceiling of 85K tokens and a 100K limit per day per account; it can stop the adaptive run, while the main pipeline and the debate are always allowed to run. |
 | CLM-851 | STATE | SUPPORTED | F-EXPORTS claims 3, measured 3 | `src/app/developer-hub/page.tsx:153` | Three REST endpoints export reports (a chosen window of recent days), MAD predictions and pipeline articles as CSV or JSON. |
-| CLM-852 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:153` | Callers outside this web app send an X-GNI-Key header; a request without one is refused. |
 | CLM-853 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:124` | The frequency controller, the A/B prompt quality system and the adaptive run. |
 | CLM-854 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:124` | Shows the interval the controller recommends for each escalation level, and how the adaptive run changes its mode with the level and the quota. |
 | CLM-855 | STATE | SUPPORTED | F-QUALITY-DIMS claims 5, measured 5 | `src/app/developer-hub/page.tsx:125` | Pipeline status as of the latest run, with quality scores per run across five dimensions: specificity, market linkage, source consensus, analytical novelty and prediction specificity. |
@@ -914,3 +913,5 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `4cb13e93657cf8088591c759
 | CLM-1136 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | Whether agreement makes the direction more likely to be right has not been measured. |
 | CLM-1136 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:440` | Whether agreement makes the direction more likely to be right has not been measured. |
 | CLM-1137 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | The report and debate point in opposite directions. |
+| CLM-1138 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:153` | A request from the pages of this site is admitted by its Origin or Referer header; any other caller sends an X-GNI-Key header and is refused without one. |
+| CLM-1139 | STATE | UNMEASURED | QUALITATIVE | `src/app/developer-hub/page.tsx:153` | Neither check is a lock: a caller outside a browser can set either header, and the key this site uses is sent to every browser, so the check limits casual use while the data it serves stays public. |

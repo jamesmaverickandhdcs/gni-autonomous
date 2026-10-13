@@ -1816,3 +1816,5 @@ f69d78cb0e	CLAIM	PROMISE	CLM-1133	| NP-5 Upgrade History Is Meta-Intelligence | 
 ea29cf39dc	CLAIM	STATE	CLM-1135	A divergence means the debate, arguing over the report, reached a different direction from it.
 6956139236	CLAIM	STATE	CLM-1136	Whether agreement makes the direction more likely to be right has not been measured.
 ee2b288741	CLAIM	STATE	CLM-1137	The report and debate point in opposite directions.
+198ac336d3	CLAIM	STATE	CLM-1138	A request from the pages of this site is admitted by its Origin or Referer header; any other caller sends an X-GNI-Key header and is refused without one.
+585428a6d9	CLAIM	STATE	CLM-1139	Neither check is a lock: a caller outside a browser can set either header, and the key this site uses is sent to every browser, so the check limits casual use while the data it serves stays public.
