@@ -1,0 +1,59 @@
+# .github/constraints/python-3.11.txt - S114 (OWASP Top 10:2025 A03 Software Supply Chain Failures).
+# Every package version the scheduled pipeline run 38439885700 (2026-10-13) installed on Python 3.11,
+# read from its 'Successfully installed' lines. Every workflow's pip install reads this file with -c, so
+# a run installs what already ran green instead of whatever PyPI serves that day. A constraint pins a
+# version only; it adds no package. Not hash-pinned: a package outside this list still floats.
+# To move a version: change it here in its own commit and read the next run.
+annotated-types==0.8.0
+anyio==4.15.1
+certifi==2026.7.22
+cffi==2.1.1
+charset_normalizer==3.5.2
+click==8.5.0
+cryptography==50.0.2
+deprecation==2.1.0
+distro==1.9.0
+et-xmlfile==2.0.0
+feedparser==6.0.12
+geographiclib==2.1
+geopy==2.4.1
+groq==1.7.0
+h11==0.16.0
+h2==4.4.1
+hpack==4.2.0
+httpcore==1.0.9
+httpx==0.28.1
+hyperframe==6.1.0
+idna==3.20
+jellyfish==1.2.1
+multidict==7.1.0
+networkx==3.6.1
+numpy==2.4.6
+openpyxl==3.1.5
+packaging==26.3
+postgrest==2.32.0
+propcache==0.5.4
+pycparser==3.11
+pydantic==2.14.1
+pydantic-core==2.50.1
+pyjwt==2.15.1
+python-dotenv==1.2.4
+rank_bm25==0.2.2
+realtime==2.32.0
+regex==2026.9.29
+requests==2.34.2
+segtok==1.5.11
+sgmllib3k==1.0.0
+sniffio==1.3.1
+storage3==2.32.0
+strenum==0.4.15
+supabase==2.32.0
+supabase-auth==2.32.0
+supabase-functions==2.32.0
+tabulate==0.10.0
+typing-extensions==4.16.0
+typing-inspection==0.4.4
+urllib3==2.8.0
+websockets==15.0.1
+yake==0.7.3
+yarl==1.25.1
