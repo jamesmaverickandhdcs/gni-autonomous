@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateApiKey } from '@/lib/auth'
+import { statedConfidence } from '@/lib/verdict'
 
 
 export async function GET(request: NextRequest) {
@@ -15,10 +16,16 @@ export async function GET(request: NextRequest) {
     // Latest report
     const { data: reports } = await supabase
       .from('reports')
-      .select('id,title,summary,sentiment,sentiment_score,escalation_score,escalation_score_raw,escalation_level,mad_verdict,mad_confidence,mad_action_recommendation,mad_blind_spot,tickers_affected,risk_level,created_at')
+      .select('id,title,summary,sentiment,sentiment_score,escalation_score,escalation_score_raw,escalation_level,mad_verdict,mad_confidence,mad_arb_failed,mad_action_recommendation,mad_blind_spot,tickers_affected,risk_level,created_at')
       .order('created_at', { ascending: false })
       .limit(1)
-    const latest = reports?.[0] || null
+    // S113 R3: the insert placeholder and a failed arbitrator's default are not confidences
+    // (detector check C19); both are sent as null, beside mad_arb_failed.
+    const row = reports?.[0] || null
+    const latest = row ? {
+      ...row,
+      mad_confidence: statedConfidence(row.mad_verdict, row.mad_confidence, row.mad_arb_failed),
+    } : null
 
     // Pillar reports
     const { data: pillars } = await supabase

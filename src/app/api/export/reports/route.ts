@@ -3,6 +3,7 @@ import { createNoStoreClient } from '@/lib/supabaseNoStore'
 import { NextRequest, NextResponse } from 'next/server'
 import { validateApiKey } from '@/lib/auth'
 import { checkRateLimit } from '@/lib/rateLimit'
+import { statedConfidence } from '@/lib/verdict'
 
 
 export async function GET(request: NextRequest) {
@@ -33,13 +34,20 @@ export async function GET(request: NextRequest) {
     const since = new Date()
     since.setDate(since.getDate() - safeDays)
 
-    const { data, error } = await supabase
+    const { data: raw, error } = await supabase
       .from('reports')
-      .select('id,title,summary,sentiment,sentiment_score,sentiment_score_lower,sentiment_score_upper,confidence_interval_width,analysis_runs,risk_level,escalation_score,escalation_level,mad_verdict,mad_confidence,mad_action_recommendation,tickers_affected,location_name,lat,lng,llm_source,created_at')
+      .select('id,title,summary,sentiment,sentiment_score,sentiment_score_lower,sentiment_score_upper,confidence_interval_width,analysis_runs,risk_level,escalation_score,escalation_level,mad_verdict,mad_confidence,mad_arb_failed,mad_action_recommendation,tickers_affected,location_name,lat,lng,llm_source,created_at')
       .gte('created_at', since.toISOString())
       .order('created_at', { ascending: false })
 
     if (error) throw error
+    // S113 R3: mad_confidence holds 0.5 from insert, before any debate, and a failed arbitrator
+    // leaves a default. Neither is a confidence the Arbitrator stated, so the export sends null
+    // for both (detector check C19), and sends mad_arb_failed so a reader can tell which.
+    const data = (raw || []).map(r => ({
+      ...r,
+      mad_confidence: statedConfidence(r.mad_verdict, r.mad_confidence, r.mad_arb_failed),
+    }))
 
     if (format === 'csv') {
       if (!data || data.length === 0) return new NextResponse('No data', { status: 404 })

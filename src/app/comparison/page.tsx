@@ -157,7 +157,7 @@ export default function ComparisonPage() {
                 })}
               </div>
               <div className="mt-3 text-xs text-gray-500 leading-relaxed">
-                Divergence during active geopolitical events is normal — MAD agents detecting risks the summary AI missed. This is the system working as designed, not a data quality issue.
+                A divergence means the debate, arguing over the report, reached a different direction from it. Whether a divergence like this predicts anything has not been measured.
               </div>
             </div>
           )}
@@ -228,9 +228,9 @@ export default function ComparisonPage() {
                   <span className="text-2xl">&#x2705;</span>
                   <div>
                     <div className="text-green-300 font-bold">{latestRel === 'agree' ? <>AGREE &mdash; Report and Debate Aligned</> : <>NO CONTRADICTION &mdash; One Side Neutral</>}</div>
-                    <div className="text-green-500 text-sm">{latestRel === 'agree' ? <>Both signals point {latest.sentiment?.toUpperCase()}. High confidence.</> : <>Report {latest.sentiment?.toUpperCase()}, MAD {latest.mad_verdict?.toUpperCase()} &mdash; no contradiction.</>}</div>
+                    <div className="text-green-500 text-sm">{latestRel === 'agree' ? <>Both signals point {latest.sentiment?.toUpperCase()}.</> : <>Report {latest.sentiment?.toUpperCase()}, MAD {latest.mad_verdict?.toUpperCase()} &mdash; no contradiction.</>}</div>
                     <div className="text-green-300 text-xs mt-2 leading-relaxed opacity-80">
-                      {latestRel === 'agree' ? <>The MAD debate agents, arguing over the AI report, reached the same {latest.sentiment?.toLowerCase()} conclusion as the report.</> : <>The AI report reached {latest.sentiment?.toLowerCase()} while the MAD debate settled on {latest.mad_verdict?.toLowerCase()} &mdash; compatible, non-contradicting signals.</>}{latestRel === 'agree' ? <> When both agree, the debate did not overturn the direction of the report. This is the highest-confidence signal GNI can produce.</> : <> A neutral debate verdict beside a directional report means the agents found no opposing case &mdash; the report&apos;s direction stands unchallenged rather than independently confirmed.</>}
+                      {latestRel === 'agree' ? <>The MAD debate agents, arguing over the AI report, reached the same {latest.sentiment?.toLowerCase()} conclusion as the report.</> : <>The AI report reached {latest.sentiment?.toLowerCase()} while the MAD debate settled on {latest.mad_verdict?.toLowerCase()} &mdash; compatible, non-contradicting signals.</>}{latestRel === 'agree' ? <> When both agree, the debate did not overturn the direction of the report. Whether agreement makes the direction more likely to be right has not been measured.</> : <> A neutral debate verdict beside a directional report means the agents found no opposing case &mdash; the report&apos;s direction stands unchallenged rather than independently confirmed.</>}
                     </div>
                   </div>
                 </div>
@@ -399,7 +399,7 @@ export default function ComparisonPage() {
                               <span className="bg-red-900 border border-red-600 text-red-300 px-2 py-0.5 rounded-full font-bold">
                                 &#x26A0; DISAGREE
                               </span>
-                              <div className="text-xs text-red-400 mt-1 opacity-70">MAD detected hidden risk</div>
+                              <div className="text-xs text-red-400 mt-1 opacity-70">{RELATION_NOTE.disagree}</div>
                             </div>
                           ) : (
                             <div>
@@ -426,7 +426,7 @@ export default function ComparisonPage() {
                 </div>
               </div>
               <div className="mt-3 text-xs text-gray-600 text-center">
-                DISAGREE = Report sentiment and MAD debate verdict point in opposite directions. Highest-value intelligence signal.
+                DISAGREE = Report sentiment and MAD debate verdict point in opposite directions.
               </div>
             </section>
 
@@ -437,11 +437,11 @@ export default function ComparisonPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-gray-400">
                   <div>
                     <div className="text-green-400 font-bold mb-1">&#x2705; AGREE Signal</div>
-                    <p>The Quadratic MAD debate, which argues over the AI report, reached the same direction as the report. High confidence directional signal.</p>
+                    <p>The Quadratic MAD debate, which argues over the AI report, reached the same direction as the report. Whether agreement makes the direction more likely to be right has not been measured.</p>
                   </div>
                   <div>
                     <div className="text-red-400 font-bold mb-1">&#x26A0;&#xFE0F; DISAGREE Signal</div>
-                    <p>The report and debate diverge. MAD agents identified risks the consolidated report missed. Highest-value intelligence event &mdash; investigate further.</p>
+                    <p>The report and debate point in opposite directions. Whether a divergence like this predicts anything has not been measured.</p>
                   </div>
                   <div>
                     <div className="text-yellow-400 font-bold mb-1">MAD Confidence</div>

@@ -40,7 +40,7 @@ export const RELATION_NOTE: Record<VerdictRelation, string> = {
   compatible: 'One side neutral: no contradiction',
   pending: 'Debate not yet run for this report',
   'no-ruling': 'Arbitrator failed: verdict is a default',
-  disagree: 'MAD detected hidden risk',
+  disagree: 'Report and debate point opposite ways',
   unknown: 'Report sentiment missing',
 }
 

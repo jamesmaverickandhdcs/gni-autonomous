@@ -791,6 +791,39 @@ CASES["94-confidence-type-and-select-pass"] = lambda r: _conf_page(
 CASES["95-confidence-read-in-component"] = lambda r: _conf_page(
     r, "<b>{(r.mad_confidence || 0).toFixed(2)}</b>\n", rel="src/components/Badge.tsx")
 
+# S113 R3, C19 on the API routes. 107 is the pre-R3 shape of /api/export/reports and /api/latest
+# (the column selected by name, sent raw); 108 maps it through the lib but selects no
+# mad_arb_failed, so a failed arbitrator's default still reads as a ruling; 110 is 107 through a
+# PostgREST select= URL; 111 is a route's own read outside the lib. 109 is the DISCRIMINATOR: the
+# R3 shape is green. 112 pins the LIMIT written in the check: a select of * names no column and
+# stays green.
+API_CONF_OK = ("import { statedConfidence } from '@/lib/verdict'\n"
+               "const { data } = await db.from('reports').select('id,mad_verdict,mad_confidence,mad_arb_failed')\n"
+               "const rows = (data || []).map(r => ({ ...r, mad_confidence: "
+               "statedConfidence(r.mad_verdict, r.mad_confidence, r.mad_arb_failed) }))\n")
+
+
+def _conf_route(r, body):
+    # The base tree's one route, rewritten: a second route file would move the route count a
+    # base-tree claim measures, and the family would go red for that reason instead.
+    base(r)
+    w(r + "/src/app/api/r/route.ts", "const s = createNoStoreClient()\n" + body)
+    return r
+
+
+CASES["107-confidence-api-raw-select"] = lambda r: _conf_route(
+    r, "const { data } = await db.from('reports').select('id,mad_verdict,mad_confidence')\n"
+       "return Response.json({ reports: data })\n")
+CASES["108-confidence-api-no-failure-flag"] = lambda r: _conf_route(
+    r, API_CONF_OK.replace(",mad_arb_failed')", "')"))
+CASES["109-confidence-api-through-lib-passes"] = lambda r: _conf_route(r, API_CONF_OK)
+CASES["110-confidence-api-rest-select-raw"] = lambda r: _conf_route(
+    r, "const res = await fetch(url + '/rest/v1/reports?select=id,mad_confidence&limit=1')\n")
+CASES["111-confidence-api-read-outside-lib"] = lambda r: _conf_route(
+    r, API_CONF_OK + "const pct = Math.round(data[0].mad_confidence * 100)\n")
+CASES["112-confidence-api-star-select-limit"] = lambda r: _conf_route(
+    r, "const res = await fetch(url + '/rest/v1/reports?select=*&limit=10')\n")
+
 # S112 R4-4, C20. The base tree's one PROMISE (CLAIM_KEPT, CLM-002) has a BUILT row citing a file
 # that exists. 96: a second PROMISE with no row; 97: a BUILT row citing a file that is not there; 98: a row with no
 # evidence; 99: a SUMMARY that disagrees with the rows; 100: WITHDRAWN with no DECISION - a session
@@ -891,6 +924,9 @@ EXPECT = {
     "102-promise-row-for-a-state-claim": 1, "103-promise-ledger-missing": 2,
     "104-promise-decision-not-in-order": 1,
     "105-philosophy-rule-unreviewed": 1, "106-philosophy-missing": 2,
+    "107-confidence-api-raw-select": 1, "108-confidence-api-no-failure-flag": 1,
+    "109-confidence-api-through-lib-passes": 0, "110-confidence-api-rest-select-raw": 1,
+    "111-confidence-api-read-outside-lib": 1, "112-confidence-api-star-select-limit": 0,
 }
 
 if __name__ == "__main__":

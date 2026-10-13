@@ -7,9 +7,9 @@ A CLAIM is a sentence on GNI's public surface that states something about GNI a 
 could hold GNI to (DECISION S107-1; ISO/IEC/IEEE 15026-2:2022, assurance case). One id per
 claim; one row per place it appears. Roadmap 3 row R3-2. Status is row R3-3's, not this file's.
 
-STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S113.tsv` md5 `b0b2375597a355ad79eb6b3ea5488e83` (EOL-normalised) -- **844 claims** (588 STATE, 235 PROMISE, 21 MIXED) at **902 locations** in 39 files; 0 unclassified.
+STAMP verdicts `docs/GNI_CLAIM_VERDICTS_S113.tsv` md5 `106ff377cd68f0b9683e8f2963038957` (EOL-normalised) -- **840 claims** (584 STATE, 235 PROMISE, 21 MIXED) at **901 locations** in 39 files; 0 unclassified.
 
-STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `7ad7929619dd7782a664a225c3f163de` (EOL-normalised) -- **COVERAGE 162/844 = 19.2%** (162 SUPPORTED, 0 DEFEATED, 682 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 0** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
+STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `4cb13e93657cf8088591c759c0b0b7ac` (EOL-normalised) -- **COVERAGE 162/840 = 19.3%** (162 SUPPORTED, 0 DEFEATED, 678 UNMEASURED); **UNREVIEWED 0**, **NUMBERS UNDERIVED 0** - a ratchet: neither may exceed what the previous claims generation derives (roadmap 4 row R4-1). Status is DERIVED by `tools/gni_fitness.py`, never typed (roadmap 3 row R3-3; SACM: UNMEASURED = needsSupport, DEFEATED = defeated).
 
 | id | kind | status | evidence | where | claim |
 |---|---|---|---|---|---|
@@ -356,14 +356,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `7ad7929619dd7782a664a225
 | CLM-424 | PROMISE | UNMEASURED | PROMISE | `src/app/about/feedback/page.tsx:52` | Model Learning (planned) will enable autonomous recalibration from surprise outcomes |
 | CLM-425 | STATE | UNMEASURED | QUALITATIVE | `src/app/about/feedback/page.tsx:53` | API export layer enables third-party applications to build on GNI intelligence output |
 | CLM-426 | PROMISE | UNMEASURED | PROMISE | `src/app/about/feedback/page.tsx:54` | L8 autonomy roadmap includes Mission Control-triggered pipeline response to breaking news |
-| CLM-428 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:160` | Divergence during active geopolitical events is normal — MAD agents detecting risks the summary AI missed. |
-| CLM-429 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:160` | This is the system working as designed, not a data quality issue. |
-| CLM-432 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | This is the highest-confidence signal GNI can produce. |
 | CLM-433 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | A neutral debate verdict beside a directional report means the agents found no opposing case &mdash; the report&apos;s direction stands unchallenged rather than independently confirmed. |
-| CLM-434 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:429` | Highest-value intelligence signal. |
-| CLM-436 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:440` | High confidence directional signal. |
-| CLM-437 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | MAD agents identified risks the consolidated report missed. |
-| CLM-438 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | Highest-value intelligence event &mdash; investigate further. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/alerts/page.tsx:134` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:466` | GNI reports are for informational purposes only and do not constitute financial advice. |
 | CLM-441 | STATE | UNMEASURED | QUALITATIVE | `src/app/debate/page.tsx:497` | GNI reports are for informational purposes only and do not constitute financial advice. |
@@ -803,7 +796,9 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `7ad7929619dd7782a664a225
 | CLM-1021 | STATE | UNMEASURED | QUALITATIVE | `src/app/brief/page.tsx:197` | Brief generated from latest pipeline run —${' '} ${brief.created_at ? new Date(brief.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A'} |
 | CLM-1022 | STATE | UNMEASURED | QUALITATIVE | `src/app/brief/page.tsx:200` | Updates every pipeline run: ${PIPELINE_CADENCE} |
 | CLM-1023 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:111` | When the AI report and the MAD debate disagree, this page flags it; whether disagreement predicts anything has not been measured |
+| CLM-1024 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:160` | Whether a divergence like this predicts anything has not been measured. |
 | CLM-1024 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:217` | Whether a divergence like this predicts anything has not been measured. |
+| CLM-1024 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | Whether a divergence like this predicts anything has not been measured. |
 | CLM-1025 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:220` | The AI report analysed the latest run&apos;s headlines and reached a ${latest.sentiment?.toLowerCase()} conclusion. |
 | CLM-1026 | STATE | SUPPORTED | F-MAD-ROUNDS claims 3, measured 3 | `src/app/comparison/page.tsx:220` | The MAD debate — its agents over 3 rounds on that report, then the Arbitrator — reached ${latest.mad_verdict?.toLowerCase()}. |
 | CLM-1027 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:220` | A disagreement means the debate weighed something the summary did not; whether that was a hidden risk is a judgement this page cannot make. |
@@ -915,3 +910,7 @@ STATUS bindings `docs/GNI_CLAIM_BINDINGS_S113.tsv` md5 `7ad7929619dd7782a664a225
 | CLM-1132 | PROMISE | UNMEASURED | PROMISE | `docs/GNI_PHILOSOPHY_S113.md:54` | \| NP-4 Pattern Match Bias Is the System's Biggest Enemy \| Cross-run verdict injection (last 7 verdicts + confidence trend) into MAD pre-prompt makes the bias visible and correctable. \| |
 | CLM-1133 | PROMISE | UNMEASURED | PROMISE | `docs/GNI_PHILOSOPHY_S113.md:55` | \| NP-5 Upgrade History Is Meta-Intelligence \| A system that requires frequent prompt upgrades is under increasing narrative pressure. Log every upgrade with timestamp + reason. This log IS a signal. \| |
 | CLM-1134 | PROMISE | UNMEASURED | PROMISE | `docs/GNI_PHILOSOPHY_S113.md:50` | \| NN-PHI-8 \| The Duty Clause (PHI-003 sentence two): seniors are the delivery channel of Freedom-from-Fear understanding to voting-age young adults. Method, never verdict. \| |
+| CLM-1135 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:160` | A divergence means the debate, arguing over the report, reached a different direction from it. |
+| CLM-1136 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:233` | Whether agreement makes the direction more likely to be right has not been measured. |
+| CLM-1136 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:440` | Whether agreement makes the direction more likely to be right has not been measured. |
+| CLM-1137 | STATE | UNMEASURED | QUALITATIVE | `src/app/comparison/page.tsx:444` | The report and debate point in opposite directions. |

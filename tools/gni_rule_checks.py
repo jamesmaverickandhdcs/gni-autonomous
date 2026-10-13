@@ -37,7 +37,9 @@ count it, because a count written here went stale twice (protocol v18).
                 are named in the CHECKS tuple and the glossary, not here.
   C19 R-S109-3  no .tsx under src reads mad_confidence except as an argument of
                 src/lib/verdict.ts's functions, which name the 0.5 insert
-                placeholder and the failed-arbitrator default (S112)
+                placeholder and the failed-arbitrator default (S112); and no
+                API route selects the column by name without mad_arb_failed
+                beside it and a call of those functions on it (S113)
   C20 R4-4      every PROMISE claim has one row in the promise ledger with a
                 state and evidence that resolves; WITHDRAWN carries the
                 operator's DECISION from the live order; SUMMARY equals the rows
@@ -1450,6 +1452,29 @@ def check_c16_order_bound_to_claims(ctx):
 CONF_HELPERS = ("statedConfidence", "confidenceText", "statedPercent")
 CONF_HELPER_CALL_RE = re.compile(r"(?<![\w])(?:%s)\([^()]*\)" % "|".join(CONF_HELPERS))
 CONF_READ_RE = re.compile(r"\.mad_confidence(?![\w])")
+# S113 R3, U3. The pages were held; the API was not. /api/export/reports and /api/latest selected
+# mad_confidence by name WITHOUT mad_arb_failed, so a consumer of the CSV, the JSON export or the
+# latest-state feed received the 0.5 insert placeholder as a confidence and could not tell a
+# failed arbitrator's default from a ruling. An API route that names the column in a select list
+# (supabase-js .select('...') or a PostgREST select=... URL) must name mad_arb_failed in the SAME
+# list and pass the column through one of the lib's functions. A route's own `.mad_confidence`
+# read outside those functions is refused as on a page. LIMITS, written down: a select of `*`
+# names no column and is not seen - /api/reports returns whole rows, mad_arb_failed and
+# mad_verdict among them, and the pages read them through the lib; and the check sees that the
+# route maps the column through the lib, not that the mapped value is the one it sends.
+CONF_SELECT_RES = (re.compile(r"\.select\(\s*(['\"`])([^'\"`]*)\1"),
+                   re.compile(r"[?&]select=([^&'\"`]*)"))
+CONF_API_DIR = os.path.join("src", "app", "api")
+
+
+def _select_lists(text):
+    out = []
+    for rx in CONF_SELECT_RES:
+        for m in rx.finditer(text):
+            cols = m.group(m.lastindex)
+            out.append((text.count("\n", 0, m.start()) + 1,
+                        [c.strip() for c in cols.split(",") if c.strip()]))
+    return out
 
 
 def check_c19_confidence_in_lib(ctx):
@@ -1472,10 +1497,31 @@ def check_c19_confidence_in_lib(ctx):
             if CONF_READ_RE.search(CONF_HELPER_CALL_RE.sub("", ln)):
                 bad.append("%s:%d" % (os.path.relpath(p, root), i))
     require_nonempty("files reading mad_confidence through " + VERDICT_LIB, users)
+    api = os.path.join(root, CONF_API_DIR)
+    routes = require_nonempty("route files under " + CONF_API_DIR,
+                              sorted(os.path.join(d, n) for d, _, fs in os.walk(api)
+                                     for n in fs if n.endswith(".ts")))
+    naming = 0
+    for p in routes:
+        text = read(p)
+        rel = os.path.relpath(p, root)
+        for i, ln in enumerate(text.split("\n"), 1):
+            if CONF_READ_RE.search(CONF_HELPER_CALL_RE.sub("", ln)):
+                bad.append("%s:%d" % (rel, i))
+        lists = [(i, cols) for i, cols in _select_lists(text) if "mad_confidence" in cols]
+        if not lists:
+            continue
+        naming += 1
+        for i, cols in lists:
+            if "mad_arb_failed" not in cols:
+                bad.append("%s:%d selects mad_confidence without mad_arb_failed" % (rel, i))
+        if not any("mad_confidence" in m.group(0) for m in CONF_HELPER_CALL_RE.finditer(text)):
+            bad.append("%s sends mad_confidence without the lib's functions" % rel)
     if bad:
-        return False, "mad_confidence read outside the lib at " + ", ".join(bad)
-    return True, "%d files read the Arbitrator's confidence through %s; none read it directly" % (
-        len(users), VERDICT_LIB)
+        return False, "mad_confidence outside the lib at " + ", ".join(bad)
+    return True, ("%d files read the Arbitrator's confidence through %s; none read it directly; "
+                  "%d of %d API routes select it, each with mad_arb_failed and through the lib") % (
+        len(users), VERDICT_LIB, naming, len(routes))
 
 
 # ---- S112, roadmap 4 row R4-4 ------------------------------------------------

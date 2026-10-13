@@ -1813,3 +1813,6 @@ a59f6db6f7	CLAIM	PROMISE	CLM-1130	| NP-2 Absence Is Intelligence | When escalati
 c533ff153a	CLAIM	PROMISE	CLM-1132	| NP-4 Pattern Match Bias Is the System's Biggest Enemy | Cross-run verdict injection (last 7 verdicts + confidence trend) into MAD pre-prompt makes the bias visible and correctable. |
 f69d78cb0e	CLAIM	PROMISE	CLM-1133	| NP-5 Upgrade History Is Meta-Intelligence | A system that requires frequent prompt upgrades is under increasing narrative pressure. Log every upgrade with timestamp + reason. This log IS a signal. |
 3b7ebec287	CLAIM	PROMISE	CLM-1134	| NN-PHI-8 | The Duty Clause (PHI-003 sentence two): seniors are the delivery channel of Freedom-from-Fear understanding to voting-age young adults. Method, never verdict. |
+ea29cf39dc	CLAIM	STATE	CLM-1135	A divergence means the debate, arguing over the report, reached a different direction from it.
+6956139236	CLAIM	STATE	CLM-1136	Whether agreement makes the direction more likely to be right has not been measured.
+ee2b288741	CLAIM	STATE	CLM-1137	The report and debate point in opposite directions.
