@@ -52,10 +52,22 @@ def query_md5(root):
 
 def check(cell):
     """Return the parsed harvest, or raise Refused naming the first damage found."""
+    if cell.lstrip().startswith("|"):
+        raise Refused("this is a Markdown table export, which drops backslashes inside the JSON (S114: "
+                      "a report quoting \\\"...\\\" broke it) - use the SQL Editor's export as JSON")
     try:
         h = json.loads(cell)
     except ValueError as e:
         raise Refused("the cell is not JSON (%s) - copy the cell's value as text, not a CSV row" % e)
+    # The SQL Editor's JSON export wraps the one row: [{"sample": <the cell>}]. Unwrapping the
+    # envelope changes no byte of the cell; the cell may arrive as an object or as its JSON text.
+    if isinstance(h, list) and len(h) == 1 and isinstance(h[0], dict) and list(h[0]) == ["sample"]:
+        h = h[0]["sample"]
+        if isinstance(h, str):
+            try:
+                h = json.loads(h)
+            except ValueError as e:
+                raise Refused("the export's sample value is not JSON (%s)" % e)
     if not isinstance(h, dict) or not all(k in h for k in ("rows", "window", "outputs", "empty")):
         raise Refused("the cell lacks rows, window, outputs or empty")
     outs, win = h["outputs"], h["window"]
@@ -121,19 +133,28 @@ def selftest():
                 "empty": {k: sum(1 for o in outs if not (o.get(k) or "").strip()) for k in EMPTY}}
 
     good = cell([out(0), out(1, ""), out(2)])
+    good["outputs"][0]["summary"] = 'China warned of \\"all necessary measures\\"'
+    good["outputs"][0]["md5"] = row_md5(good["outputs"][0])
     check(json.dumps(good, ensure_ascii=False))
     print("selftest: a whole cell is ACCEPTED")
+    check(json.dumps([{"sample": good}], ensure_ascii=False))
+    print("selftest: the SQL Editor's JSON export of the cell is ACCEPTED")
+    check(json.dumps([{"sample": json.dumps(good, ensure_ascii=False)}], ensure_ascii=False))
+    print("selftest: the same export with the cell as JSON text is ACCEPTED")
     damages = {
         "a row lost in the copy": lambda c: c["outputs"].pop(),
         "a character lost in the copy": lambda c: c["outputs"][2].update(summary="S \u2014 "),
         "a row outside the window": lambda c: c["outputs"][2].update(created_at="2026-10-14T00:00:01+00:00"),
         "an empty count that lies": lambda c: c["empty"].update(fff_human_path=0),
         "a CSV-quoted copy": None,
+        "a Markdown table export": "md",
     }
     bad = 0
     for name, hurt in damages.items():
         c = json.loads(json.dumps(good))
-        if hurt is None:
+        if hurt == "md":
+            text = "| sample |\n| --- |\n| " + json.dumps(c).replace("\\\\", "\\") + " |"
+        elif hurt is None:
             text = '"' + json.dumps(c).replace('"', '""') + '"'
         else:
             hurt(c)
