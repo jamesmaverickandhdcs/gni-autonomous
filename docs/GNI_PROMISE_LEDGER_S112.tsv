@@ -5,6 +5,9 @@
 # R11 (S112): the founding philosophy's 28 rules (docs/GNI_PHILOSOPHY_S112.md, CLM-1106..CLM-1133) are
 # graded too, and CLM-092's note is corrected (R10 said the historical context was fed to the analysis;
 # it is attached to the report after the analysis).
+# R12 (S112): CLM-1132 corrected to BUILT (the cross-run verdict history R11's search missed); CLM-1116
+# re-graded after DECISION S112-6 turned off the quality-score -> source-weight channel; CLM-1127 and
+# CLM-1131 record the operator's S34 shelving of adversarial feeds.
 #
 # STATES
 #   BUILT      what the sentence promises runs, or holds, in the tree today (a standing commitment - the
@@ -24,7 +27,7 @@
 # with argument and evidence) and ISO/IEC/IEEE 29148:2018 (requirements processes and the information
 # items they produce) - only their published scope is relied on here, no clause is cited.
 #
-SUMMARY	BUILT 62	PARTIAL 104	NOT BUILT 71	WITHDRAWN 0	TOTAL 237
+SUMMARY	BUILT 63	PARTIAL 104	NOT BUILT 70	WITHDRAWN 0	TOTAL 237
 id	state	evidence	note
 CLM-006	PARTIAL	docs/GNI_WHITE_PAPER_S107.md CLM-027	umbrella: the L4 -> L7 trajectory; L5 named parts built, L6 in part, L7 in part (MAD only) - the level rows carry the state
 CLM-007	PARTIAL	CLM-622 src/app/layout.tsx	access is free and public ($0.00 recorded, F-EXT); quality parity with institutional services is not measured anywhere
@@ -46,7 +49,7 @@ CLM-038	PARTIAL	docs/GNI_WHITE_PAPER_S107.md	umbrella: the repair tiers CLM-034.
 CLM-039	PARTIAL	src/lib/verdict.ts	S112 found eight pages printing a placeholder as a stated confidence (fixed at dd91b41, held by C19); 'always tells users what it knows' was not true until then
 CLM-040	PARTIAL	ai_engine/analysis/prompt_manager.py ai_engine/analysis/source_weights.py	prompt promotion and source weights change from evidence; thresholds, patterns and geocoding do not (CLM-043..CLM-045)
 CLM-041	BUILT	ai_engine/analysis/prompt_manager.py	_check_promotion deactivates the lowest-scoring variant after 10 runs each
-CLM-042	BUILT	ai_engine/analysis/source_weights.py ai_engine/analysis/outcome_verifier.py	EMA source weights updated from verified outcomes and quality scores; the funnel reads them
+CLM-042	BUILT	ai_engine/analysis/source_weights.py ai_engine/analysis/outcome_verifier.py	EMA source weights updated from verified outcomes; the funnel reads them (the quality-score channel was turned off at R12, DECISION S112-6)
 CLM-043	NOT BUILT	ai_engine/funnel/intelligence_funnel.py	injection patterns are literal lists edited by hand
 CLM-044	NOT BUILT	ai_engine/geo/geocoder.py	KNOWN_LOCATIONS is a hand-written dictionary; the runtime cache is in memory and lost each run
 CLM-045	NOT BUILT	ai_engine/funnel/intelligence_funnel.py	funnel thresholds are constants
@@ -245,7 +248,7 @@ CLM-1112	NOT BUILT	ai_engine/analysis/semantic_validator.py	no gate reads GNI's 
 CLM-1113	PARTIAL	ai_engine/funnel/intelligence_funnel.py CLM-744	PHI-003 rhetoric patterns screen INPUT articles; GNI's own output is not screened for identity division
 CLM-1114	PARTIAL	ai_engine/main.py ai_engine/quota_guard.py .github/workflows/gni_pipeline.yml	no quota or feature blocks the pipeline or MAD (sacred=True); the times are now 02:13/02:43 and a second pair at 10:13/10:43; GitHub's free scheduler ran the 02:13 slot about 7 h late on 2026-10-12 (S112), so 'inviolable' is not held by the platform
 CLM-1115	BUILT	CLM-622	$0.00 a month, recorded
-CLM-1116	BUILT	ai_engine/main.py ai_engine/adaptive_pipeline.py	content flows one way: the analysis runs before historical context is attached, and the adaptive run reads no MAD verdict. Verification does flow back as source weights the funnel reads - the loop NN-8 requires; whether weights are 'downstream output' is the operator's to rule (S112 close WAIT)
+CLM-1116	BUILT	ai_engine/main.py ai_engine/adaptive_pipeline.py ai_engine/analysis/outcome_verifier.py	content flows one way: the analysis runs before historical context is attached, and the adaptive run reads no MAD verdict. Source weights now learn from verified market outcomes only: the channel by which GNI's grade of its own report moved them (main.py, Item 15 S38) was turned off at R12 by DECISION S112-6 - NN-3 governs content and self-generated signals, NN-8's loop runs on external ground truth. R11 graded this BUILT having seen only the outcome channel
 CLM-1117	PARTIAL	ai_engine/analysis/supabase_saver.py src/app/transparency/page.tsx	each report stores its source articles and /transparency traces the funnel; a single judgment or prediction is not traced to the article it rests on (S32 Gap 4, REF ids not built)
 CLM-1118	PARTIAL	ai_engine/analysis/mad_protocol.py	Black Swan and Ostrich round-3 positions are prepended to the Arbitrator's prompt as MANDATORY constraints when escalation is HIGH or CRITICAL (not by a confidence threshold); still a prompt - no code checks that the verdict honoured them, which is what NN-5 says prompts cannot do
 CLM-1119	BUILT	ai_engine/funnel/intelligence_funnel.py	_sanitize_article replaces a 51-term loaded vocabulary in every selected article before analysis and MAD
@@ -256,10 +259,10 @@ CLM-1123	BUILT	ai_engine/funnel/intelligence_funnel.py	article selection reads n
 CLM-1124	NOT BUILT	ai_engine/analysis/semantic_validator.py ai_engine/notifications/telegram_notifier.py	the six rejection criteria run on input articles only; generated analysis and Telegram messages are not screened
 CLM-1125	PARTIAL	ai_engine/analysis/nexus_analyzer.py	as CLM-1111
 CLM-1126	PARTIAL	ai_engine/analysis/absence_detector.py ai_engine/main.py	gaps are detected each run and sent to the operator; no page shows readers what is absent
-CLM-1127	NOT BUILT	ai_engine/collectors/rss_collector.py	no state-sponsored source is collected, so their narratives are neither signal nor authority
+CLM-1127	NOT BUILT	ai_engine/collectors/rss_collector.py	no state-sponsored source is collected, so their narratives are neither signal nor authority. Deliberately shelved by the operator at S34 (May 2026): a democracy-score frame was judged too blunt for AI-generated psychological warfare, and a source-selection framework is owed before any adversarial feed is added
 CLM-1128	BUILT	docs/DIARY_GNI_S34_PHI003.docx docs/gni_db_snapshot_S112.json	the S34 reset (2026-05-18..22) truncated the tables; the database's first report is 2026-05-24 (R9 harvest)
 CLM-1129	BUILT	ai_engine/collectors/rss_collector.py ai_engine/funnel/intelligence_funnel.py	the collector applies no injection filter; injection is screened at Stage 1b in the funnel
 CLM-1130	BUILT	ai_engine/main.py	at CRITICAL escalation, top articles missing the escalating signals raise a coverage-gap alert to the operator
-CLM-1131	NOT BUILT	ai_engine/collectors/rss_collector.py	no adversarial source canary and no Tier A flag exist
-CLM-1132	NOT BUILT	ai_engine/analysis/mad_protocol.py	no earlier verdicts or confidence trend are given to the MAD agents
+CLM-1131	NOT BUILT	ai_engine/collectors/rss_collector.py	no adversarial source canary and no Tier A flag exist - shelved by the operator at S34 with CLM-1127, pending a source-selection framework
+CLM-1132	BUILT	ai_engine/analysis/mad_protocol.py	_get_debate_history gives every agent's round context the last 7 verdicts with their confidence and a streak warning (built at S32). R11 graded it NOT BUILT on a search that missed the code - corrected at R12
 CLM-1133	PARTIAL	ai_engine/main.py ai_engine/analysis/prompt_manager.py	a model fallback is written to the audit trail by main.py (GROQ_MODEL_FALLBACK_ACTIVE); prompt variant retirement is not (CLM-185)

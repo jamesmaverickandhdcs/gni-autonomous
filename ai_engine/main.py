@@ -48,6 +48,10 @@ from quota_guard import check_quota, log_usage
 # ============================================================
 
 GITHUB_ACTIONS = os.getenv("GITHUB_ACTIONS", "false").lower() == "true"
+# DECISION S112-6 (NN-3 One-Way Information Flow): source weights learn from verified market
+# outcomes only (outcome_verifier W-14, NN-8). The quality score is GNI grading its own report;
+# letting it move the weights the funnel selects by is the self-confirming loop NN-3 forbids.
+QUALITY_FEEDS_SOURCE_WEIGHTS = False
 
 
 def run_pipeline():
@@ -236,7 +240,7 @@ def run_pipeline():
                 _magnitude = 0.20   # poor report -- penalize sources
             else:
                 _magnitude = None   # neutral -- no update
-            if _magnitude is not None and top_articles:
+            if QUALITY_FEEDS_SOURCE_WEIGHTS and _magnitude is not None and top_articles:
                 _sources_updated = set()
                 for _art in top_articles:
                     _src = _art.get('source', '').lower().strip()
