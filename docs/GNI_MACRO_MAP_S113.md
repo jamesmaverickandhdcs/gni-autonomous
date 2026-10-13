@@ -10,7 +10,7 @@ No clock is written into this file, so an unchanged input reproduces it byte-ide
 | Z | vision -> executable | `**CHECKABLE:**` markers in `docs/GNI_RULES_S113.md` |
 
 INPUT `docs/GNI_RULES_S113.md` md5 `c3b414622c44d97e598ecbdf77c3b91a` (EOL-normalised)
-INPUT `docs/GNI_ARCHITECTURE_S113.md` md5 `c860626b79cc1d569663e0187484aa43` (EOL-normalised)
+INPUT `docs/GNI_ARCHITECTURE_S113.md` md5 `e9618603ff30ac30d7acf6c8bed08083` (EOL-normalised)
 GENERATED from `docs/GNI_RULES_S113.md` -- 228 CHECKABLE markers, register generation 113.
 
 ## TOTALS
@@ -137,8 +137,9 @@ and it is not a zero.
 ## WHAT THIS MAP CANNOT SAY
 
 - Z measures whether a rule COULD be checked by a script, not whether a check
-  EXISTS. Five checks exist (`tools/gni_rule_checks.py`); the rest of the yes
-  column is potential, not shipped.
+  EXISTS. The checks that exist are the CHECKS tuple of `tools/gni_rule_checks.py`;
+  the rest of the yes column is potential, not shipped. (S114: a hand-written count
+  of checks stood here and went stale; a count is state, so none is printed.)
 - Y is nearly empty by MEASUREMENT, not by oversight: only the ROADMAP table
   binds a session to a layer, and only some of its rows name one. That emptiness
   IS the gap this map was asked to measure.

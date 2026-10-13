@@ -754,7 +754,9 @@ def render(snap: dict, a: dict) -> str:
     o.append("**%d test modules import %d of the %d non-test modules.** Coverage here means "
              "ONE THING ONLY: a test module names it in an import. It does not mean the "
              "module's behaviour is asserted, and it does not mean the test passes — "
-             "36 assertions in `ai_engine/tests/` have never been run in CI (order item)."
+             "which tests run in CI is read from `.github/workflows/gni_ci_harness.yml`, "
+             "not from this table (S114: a count of unrun assertions was written here by "
+             "hand and stayed after the harness began running them)."
              % (len(tests), len(a["covered"] & set(non_test)), len(non_test)))
     o.append("")
     o.append("| test module | imports |")
