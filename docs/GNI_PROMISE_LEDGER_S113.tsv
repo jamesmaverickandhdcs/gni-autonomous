@@ -71,7 +71,7 @@ CLM-069	BUILT	ai_engine/funnel/intelligence_funnel.py ai_engine/analysis/source_
 CLM-070	NOT BUILT	ai_engine/analysis/source_weights.py	injection rejections do not change a source's weight
 CLM-071	PARTIAL	ai_engine/analysis/outcome_verifier.py ai_engine/analysis/credibility_model.py	weights move per verified outcome (EMA), not weekly from four weeks; the credibility recompute runs on a 1-in-10 run count, not weekly
 CLM-072	PARTIAL	ai_engine/collectors/alpha_vantage.py	automatic failover exists - Yahoo first, then Twelve Data; Alpha Vantage is not the alternative
-CLM-073	PARTIAL	ai_engine/geo/geocoder.py docs/GNI_ARCHITECTURE_S111.md	an OpenCage path is coded, but OPENCAGE_API_KEY is in no workflow (section 7.2), so Nominatim serves
+CLM-073	PARTIAL	ai_engine/geo/geocoder.py docs/GNI_ARCHITECTURE_S111.md	an OpenCage path is coded, but OPENCAGE_API_KEY is in no workflow (section 7.2), so Nominatim serves. Cause, read at S113 (DECISION S113-1): the key was stored in March as OPENCAGE_KEY while the code reads OPENCAGE_API_KEY (GNI-L-002's class), no workflow passes either, the Nominatim fallback was ruled intentional at S34, and no OPENCAGE secret is among the 24 stored; withdrawal is the operator's ruling
 CLM-074	BUILT	ai_engine/collectors/rss_collector.py	SOURCES lists 42 feeds, Asian outlets among them (Radio Free Asia, The Irrawaddy, Daily NK, Hong Kong Free Press, NDTV, Dawn)
 CLM-075	BUILT	src/app/health/page.tsx	/health exists
 CLM-076	BUILT	ai_engine/analysis/outcome_verifier.py ai_engine/analysis/debate_prediction_verifier.py .github/workflows/gni_pipeline.yml	both verifiers run in the daily verify-outcomes job
