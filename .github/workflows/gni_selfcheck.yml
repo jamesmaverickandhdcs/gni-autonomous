@@ -3,12 +3,16 @@ on:
   schedule:
     - cron: '*/30 * * * *'  # Every 30 minutes
   workflow_dispatch:  # Allow manual trigger
+# S114 (OWASP A03/A08; GitHub Actions secure-use): least privilege for GITHUB_TOKEN.
+permissions:
+  contents: read
+
 jobs:
   mission_control:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Run GNI Mission Control
         run: |
           curl -s -X GET \

@@ -8,6 +8,12 @@ on:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
+# S114 (OWASP A03/A08; GitHub Actions secure-use): least privilege for GITHUB_TOKEN.
+# actions: write - monitoring_pipeline.trigger_adaptive_pipeline dispatches gni_adaptive.yml.
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   run-heartbeat:
     runs-on: ubuntu-latest
@@ -15,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: '3.11'
 
