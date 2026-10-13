@@ -1548,6 +1548,77 @@ def _phi003_live(root):
     return "PHI-003 in code"
 
 
+# S113 R1 (R-S112-3): DECISION S112-6 ships as a switch, so a check holds the switch.
+# Every caller of update_source_weight is a mover of the source weights (R-S112-2: list
+# every writer). A caller is named by what moves the weight; a caller guarded by
+# QUALITY_FEEDS_SOURCE_WEIGHTS counts only while that module constant is not False.
+SW_MOVER_LABEL = (("ai_engine/analysis/outcome_verifier.py", "verified reports"),
+                  ("ai_engine/main.py", "the quality score"))
+
+
+def _movers_claim(fragment):
+    m = re.search(r"moved by ([a-z ]+?)(?:\s*\(|$)", fragment)
+    if not m:
+        raise FitnessError("no 'moved by <what>' in fragment %r" % fragment)
+    return m.group(1).strip()
+
+
+def _sw_switch_off(tree):
+    """True when the module assigns QUALITY_FEEDS_SOURCE_WEIGHTS = False at top level."""
+    for n in tree.body:
+        if isinstance(n, ast.Assign) and any(getattr(t, "id", "") == "QUALITY_FEEDS_SOURCE_WEIGHTS"
+                                             for t in n.targets):
+            return isinstance(n.value, ast.Constant) and n.value.value is False
+    return False
+
+
+def _guarded(test):
+    """An `if` test that requires the switch: the bare name, or an `and` holding it."""
+    if isinstance(test, ast.Name):
+        return test.id == "QUALITY_FEEDS_SOURCE_WEIGHTS"
+    if isinstance(test, ast.BoolOp) and isinstance(test.op, ast.And):
+        return any(isinstance(v, ast.Name) and v.id == "QUALITY_FEEDS_SOURCE_WEIGHTS" for v in test.values)
+    return False
+
+
+def _sw_movers(root):
+    """What moves the source weights: every call of update_source_weight (or a name it is
+    imported as) in a module under ai_engine/ outside its tests, labelled by its module. A
+    call inside the body of an `if` that requires QUALITY_FEEDS_SOURCE_WEIGHTS is left out
+    while the module sets that constant to False (DECISION S112-6)."""
+    files = sorted(p for p in glob.glob(os.path.join(root, "ai_engine", "**", "*.py"), recursive=True)
+                   if os.sep + "tests" + os.sep not in p)
+    if not files:
+        raise FitnessError("no python modules under ai_engine/")
+    labels = dict(SW_MOVER_LABEL)
+    movers = set()
+    for p in files:
+        rel = os.path.relpath(p, root).replace(os.sep, "/")
+        if rel == "ai_engine/analysis/source_weights.py":
+            continue                      # the definition, not a caller
+        with open(p, "rb") as fh:
+            tree = ast.parse(fh.read().decode("utf-8-sig"))
+        names = {"update_source_weight"}
+        for n in ast.walk(tree):
+            if isinstance(n, ast.ImportFrom):
+                names |= {a.asname for a in n.names if a.name == "update_source_weight" and a.asname}
+        off = _sw_switch_off(tree)
+
+        def visit(node, guarded):
+            for child in ast.iter_child_nodes(node):
+                g = guarded or (isinstance(node, ast.If) and child in node.body and _guarded(node.test))
+                if isinstance(child, ast.Call):
+                    f = child.func
+                    nm = f.id if isinstance(f, ast.Name) else f.attr if isinstance(f, ast.Attribute) else ""
+                    if nm in names and not (g and off):
+                        movers.add(labels.get(rel, rel))
+                visit(child, g)
+        visit(tree, False)
+    if not movers:
+        raise FitnessError("no caller of update_source_weight under ai_engine/")
+    return "+".join(sorted(movers))
+
+
 # S112 R4-3 round 9.
 def _reports_claim(fragment):
     m = re.search(r"into (\d+) reports?\b", fragment)
@@ -1824,6 +1895,9 @@ FITNESS = {
                                _stages_claim, _transparency_reasons, _equal),
     "F-PHI003-LIVE": ("PHI-003 in the running code: fff_ report sections and the PHI-003 rhetoric FLAG list "
                       "that _check_injection reads", _phi003_claim, _phi003_live, _equal),
+    "F-SW-MOVERS": ("what moves the source weights: the modules under ai_engine/ that call "
+                    "update_source_weight, a call guarded by QUALITY_FEEDS_SOURCE_WEIGHTS left out while "
+                    "main.py sets it False (DECISION S112-6, AST)", _movers_claim, _sw_movers, _equal),
     # S112 R4-3 round 9.
     "F-REPORTS-PER-RUN": ("reports one main run writes: save_report() call sites and reports inserts under "
                           "ai_engine, none in a loop, run_pipeline() called once from main.py's __main__",
