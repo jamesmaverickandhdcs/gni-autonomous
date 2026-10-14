@@ -28,10 +28,13 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdnjs.cloudflare.com",
+      // S114 (OWASP Top 10:2025 A02, least privilege): no page loads a script or fetches from another
+      // origin in the browser (grep of src/ at 1adf922). Yahoo and Supabase are called by API routes on the
+      // server; Vercel Analytics is served from this origin. Tiles stay in img-src.
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://*.tile.openstreetmap.org",
-      "connect-src 'self' https://*.supabase.co https://query1.finance.yahoo.com https://www.google-analytics.com https://api.anthropic.com",
+      "connect-src 'self'",
       "font-src 'self' data:",
       "frame-ancestors 'none'",
       "base-uri 'self'",
