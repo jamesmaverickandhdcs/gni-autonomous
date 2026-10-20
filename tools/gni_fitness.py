@@ -1721,6 +1721,97 @@ def _gpvs_first_month(root):
     return "verification %s, first report %s" % (got["gpvs-report-outcomes-first"], got["reports-first"])
 
 
+# S115 (roadmap 5 row R5-2): the Freedom-from-Fear measures, run over GNI's OWN published text.
+# The text is the committed output sample (docs/gni_output_sample_S<N>.json, roadmap 5 row R5-1),
+# refused when the query that produced it is not the query in the tree or when its row count
+# disagrees with its outputs. The measures are NOT re-implemented here: self_bias_gate.py is
+# loaded from the tree under test and its FFF_MEASURES are called (R-S96-3), so the daily gate
+# and this function cannot disagree. Each measure is a proxy for a judgement and its threshold
+# was ruled before it ran (DECISIONS S115-1 to S115-4); R5-3 checks the proxies against people.
+SAMPLE_RE = re.compile(r"^gni_output_sample_S(\d+)\.json$")
+_SBG_CACHE = {}
+
+
+def _output_sample(root):
+    """(file name, outputs) of the highest-numbered output sample."""
+    import hashlib
+    import json
+    docs = os.path.join(root, "docs")
+    gen = sorted((int(m.group(1)), n) for n in (os.listdir(docs) if os.path.isdir(docs) else [])
+                 for m in [SAMPLE_RE.match(n)] if m)
+    if not gen:
+        raise FitnessError("no docs/gni_output_sample_S<N>.json")
+    name = gen[-1][1]
+    with open(os.path.join(docs, name), "rb") as fh:
+        snap = json.loads(fh.read().decode("utf-8-sig"))
+    qpath = os.path.join(root, snap.get("query_file") or "-")
+    if not os.path.isfile(qpath):
+        raise FitnessError("%s: query_file %r not in the tree" % (name, snap.get("query_file")))
+    with open(qpath, "rb") as fh:
+        qmd5 = hashlib.md5(fh.read().replace(b"\r\n", b"\n")).hexdigest()
+    if qmd5 != snap.get("query_md5"):
+        raise FitnessError("%s: query_md5 %s, but %s hashes to %s" % (
+            name, snap.get("query_md5"), snap["query_file"], qmd5))
+    harvest = snap.get("harvest") or {}
+    outputs = harvest.get("outputs") or []
+    if not outputs or harvest.get("rows") != len(outputs):
+        raise FitnessError("%s: rows %r but %d outputs" % (name, harvest.get("rows"), len(outputs)))
+    return name, outputs
+
+
+def _self_bias_gate(root):
+    """ai_engine/analysis/self_bias_gate.py of the tree under test, loaded by path."""
+    import importlib.util
+    path = os.path.abspath(os.path.join(root, "ai_engine", "analysis", "self_bias_gate.py"))
+    if path not in _SBG_CACHE:
+        if not os.path.isfile(path):
+            raise FitnessError("ai_engine/analysis/self_bias_gate.py not found")
+        spec = importlib.util.spec_from_file_location("sbg_%d" % len(_SBG_CACHE), path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        if not getattr(mod, "FFF_MEASURES", None):
+            raise FitnessError("self_bias_gate.py holds no FFF_MEASURES")
+        _SBG_CACHE[path] = mod
+    return _SBG_CACHE[path]
+
+
+FFF_RE = re.compile(r"^(\w+): (\d+)/(\d+) outputs flagged, budget ([\d.]+) ")
+
+
+def _fff_claim(measure, phrase):
+    """The claim states a rule of the founding philosophy; the fragment must be the words of
+    that rule, and what it claims is that the rule holds within the ruled budget."""
+    def parse(fragment):
+        if phrase.lower() not in fragment.lower():
+            raise FitnessError("fragment %r does not state %r" % (fragment, phrase))
+        return measure
+    return parse
+
+
+def _fff_measure(measure):
+    def run(root):
+        name, outputs = _output_sample(root)
+        fn, budget = _self_bias_gate(root).FFF_MEASURES[measure]
+        flagged = [o.get("id") for o in outputs if fn(o)]
+        return "%s: %d/%d outputs flagged, budget %s (%s)" % (
+            measure, len(flagged), len(outputs), budget, name)
+    return run
+
+
+def _fff_holds(claimed, measured):
+    m = FFF_RE.match(measured)
+    if not m or m.group(1) != claimed:
+        raise FitnessError("measurement %r does not answer %r" % (measured, claimed))
+    from fractions import Fraction
+    return int(m.group(2)) <= Fraction(m.group(4)) * int(m.group(3))
+
+
+def _fff(measure, phrase, what):
+    return ("Freedom-from-Fear measure '%s' of self_bias_gate.FFF_MEASURES over the highest-numbered "
+            "output sample: %s; DEFEATED when more outputs are flagged than its ruled budget allows"
+            % (measure, what), _fff_claim(measure, phrase), _fff_measure(measure), _fff_holds)
+
+
 def _equal(claimed, measured):
     return claimed == measured
 
@@ -1909,6 +2000,21 @@ FITNESS = {
     "F-EXT": ("phrases recorded in the highest-numbered docs/gni_external_snapshot_S<N>.json, "
               "each with its party, source and read date",
               _ext_claim, _ext_phrases, _recorded),
+    # S115 (roadmap 5 row R5-2, DECISIONS S115-1 to S115-4): the Teenager Standard on GNI's own text.
+    "F-FFF-READ": _fff("readability", "Can a teenager understand what is happening",
+                       "Flesch-Kincaid grade of fff_what_is_happening above FK_GRADE_MAX"),
+    "F-FFF-JARGON": _fff("jargon", "not buried in jargon or market terminology",
+                         "a term of the closed jargon list in fff_what_is_happening"),
+    "F-FFF-PATH": _fff("path_generic", "what can be done about it",
+                       "a generic path form the S38 teenager prompt bans"),
+    "F-FFF-HASPATH": _fff("threat_has_path", "Every threat must have a path",
+                          "a High or Critical report whose path is empty or under 40 characters"),
+    "F-FFF-FEAR": _fff("fear_vocabulary", "create fear without understanding",
+                       "an intensity or certainty term of the funnel's SANITIZE_VOCAB"),
+    "F-FFF-SECT": _fff("sectarian", "divide people by identity",
+                       "a sectarian or PHI-002 pattern of the funnel"),
+    "F-FFF-MANIP": _fff("manipulation", "Manipulation techniques are never in GNI output",
+                        "a PHI-003 rhetoric pattern of the funnel"),
 }
 
 # Why a claim has no fitness function. Written down at S111 for the three that
