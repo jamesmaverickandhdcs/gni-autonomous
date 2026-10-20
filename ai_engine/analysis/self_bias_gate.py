@@ -13,12 +13,20 @@
 # the tamper-evident audit_trail chain (SELF_BIAS_FLAG) so the audit
 # of GNI cannot itself be quietly rewritten.
 # ============================================================
+import ast
 import os
+import re
 import sys
 from datetime import datetime, timezone, timedelta
-from dotenv import load_dotenv
+from functools import lru_cache
 
-load_dotenv()
+# S115: the Freedom-from-Fear measures below are stdlib only, and tools/gni_fitness.py imports
+# this module in CI's rule_checks job, which installs nothing. The daily gate still loads .env.
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -45,7 +53,7 @@ def _fetch_recent_reports(hours: int = 24) -> list[dict]:
         result = client.table("reports") \
             .select("id, title, created_at, escalation_score, escalation_level, "
                     "sentiment, sentiment_score, risk_level, combo_bonus, "
-                    "fff_human_path") \
+                    "summary, fff_what_is_happening, fff_honest_analysis, fff_human_path") \
             .gte("created_at", cutoff) \
             .order("created_at", desc=True) \
             .execute()
@@ -55,7 +63,8 @@ def _fetch_recent_reports(hours: int = 24) -> list[dict]:
         try:
             result = client.table("reports") \
                 .select("id, title, created_at, escalation_score, escalation_level, "
-                        "sentiment, sentiment_score, risk_level, fff_human_path") \
+                        "sentiment, sentiment_score, risk_level, summary, "
+                        "fff_what_is_happening, fff_honest_analysis, fff_human_path") \
                 .gte("created_at", cutoff) \
                 .order("created_at", desc=True) \
                 .execute()
@@ -151,11 +160,235 @@ def _check_required_field_empty(r: dict) -> dict | None:
     }
 
 
+# ============================================================
+# S115 - roadmap 5 row R5-2: the Teenager Standard read on GNI's OWN TEXT.
+# Each measure below is a PROXY for a human judgement (spec section 6): it finds what it
+# names and nothing else, and R5-3 checks it against people before it may grade anything
+# beyond this gate. One implementation: the daily audit calls these through CHECKS, and
+# tools/gni_fitness.py imports this module and runs the same functions over the committed
+# output sample (docs/gni_output_sample_S<N>.json).
+#
+# THRESHOLDS WERE RULED BEFORE ANY MEASURE RAN OVER THE SAMPLE (DECISIONS S115-1 to S115-4,
+# delegated by the operator, carried in the commit that set them):
+#   S115-1 T1 readability: Flesch-Kincaid grade of fff_what_is_happening at most 10 - the
+#          "smart 16-year-old" GNI wrote down at S38 (da5ead8) is a US grade 10-11 reader.
+#   S115-2 T1 jargon: no term of a CLOSED list in fff_what_is_happening; the list comes from
+#          sources named below, never from the sample.
+#   S115-3 T3: fff_human_path carries none of the generic forms the S38 teenager prompt bans;
+#          NN-PHI-4: the existing path-present check, unchanged.
+#   S115-4 T4: the intensity and certainty entries of the funnel's SANITIZE_VOCAB; T5: the
+#          funnel's sectarian and PHI-002 patterns; NN-PHI-3: its PHI-003 rhetoric patterns.
+#   Budget: where the founding text says every / never / reject outright (NN-PHI-4, T5,
+#   NN-PHI-3) no output may be flagged; where the measure is a proxy for a judgement (T1, T3,
+#   T4) at most 10% of outputs may be - the p90 shape SLO-2 uses (ARCHITECTURE 10.3).
+# ============================================================
+FK_GRADE_MAX = 10
+PROXY_BUDGET = 0.10
+ABSOLUTE_BUDGET = 0.0
+
+# S115-2. (i) The tickers the live report prompt lists for tickers_affected (PROMPT_V1 in
+# prompt_manager.py), matched case-sensitively as whole words so 'coin' and 'hack' pass.
+# (ii) Terms the SEC's Plain English Handbook (1998) replaces or explains: equities, capital
+# appreciation, debt securities, call option, undervalued, REIT ('income' and 'distribution'
+# are left out - they are ordinary words outside the handbook's context). (iii) The market-
+# call labels the prompt itself asks for. Incomplete by construction: a term passes until named.
+JARGON_TOKENS = ("SPY", "AAPL", "JPM", "XOM", "GLD", "USO", "LMT", "TLT", "EWT", "EWJ", "FXI",
+                 "DXY", "SOXX", "HACK", "VIX", "EWG", "EWY", "HYG", "EMB", "UNG", "WEAT", "GDX",
+                 "BTC-USD", "ETH-USD", "COIN", "REIT")
+JARGON_TERMS = ("equities", "capital appreciation", "debt securities", "call option",
+                "undervalued", "bullish", "bearish", "sentiment")
+
+# S115-3. The S38 teenager prompt (nexus_analyzer.py, da5ead8) says of the path: not "advocate
+# for diplomacy", not "stay informed", "not investing advice (they have no money yet)". Those
+# three, in their own words with their inflections - a paraphrase passes (spec section 6).
+GENERIC_PATH_PATTERNS = tuple(re.compile(p, re.IGNORECASE) for p in (
+    r"\badvocat\w*\s+for\s+diplomac\w*",
+    r"\bstay\w*\s+informed\b",
+    r"\binvest(?:s|ed|ing|or|ors|ment|ments)?\b",
+))
+
+# S115-4. SANITIZE_VOCAB holds two kinds of entry: intensity or certainty ('catastrophic',
+# 'imminent threat', 'guaranteed to') and political labels ('regime', 'invasion'). Fear without
+# understanding (T4) is the first kind; a label can be the accurate word, so the second is left out.
+FEAR_EXCLUDED_LABELS = ("puppet government", "regime", "invasion", "occupation", "terror attack",
+                        "terrorist", "aggressor", "war criminal", "western aggression",
+                        "nato aggression", "us imperialism", "imperialist", "puppet state",
+                        "proxy war", "hegemon", "hegemony")
+
+TEXT_FIELDS = ("title", "summary", "fff_what_is_happening", "fff_honest_analysis", "fff_human_path")
+
+_FUNNEL = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       "funnel", "intelligence_funnel.py")
+
+
+@lru_cache(maxsize=None)
+def _funnel_lists():
+    """The funnel's pattern lists, READ from its source by AST rather than imported: importing
+    the funnel pulls the database client, which neither this gate's workflow nor CI installs.
+    The strings and the re flags are the funnel's own, so the two cannot drift."""
+    with open(_FUNNEL, "rb") as fh:
+        tree = ast.parse(fh.read().decode("utf-8-sig"))
+    out = {}
+    for node in tree.body:
+        if not isinstance(node, ast.Assign) or not isinstance(node.targets[0], ast.Name):
+            continue
+        name = node.targets[0].id
+        if name == "SANITIZE_VOCAB":
+            out[name] = ast.literal_eval(node.value)
+        elif name in ("_PHI003_RHETORIC_PATTERNS", "_PHI002_PATTERNS", "_SECTARIAN_PATTERNS"):
+            comp = node.value
+            call = comp.elt
+            flags = 0
+            for part in ast.walk(call.args[1]):
+                if isinstance(part, ast.Attribute):
+                    flags |= getattr(re, part.attr)
+            out[name] = tuple(re.compile(p, flags) for p in ast.literal_eval(comp.generators[0].iter))
+    missing = {"SANITIZE_VOCAB", "_PHI003_RHETORIC_PATTERNS", "_PHI002_PATTERNS",
+               "_SECTARIAN_PATTERNS"} - set(out)
+    if missing or not all(out.values()):
+        raise RuntimeError("intelligence_funnel.py: missing or empty %s" % sorted(missing or out))
+    return out
+
+
+_WORD_RE = re.compile(r"[A-Za-z0-9]+(?:['\u2019\-\u2010\u2011][A-Za-z0-9]+)*")
+_ABBREV_RE = re.compile(r"\b(?:[A-Z]\.){2,}")
+_SENT_END_RE = re.compile(r"[.!?]+(?=\s|$)")
+
+
+def _syllables(word):
+    """Vowel groups, less a silent final e/es/ed - a heuristic; tools differ (spec section 2,
+    Redish's first reason), and a token holding a digit counts as one syllable."""
+    w = word.lower()
+    if any(c.isdigit() for c in w):
+        return 1
+    w = re.sub(r"[^a-z]", "", w)
+    if len(w) <= 3:
+        return 1
+    n = len(re.findall(r"[aeiouy]+", w))
+    if w.endswith("e") and not w.endswith(("le", "ee", "ye")):
+        n -= 1                                   # silent e: make, state
+    elif (w.endswith("ed") and w[-3] not in "aeiouy"
+          and not w.endswith(("ted", "ded"))):
+        n -= 1                                   # silent -ed: fired, struck (not agreed, not started)
+    elif (w.endswith("es") and w[-3] not in "aeiouy"
+          and not w.endswith(("ses", "xes", "zes", "ches", "shes", "ces", "ges"))):
+        n -= 1                                   # silent -es: makes, strikes (not countries, not taxes)
+    return max(1, n)
+
+
+def fk_grade(text):
+    """Flesch-Kincaid grade level (Kincaid, Fishburne, Rogers and Chissom, 1975, Navy Research
+    Branch Report 8-75): 0.39 words/sentence + 11.8 syllables/word - 15.59. The report says such
+    formulas are accurate to about one grade level. None for a text with no words."""
+    t = _ABBREV_RE.sub(lambda m: m.group(0).replace(".", ""), text or "")
+    words = _WORD_RE.findall(t)
+    if not words:
+        return None
+    sentences = max(1, len(_SENT_END_RE.findall(t.strip())))
+    syl = sum(_syllables(w) for w in words)
+    return round(0.39 * len(words) / sentences + 11.8 * syl / len(words) - 15.59, 1)
+
+
+def _finding(r, check, nn, detail):
+    return {"check": check, "nn_phi": nn, "report_id": r.get("id"),
+            "title": (r.get("title") or "")[:80], "detail": detail,
+            "escalation_score": r.get("escalation_score")}
+
+
+def _reader_text(r):
+    return "\n".join(r.get(f) or "" for f in TEXT_FIELDS)
+
+
+# ---- Check 4: T1 - can a teenager understand what is happening (CLM-1109) ----
+def _check_readability(r):
+    g = fk_grade(r.get("fff_what_is_happening"))
+    if g is None or g <= FK_GRADE_MAX:
+        return None
+    return _finding(r, "readability", "T1", "fff_what_is_happening reads at Flesch-Kincaid "
+                    "grade %s, above %d (proxy, unvalidated until R5-3)" % (g, FK_GRADE_MAX))
+
+
+def _jargon_found(text):
+    found = [t for t in JARGON_TOKENS if re.search(r"(?<![\w-])%s(?![\w-])" % re.escape(t), text)]
+    found += [t for t in JARGON_TERMS if re.search(r"\b%s\b" % re.escape(t), text, re.IGNORECASE)]
+    return found
+
+
+# ---- Check 5: T1 - market jargon in what is happening (CLM-1109) ----
+def _check_jargon(r):
+    found = _jargon_found(r.get("fff_what_is_happening") or "")
+    if not found:
+        return None
+    return _finding(r, "jargon", "T1", "fff_what_is_happening uses " + ", ".join(found))
+
+
+# ---- Check 6: T3 - a path is not one of the forms the S38 prompt bans (CLM-1111) ----
+def _check_path_generic(r):
+    path = r.get("fff_human_path") or ""
+    hits = [m.group(0) for p in GENERIC_PATH_PATTERNS for m in [p.search(path)] if m]
+    if not hits:
+        return None
+    return _finding(r, "path_generic", "T3", "fff_human_path uses a banned generic form: "
+                    + ", ".join(hits))
+
+
+# ---- Check 7: T4 - fear without understanding, by GNI's own amplifier list (CLM-1112) ----
+def _check_fear_vocabulary(r):
+    text = _reader_text(r)
+    found = [loaded for loaded, _ in _funnel_lists()["SANITIZE_VOCAB"]
+             if loaded not in FEAR_EXCLUDED_LABELS
+             and re.search(re.escape(loaded), text, re.IGNORECASE)]
+    if not found:
+        return None
+    return _finding(r, "fear_vocabulary", "T4", "amplifier terms in GNI's own text: " + ", ".join(found))
+
+
+def _patterns_hit(names, text):
+    lists = _funnel_lists()
+    return [m.group(0)[:60] for n in names for p in lists[n] for m in [p.search(text)] if m]
+
+
+# ---- Check 8: T5 - identity division in GNI's own text (CLM-1113) ----
+def _check_sectarian(r):
+    hits = _patterns_hit(("_SECTARIAN_PATTERNS", "_PHI002_PATTERNS"), _reader_text(r))
+    if not hits:
+        return None
+    return _finding(r, "sectarian", "T5", "sectarian or PHI-002 pattern in GNI's own text: "
+                    + "; ".join(hits))
+
+
+# ---- Check 9: NN-PHI-3 - no manipulation technique in GNI's own text (CLM-1124) ----
+def _check_manipulation(r):
+    hits = _patterns_hit(("_PHI003_RHETORIC_PATTERNS",), _reader_text(r))
+    if not hits:
+        return None
+    return _finding(r, "manipulation", "NN-PHI-3", "PHI-003 rhetoric pattern in GNI's own text: "
+                    + "; ".join(hits))
+
+
 CHECKS = [
     _check_escalation_sentiment,
     _check_threat_has_path,
     _check_required_field_empty,
+    _check_readability,
+    _check_jargon,
+    _check_path_generic,
+    _check_fear_vocabulary,
+    _check_sectarian,
+    _check_manipulation,
 ]
+
+# The measures tools/gni_fitness.py runs over the output sample, each with the share of
+# outputs it may flag before the claim it is bound to reads DEFEATED.
+FFF_MEASURES = {
+    "readability": (_check_readability, PROXY_BUDGET),
+    "jargon": (_check_jargon, PROXY_BUDGET),
+    "path_generic": (_check_path_generic, PROXY_BUDGET),
+    "fear_vocabulary": (_check_fear_vocabulary, PROXY_BUDGET),
+    "threat_has_path": (_check_threat_has_path, ABSOLUTE_BUDGET),
+    "sectarian": (_check_sectarian, ABSOLUTE_BUDGET),
+    "manipulation": (_check_manipulation, ABSOLUTE_BUDGET),
+}
 
 
 def _check_flatline(reports: list[dict]) -> list[dict]:
