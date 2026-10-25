@@ -51,9 +51,12 @@ jobs:
           GITHUB_TOKEN:         ${{ secrets.GITHUB_TOKEN }}
           GROQ_MODEL:           openai/gpt-oss-120b
           CEREBRAS_API_KEY:     ${{ secrets.CEREBRAS_API_KEY }}
+          # S115 (CodeQL actions/code-injection): the dispatch input reaches the shell through an
+          # environment variable, never interpolated into the script, so no input can become a command.
+          REASON:               ${{ github.event.inputs.reason }}
         run: |
           cd ai_engine
-          python adaptive_pipeline.py "${{ github.event.inputs.reason }}"
+          python adaptive_pipeline.py "$REASON"
       - name: Alert admin on failure
         if: failure()
         run: |
